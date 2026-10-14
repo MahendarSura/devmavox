@@ -2,111 +2,199 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { quizQuestions } from './quizData';
+
+interface Topic {
+  id: string;
+  name: string;
+  description: string;
+}
+
+const topics: Topic[] = [
+  { id: 'linux', name: 'Linux', description: 'Commands, file permissions, and system administration.' },
+  { id: 'git', name: 'Git & GitHub', description: 'Version control, branching, merging, and collaboration.' },
+  { id: 'docker', name: 'Docker', description: 'Containerization, Dockerfiles, and image management.' },
+  { id: 'kubernetes', name: 'Kubernetes', description: 'Pods, deployments, services, and cluster orchestration.' },
+  { id: 'aws', name: 'AWS', description: 'EC2, S3, IAM, VPC, and cloud infrastructure.' },
+  { id: 'terraform', name: 'Terraform', description: 'Infrastructure as Code (IaC), state management, and providers.' },
+  { id: 'jenkins', name: 'Jenkins', description: 'CI/CD pipelines, automation servers, and plugins.' },
+  { id: 'argocd', name: 'ArgoCD', description: 'GitOps continuous delivery and synchronization.' },
+  { id: 'ansible', name: 'Ansible', description: 'Configuration management and automation playbooks.' },
+  { id: 'prometheus', name: 'Prometheus & Grafana', description: 'Monitoring, metrics, and observability dashboards.' },
+  { id: 'tomcat', name: 'Apache Tomcat', description: 'Java servlet containers and web application deployment.' },
+  { id: 'jira', name: 'Jira & Agile', description: 'Project tracking, scrum boards, and sprint planning.' },
+];
+
+// Sample Question Bank per topic
+const sampleQuestions: Record<string, { question: string; options: string[]; answer: number }[]> = {
+  kubernetes: [
+    {
+      question: 'Which Kubernetes object is used to expose a deployment externally?',
+      options: ['Pod', 'Service', 'ConfigMap', 'Namespace'],
+      answer: 1,
+    },
+    {
+      question: 'What is the default command-line tool used to interact with a Kubernetes cluster?',
+      options: ['docker', 'kubectl', 'helm', 'k8s'],
+      answer: 1,
+    }
+  ],
+  terraform: [
+    {
+      question: 'What command is used to preview infrastructure changes in Terraform?',
+      options: ['terraform init', 'terraform apply', 'terraform plan', 'terraform destroy'],
+      answer: 2,
+    }
+  ],
+  docker: [
+    {
+      question: 'Which instruction in a Dockerfile sets the working directory?',
+      options: ['RUN', 'WORKDIR', 'ENV', 'CMD'],
+      answer: 1,
+    }
+  ]
+};
 
 export default function QuizPage() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [currentQIndex, setCurrentQIndex] = useState(0);
+  const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
+  const questions = activeTopic ? sampleQuestions[activeTopic] || [
+    {
+      question: `Sample question for ${activeTopic.toUpperCase()}: What is the core best practice?`,
+      options: ['Automation & Security', 'Manual configuration', 'Ignoring logs', 'Hardcoding secrets'],
+      answer: 0
+    }
+  ] : [];
+
+  const handleSelectTopic = (id: string) => {
+    setActiveTopic(id);
+    setCurrentQIndex(0);
+    setSelectedOpt(null);
+    setScore(0);
+    setIsFinished(false);
+  };
+
   const handleNext = () => {
-    if (selectedOption === quizQuestions[currentIndex].answer) {
+    if (selectedOpt === questions[currentQIndex].answer) {
       setScore(score + 1);
     }
 
-    const nextIndex = currentIndex + 1;
-    if (nextIndex < quizQuestions.length) {
-      setCurrentIndex(nextIndex);
-      setSelectedOption(null);
+    const nextIdx = currentQIndex + 1;
+    if (nextIdx < questions.length) {
+      setCurrentQIndex(nextIdx);
+      setSelectedOpt(null);
     } else {
       setIsFinished(true);
     }
   };
 
-  const restartQuiz = () => {
-    setCurrentIndex(0);
-    setSelectedOption(null);
-    setScore(0);
-    setIsFinished(false);
-  };
-
-  const q = quizQuestions[currentIndex];
-
   return (
     <div className="min-h-screen bg-[#0b0f19] text-white p-6 md:p-10 flex flex-col justify-between">
       {/* Navbar */}
-      <div className="max-w-xl mx-auto w-full flex justify-between items-center pb-4 border-b border-gray-800">
-        <div>
-          <h1 className="text-xl font-bold tracking-wider text-cyan-400">Devmavox Quiz</h1>
-        </div>
+      <div className="max-w-5xl mx-auto w-full flex justify-between items-center pb-4 border-b border-gray-800">
+        <h1 className="text-xl font-bold tracking-wider text-cyan-400">Devmavox</h1>
         <Link href="/" className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-200 px-4 py-2 rounded-xl transition border border-gray-700">
-          ← Back to Home
+          ← Main Menu
         </Link>
       </div>
 
-      {/* Quiz Card */}
-      <div className="max-w-xl mx-auto w-full py-10">
-        <div className="bg-gray-900 border border-gray-800 p-8 rounded-2xl shadow-xl">
-          {isFinished ? (
-            <div className="text-center py-6">
-              <h2 className="text-2xl font-bold mb-3 text-cyan-400">Quiz Completed! 🎉</h2>
-              <p className="text-gray-300 mb-6">
-                You scored <span className="text-cyan-400 font-bold text-lg">{score}</span> out of <span className="font-bold text-lg">{quizQuestions.length}</span>
-              </p>
-              <button
-                onClick={restartQuiz}
-                className="bg-cyan-500 hover:bg-cyan-400 text-gray-950 font-bold px-6 py-3 rounded-xl transition shadow-lg shadow-cyan-500/20"
-              >
-                Try Again
-              </button>
+      <div className="max-w-5xl mx-auto w-full py-8 flex-grow">
+        {!activeTopic ? (
+          <div>
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-extrabold text-white mb-2">Quiz Practice</h2>
+              <p className="text-gray-400 text-sm">Choose a topic to start your DevOps practice[cite: 1].</p>
             </div>
-          ) : (
-            <div>
-              <div className="flex justify-between items-center mb-4 text-xs">
-                <span className="bg-cyan-950 text-cyan-400 px-2.5 py-1 rounded-md border border-cyan-800/50 font-medium">
-                  {q.category}
-                </span>
-                <span className="text-gray-400">
-                  Question {currentIndex + 1} of {quizQuestions.length}
-                </span>
-              </div>
 
-              <h2 className="text-lg font-semibold mb-6 text-white">{q.question}</h2>
-
-              <div className="space-y-3 mb-8">
-                {q.options.map((opt, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setSelectedOption(idx)}
-                    className={`w-full text-left p-4 rounded-xl border transition text-sm ${
-                      selectedOption === idx
-                        ? 'bg-cyan-950/80 border-cyan-500 text-cyan-300 shadow-md shadow-cyan-500/10'
-                        : 'bg-gray-800/40 border-gray-700/80 hover:bg-gray-800 text-gray-200'
-                    }`}
-                  >
-                    {opt}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={handleNext}
-                disabled={selectedOption === null}
-                className={`w-full py-3.5 rounded-xl font-bold text-sm transition ${
-                  selectedOption === null
-                    ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                    : 'bg-cyan-500 hover:bg-cyan-400 text-gray-950 shadow-lg shadow-cyan-500/20'
-                }`}
-              >
-                {currentIndex === quizQuestions.length - 1 ? 'Finish & See Score' : 'Next Question'}
-              </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {topics.map((t) => (
+                <div
+                  key={t.id}
+                  onClick={() => handleSelectTopic(t.id)}
+                  className="bg-gray-900 border border-gray-800 hover:border-cyan-500/50 p-6 rounded-2xl shadow-xl transition cursor-pointer flex flex-col justify-between group hover:-translate-y-1"
+                >
+                  <div>
+                    <h3 className="text-lg font-bold text-white mb-1 group-hover:text-cyan-400 transition">{t.name}</h3>
+                    <p className="text-gray-400 text-xs">{t.description}</p>
+                  </div>
+                  <div className="mt-6 text-xs font-semibold text-cyan-400 flex items-center gap-1">
+                    Practice Quiz →
+                  </div>
+                </div>
+              ))}
             </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="max-w-xl mx-auto bg-gray-900 border border-gray-800 p-8 rounded-2xl shadow-xl">
+            <div className="flex justify-between items-center mb-6">
+              <button
+                onClick={() => setActiveTopic(null)}
+                className="text-xs text-cyan-400 hover:underline"
+              >
+                ← Back to Topics
+              </button>
+              <span className="text-xs text-gray-400">
+                Question {currentQIndex + 1} of {questions.length}
+              </span>
+            </div>
+
+            {isFinished ? (
+              <div className="text-center py-6">
+                <h3 className="text-2xl font-bold mb-3 text-cyan-400">Quiz Completed! 🎉</h3>
+                <p className="text-gray-300 mb-6">
+                  You scored <span className="text-cyan-400 font-bold text-lg">{score}</span> out of <span className="font-bold text-lg">{questions.length}</span>
+                </p>
+                <button
+                  onClick={() => setActiveTopic(null)}
+                  className="bg-cyan-500 hover:bg-cyan-400 text-gray-950 font-bold px-6 py-3 rounded-xl transition shadow-lg shadow-cyan-500/20"
+                >
+                  Choose Another Topic
+                </button>
+              </div>
+            ) : (
+              <div>
+                <h3 className="text-lg font-semibold mb-6 text-white">{questions[currentQIndex].question}</h3>
+
+                <div className="flex flex-col gap-3 mb-8">
+                  {questions[currentQIndex].options.map((opt, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedOpt(idx)}
+                      className={`w-full text-left p-4 rounded-xl border transition text-sm flex items-center justify-between ${
+                        selectedOpt === idx
+                          ? 'bg-cyan-950/80 border-cyan-500 text-cyan-300 shadow-md shadow-cyan-500/10'
+                          : 'bg-gray-800/40 border-gray-700/80 hover:bg-gray-800 text-gray-200'
+                      }`}
+                    >
+                      <span>{opt}</span>
+                      <span className={`w-4 h-4 rounded-full border flex items-center justify-center ${selectedOpt === idx ? 'border-cyan-400 bg-cyan-400/20' : 'border-gray-600'}`}>
+                        {selectedOpt === idx && <span className="w-2 h-2 rounded-full bg-cyan-400"></span>}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={handleNext}
+                  disabled={selectedOpt === null}
+                  className={`w-full py-3.5 rounded-xl font-bold text-sm transition ${
+                    selectedOpt === null
+                      ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                      : 'bg-cyan-500 hover:bg-cyan-400 text-gray-950 shadow-lg shadow-cyan-500/20'
+                  }`}
+                >
+                  {currentQIndex === questions.length - 1 ? 'Finish & See Score' : 'Next Question'}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      <div className="text-center text-xs text-gray-500 pb-2">
+      <div className="text-center text-xs text-gray-500 pt-4 border-t border-gray-800">
         © 2026 Devmavox Platform.
       </div>
     </div>
