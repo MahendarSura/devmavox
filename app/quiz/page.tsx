@@ -82,10 +82,7 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
-  // Fallback so it never crashes even if ID is missing
-  const questions = activeTopic ? topicQuestions[activeTopic.id] || [
-    { question: `Practice question for ${activeTopic.name}`, options: ['Option A', 'Option B', 'Option C', 'Option D'], answer: 0 }
-  ] : [];
+  const questions = activeTopic ? topicQuestions[activeTopic.id] || [] : [];
 
   const handleSelectTopic = (topic: Topic) => {
     setActiveTopic(topic);
