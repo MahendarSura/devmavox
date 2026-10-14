@@ -82,7 +82,10 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
-  const questions = activeTopic ? topicQuestions[activeTopic.id] || [] : [];
+  // Fallback so it never crashes even if ID is missing
+  const questions = activeTopic ? topicQuestions[activeTopic.id] || [
+    { question: `Practice question for ${activeTopic.name}`, options: ['Option A', 'Option B', 'Option C', 'Option D'], answer: 0 }
+  ] : [];
 
   const handleSelectTopic = (topic: Topic) => {
     setActiveTopic(topic);
@@ -176,10 +179,10 @@ export default function QuizPage() {
                   <span>Question {currentQIndex + 1} of {questions.length}</span>
                 </div>
 
-                <h3 className="text-lg font-semibold mb-6 text-white">{questions[currentQIndex].question}</h3>
+                <h3 className="text-lg font-semibold mb-6 text-white">{questions[currentQIndex]?.question}</h3>
 
                 <div className="flex flex-col gap-3 mb-8">
-                  {questions[currentQIndex].options.map((opt, idx) => (
+                  {questions[currentQIndex]?.options.map((opt, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedOpt(idx)}
