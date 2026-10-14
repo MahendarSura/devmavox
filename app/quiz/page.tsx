@@ -24,52 +24,69 @@ const topics: Topic[] = [
   { id: 'jira', name: 'Jira & Agile', description: 'Project tracking, scrum boards, and sprint planning.' },
 ];
 
-const sampleQuestions: Record<string, { question: string; options: string[]; answer: number }[]> = {
-  kubernetes: [
-    {
-      question: 'Which Kubernetes object is used to expose a deployment externally?',
-      options: ['Pod', 'Service', 'ConfigMap', 'Namespace'],
-      answer: 1,
-    },
-    {
-      question: 'What is the default command-line tool used to interact with a Kubernetes cluster?',
-      options: ['docker', 'kubectl', 'helm', 'k8s'],
-      answer: 1,
-    }
+// Each topic has its own custom questions!
+const topicQuestions: Record<string, { question: string; options: string[]; answer: number }[]> = {
+  linux: [
+    { question: 'Which command is used to check disk space usage in Linux?', options: ['ls', 'df -h', 'ps aux', 'top'], answer: 1 },
+    { question: 'Which permission code represents read, write, and execute for owner only (700)?', options: ['chmod 700', 'chmod 755', 'chmod 644', 'chmod 777'], answer: 0 }
   ],
-  terraform: [
-    {
-      question: 'What command is used to preview infrastructure changes in Terraform?',
-      options: ['terraform init', 'terraform apply', 'terraform plan', 'terraform destroy'],
-      answer: 2,
-    }
+  git: [
+    { question: 'Which command creates a new branch and switches to it immediately?', options: ['git branch', 'git checkout -b', 'git commit -m', 'git push'], answer: 1 },
+    { question: 'How do you check the repository status in Git?', options: ['git log', 'git status', 'git init', 'git fetch'], answer: 1 }
   ],
   docker: [
-    {
-      question: 'Which instruction in a Dockerfile sets the working directory?',
-      options: ['RUN', 'WORKDIR', 'ENV', 'CMD'],
-      answer: 1,
-    }
+    { question: 'Which instruction sets the working directory in a Dockerfile?', options: ['RUN', 'CMD', 'WORKDIR', 'ENV'], answer: 2 },
+    { question: 'Which command lists all running and stopped Docker containers?', options: ['docker ps', 'docker ps -a', 'docker images', 'docker run'], answer: 1 }
+  ],
+  kubernetes: [
+    { question: 'Which Kubernetes object is used to expose a deployment externally?', options: ['Pod', 'Service', 'ConfigMap', 'Namespace'], answer: 1 },
+    { question: 'What is the default command-line tool to interact with a K8s cluster?', options: ['docker', 'kubectl', 'helm', 'k8s'], answer: 1 }
+  ],
+  aws: [
+    { question: 'Which AWS service is used for object storage?', options: ['Amazon EBS', 'Amazon S3', 'Amazon EC2', 'AWS RDS'], answer: 1 },
+    { question: 'What does IAM stand for in AWS?', options: ['Internet Access Management', 'Identity and Access Management', 'Instance Architecture Model', 'Internal Automation Module'], answer: 1 }
+  ],
+  terraform: [
+    { question: 'What command is used to preview infrastructure changes in Terraform?', options: ['terraform init', 'terraform apply', 'terraform plan', 'terraform destroy'], answer: 2 },
+    { question: 'Where does Terraform store state data by default?', options: ['terraform.tfstate', 'state.json', 'aws s3 bucket', 'cache.db'], answer: 0 }
+  ],
+  jenkins: [
+    { question: 'What file defines a Jenkins Pipeline configuration?', options: ['Dockerfile', 'Jenkinsfile', 'pipeline.yaml', 'build.xml'], answer: 1 },
+    { question: 'What is the primary concept for running tasks in Jenkins?', options: ['Jobs / Pipelines', 'Pods', 'Playbooks', 'Recipes'], answer: 0 }
+  ],
+  argocd: [
+    { question: 'What is the primary role of ArgoCD?', options: ['Container building', 'Continuous declarative GitOps delivery', 'Network routing', 'Log aggregation'], answer: 1 },
+    { question: 'ArgoCD continuously monitors Git and syncs with which environment?', options: ['AWS S3', 'Kubernetes Cluster', 'Docker Hub', 'Jenkins Server'], answer: 1 }
+  ],
+  ansible: [
+    { question: 'In what format are Ansible playbooks written?', options: ['JSON', 'YAML', 'XML', 'Python'], answer: 1 },
+    { question: 'What protocol does Ansible use by default to connect to remote nodes?', options: ['SSH', 'Telnet', 'HTTP', 'FTP'], answer: 0 }
+  ],
+  prometheus: [
+    { question: 'Which query language is used by Prometheus?', options: ['SQL', 'PromQL', 'LogQL', 'GraphQL'], answer: 1 },
+    { question: 'Grafana is primarily used for what purpose?', options: ['Code compilation', 'Data visualization and dashboards', 'Container orchestration', 'Version control'], answer: 1 }
+  ],
+  tomcat: [
+    { question: 'Apache Tomcat is primarily a container for which language/technology?', options: ['Node.js', 'Java Servlets & JSPs', 'Python Flask', 'PHP'], answer: 1 },
+    { question: 'What is the default port for Apache Tomcat web server?', options: ['80', '443', '8080', '3306'], answer: 2 }
+  ],
+  jira: [
+    { question: 'Jira is widely used for which methodology?', options: ['Agile / Scrum / Kanban', 'Waterfall', 'Sequential testing', 'Static code analysis'], answer: 0 },
+    { question: 'What represents a unit of work or task in Jira?', options: ['Commit', 'Issue / Ticket', 'Branch', 'Pod'], answer: 1 }
   ]
 };
 
 export default function QuizPage() {
-  const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [activeTopic, setActiveTopic] = useState<Topic | null>(null);
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
-  const questions = activeTopic ? sampleQuestions[activeTopic] || [
-    {
-      question: `Sample question for ${activeTopic.toUpperCase()}: What is the core best practice?`,
-      options: ['Automation & Security', 'Manual configuration', 'Ignoring logs', 'Hardcoding secrets'],
-      answer: 0
-    }
-  ] : [];
+  const questions = activeTopic ? topicQuestions[activeTopic.id] || [] : [];
 
-  const handleSelectTopic = (id: string) => {
-    setActiveTopic(id);
+  const handleSelectTopic = (topic: Topic) => {
+    setActiveTopic(topic);
     setCurrentQIndex(0);
     setSelectedOpt(null);
     setScore(0);
@@ -94,7 +111,7 @@ export default function QuizPage() {
     <div className="min-h-screen bg-[#0b0f19] text-white p-6 md:p-10 flex flex-col justify-between">
       {/* Navbar */}
       <div className="max-w-5xl mx-auto w-full flex justify-between items-center pb-4 border-b border-gray-800">
-        <h1 className="text-xl font-bold tracking-wider text-cyan-400">Devmavox</h1>
+        <h1 className="text-xl font-bold tracking-wider text-cyan-400">Devmavox Quiz</h1>
         <Link href="/" className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-200 px-4 py-2 rounded-xl transition border border-gray-700">
           ← Main Menu
         </Link>
@@ -104,15 +121,16 @@ export default function QuizPage() {
         {!activeTopic ? (
           <div>
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-extrabold text-white mb-2">Quiz Practice</h2>
-              <p className="text-gray-400 text-sm">Choose a topic to start your DevOps practice.</p>
+              <h2 className="text-3xl font-extrabold text-white mb-2">Quiz Practice[cite: 1]</h2>
+              <p className="text-gray-400 text-sm">Choose a topic to start your DevOps practice[cite: 1].</p>
             </div>
 
+            {/* Grid Dashboard */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {topics.map((t) => (
                 <div
                   key={t.id}
-                  onClick={() => handleSelectTopic(t.id)}
+                  onClick={() => handleSelectTopic(t)}
                   className="bg-gray-900 border border-gray-800 hover:border-cyan-500/50 p-6 rounded-2xl shadow-xl transition cursor-pointer flex flex-col justify-between group hover:-translate-y-1"
                 >
                   <div>
@@ -131,12 +149,12 @@ export default function QuizPage() {
             <div className="flex justify-between items-center mb-6">
               <button
                 onClick={() => setActiveTopic(null)}
-                className="text-xs text-cyan-400 hover:underline"
+                className="text-xs text-cyan-400 hover:underline flex items-center gap-1 text-cyan-400"
               >
                 ← Back to Topics
               </button>
-              <span className="text-xs text-gray-400">
-                Question {currentQIndex + 1} of {questions.length}
+              <span className="bg-cyan-950 text-cyan-400 px-2.5 py-1 rounded-md border border-cyan-800/50 text-xs font-medium">
+                {activeTopic.name}
               </span>
             </div>
 
@@ -155,6 +173,10 @@ export default function QuizPage() {
               </div>
             ) : (
               <div>
+                <div className="flex justify-between items-center mb-2 text-xs text-gray-400">
+                  <span>Question {currentQIndex + 1} of {questions.length}</span>
+                </div>
+
                 <h3 className="text-lg font-semibold mb-6 text-white">{questions[currentQIndex].question}</h3>
 
                 <div className="flex flex-col gap-3 mb-8">
