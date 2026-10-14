@@ -3,6 +3,20 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
+// Importing separate question files for each tool
+import { linuxQuestions } from './linuxQuestions';
+import { gitQuestions } from './gitQuestions';
+import { dockerQuestions } from './dockerQuestions';
+import { kubernetesQuestions } from './kubernetesQuestions';
+import { awsQuestions } from './awsQuestions';
+import { terraformQuestions } from './terraformQuestions';
+import { jenkinsQuestions } from './jenkinsQuestions';
+import { argocdQuestions } from './argocdQuestions';
+import { ansibleQuestions } from './ansibleQuestions';
+import { prometheusQuestions } from './prometheusQuestions';
+import { tomcatQuestions } from './tomcatQuestions';
+import { jiraQuestions } from './jiraQuestions';
+
 interface Topic {
   id: string;
   name: string;
@@ -25,114 +39,18 @@ const topics: Topic[] = [
 ];
 
 const topicQuestions: Record<string, { question: string; options: string[]; answer: number }[]> = {
-  linux: [
-    { question: 'Which command is used to check disk space usage in Linux?', options: ['ls', 'df -h', 'ps aux', 'top'], answer: 1 },
-    { question: 'Which permission code represents read, write, and execute for owner only (700)?', options: ['chmod 700', 'chmod 755', 'chmod 644', 'chmod 777'], answer: 0 },
-    ...Array.from({ length: 98 }, (_, i) => ({
-      question: `Linux System Administration Test Question ${i + 3}: Which core command or configuration file is essential for enterprise Linux operations?`,
-      options: ['Standard Linux Option', 'Alternative Choice A', 'Alternative Choice B', 'Alternative Choice C'],
-      answer: 0
-    }))
-  ],
-  git: [
-    { question: 'Which command creates a new branch and switches to it immediately?', options: ['git branch', 'git checkout -b', 'git commit -m', 'git push'], answer: 1 },
-    { question: 'How do you check the repository status in Git?', options: ['git log', 'git status', 'git init', 'git fetch'], answer: 1 },
-    ...Array.from({ length: 98 }, (_, i) => ({
-      question: `Git Version Control Test Question ${i + 3}: Which branching strategy or git command is best for resolving merge conflicts?`,
-      options: ['Standard Git Option', 'Alternative Choice A', 'Alternative Choice B', 'Alternative Choice C'],
-      answer: 0
-    }))
-  ],
-  docker: [
-    { question: 'Which instruction sets the working directory in a Dockerfile?', options: ['RUN', 'CMD', 'WORKDIR', 'ENV'], answer: 2 },
-    { question: 'Which command lists all running and stopped Docker containers?', options: ['docker ps', 'docker ps -a', 'docker images', 'docker run'], answer: 1 },
-    ...Array.from({ length: 98 }, (_, i) => ({
-      question: `Docker Containerization Test Question ${i + 3}: Which dockerfile optimization practice or compose command ensures secure deployments?`,
-      options: ['Standard Docker Option', 'Alternative Choice A', 'Alternative Choice B', 'Alternative Choice C'],
-      answer: 0
-    }))
-  ],
-  kubernetes: [
-    { question: 'Which Kubernetes object is used to expose a deployment externally?', options: ['Pod', 'Service', 'ConfigMap', 'Namespace'], answer: 1 },
-    { question: 'What is the default command-line tool to interact with a K8s cluster?', options: ['docker', 'kubectl', 'helm', 'k8s'], answer: 1 },
-    ...Array.from({ length: 98 }, (_, i) => ({
-      question: `Kubernetes Orchestration Test Question ${i + 3}: Which K8s resource or RBAC policy is best for cluster security and pod autoscaling?`,
-      options: ['Standard Kubernetes Option', 'Alternative Choice A', 'Alternative Choice B', 'Alternative Choice C'],
-      answer: 0
-    }))
-  ],
-  aws: [
-    { question: 'Which AWS service is used for object storage?', options: ['Amazon EBS', 'Amazon S3', 'Amazon EC2', 'AWS RDS'], answer: 1 },
-    { question: 'What does IAM stand for in AWS?', options: ['Internet Access Management', 'Identity and Access Management', 'Instance Architecture Model', 'Internal Automation Module'], answer: 1 },
-    ...Array.from({ length: 98 }, (_, i) => ({
-      question: `AWS Cloud Infrastructure Test Question ${i + 3}: Which cloud architecture or security group configuration ensures robust deployment?`,
-      options: ['Standard AWS Option', 'Alternative Choice A', 'Alternative Choice B', 'Alternative Choice C'],
-      answer: 0
-    }))
-  ],
-  terraform: [
-    { question: 'What command is used to preview infrastructure changes in Terraform?', options: ['terraform init', 'terraform apply', 'terraform plan', 'terraform destroy'], answer: 2 },
-    { question: 'Where does Terraform store state data by default?', options: ['terraform.tfstate', 'state.json', 'aws s3 bucket', 'cache.db'], answer: 0 },
-    ...Array.from({ length: 98 }, (_, i) => ({
-      question: `Terraform IaC Test Question ${i + 3}: Which remote state management practice or module structure is best for modular code?`,
-      options: ['Standard Terraform Option', 'Alternative Choice A', 'Alternative Choice B', 'Alternative Choice C'],
-      answer: 0
-    }))
-  ],
-  jenkins: [
-    { question: 'What file defines a Jenkins Pipeline configuration?', options: ['Dockerfile', 'Jenkinsfile', 'pipeline.yaml', 'build.xml'], answer: 1 },
-    { question: 'What is the primary concept for running tasks in Jenkins?', options: ['Jobs / Pipelines', 'Pods', 'Playbooks', 'Recipes'], answer: 0 },
-    ...Array.from({ length: 98 }, (_, i) => ({
-      question: `Jenkins CI/CD Automation Test Question ${i + 3}: Which declarative pipeline syntax or agent configuration ensures reliable automation?`,
-      options: ['Standard Jenkins Option', 'Alternative Choice A', 'Alternative Choice B', 'Alternative Choice C'],
-      answer: 0
-    }))
-  ],
-  argocd: [
-    { question: 'What is the primary role of ArgoCD?', options: ['Container building', 'Continuous declarative GitOps delivery', 'Network routing', 'Log aggregation'], answer: 1 },
-    { question: 'ArgoCD continuously monitors Git and syncs with which environment?', options: ['AWS S3', 'Kubernetes Cluster', 'Docker Hub', 'Jenkins Server'], answer: 1 },
-    ...Array.from({ length: 98 }, (_, i) => ({
-      question: `ArgoCD GitOps Test Question ${i + 3}: Which ArgoCD sync policy or app project configuration best manages continuous delivery?`,
-      options: ['Standard ArgoCD Option', 'Alternative Choice A', 'Alternative Choice B', 'Alternative Choice C'],
-      answer: 0
-    }))
-  ],
-  ansible: [
-    { question: 'In what format are Ansible playbooks written?', options: ['JSON', 'YAML', 'XML', 'Python'], answer: 1 },
-    { question: 'What protocol does Ansible use by default to connect to remote nodes?', options: ['SSH', 'Telnet', 'HTTP', 'FTP'], answer: 0 },
-    ...Array.from({ length: 98 }, (_, i) => ({
-      question: `Ansible Automation Test Question ${i + 3}: Which Ansible playbook structure or module parameter ensures idempotent configuration?`,
-      options: ['Standard Ansible Option', 'Alternative Choice A', 'Alternative Choice B', 'Alternative Choice C'],
-      answer: 0
-    }))
-  ],
-  prometheus: [
-    { question: 'Which query language is used by Prometheus?', options: ['SQL', 'PromQL', 'LogQL', 'GraphQL'], answer: 1 },
-    { question: 'Grafana is primarily used for what purpose?', options: ['Code compilation', 'Data visualization and dashboards', 'Container orchestration', 'Version control'], answer: 1 },
-    ...Array.from({ length: 98 }, (_, i) => ({
-      question: `Prometheus & Grafana Observability Test Question ${i + 3}: Which PromQL function or alertmanager configuration best tracks metrics?`,
-      options: ['Standard Observability Option', 'Alternative Choice A', 'Alternative Choice B', 'Alternative Choice C'],
-      answer: 0
-    }))
-  ],
-  tomcat: [
-    { question: 'Apache Tomcat is primarily a container for which language/technology?', options: ['Node.js', 'Java Servlets & JSPs', 'Python Flask', 'PHP'], answer: 1 },
-    { question: 'What is the default port for Apache Tomcat web server?', options: ['80', '443', '8080', '3306'], answer: 2 },
-    ...Array.from({ length: 98 }, (_, i) => ({
-      question: `Apache Tomcat Administration Test Question ${i + 3}: Which Tomcat server configuration or JVM memory parameter is best for performance?`,
-      options: ['Standard Tomcat Option', 'Alternative Choice A', 'Alternative Choice B', 'Alternative Choice C'],
-      answer: 0
-    }))
-  ],
-  jira: [
-    { question: 'Jira is widely used for which methodology?', options: ['Agile / Scrum / Kanban', 'Waterfall', 'Sequential testing', 'Static code analysis'], answer: 0 },
-    { question: 'What represents a unit of work or task in Jira?', options: ['Commit', 'Issue / Ticket', 'Branch', 'Pod'], answer: 1 },
-    ...Array.from({ length: 98 }, (_, i) => ({
-      question: `Jira & Agile Project Management Test Question ${i + 3}: Which JQL filter or scrum board configuration best tracks team velocity?`,
-      options: ['Standard Agile Option', 'Alternative Choice A', 'Alternative Choice B', 'Alternative Choice C'],
-      answer: 0
-    }))
-  ]
+  linux: linuxQuestions,
+  git: gitQuestions,
+  docker: dockerQuestions,
+  kubernetes: kubernetesQuestions,
+  aws: awsQuestions,
+  terraform: terraformQuestions,
+  jenkins: jenkinsQuestions,
+  argocd: argocdQuestions,
+  ansible: ansibleQuestions,
+  prometheus: prometheusQuestions,
+  tomcat: tomcatQuestions,
+  jira: jiraQuestions,
 };
 
 export default function QuizPage() {
