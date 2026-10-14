@@ -2,67 +2,113 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-
-const topics = [
-  'Linux', 'Git & GitHub', 'Docker', 'Kubernetes',
-  'AWS', 'Terraform', 'Jenkins', 'ArgoCD',
-  'Ansible', 'Prometheus & Grafana', 'Apache Tomcat',
-  'Jira & Agile', 'Slack'
-];
+import { quizQuestions } from './quizData';
 
 export default function QuizPage() {
-  const [selectedTopic, setSelectedTopic] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [score, setScore] = useState(0);
+  const [isFinished, setIsFinished] = useState(false);
+
+  const handleNext = () => {
+    if (selectedOption === quizQuestions[currentIndex].answer) {
+      setScore(score + 1);
+    }
+
+    const nextIndex = currentIndex + 1;
+    if (nextIndex < quizQuestions.length) {
+      setCurrentIndex(nextIndex);
+      setSelectedOption(null);
+    } else {
+      setIsFinished(true);
+    }
+  };
+
+  const restartQuiz = () => {
+    setCurrentIndex(0);
+    setSelectedOption(null);
+    setScore(0);
+    setIsFinished(false);
+  };
+
+  const q = quizQuestions[currentIndex];
 
   return (
-    <main className="min-h-screen bg-slate-950 p-6 text-white">
-      <header className="mx-auto flex max-w-5xl items-center justify-between">
-        <Link href="/" className="text-2xl font-bold text-cyan-400">
-          Devmavox
+    <div className="min-h-screen bg-[#0b0f19] text-white p-6 md:p-10 flex flex-col justify-between">
+      {/* Navbar */}
+      <div className="max-w-xl mx-auto w-full flex justify-between items-center pb-4 border-b border-gray-800">
+        <div>
+          <h1 className="text-xl font-bold tracking-wider text-cyan-400">Devmavox Quiz</h1>
+        </div>
+        <Link href="/" className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-200 px-4 py-2 rounded-xl transition border border-gray-700">
+          ← Back to Home
         </Link>
-        <Link
-          href="/"
-          className="rounded-lg border border-slate-700 px-4 py-2 hover:border-cyan-400"
-        >
-          ← Main Menu
-        </Link>
-      </header>
+      </div>
 
-      <section className="mx-auto max-w-5xl py-12">
-        <h1 className="mb-3 text-center text-4xl font-bold">
-          Quiz Practice
-        </h1>
-        <p className="mb-10 text-center text-slate-400">
-          Choose a topic to start your DevOps practice.
-        </p>
-
-        {selectedTopic ? (
-          <div className="mx-auto max-w-xl rounded-2xl border border-slate-800 bg-slate-900 p-8 text-center">
-            <h2 className="mb-4 text-2xl font-bold">{selectedTopic}</h2>
-            <p className="mb-6 text-slate-300">
-              {selectedTopic} quiz selected. Your practice section is ready.
-            </p>
-            <button
-              onClick={() => setSelectedTopic('')}
-              className="rounded-lg bg-cyan-500 px-5 py-3 font-bold text-slate-950"
-            >
-              ← All Topics
-            </button>
-          </div>
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {topics.map((topic) => (
+      {/* Quiz Card */}
+      <div className="max-w-xl mx-auto w-full py-10">
+        <div className="bg-gray-900 border border-gray-800 p-8 rounded-2xl shadow-xl">
+          {isFinished ? (
+            <div className="text-center py-6">
+              <h2 className="text-2xl font-bold mb-3 text-cyan-400">Quiz Completed! 🎉</h2>
+              <p className="text-gray-300 mb-6">
+                You scored <span className="text-cyan-400 font-bold text-lg">{score}</span> out of <span className="font-bold text-lg">{quizQuestions.length}</span>
+              </p>
               <button
-                key={topic}
-                onClick={() => setSelectedTopic(topic)}
-                className="rounded-xl border border-slate-800 bg-slate-900 p-6 text-left transition hover:border-cyan-400"
+                onClick={restartQuiz}
+                className="bg-cyan-500 hover:bg-cyan-400 text-gray-950 font-bold px-6 py-3 rounded-xl transition shadow-lg shadow-cyan-500/20"
               >
-                <h2 className="mb-3 text-lg font-bold">{topic}</h2>
-                <span className="text-sm text-cyan-400">Practice Quiz →</span>
+                Try Again
               </button>
-            ))}
-          </div>
-        )}
-      </section>
-    </main>
+            </div>
+          ) : (
+            <div>
+              <div className="flex justify-between items-center mb-4 text-xs">
+                <span className="bg-cyan-950 text-cyan-400 px-2.5 py-1 rounded-md border border-cyan-800/50 font-medium">
+                  {q.category}
+                </span>
+                <span className="text-gray-400">
+                  Question {currentIndex + 1} of {quizQuestions.length}
+                </span>
+              </div>
+
+              <h2 className="text-lg font-semibold mb-6 text-white">{q.question}</h2>
+
+              <div className="space-y-3 mb-8">
+                {q.options.map((opt, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedOption(idx)}
+                    className={`w-full text-left p-4 rounded-xl border transition text-sm ${
+                      selectedOption === idx
+                        ? 'bg-cyan-950/80 border-cyan-500 text-cyan-300 shadow-md shadow-cyan-500/10'
+                        : 'bg-gray-800/40 border-gray-700/80 hover:bg-gray-800 text-gray-200'
+                    }`}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={handleNext}
+                disabled={selectedOption === null}
+                className={`w-full py-3.5 rounded-xl font-bold text-sm transition ${
+                  selectedOption === null
+                    ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                    : 'bg-cyan-500 hover:bg-cyan-400 text-gray-950 shadow-lg shadow-cyan-500/20'
+                }`}
+              >
+                {currentIndex === quizQuestions.length - 1 ? 'Finish & See Score' : 'Next Question'}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="text-center text-xs text-gray-500 pb-2">
+        © 2026 Devmavox Platform.
+      </div>
+    </div>
   );
 }
