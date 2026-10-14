@@ -24,7 +24,6 @@ const topics: Topic[] = [
   { id: 'jira', name: 'Jira & Agile', description: 'Project tracking, scrum boards, and sprint planning.' },
 ];
 
-// Sample Question Bank per topic
 const sampleQuestions: Record<string, { question: string; options: string[]; answer: number }[]> = {
   kubernetes: [
     {
@@ -106,7 +105,7 @@ export default function QuizPage() {
           <div>
             <div className="text-center mb-10">
               <h2 className="text-3xl font-extrabold text-white mb-2">Quiz Practice</h2>
-              <p className="text-gray-400 text-sm">Choose a topic to start your DevOps practice[cite: 1].</p>
+              <p className="text-gray-400 text-sm">Choose a topic to start your DevOps practice.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
