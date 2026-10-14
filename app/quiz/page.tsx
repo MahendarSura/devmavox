@@ -1,97 +1,200 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 
-interface Tutorial {
-  id: number;
-  title: string;
-  category: string;
+interface Topic {
+  id: string;
+  name: string;
   description: string;
-  readTime: string;
-  steps: string[];
 }
 
-const tutorialsList: Tutorial[] = [
-  {
-    id: 1,
-    title: 'AWS EKS Cluster Setup with Terraform',
-    category: 'AWS & Kubernetes',
-    description: 'Learn how to provision a production-grade Amazon EKS cluster using Infrastructure as Code (Terraform).',
-    readTime: '10 min read',
-    steps: [
-      'Install Terraform and AWS CLI on your local machine.',
-      'Configure IAM roles and security groups for EKS nodes.',
-      'Write main.tf and VPC module configurations.',
-      'Run `terraform init` and `terraform apply` to provision the cluster.',
-      'Update kubeconfig to connect via `kubectl`.'
-    ],
-  },
-  {
-    id: 2,
-    title: 'GitHub Actions CI/CD Pipeline for Docker',
-    category: 'CI/CD & DevOps',
-    description: 'Automate building and pushing Docker images to Amazon ECR using GitHub Actions workflows.',
-    readTime: '8 min read',
-    steps: [
-      'Create a workflow YAML file under .github/workflows/deploy.yml.',
-      'Configure AWS credentials as GitHub Repository Secrets.',
-      'Add steps to checkout code and login to Amazon ECR.',
-      'Build the Docker image and push it with a unique tag.',
-      'Trigger the action on every push to the main branch.'
-    ],
-  },
-  {
-    id: 3,
-    title: 'Zero-Trust Security Hardening with Kyverno',
-    category: 'Security & K8s',
-    description: 'Enforce security policies and best practices inside an Amazon EKS cluster using Kyverno admission controls.',
-    readTime: '12 min read',
-    steps: [
-      'Install Kyverno on your Kubernetes cluster using Helm charts.',
-      'Write custom ClusterPolicies to disallow running root containers.',
-      'Enforce mandatory resource limits and labels on all Namespaces.',
-      'Test policies by deploying dry-run sample pods.',
-      'Monitor policy violation reports via Kubernetes dashboard.'
-    ],
-  },
+const topics: Topic[] = [
+  { id: 'linux', name: 'Linux', description: 'Commands, file permissions, and system administration.' },
+  { id: 'git', name: 'Git & GitHub', description: 'Version control, branching, merging, and collaboration.' },
+  { id: 'docker', name: 'Docker', description: 'Containerization, Dockerfiles, and image management.' },
+  { id: 'kubernetes', name: 'Kubernetes', description: 'Pods, deployments, services, and cluster orchestration.' },
+  { id: 'aws', name: 'AWS', description: 'EC2, S3, IAM, VPC, and cloud infrastructure.' },
+  { id: 'terraform', name: 'Terraform', description: 'Infrastructure as Code (IaC), state management, and providers.' },
+  { id: 'jenkins', name: 'Jenkins', description: 'CI/CD pipelines, automation servers, and plugins.' },
+  { id: 'argocd', name: 'ArgoCD', description: 'GitOps continuous delivery and synchronization.' },
+  { id: 'ansible', name: 'Ansible', description: 'Configuration management and automation playbooks.' },
+  { id: 'prometheus', name: 'Prometheus & Grafana', description: 'Monitoring, metrics, and observability dashboards.' },
+  { id: 'tomcat', name: 'Apache Tomcat', description: 'Java servlet containers and web application deployment.' },
+  { id: 'jira', name: 'Jira & Agile', description: 'Project tracking, scrum boards, and sprint planning.' },
 ];
 
-export default function TutorialsPage() {
+const sampleQuestions: Record<string, { question: string; options: string[]; answer: number }[]> = {
+  kubernetes: [
+    {
+      question: 'Which Kubernetes object is used to expose a deployment externally?',
+      options: ['Pod', 'Service', 'ConfigMap', 'Namespace'],
+      answer: 1,
+    },
+    {
+      question: 'What is the default command-line tool used to interact with a Kubernetes cluster?',
+      options: ['docker', 'kubectl', 'helm', 'k8s'],
+      answer: 1,
+    }
+  ],
+  terraform: [
+    {
+      question: 'What command is used to preview infrastructure changes in Terraform?',
+      options: ['terraform init', 'terraform apply', 'terraform plan', 'terraform destroy'],
+      answer: 2,
+    }
+  ],
+  docker: [
+    {
+      question: 'Which instruction in a Dockerfile sets the working directory?',
+      options: ['RUN', 'WORKDIR', 'ENV', 'CMD'],
+      answer: 1,
+    }
+  ]
+};
+
+export default function QuizPage() {
+  const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [currentQIndex, setCurrentQIndex] = useState(0);
+  const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
+  const [score, setScore] = useState(0);
+  const [isFinished, setIsFinished] = useState(false);
+
+  const questions = activeTopic ? sampleQuestions[activeTopic] || [
+    {
+      question: `Sample question for ${activeTopic.toUpperCase()}: What is the core best practice?`,
+      options: ['Automation & Security', 'Manual configuration', 'Ignoring logs', 'Hardcoding secrets'],
+      answer: 0
+    }
+  ] : [];
+
+  const handleSelectTopic = (id: string) => {
+    setActiveTopic(id);
+    setCurrentQIndex(0);
+    setSelectedOpt(null);
+    setScore(0);
+    setIsFinished(false);
+  };
+
+  const handleNext = () => {
+    if (selectedOpt === questions[currentQIndex].answer) {
+      setScore(score + 1);
+    }
+
+    const nextIdx = currentQIndex + 1;
+    if (nextIdx < questions.length) {
+      setCurrentQIndex(nextIdx);
+      setSelectedOpt(null);
+    } else {
+      setIsFinished(true);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#0b0f19] text-white p-6 md:p-10">
-      <div className="max-w-4xl mx-auto flex justify-between items-center mb-10 pb-4 border-b border-gray-800">
-        <div>
-          <h1 className="text-2xl font-bold tracking-wider text-cyan-400">Devmavox Labs</h1>
-          <p className="text-sm text-gray-400 mt-1">Real-World DevOps & Cloud Engineering Tutorials</p>
-        </div>
+    <div className="min-h-screen bg-[#0b0f19] text-white p-6 md:p-10 flex flex-col justify-between">
+      {/* Navbar */}
+      <div className="max-w-5xl mx-auto w-full flex justify-between items-center pb-4 border-b border-gray-800">
+        <h1 className="text-xl font-bold tracking-wider text-cyan-400">Devmavox</h1>
         <Link href="/" className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-200 px-4 py-2 rounded-xl transition border border-gray-700">
-          ← Back to Home
+          ← Main Menu
         </Link>
       </div>
 
-      <div className="max-w-4xl mx-auto space-y-6">
-        {tutorialsList.map((item) => (
-          <div key={item.id} className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-xl hover:border-cyan-500/50 transition">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3">
-              <span className="text-xs bg-cyan-950 text-cyan-400 px-3 py-1 rounded-md border border-cyan-800/50 font-medium">
-                {item.category}
-              </span>
-              <span className="text-xs text-gray-400">{item.readTime}</span>
+      <div className="max-w-5xl mx-auto w-full py-8 flex-grow">
+        {!activeTopic ? (
+          <div>
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-extrabold text-white mb-2">Quiz Practice</h2>
+              <p className="text-gray-400 text-sm">Choose a topic to start your DevOps practice.</p>
             </div>
 
-            <h2 className="text-xl font-semibold mb-2 text-white">{item.title}</h2>
-            <p className="text-gray-300 text-sm mb-4">{item.description}</p>
-
-            <div className="bg-gray-950/60 p-4 rounded-xl border border-gray-800">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-2">Implementation Steps:</h4>
-              <ul className="list-disc list-inside space-y-1.5 text-sm text-gray-300">
-                {item.steps.map((step, idx) => (
-                  <li key={idx} className="leading-relaxed">{step}</li>
-                ))}
-              </ul>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {topics.map((t) => (
+                <div
+                  key={t.id}
+                  onClick={() => handleSelectTopic(t.id)}
+                  className="bg-gray-900 border border-gray-800 hover:border-cyan-500/50 p-6 rounded-2xl shadow-xl transition cursor-pointer flex flex-col justify-between group hover:-translate-y-1"
+                >
+                  <div>
+                    <h3 className="text-lg font-bold text-white mb-1 group-hover:text-cyan-400 transition">{t.name}</h3>
+                    <p className="text-gray-400 text-xs">{t.description}</p>
+                  </div>
+                  <div className="mt-6 text-xs font-semibold text-cyan-400 flex items-center gap-1">
+                    Practice Quiz →
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        ))}
+        ) : (
+          <div className="max-w-xl mx-auto bg-gray-900 border border-gray-800 p-8 rounded-2xl shadow-xl">
+            <div className="flex justify-between items-center mb-6">
+              <button
+                onClick={() => setActiveTopic(null)}
+                className="text-xs text-cyan-400 hover:underline"
+              >
+                ← Back to Topics
+              </button>
+              <span className="text-xs text-gray-400">
+                Question {currentQIndex + 1} of {questions.length}
+              </span>
+            </div>
+
+            {isFinished ? (
+              <div className="text-center py-6">
+                <h3 className="text-2xl font-bold mb-3 text-cyan-400">Quiz Completed! 🎉</h3>
+                <p className="text-gray-300 mb-6">
+                  You scored <span className="text-cyan-400 font-bold text-lg">{score}</span> out of <span className="font-bold text-lg">{questions.length}</span>
+                </p>
+                <button
+                  onClick={() => setActiveTopic(null)}
+                  className="bg-cyan-500 hover:bg-cyan-400 text-gray-950 font-bold px-6 py-3 rounded-xl transition shadow-lg shadow-cyan-500/20"
+                >
+                  Choose Another Topic
+                </button>
+              </div>
+            ) : (
+              <div>
+                <h3 className="text-lg font-semibold mb-6 text-white">{questions[currentQIndex].question}</h3>
+
+                <div className="flex flex-col gap-3 mb-8">
+                  {questions[currentQIndex].options.map((opt, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedOpt(idx)}
+                      className={`w-full text-left p-4 rounded-xl border transition text-sm flex items-center justify-between ${
+                        selectedOpt === idx
+                          ? 'bg-cyan-950/80 border-cyan-500 text-cyan-300 shadow-md shadow-cyan-500/10'
+                          : 'bg-gray-800/40 border-gray-700/80 hover:bg-gray-800 text-gray-200'
+                      }`}
+                    >
+                      <span>{opt}</span>
+                      <span className={`w-4 h-4 rounded-full border flex items-center justify-center ${selectedOpt === idx ? 'border-cyan-400 bg-cyan-400/20' : 'border-gray-600'}`}>
+                        {selectedOpt === idx && <span className="w-2 h-2 rounded-full bg-cyan-400"></span>}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={handleNext}
+                  disabled={selectedOpt === null}
+                  className={`w-full py-3.5 rounded-xl font-bold text-sm transition ${
+                    selectedOpt === null
+                      ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                      : 'bg-cyan-500 hover:bg-cyan-400 text-gray-950 shadow-lg shadow-cyan-500/20'
+                  }`}
+                >
+                  {currentQIndex === questions.length - 1 ? 'Finish & See Score' : 'Next Question'}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="text-center text-xs text-gray-500 pt-4 border-t border-gray-800">
+        © 2026 Devmavox Platform.
       </div>
     </div>
   );
