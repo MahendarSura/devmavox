@@ -57,26 +57,26 @@ export default function Home() {
         <section className="max-w-7xl mx-auto px-6 py-20 text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 via-transparent to-transparent pointer-events-none blur-3xl"></div>
           <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
-            🚀 Android App Coming Soon!
+            🚀 Android App Coming Soon![cite: 1, 2]
           </div>
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 max-w-4xl mx-auto leading-tight">
             Learn DevOps in Telugu & English
           </h1>
           <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10">
-            Master AWS, Linux, Docker, Kubernetes, Jenkins, Terraform, Ansible, and more step-by-step. Practical labs and quizzes designed for beginners.
+            Master AWS, Linux, Docker, Kubernetes, Jenkins, Terraform, Ansible, and more step-by-step. Practical labs and courses designed for beginners.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
               href="#courses"
               className="px-8 py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold transition-all shadow-lg shadow-cyan-500/20"
             >
-              Explore Courses
+              Explore Courses[cite: 1, 2]
             </a>
             <Link
               href="/quiz"
               className="px-8 py-3.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-500 text-slate-100 font-bold transition-all shadow-lg text-center"
             >
-              Quiz Practice ➔
+              Quiz Practice ➔[cite: 1, 2]
             </Link>
           </div>
         </section>
@@ -84,8 +84,8 @@ export default function Home() {
         {/* Courses Section */}
         <section id="courses" className="max-w-7xl mx-auto px-6 py-16 border-t border-slate-900 scroll-mt-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-3">Core DevOps Courses & Tools</h2>
-            <p className="text-slate-400">From absolute zero to production-ready engineer. Click any course to start its quiz!</p>
+            <h2 className="text-3xl font-bold mb-3">Core DevOps Courses & Tools[cite: 1, 2]</h2>
+            <p className="text-slate-400">From absolute zero to production-ready engineer. Explore our video courses below!</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -101,16 +101,10 @@ export default function Home() {
                   <h3 className="text-xl font-bold mb-2 group-hover:text-cyan-400 transition-colors">
                     {course.title}
                   </h3>
-                  <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                  <p className="text-slate-400 text-sm leading-relaxed">
                     {course.desc}
                   </p>
                 </div>
-                <Link 
-                  href={`/quiz?topic=${encodeURIComponent(course.title)}`}
-                  className="text-cyan-400 text-sm font-semibold flex items-center space-x-1 group-hover:translate-x-1 transition-transform w-fit"
-                >
-                  <span>Practice Quiz &rarr;</span>
-                </Link>
               </div>
             ))}
           </div>
