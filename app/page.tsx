@@ -78,6 +78,12 @@ export default function Home() {
             >
               Quiz Practice ➔
             </Link>
+            <Link
+              href="/interview"
+              className="px-8 py-3.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-500 text-cyan-400 font-bold transition-all shadow-lg text-center hover:bg-slate-800"
+            >
+              Interview Q&A ➔
+            </Link>
           </div>
         </section>
 
