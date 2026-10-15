@@ -1,502 +1,502 @@
-export const gitQuestions = [
+export const dockerQuestions = [
   {
-    question: 'Which command is used to initialize a new Git repository?',
-    options: ['git init', 'git start', 'git new', 'git create'],
+    question: 'What is Docker primarily used for in software development and DevOps?',
+    options: ['Containerization and packaging applications with their dependencies', 'Code version control branching', 'Virtual machine hardware management', 'Cloud database administration'],
     answer: 0
   },
   {
-    question: 'How do you check the current status of your working tree and staging area?',
-    options: ['git status', 'git check', 'git state', 'git info'],
+    question: 'Which company develops and maintains Docker?',
+    options: ['Docker, Inc.', 'The Apache Foundation', 'Google Cloud', 'Red Hat'],
     answer: 0
   },
   {
-    question: 'Which command adds file changes to the staging area?',
-    options: ['git add', 'git stage', 'git commit', 'git push'],
+    question: 'What foundational Linux kernel features does Docker utilize to isolate container processes?',
+    options: ['Namespaces and Control Groups (cgroups)', 'Systemd and Cron', 'BIOS and UEFI', 'Iptables and Netfilter'],
     answer: 0
   },
   {
-    question: 'How do you record staged changes permanently into the repository history?',
-    options: ['git commit', 'git save', 'git record', 'git store'],
+    question: 'What text document contains the instructions and commands used to build a Docker image?',
+    options: ['Dockerfile', 'docker-compose.yml', 'container.config', 'buildspec.yml'],
     answer: 0
   },
   {
-    question: 'Which command clones an existing remote repository to your local machine?',
-    options: ['git clone', 'git copy', 'git download', 'git fetch'],
+    question: 'Which command builds a Docker image from a Dockerfile in the current directory?',
+    options: ['docker build -t my-image:tag .', 'docker create image', 'docker make', 'docker run --build'],
     answer: 0
   },
   {
-    question: 'How do you list all local branches in a repository?',
-    options: ['git branch', 'git list-branch', 'git show-branches', 'git branches'],
+    question: 'What command lists all currently running Docker containers?',
+    options: ['docker ps', 'docker list', 'docker status', 'docker containers active'],
     answer: 0
   },
   {
-    question: 'Which command switches to an existing branch or creates a new one (-b)?',
-    options: ['git checkout / git switch', 'git change', 'git move', 'git alt'],
+    question: 'Which command lists both running and stopped Docker containers?',
+    options: ['docker ps -a', 'docker list-all', 'docker show --all', 'docker containers --history'],
     answer: 0
   },
   {
-    question: 'How do you merge another branch into your currently active branch?',
-    options: ['git merge', 'git combine', 'git integrate', 'git join'],
+    question: 'How do you run a container from a Docker image in detached (background) mode and map port 80?',
+    options: ['docker run -d -p 80:80 image_name', 'docker start -bg -p 80', 'docker run --background --port 80', 'docker execute -d 80'],
     answer: 0
   },
   {
-    question: 'Which command fetches changes from a remote repository without merging them?',
-    options: ['git fetch', 'git pull', 'git download', 'git sync'],
+    question: 'What command stops a running container gracefully using its container ID or name?',
+    options: ['docker stop <container_id>', 'docker kill --slow <id>', 'docker halt <id>', 'docker pause <id>'],
     answer: 0
   },
   {
-    question: 'Which command fetches remote changes and immediately merges them into the current branch?',
-    options: ['git pull', 'git fetch', 'git update', 'git sync'],
+    question: 'Which command removes a stopped Docker container completely from disk?',
+    options: ['docker rm <container_id>', 'docker delete <id>', 'docker clean <id>', 'docker remove-container'],
     answer: 0
   },
   {
-    question: 'How do you push local commits to a remote repository server?',
-    options: ['git push', 'git upload', 'git send', 'git commit-remote'],
+    question: 'How do you remove an unused Docker image from your local system?',
+    options: ['docker rmi <image_id>', 'docker delete image', 'docker rm-image', 'docker clear <id>'],
     answer: 0
   },
   {
-    question: 'Which command displays the commit history logs chronologically?',
-    options: ['git log', 'git history', 'git commits', 'git trace'],
+    question: 'What tool is used for defining and running multi-container Docker applications using a single YAML file?',
+    options: ['Docker Compose', 'Docker Swarm Cluster', 'Docker Multi-Run', 'Docker Stack Manager'],
     answer: 0
   },
   {
-    question: 'How do you view line-by-line changes made to a file before staging?',
-    options: ['git diff', 'git compare', 'git changes', 'git inspect'],
+    question: 'What is the default filename expected by the Docker Compose command-line tool?',
+    options: ['docker-compose.yml (or docker-compose.yaml)', 'compose.config', 'stack.yaml', 'docker-app.json'],
     answer: 0
   },
   {
-    question: 'Which command temporarily shelves or saves uncommitted changes?',
-    options: ['git stash', 'git save', 'git store', 'git shelf'],
+    question: 'Which command starts all services defined in a docker-compose.yml file in detached mode?',
+    options: ['docker compose up -d', 'docker-compose start --all', 'docker run compose', 'docker-compose launch'],
     answer: 0
   },
   {
-    question: 'How do you reapply the most recently stashed changes back to your working directory?',
-    options: ['git stash pop', 'git stash apply', 'git stash restore', 'git stash open'],
+    question: 'How do you view real-time logs generated by a running container?',
+    options: ['docker logs -f <container_id>', 'docker stream <id>', 'docker output --live', 'docker tail -f'],
     answer: 0
   },
   {
-    question: 'Which command undoes commits by creating a brand new commit with inverse changes?',
-    options: ['git revert', 'git reset', 'git undo', 'git rollback'],
+    question: 'What command allows you to open an interactive terminal shell inside a running container?',
+    options: ['docker exec -it <container_id> /bin/bash (or sh)', 'docker shell <id>', 'docker attach --interactive', 'docker terminal open'],
     answer: 0
   },
   {
-    question: 'How do you reset the current HEAD to a specified previous commit state?',
-    options: ['git reset', 'git revert', 'git rollback', 'git back'],
+    question: 'What Docker feature allows data persistence and sharing between the host machine and containers?',
+    options: ['Docker Volumes and Bind Mounts', 'Container Storage Blocks', 'Data Layers', 'Image Caches'],
     answer: 0
   },
   {
-    question: 'Which command is used to rename or move a file in Git tracking?',
-    options: ['git mv', 'git rename', 'git move', 'git file-mv'],
+    question: 'Which instruction in a Dockerfile specifies the base image to build upon?',
+    options: ['FROM', 'BASE', 'IMAGE', 'PARENT'],
     answer: 0
   },
   {
-    question: 'How do you remove tracked files from the index and working directory?',
-    options: ['git rm', 'git delete', 'git remove', 'git clear'],
+    question: 'Which Dockerfile instruction copies local files and directories into the container filesystem?',
+    options: ['COPY (or ADD)', 'TRANSFER', 'MOVE', 'INSERT'],
     answer: 0
   },
   {
-    question: 'Which file specifies intentionally untracked files that Git should ignore?',
-    options: ['.gitignore', '.gitexclude', '.gitpass', '.ignore'],
+    question: 'What Dockerfile instruction defines the default executable command that runs when a container starts?',
+    options: ['CMD (or ENTRYPOINT)', 'RUN', 'START', 'EXECUTE'],
     answer: 0
   },
   {
-    question: 'Git Test Question 21: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 21', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 21: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 21', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 22: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 22', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 22: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 22', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 23: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 23', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 23: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 23', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 24: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 24', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 24: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 24', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 25: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 25', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 25: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 25', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 26: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 26', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 26: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 26', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 27: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 27', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 27: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 27', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 28: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 28', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 28: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 28', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 29: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 29', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 29: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 29', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 30: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 30', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 30: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 30', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 31: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 31', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 31: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 31', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 32: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 32', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 32: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 32', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 33: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 33', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 33: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 33', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 34: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 34', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 34: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 34', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 35: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 35', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 35: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 35', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 36: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 36', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 36: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 36', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 37: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 37', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 37: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 37', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 38: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 38', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 38: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 38', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 39: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 39', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 39: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 39', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 40: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 40', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 40: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 40', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 41: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 41', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 41: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 41', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 42: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 42', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 42: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 42', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 43: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 43', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 43: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 43', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 44: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 44', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 44: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 44', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 45: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 45', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 45: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 45', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 46: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 46', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 46: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 46', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 47: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 47', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 47: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 47', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 48: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 48', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 48: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 48', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 49: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 49', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 49: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 49', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 50: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 50', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 50: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 50', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 51: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 51', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 51: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 51', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 52: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 52', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 52: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 52', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 53: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 53', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 53: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 53', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 54: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 54', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 54: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 54', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 55: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 55', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 55: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 55', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 56: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 56', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 56: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 56', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 57: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 57', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 57: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 57', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 58: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 58', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 58: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 58', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 59: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 59', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 59: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 59', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 60: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 60', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 60: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 60', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 61: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 61', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 61: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 61', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 62: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 62', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 62: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 62', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 63: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 63', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 63: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 63', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 64: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 64', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 64: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 64', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 65: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 65', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 65: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 65', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 66: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 66', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 66: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 66', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 67: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 67', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 67: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 67', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 68: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 68', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 68: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 68', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 69: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 69', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 69: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 69', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 70: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 70', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 70: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 70', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 71: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 71', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 71: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 71', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 72: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 72', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 72: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 72', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 73: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 73', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 73: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 73', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 74: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 74', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 74: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 74', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 75: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 75', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 75: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 75', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 76: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 76', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 76: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 76', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 77: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 77', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 77: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 77', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 78: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 78', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 78: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 78', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 79: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 79', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 79: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 79', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 80: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 80', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 80: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 80', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 81: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 81', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 81: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 81', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 82: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 82', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 82: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 82', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 83: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 83', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 83: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 83', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 84: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 84', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 84: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 84', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 85: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 85', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 85: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 85', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 86: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 86', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 86: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 86', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 87: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 87', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 87: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 87', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 88: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 88', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 88: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 88', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 89: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 89', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 89: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 89', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 90: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 90', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 90: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 90', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 91: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 91', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 91: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 91', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 92: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 92', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 92: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 92', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 93: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 93', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 93: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 93', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 94: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 94', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 94: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 94', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 95: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 95', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 95: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 95', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 96: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 96', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 96: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 96', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 97: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 97', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 97: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 97', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 98: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 98', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 98: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 98', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 99: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 99', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 99: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 99', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   },
   {
-    question: 'Git Test Question 100: What is the core best practice or command configuration for enterprise Git workflows?',
-    options: ['Standard Git Correct Option 100', 'Alternative Choice A for Git', 'Alternative Choice B for Git', 'Alternative Choice C for Git'],
+    question: 'Docker Test Question 100: What is the core best practice or command configuration for enterprise Docker workflows?',
+    options: ['Standard Docker Correct Option 100', 'Alternative Choice A for Docker', 'Alternative Choice B for Docker', 'Alternative Choice C for Docker'],
     answer: 0
   }
 ];
