@@ -1,1 +1,20 @@
-export const awsQuestions = ["PDF Content from AWS API Gateway short answers.pdf","PDF Content from AWS Application Downtime Troubleshooting.pdf","PDF Content from AWS Architecture & Scenario-Based —Answers.pdf","PDF Content from AWS Backup short wise ans.pdf","PDF Content from AWS Billing services.pdf","PDF Content from AWS Certificate Manager answers.pdf","PDF Content from AWS CloudFormation answers.pdf","PDF Content from AWS CloudTrail short answers.pdf","PDF Content from AWS CodeBuild - CodeDeploy -CodePipeline — Answers.pdf","PDF Content from AWS DMS answers.pdf","PDF Content from Aws EC2 short wise.pdf","PDF Content from AWS ECR short wise answers.pdf","PDF Content from AWS ECS short wise.pdf","PDF Content from AWS EventBridge answers.pdf","PDF Content from AWS High Availability answers.pdf","PDF Content from AWS IAM short answers.pdf","PDF Content from AWS KMS short answers.pdf","PDF Content from AWS Lambda short answers.pdf","PDF Content from AWS Networking — Route Table short answers.pdf","PDF Content from AWS Organizations.pdf","PDF Content from AWS Secrets Manager short answers.pdf","PDF Content from AWS Shield ansers.pdf","PDF Content from AWS SNS short wise answers.pdf","PDF Content from AWS SQS short answers.pdf","PDF Content from AWS Step Functions answers.pdf","PDF Content from AWS Systems Manager short ansers.pdf","PDF Content from AWS Transit Gateway answers.pdf","PDF Content from AWS Troubleshooting — Top  Interview Questions & Answers.pdf","PDF Content from AWS WAF  answers.pdf","PDF Content from AWS Well-Architected Framework answers.pdf"];
+export const awsQuestions = [
+  {
+    id: "aws-1",
+    question: "What is ",
+    answer: "aws is used in DevOps workflows to support software development, delivery, or operations.",
+    difficulty: "Basic"
+  },
+  {
+    id: "aws-2",
+    question: "How is aws used in DevOps?",
+    answer: "aws helps teams manage parts of the software lifecycle. Its exact role depends on the project and configuration.",
+    difficulty: "Intermediate"
+  },
+  {
+    id: "aws-3",
+    question: "How do you troubleshoot ",
+    answer: "Check configuration, service status, logs, permissions, connectivity, resource usage, and recent changes.",
+    difficulty: "Intermediate"
+  }
+];
