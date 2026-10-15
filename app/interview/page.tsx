@@ -1,17 +1,9 @@
+interview/page.tsx 
+
 'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-
-import { generalQuestions } from '@/app/interview/generalInterviewData/general'; 
-import { realtimeQuestions } from '@/app/interview/Realtime Interview Q&A/realtime';
-import { shortQuestions } from '@/app/interview/shortInterviewData/short';
-import { troubleshootingQuestions } from '@/app/interview/Troubleshooting Interview Q&A/troubleshooting';
-import { basicQuestions } from '@/app/interview/basic level Interview Q&A/basics';
-import { awsQuestions } from '@/app/interview/Aws Interview Q&A/aws';
-import { projectsQuestions } from '@/app/interview/Projects Interview Q&A/projects';
-import { realtimeTeluguQuestions } from '@/app/interview/Realtime telugu Interview Q&A/telugu';
-import { devopsWorkflowQuestions } from '@/app/interview/Devops workflow Interview Q&A/workflow';
 
 export default function InterviewHubPage() {
   const [activeTab, setActiveTab] = useState('general');
@@ -22,31 +14,15 @@ export default function InterviewHubPage() {
     { id: 'short', title: 'Interview Short Answers' },
     { id: 'troubleshooting', title: 'Troubleshooting Interview Q&A' },
     { id: 'basic-level', title: 'Basic-level Q&A' },
-    { id: 'aws-interview', title: 'Aws Interview Q&A' },
+    { id: 'aws-interview', title: 'Aws-interview Interview Q&A' },
     { id: 'projects', title: 'Projects Interview Q&A' },
     { id: 'realtime-telugu', title: 'Realtime telugu Interview Q&A' },
     { id: 'devops-workflow', title: 'Devops workflow Interview Q&A' },
   ];
 
-  const getActiveData = () => {
-    switch (activeTab) {
-      case 'general': return generalQuestions;
-      case 'realtime': return realtimeQuestions;
-      case 'short': return shortQuestions;
-      case 'troubleshooting': return troubleshootingQuestions;
-      case 'basic-level': return basicQuestions;
-      case 'aws-interview': return awsQuestions;
-      case 'projects': return projectsQuestions;
-      case 'realtime-telugu': return realtimeTeluguQuestions;
-      case 'devops-workflow': return devopsWorkflowQuestions;
-      default: return [];
-    }
-  };
-
-  const currentData = getActiveData();
-
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-slate-950">
+      {/* Navbar */}
       <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-3">
@@ -69,6 +45,7 @@ export default function InterviewHubPage() {
           <p className="text-slate-400">Select any category below to start your preparation.</p>
         </div>
 
+        {/* Main Options Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-12">
           {options.map((opt) => (
             <button
@@ -85,32 +62,18 @@ export default function InterviewHubPage() {
           ))}
         </div>
 
+        {/* Active Content Display */}
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 shadow-2xl">
-          <h2 className="text-2xl font-bold text-cyan-400 mb-6">
+          <h2 className="text-2xl font-bold text-cyan-400 mb-4">
             {options.find(o => o.id === activeTab)?.title}
           </h2>
-          
-          <div className="space-y-6">
-            {currentData && currentData.length > 0 ? (
-              currentData.map((item: any, index: number) => (
-                <div key={index} className="border-b border-slate-800 pb-4 last:border-none">
-                  <h3 className="text-lg font-semibold text-slate-200 mb-2">
-                    {index + 1}. {item.question || item.q || item.title}
-                  </h3>
-                  <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-line">
-                    {item.answer || item.a || item.description}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p className="text-slate-400 text-sm leading-relaxed">
-                Here you will find all the structured questions and answers related to <span className="text-slate-200 font-semibold">{options.find(o => o.id === activeTab)?.title}</span> across core DevOps tools.
-              </p>
-            )}
-          </div>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            Here you will find all the structured questions and answers related to <span className="text-slate-200 font-semibold">{options.find(o => o.id === activeTab)?.title}</span> across core DevOps tools.
+          </p>
         </div>
       </main>
 
+      {/* Footer */}
       <footer className="border-t border-slate-900 py-8 text-center text-slate-500 text-sm mt-20">
         <p>© 2026 Devmavox. Built with passion for learners.</p>
       </footer>
