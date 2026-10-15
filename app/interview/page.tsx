@@ -4,14 +4,14 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 
 import { generalQuestions } from '@/app/interview/generalInterviewData/general'; 
-import { realtimeQuestions } from '@/app/interview/Realtime Interview Q&A/realtime';
+import { realtimeQuestions } from '@/app/interview/realtime/realtime';
 import { shortQuestions } from '@/app/interview/shortInterviewData/short';
-import { troubleshootingQuestions } from '@/app/interview/Troubleshooting Interview Q&A/troubleshooting';
-import { basicQuestions } from '@/app/interview/Basic-level Q&A/basics';
-import { awsQuestions } from '@/app/interview/Aws Interview Q&A/aws';
-import { projectsQuestions } from '@/app/interview/Projects Interview Q&A/projects';
-import { realtimeTeluguQuestions } from '@/app/interview/Realtime telugu Interview Q&A/telugu';
-import { devopsWorkflowQuestions } from '@/app/interview/Devops workflow Interview Q&A/workflow';
+import { troubleshootingQuestions } from '@/app/interview/troubleshooting/troubleshooting';
+import { basicQuestions } from '@/app/interview/basic-level/basics';
+import { awsQuestions } from '@/app/interview/aws-interview/aws';
+import { projectsQuestions } from '@/app/interview/projects/projects';
+import { realtimeTeluguQuestions } from '@/app/interview/realtime-telugu/telugu';
+import { devopsWorkflowQuestions } from '@/app/interview/devops-workflow/workflow';
 
 export default function InterviewHubPage() {
   const [activeTab, setActiveTab] = useState('general');
