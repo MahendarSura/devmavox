@@ -10,13 +10,12 @@ export default function InterviewHubPage() {
     { id: 'general', title: 'Interview Q&A' },
     { id: 'realtime', title: 'Realtime Interview Q&A' },
     { id: 'short', title: 'Interview Short Answers' },
-    { id: 'troubleshooting', title: 'Troubleshooting Interview Q&A' },
-    // Newly added options
-    { id: 'basic-level', title: 'basiclevelInterviewData' },
-    { id: 'aws-interview', title: 'awsInterviewData' },
-    { id: 'projects', title: 'projects' },
-    { id: 'realtime-telugu', title: 'realtime telugu' },
-    { id: 'devops-workflow', title: 'Devops workflow' },
+    { id: 'troubleshooting', title: 'Basic-level Q&A' },
+    { id: 'troubleshooting', title: 'Aws-interview Interview Q&A' },
+     { id: 'troubleshooting', title: 'Projects Interview Q&A' },
+     { id: 'troubleshooting', title: 'Realtime telugu Interview Q&A' },
+     { id: 'troubleshooting', title: 'Troubleshooting Interview Q&A' },
+     { id: 'troubleshooting', title: 'Devops workflow Interview Q&A' },
   ];
 
   return (
@@ -44,7 +43,7 @@ export default function InterviewHubPage() {
           <p className="text-slate-400">Select any category below to start your preparation.</p>
         </div>
 
-        {/* Main Options Grid */}
+        {/* 4 Main Options Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-12">
           {options.map((opt) => (
             <button
