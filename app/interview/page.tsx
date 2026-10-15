@@ -7,7 +7,7 @@ import { generalQuestions } from '@/app/interview/generalInterviewData/general';
 import { realtimeQuestions } from '@/app/interview/Realtime Interview Q&A/realtime';
 import { shortQuestions } from '@/app/interview/shortInterviewData/short';
 import { troubleshootingQuestions } from '@/app/interview/Troubleshooting Interview Q&A/troubleshooting';
-import { basicQuestions } from '@/app/interview/Basic-level Q&A/basics';
+import { basicQuestions } from '@/app/interview/basic level Interview Q&A/basics';
 import { awsQuestions } from '@/app/interview/Aws Interview Q&A/aws';
 import { projectsQuestions } from '@/app/interview/Projects Interview Q&A/projects';
 import { realtimeTeluguQuestions } from '@/app/interview/Realtime telugu Interview Q&A/telugu';
