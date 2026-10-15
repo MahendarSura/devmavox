@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
+import { awsQuestions } from '@/app/interview/Aws Interview Q&A/aws';
+
 import { generalQuestions } from '@/app/interview/generalInterviewData/general'; 
 import { realtimeQuestions } from '@/app/interview/Realtime Interview Q&A/realtime';
 import { shortQuestions } from '@/app/interview/shortInterviewData/short';
