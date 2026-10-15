@@ -3,14 +3,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
-// ఆయా .ts ఫైల్స్ నుండి డేటాని ఇక్కడ ఇంపోర్ట్ చేసుకుంటున్నాం bayya
-// (ఒకవేళ మీ ప్రాజెక్ట్ ఫోల్డర్ స్ట్రక్చర్ బట్టి పాత్స్ కొద్దిగా మారితే సరిచూసుకో)
 import { generalQuestions } from '@/app/interview/generalInterviewData/general'; 
 import { realtimeQuestions } from '@/app/interview/Realtime Interview Q&A/realtime';
 import { shortQuestions } from '@/app/interview/shortInterviewData/short';
 import { troubleshootingQuestions } from '@/app/interview/Troubleshooting Interview Q&A/troubleshooting';
 import { basicQuestions } from '@/app/interview/Basic-level Q&A/basics';
-import { awsQuestions } from '@/app/interview/Aws Interview Q&A/aws';
+import { awsQuestions } from '@/app/interview/Aws Interview Q&A/Aws';
 import { projectsQuestions } from '@/app/interview/Projects Interview Q&A/projects';
 import { realtimeTeluguQuestions } from '@/app/interview/Realtime telugu Interview Q&A/telugu';
 import { devopsWorkflowQuestions } from '@/app/interview/Devops workflow Interview Q&A/workflow';
@@ -30,7 +28,6 @@ export default function InterviewHubPage() {
     { id: 'devops-workflow', title: 'Devops workflow Interview Q&A' },
   ];
 
-  // ఏ ట్యాబ్ సెలెక్ట్ అయితే ఆ డేటాని ఇక్కడ మ్యాప్ చేస్తున్నాం bayya
   const getActiveData = () => {
     switch (activeTab) {
       case 'general': return generalQuestions;
