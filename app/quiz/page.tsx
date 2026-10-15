@@ -14,8 +14,15 @@ import { jenkinsQuestions } from './jenkinsQuestions';
 import { argocdQuestions } from './argocdQuestions';
 import { ansibleQuestions } from './ansibleQuestions';
 import { prometheusQuestions } from './prometheusQuestions';
+import { grafanaQuestions } from './grafanaQuestions';
 import { tomcatQuestions } from './tomcatQuestions';
 import { jiraQuestions } from './jiraQuestions';
+import { githubActionsQuestions } from './githubActionsQuestions';
+import { nexusQuestions } from './nexusQuestions';
+import { helmQuestions } from './helmQuestions';
+import { eksQuestions } from './eksQuestions';
+import { mavenQuestions } from './mavenQuestions';
+import { sonarqubeQuestions } from './sonarqubeQuestions';
 
 interface Topic {
   id: string;
@@ -26,31 +33,45 @@ interface Topic {
 const topics: Topic[] = [
   { id: 'linux', name: 'Linux', description: 'Commands, file permissions, and system administration.' },
   { id: 'git', name: 'Git & GitHub', description: 'Version control, branching, merging, and collaboration.' },
+  { id: 'github-actions', name: 'GitHub Actions', description: 'CI/CD workflows and task automation directly in GitHub.' },
   { id: 'docker', name: 'Docker', description: 'Containerization, Dockerfiles, and image management.' },
   { id: 'kubernetes', name: 'Kubernetes', description: 'Pods, deployments, services, and cluster orchestration.' },
+  { id: 'eks', name: 'Amazon EKS', description: 'Managed Kubernetes clusters on AWS control plane.' },
   { id: 'aws', name: 'AWS', description: 'EC2, S3, IAM, VPC, and cloud infrastructure.' },
   { id: 'terraform', name: 'Terraform', description: 'Infrastructure as Code (IaC), state management, and providers.' },
   { id: 'jenkins', name: 'Jenkins', description: 'CI/CD pipelines, automation servers, and plugins.' },
   { id: 'argocd', name: 'ArgoCD', description: 'GitOps continuous delivery and synchronization.' },
   { id: 'ansible', name: 'Ansible', description: 'Configuration management and automation playbooks.' },
-  { id: 'prometheus', name: 'Prometheus & Grafana', description: 'Monitoring, metrics, and observability dashboards.' },
+  { id: 'prometheus', name: 'Prometheus', description: 'Monitoring, metrics, and time-series alerting.' },
+  { id: 'grafana', name: 'Grafana', description: 'Data visualization, metrics analytics, and monitoring dashboards.' },
   { id: 'tomcat', name: 'Apache Tomcat', description: 'Java servlet containers and web application deployment.' },
   { id: 'jira', name: 'Jira & Agile', description: 'Project tracking, scrum boards, and sprint planning.' },
+  { id: 'nexus', name: 'Sonatype Nexus', description: 'Artifact repository manager for builds, packages, and dependencies.' },
+  { id: 'helm', name: 'Helm', description: 'Kubernetes package manager and chart templating.' },
+  { id: 'maven', name: 'Apache Maven', description: 'Java build automation and dependency management.' },
+  { id: 'sonarqube', name: 'SonarQube', description: 'Continuous inspection of code quality and security analysis.' },
 ];
 
 const topicQuestions: Record<string, { question: string; options: string[]; answer: number }[]> = {
   linux: linuxQuestions,
   git: gitQuestions,
+  'github-actions': githubActionsQuestions,
   docker: dockerQuestions,
   kubernetes: kubernetesQuestions,
+  eks: eksQuestions,
   aws: awsQuestions,
   terraform: terraformQuestions,
   jenkins: jenkinsQuestions,
   argocd: argocdQuestions,
   ansible: ansibleQuestions,
   prometheus: prometheusQuestions,
+  grafana: grafanaQuestions,
   tomcat: tomcatQuestions,
   jira: jiraQuestions,
+  nexus: nexusQuestions,
+  helm: helmQuestions,
+  maven: mavenQuestions,
+  sonarqube: sonarqubeQuestions,
 };
 
 export default function QuizPage() {
