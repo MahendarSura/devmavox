@@ -1,1 +1,6 @@
-import { awsQuestions } from '@/app/interview/Aws Interview Q&A/aws';
+export const awsQuestions = [
+  {
+    question: "What is AWS?",
+    answer: "AWS is a cloud computing platform.",
+  },
+];
