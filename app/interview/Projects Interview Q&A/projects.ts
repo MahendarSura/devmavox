@@ -7,4 +7,4 @@ export const projectsQuestions = [
     question: "Explain your EKS Microservices platform setup.",
     answer: "We constructed a microservices application platform on Amazon EKS integrating Terraform, Helm, Docker, GitHub Actions CI/CD workflows, and ArgoCD for GitOps delivery."
   }
-];Projects Interview Q&A
+];
