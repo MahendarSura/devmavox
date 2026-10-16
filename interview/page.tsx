@@ -3,12 +3,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
-import { generalQuestions } from '@/app/interview/generalInterviewData/general'; 
+import { generalQuestions } from '@/app/interview/generalInterviewData/general';
 import { realtimeQuestions } from '@/app/interview/Realtime Interview Q&A/realtime';
 import { shortQuestions } from '@/app/interview/Interview Short Answers/short';
 import { troubleshootingQuestions } from '@/app/interview/Troubleshooting Interview Q&A/troubleshooting';
 import { basicQuestions } from '@/app/interview/basic level Interview Q&A/basics';
-import { awsQuestions } from '@/app/interview/aws interview Q&A/aws';
+import { awsQuestions } from '@/app/interview/aws Interview Q&A/aws';
 import { projectsQuestions } from '@/app/interview/Projects Interview Q&A/projects';
 import { realtimeTeluguQuestions } from '@/app/interview/Realtime telugu Interview Q&A/telugu';
 import { devopsWorkflowQuestions } from '@/app/interview/Devops workflow Interview Q&A/workflow';
@@ -28,7 +28,7 @@ export default function InterviewHubPage() {
     { id: 'devops-workflow', title: 'Devops workflow Interview Q&A', data: devopsWorkflowQuestions },
   ];
 
-  const currentOption = options.find(o => o.id === activeTab);
+  const currentOption = options.find((o) => o.id === activeTab);
   const currentData = currentOption ? currentOption.data : [];
 
   return (
@@ -51,8 +51,12 @@ export default function InterviewHubPage() {
 
       <main className="max-w-4xl mx-auto px-6 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-4">DevOps Interview Hub</h1>
-          <p className="text-slate-400">Select any category below to start your preparation.</p>
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-4">
+            DevOps Interview Hub
+          </h1>
+          <p className="text-slate-400">
+            Select any category below to start your preparation.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-12">
@@ -75,11 +79,14 @@ export default function InterviewHubPage() {
           <h2 className="text-2xl font-bold text-cyan-400 mb-6">
             {currentOption?.title}
           </h2>
-          
+
           <div className="space-y-6">
             {currentData && currentData.length > 0 ? (
               currentData.map((item: any, index: number) => (
-                <div key={index} className="border-b border-slate-800 pb-4 last:border-none">
+                <div
+                  key={index}
+                  className="border-b border-slate-800 pb-4 last:border-none"
+                >
                   <h3 className="text-lg font-semibold text-slate-200 mb-2">
                     {index + 1}. {item.question || item.q || item.title}
                   </h3>
