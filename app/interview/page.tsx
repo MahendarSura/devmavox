@@ -6,11 +6,11 @@ import Link from 'next/link';
 import { generalQuestions } from '@/app/interview/generalInterviewData/general'; 
 import { realtimeQuestions } from '@/app/interview/realtimeInterviewData/realtime';
 import { shortQuestions } from '@/app/interview/shortInterviewData/short';
-import { troubleshootingQuestions } from '@/app/interview/troubleshootingInterviewData/troubleshooting';
-import { basicQuestions } from '@/app/interview/basiclevelInterviewData/basics';
+import { troubleshootingQuestions } from '@/app/interview/troubleshooting/troubleshoot';
+import { basicQuestions } from '@/app/interview/basic-level/basics';
 import { awsQuestions } from '@/app/interview/aws-interview/aws';
 import { projectsQuestions } from '@/app/interview/projects/projects';
-import { realtimeTeluguQuestions } from '@/app/interview/realtime telugu/telugu';
+import { realtimeTeluguQuestions } from '@/app/interview/realtime-telugu/telugu';
 import { devopsWorkflowQuestions } from '@/app/interview/devops-workflow/workflow';
 
 export default function InterviewHubPage() {
