@@ -10,7 +10,7 @@ import { troubleshootingQuestions } from '@/app/interview/troubleshooting/troubl
 import { basicQuestions } from '@/app/interview/basic level Interview Q&A/basics';
 import { projectsQuestions } from '@/app/interview/projects/projects';
 import { realtimeTeluguQuestions } from '@/app/interview/realtime-telugu/telugu';
-import { devopsWorkflowQuestions } from '@/app/interview/Devops workflow Interview Q&A/workflow';
+import { devopsWorkflowQuestions } from '@/app/interview/Devops workflow Interview Q&A/devops workflow';
 
 export default function InterviewHubPage() {
   const [activeTab, setActiveTab] = useState('general');
