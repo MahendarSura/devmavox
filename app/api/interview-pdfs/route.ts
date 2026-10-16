@@ -12,11 +12,19 @@ type PdfFile = {
   folder: string;
 };
 
+type InterviewCategory = {
+  name: string;
+  files: PdfFile[];
+};
+
 async function scanDirectory(
   directory: string,
   relative = ''
 ): Promise<PdfFile[]> {
-  const entries = await readdir(directory, { withFileTypes: true });
+  const entries = await readdir(directory, {
+    withFileTypes: true,
+  });
+
   const files: PdfFile[] = [];
 
   for (const entry of entries) {
@@ -27,7 +35,9 @@ async function scanDirectory(
     const fullPath = path.join(directory, entry.name);
 
     if (entry.isDirectory()) {
-      files.push(...await scanDirectory(fullPath, relativePath));
+      files.push(
+        ...(await scanDirectory(fullPath, relativePath))
+      );
     } else if (
       entry.isFile() &&
       entry.name.toLowerCase().endsWith('.pdf')
@@ -48,7 +58,12 @@ async function scanDirectory(
 
 export async function GET() {
   try {
-    const root = path.join(process.cwd(), 'public', 'interview');
+    const root = path.join(
+      process.cwd(),
+      'public',
+      'interview'
+    );
+
     const allFiles = await scanDirectory(root);
     const grouped = new Map<string, PdfFile[]>();
 
@@ -62,9 +77,12 @@ export async function GET() {
       grouped.get(category)!.push(file);
     }
 
-    return NextResponse.json(
-      Array.from(grouped, ([name, files]) => ({ name, files }))
+    const categories: InterviewCategory[] = Array.from(
+      grouped,
+      ([name, files]) => ({ name, files })
     );
+
+    return NextResponse.json(categories);
   } catch (error) {
     console.error('Interview PDF API error:', error);
 
