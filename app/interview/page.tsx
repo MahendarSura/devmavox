@@ -19,7 +19,7 @@ export default function InterviewHubPage() {
   const options = [
     {
       id: 'general',
-      title: 'Interview Q&A',
+      title: 'generalInterviewData',
       data: generalQuestions,
     },
     {
@@ -39,12 +39,12 @@ export default function InterviewHubPage() {
     },
     {
       id: 'basic-level',
-      title: 'Basic-level Q&A',
+      title: 'basic level Interview Q&A',
       data: basicQuestions,
     },
     {
       id: 'aws-interview',
-      title: 'AWS Interview Q&A',
+      title: 'aws interview Q&A',
       data: awsQuestions,
     },
     {
@@ -54,12 +54,12 @@ export default function InterviewHubPage() {
     },
     {
       id: 'realtime-telugu',
-      title: 'Realtime Telugu Interview Q&A',
+      title: 'Realtime telugu Interview Q&A',
       data: realtimeTeluguQuestions,
     },
     {
       id: 'devops-workflow',
-      title: 'DevOps Workflow Interview Q&A',
+      title: 'Devops workflow Interview Q&A',
       data: devopsWorkflowQuestions,
     },
   ];
