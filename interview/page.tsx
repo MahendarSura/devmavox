@@ -11,7 +11,7 @@ import { basicQuestions } from '@/app/interview/basiclevel/basics';
 import { awsQuestions } from '@/app/interview/aws Interview Q&A/aws';
 import { projectsQuestions } from '@/app/interview/Projects Interview Q&A/projects';
 import { realtimeTeluguQuestions } from '@/app/interview/Realtime telugu Interview Q&A/telugu';
-import { devopsWorkflowQuestions } from '@/app/interview/devops-workflow/workflow';
+import { devopsWorkflowQuestions } from '@/app/interview/Devops workflow Interview Q&A/workflow';
 
 export default function InterviewHubPage() {
   const [activeTab, setActiveTab] = useState('general');
