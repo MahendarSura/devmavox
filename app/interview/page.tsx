@@ -24,20 +24,25 @@ export default function InterviewHubPage() {
     async function loadPdfs() {
       try {
         const response = await fetch('/api/interview-pdfs');
+
         if (!response.ok) {
           throw new Error('Failed to load PDFs');
         }
+
         const data: InterviewCategory[] = await response.json();
+
         setCategories(data);
+
         if (data.length > 0) {
           setActiveCategory(data[0].name);
         }
       } catch {
-        setError('PDFs load α░òα░╛α░▓α▒çα░ªα▒ü. Please try again.');
+        setError('PDFs load avvaledu. Please try again.');
       } finally {
         setLoading(false);
       }
     }
+
     loadPdfs();
   }, []);
 
@@ -49,9 +54,13 @@ export default function InterviewHubPage() {
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <header className="border-b border-slate-800 bg-slate-900 p-5">
         <div className="mx-auto flex max-w-6xl justify-between">
-          <Link href="/" className="text-2xl font-black text-cyan-400">
+          <Link
+            href="/"
+            className="text-2xl font-black text-cyan-400"
+          >
             Devmavox
           </Link>
+
           <Link href="/" className="text-cyan-400">
             ← Main Menu
           </Link>
@@ -62,6 +71,7 @@ export default function InterviewHubPage() {
         <h1 className="mb-3 text-center text-4xl font-bold">
           Interview PDF Hub
         </h1>
+
         <p className="mb-10 text-center text-slate-400">
           Browse your interview preparation PDFs by category.
         </p>
@@ -87,7 +97,10 @@ export default function InterviewHubPage() {
                       : 'border-slate-800 bg-slate-900'
                   }`}
                 >
-                  <span className="font-bold">{category.name}</span>
+                  <span className="font-bold">
+                    {category.name}
+                  </span>
+
                   <span className="mt-2 block text-sm text-slate-400">
                     {category.files.length} PDF files
                   </span>
@@ -100,16 +113,23 @@ export default function InterviewHubPage() {
                 <h2 className="mb-5 text-2xl font-bold text-cyan-400">
                   {currentCategory.name}
                 </h2>
+
                 <ul className="space-y-3">
                   {currentCategory.files.map((file) => (
-                    <li key={file.url} className="rounded-lg border border-slate-800 p-4">
+                    <li
+                      key={file.url}
+                      className="rounded-lg border border-slate-800 p-4"
+                    >
                       <a
                         href={file.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="break-words text-cyan-300 hover:underline"
                       >
-                        ≡ƒôä {file.name}
+                        <span className="mr-2 inline-block rounded bg-cyan-500/10 px-2 py-1 text-xs font-bold text-cyan-300">
+                          PDF
+                        </span>
+                        {file.name}
                       </a>
                     </li>
                   ))}
@@ -122,4 +142,3 @@ export default function InterviewHubPage() {
     </div>
   );
 }
-
