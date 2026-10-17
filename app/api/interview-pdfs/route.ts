@@ -16,26 +16,49 @@ type InterviewCategory = {
   files: PdfFile[];
 };
 
-const INTERVIEW_DIR = path.join(process.cwd(), 'public', 'interview');
+const INTERVIEW_DIR = path.join(
+  process.cwd(),
+  'public',
+  'interview'
+);
 
 async function findPdfs(
   directory: string,
   relativeDirectory = ''
 ): Promise<PdfFile[]> {
-  const entries = await readdir(directory, { withFileTypes: true });
+  const entries = await readdir(directory, {
+    withFileTypes: true,
+  });
+
   const files: PdfFile[] = [];
 
   for (const entry of entries) {
     const absolutePath = path.join(directory, entry.name);
-    const relativePath = path.join(relativeDirectory, entry.name);
+    const relativePath = path.join(
+      relativeDirectory,
+      entry.name
+    );
 
     if (entry.isDirectory()) {
-      files.push(...await findPdfs(absolutePath, relativePath));
-    } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.pdf')) {
-      const normalizedPath = relativePath.split(path.sep).join('/');
+      files.push(
+        ...(await findPdfs(absolutePath, relativePath))
+      );
+    } else if (
+      entry.isFile() &&
+      entry.name.toLowerCase().endsWith('.pdf')
+    ) {
+      const normalizedPath = relativePath
+        .split(path.sep)
+        .join('/');
+
+      const encodedPath = normalizedPath
+        .split('/')
+        .map((segment) => encodeURIComponent(segment))
+        .join('/');
+
       files.push({
         name: entry.name,
-        url: `/interview/${normalizedPath.split('/').map(encodeURIComponent).join('/')}`,
+        url: `/interview/${encodedPath}`,
         folder: relativeDirectory.split(path.sep)[0] || '',
       });
     }
@@ -46,18 +69,29 @@ async function findPdfs(
 
 export async function GET() {
   try {
-    const entries = await readdir(INTERVIEW_DIR, { withFileTypes: true });
+    const entries = await readdir(INTERVIEW_DIR, {
+      withFileTypes: true,
+    });
+
     const categories: InterviewCategory[] = [];
 
     for (const entry of entries) {
       if (!entry.isDirectory()) continue;
 
-      const files = await findPdfs(path.join(INTERVIEW_DIR, entry.name));
+      // Include the category name in the relative path.
+      const files = await findPdfs(
+        path.join(INTERVIEW_DIR, entry.name),
+        entry.name
+      );
+
       files.sort((a, b) => a.name.localeCompare(b.name));
 
       categories.push({
         name: entry.name,
-        files: files.map((file) => ({ ...file, folder: entry.name })),
+        files: files.map((file) => ({
+          ...file,
+          folder: entry.name,
+        })),
       });
     }
 
@@ -66,6 +100,7 @@ export async function GET() {
     return NextResponse.json(categories);
   } catch (error) {
     console.error('Failed to scan interview PDFs:', error);
+
     return NextResponse.json(
       { error: 'Failed to load interview PDFs.' },
       { status: 500 }
