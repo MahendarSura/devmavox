@@ -53,7 +53,7 @@ export default function InterviewHubPage() {
             Devmavox
           </Link>
           <Link href="/" className="text-cyan-400">
-            ΓåÉ Home
+            ← Main Menu
           </Link>
         </div>
       </header>
@@ -122,3 +122,4 @@ export default function InterviewHubPage() {
     </div>
   );
 }
+
