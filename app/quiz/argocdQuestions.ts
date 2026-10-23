@@ -1,3 +1,8 @@
+export interface AnsibleQuestion {
+  question: string;
+  options: string[];
+  answer: number;
+}
 export const argocdQuestions = [
   
   {
