@@ -1,10 +1,10 @@
-export interface AnsibleQuestion {
+export interface ansibleQuestion {
   question: string;
   options: string[];
   answer: number;
 }
 
-export const ansibleQuestions: AnsibleQuestion[] = [
+export const ansibleQuestions: ansibleQuestion[] = [
   {
     question: "What is Ansible primarily used for?",
     options: [
