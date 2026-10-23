@@ -23,15 +23,13 @@ import { helmQuestions } from './helmQuestions';
 import { eksQuestions } from './eksQuestions';
 import { mavenQuestions } from './mavenQuestions';
 import { sonarqubeQuestions } from './sonarqubeQuestions';
-
-// Importing the 14 new advanced question files
 import { kubernetesAdvancedQuestions } from './kubernetes-advanced';
 import { terraformIacAdvancedQuestions } from './terraform-iac-advanced';
 import { productionIncidentsSreQuestions } from './production-incidents-sre';
 import { ciCdPipelinesJenkinsQuestions } from './ci-cd-pipelines-jenkins';
 import { systemDesignDevOpsQuestions } from './system-design-devops';
 import { cloudCostOptimizationQuestions } from './cloud-cost-optimization';
-import { gitopsInterviewQA as gitopsQuestions } from './gitops';
+import { gitopsQuetions as gitopsQuestions } from './gitops';
 import { linuxTroubleshootingQuestions } from './linux-troubleshooting';
 import { devSecOpsQuestions } from './devsecops';
 import { observabilityLoggingQuestions } from './observability-logging';
