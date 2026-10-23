@@ -1,7 +1,8 @@
-export interface linuxQuestion {
+export interface LinuxQuestion {
   question: string;
   options: string[];
   answer: number;
+}
 
 export const linuxQuestions: LinuxQuestion[] = [
   {
