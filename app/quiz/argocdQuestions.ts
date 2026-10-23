@@ -1,4 +1,4 @@
-export interface AnsibleQuestion {
+export interface ArgocdQuestion {
   question: string;
   options: string[];
   answer: number;
