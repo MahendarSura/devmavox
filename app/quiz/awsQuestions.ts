@@ -5,523 +5,1004 @@ export interface AWSQuestion {
 }
 
 export const awsQuestions: AWSQuestion[] = [
-  // 1–10: AWS Fundamentals and Compute
   {
-    question: "Which AWS service provides resizable virtual servers?",
-    options: ["Amazon S3", "Amazon EC2", "AWS Lambda", "Amazon Route 53"],
-    answer: 1
-  },
-  {
-    question: "Which EC2 purchasing option is best for fault-tolerant workloads with flexible timing?",
-    options: ["On-Demand", "Dedicated Hosts", "Spot Instances", "Reserved Instances"],
-    answer: 2
-  },
-  {
-    question: "Which EC2 feature automatically replaces unhealthy instances to maintain capacity?",
-    options: ["Auto Scaling group", "Elastic IP", "Placement group", "AMI"],
+    question: "1. What is AWS primarily used for?",
+    options: [
+      "Cloud computing and infrastructure services",
+      "Frontend development only",
+      "Creating programming languages",
+      "Managing physical printers"
+    ],
     answer: 0
   },
   {
-    question: "What is an Amazon Machine Image (AMI) used for?",
-    options: ["Monitoring CPU metrics", "Managing DNS records", "Encrypting API requests", "Launching EC2 instances with a predefined configuration"],
+    question: "2. What does AWS stand for?",
+    options: [
+      "Advanced Web Software",
+      "Amazon Web Services",
+      "Automated Work System",
+      "Amazon Website Solutions"
+    ],
+    answer: 1
+  },
+  {
+    question: "3. What is an AWS Region?",
+    options: [
+      "A single EC2 instance",
+      "A user account",
+      "A separate geographic area containing multiple Availability Zones",
+      "A type of S3 bucket"
+    ],
+    answer: 2
+  },
+  {
+    question: "4. What is an Availability Zone in AWS?",
+    options: [
+      "An IAM policy",
+      "A billing dashboard",
+      "A DNS record",
+      "An isolated location within an AWS Region"
+    ],
     answer: 3
   },
   {
-    question: "Which AWS service runs code in response to events without requiring server management?",
-    options: ["Amazon EC2", "AWS Lambda", "AWS Direct Connect", "Amazon EBS"],
-    answer: 1
-  },
-  {
-    question: "Which AWS service provides managed container orchestration?",
-    options: ["Amazon EFS", "Amazon Athena", "Amazon ECS", "AWS Artifact"],
-    answer: 2
-  },
-  {
-    question: "Which option lets Amazon ECS run containers without managing the underlying servers?",
-    options: ["AWS Fargate", "Amazon EBS", "AWS CloudTrail", "Amazon Route 53"],
+    question: "5. Which AWS service provides virtual servers?",
+    options: [
+      "Amazon EC2",
+      "Amazon S3",
+      "Amazon Route 53",
+      "AWS CloudTrail"
+    ],
     answer: 0
   },
   {
-    question: "What is an Availability Zone?",
-    options: ["A global DNS service", "An AWS billing category", "A type of IAM policy", "An isolated location within an AWS Region"],
+    question: "6. What is Amazon S3 primarily used for?",
+    options: [
+      "Running virtual machines",
+      "Object storage",
+      "Managing user permissions only",
+      "Creating private networks"
+    ],
+    answer: 1
+  },
+  {
+    question: "7. Which AWS service manages identities and permissions?",
+    options: [
+      "Amazon EBS",
+      "Amazon CloudFront",
+      "AWS IAM",
+      "Amazon VPC"
+    ],
+    answer: 2
+  },
+  {
+    question: "8. What is an IAM policy?",
+    options: [
+      "A virtual server",
+      "A storage volume",
+      "A load balancer",
+      "A document defining permissions"
+    ],
     answer: 3
   },
   {
-    question: "What is the primary benefit of deploying an application across multiple Availability Zones?",
-    options: ["Automatic code compilation", "Improved availability and fault tolerance", "Unlimited database storage", "Elimination of all network latency"],
-    answer: 1
-  },
-  {
-    question: "Which AWS service provides a managed application platform for deploying web applications?",
-    options: ["AWS KMS", "Amazon Inspector", "AWS Elastic Beanstalk", "Amazon SQS"],
-    answer: 2
-  },
-
-  // 11–20: Storage and Backup
-  {
-    question: "Which AWS service provides scalable object storage?",
-    options: ["Amazon S3", "Amazon EBS", "Amazon EFS", "Amazon EC2"],
+    question: "9. Which AWS service provides a logically isolated virtual network?",
+    options: [
+      "Amazon VPC",
+      "Amazon S3",
+      "AWS Lambda",
+      "Amazon SNS"
+    ],
     answer: 0
   },
   {
-    question: "Which storage service provides persistent block storage for EC2 instances?",
-    options: ["Amazon S3 Glacier", "Amazon EBS", "Amazon SQS", "Amazon CloudFront"],
+    question: "10. What is the purpose of an EC2 key pair?",
+    options: [
+      "To increase instance storage",
+      "To support authentication, commonly SSH access to Linux instances",
+      "To create an S3 bucket",
+      "To configure CloudWatch alarms"
+    ],
     answer: 1
   },
   {
-    question: "Which AWS service provides a managed shared file system for Linux workloads?",
-    options: ["Amazon EBS", "Amazon S3", "Amazon EFS", "Amazon SQS"],
+    question: "11. What is an Amazon Machine Image (AMI)?",
+    options: [
+      "A VPC route table",
+      "An IAM user",
+      "A template used to launch EC2 instances",
+      "A DNS hosting zone"
+    ],
     answer: 2
   },
   {
-    question: "Which S3 storage class is designed for frequently accessed data?",
-    options: ["S3 Glacier Deep Archive", "S3 One Zone-IA", "S3 Glacier Flexible Retrieval", "S3 Standard"],
+    question: "12. Which AWS service provides block storage volumes for EC2?",
+    options: [
+      "Amazon S3",
+      "Amazon EFS",
+      "Amazon Glacier",
+      "Amazon EBS"
+    ],
     answer: 3
   },
   {
-    question: "Which S3 feature automatically moves objects between storage classes based on rules?",
-    options: ["S3 Lifecycle", "S3 Object Lock", "S3 Transfer Acceleration", "S3 Inventory"],
+    question: "13. What happens when an EC2 instance is stopped?",
+    options: [
+      "The instance is stopped, and instance-store data is lost; EBS data generally persists",
+      "All associated EBS volumes are always deleted",
+      "The instance is automatically terminated",
+      "The AMI is deleted"
+    ],
     answer: 0
   },
   {
-    question: "Which S3 feature helps protect objects from deletion or overwrite for a retention period?",
-    options: ["S3 Select", "S3 Object Lock", "S3 Transfer Acceleration", "S3 Event Notifications"],
+    question: "14. What is the difference between stopping and terminating an EC2 instance?",
+    options: [
+      "There is no difference",
+      "Stopping allows an instance to be started again; terminating permanently ends that instance",
+      "Terminating only restarts the instance",
+      "Stopping deletes the AWS account"
+    ],
     answer: 1
   },
   {
-    question: "What is the main purpose of S3 versioning?",
-    options: ["Assign public IP addresses", "Increase EC2 CPU capacity", "Keep multiple versions of an object", "Create VPC peering connections"],
+    question: "15. Which AWS service automatically adjusts EC2 capacity based on configured conditions?",
+    options: [
+      "AWS CloudTrail",
+      "Amazon Route 53",
+      "EC2 Auto Scaling",
+      "AWS Artifact"
+    ],
     answer: 2
   },
   {
-    question: "Which AWS service centrally manages backups across supported AWS resources?",
-    options: ["AWS CloudTrail", "Amazon Route 53", "AWS CodeBuild", "AWS Backup"],
+    question: "16. What is an Elastic Load Balancer used for?",
+    options: [
+      "Creating IAM users",
+      "Storing backups only",
+      "Compiling application code",
+      "Distributing incoming traffic across targets"
+    ],
     answer: 3
   },
   {
-    question: "What does an EBS snapshot primarily capture?",
-    options: ["A point-in-time backup of an EBS volume", "An IAM user's password", "A Route 53 hosted zone", "A live packet capture of a VPC"],
+    question: "17. Which AWS service is commonly used for managed relational databases?",
+    options: [
+      "Amazon RDS",
+      "Amazon S3",
+      "Amazon SQS",
+      "AWS IAM"
+    ],
     answer: 0
   },
   {
-    question: "Which storage service is designed for long-term archival with very low storage cost?",
-    options: ["Amazon EFS Standard", "Amazon S3 Glacier Deep Archive", "Amazon EBS Provisioned IOPS", "EC2 Instance Store"],
+    question: "18. Which AWS service runs code without requiring you to manage servers?",
+    options: [
+      "Amazon EC2",
+      "AWS Lambda",
+      "Amazon EBS",
+      "AWS Direct Connect"
+    ],
     answer: 1
   },
-
-  // 21–30: Networking and VPC
   {
-    question: "Which AWS service creates a logically isolated virtual network?",
-    options: ["AWS IAM", "Amazon S3", "Amazon VPC", "Amazon SQS"],
+    question: "19. Which AWS service provides monitoring metrics and alarms?",
+    options: [
+      "AWS IAM",
+      "Amazon Route 53",
+      "Amazon CloudWatch",
+      "Amazon ECR"
+    ],
     answer: 2
   },
   {
-    question: "What enables a public subnet to route traffic to the internet?",
-    options: ["A route to an internet gateway", "An S3 bucket policy", "An EBS snapshot", "An IAM permissions boundary"],
-    answer: 0
-  },
-  {
-    question: "What is the primary purpose of a NAT Gateway?",
-    options: ["Allow unsolicited inbound connections to private instances", "Provide managed database backups", "Replace all security groups", "Allow private subnet resources to initiate outbound IPv4 internet connections"],
+    question: "20. Which AWS service records account activity and API events for auditing?",
+    options: [
+      "Amazon EFS",
+      "Amazon Inspector",
+      "AWS Glue",
+      "AWS CloudTrail"
+    ],
     answer: 3
   },
   {
-    question: "How do security groups differ from network ACLs?",
-    options: ["Both are always stateless", "Security groups are stateful; network ACLs are stateless", "Network ACLs apply only to IAM users", "Security groups cannot filter traffic"],
-    answer: 1
-  },
-  {
-    question: "Which AWS load balancer supports HTTP host-based and path-based routing?",
-    options: ["Gateway Load Balancer", "Network Load Balancer", "Application Load Balancer", "NAT Gateway"],
-    answer: 2
-  },
-  {
-    question: "Which load balancer is suited to high-performance TCP and UDP traffic at Layer 4?",
-    options: ["Network Load Balancer", "Application Load Balancer", "Amazon CloudFront", "AWS WAF"],
+    question: "21. What is the principle of least privilege in AWS IAM?",
+    options: [
+      "Grant only the permissions required to perform a task",
+      "Give every user administrator access",
+      "Disable all authentication",
+      "Share the root account with developers"
+    ],
     answer: 0
   },
   {
-    question: "Which AWS service provides managed DNS and domain routing?",
-    options: ["AWS Config", "Amazon CloudWatch", "AWS KMS", "Amazon Route 53"],
+    question: "22. What is an IAM role?",
+    options: [
+      "A physical server",
+      "An identity with permissions that trusted entities can assume",
+      "A type of VPC subnet",
+      "A storage class"
+    ],
+    answer: 1
+  },
+  {
+    question: "23. What is the AWS account root user?",
+    options: [
+      "An ordinary IAM group",
+      "A read-only monitoring role",
+      "The identity created when the AWS account is established",
+      "An EC2 operating-system user"
+    ],
+    answer: 2
+  },
+  {
+    question: "24. What is recommended for protecting the AWS root user?",
+    options: [
+      "Share its credentials with the team",
+      "Use it for everyday application deployments",
+      "Disable all security controls",
+      "Enable MFA and avoid routine use"
+    ],
     answer: 3
   },
   {
-    question: "What is VPC peering primarily used for?",
-    options: ["Automatically merging two VPCs into one", "Private IP connectivity between two VPCs, subject to routing constraints", "Replacing IAM policies", "Providing object storage"],
-    answer: 1
-  },
-  {
-    question: "Which service simplifies connectivity between multiple VPCs and on-premises networks?",
-    options: ["Amazon Athena", "Amazon EBS", "AWS Transit Gateway", "AWS Artifact"],
-    answer: 2
-  },
-  {
-    question: "Which AWS service provides dedicated private network connectivity from an on-premises data center to AWS?",
-    options: ["AWS Direct Connect", "Amazon CloudFront", "Amazon SQS", "AWS WAF"],
+    question: "25. Which AWS feature helps applications access AWS services without embedding long-term credentials?",
+    options: [
+      "IAM roles and temporary credentials",
+      "Publicly exposing access keys",
+      "Hardcoding passwords in source code",
+      "Disabling IAM policies"
+    ],
     answer: 0
   },
-
-  // 31–40: IAM and Security
   {
-    question: "Which AWS service manages identities, roles, and permissions?",
-    options: ["AWS Config", "AWS IAM", "Amazon EFS", "Amazon Redshift"],
+    question: "26. What is a security group in AWS?",
+    options: [
+      "A database backup",
+      "A stateful virtual firewall for supported resources",
+      "An S3 storage class",
+      "A DNS resolver"
+    ],
     answer: 1
   },
   {
-    question: "What does the principle of least privilege mean?",
-    options: ["Give every user administrator access", "Share one access key across all teams", "Grant only the permissions required for a task", "Disable all audit logging"],
+    question: "27. What is a Network ACL (NACL)?",
+    options: [
+      "A type of IAM user",
+      "An application load balancer",
+      "A stateless traffic filter associated with a VPC subnet",
+      "A container registry"
+    ],
     answer: 2
   },
   {
-    question: "What is the primary purpose of an IAM role?",
-    options: ["Create a public subnet", "Store database records", "Assign a permanent password to every service", "Provide temporary credentials to an authorized principal"],
+    question: "28. What is a key difference between security groups and network ACLs?",
+    options: [
+      "Both are always stateless",
+      "Security groups apply only to S3 buckets",
+      "Network ACLs cannot have deny rules",
+      "Security groups are stateful; network ACLs are stateless"
+    ],
     answer: 3
   },
   {
-    question: "Which AWS service manages encryption keys?",
-    options: ["AWS Key Management Service (KMS)", "Amazon Route 53", "AWS CodeDeploy", "Amazon EFS"],
+    question: "29. What is a public subnet in a VPC?",
+    options: [
+      "A subnet whose route table has a route to an internet gateway",
+      "A subnet without any route table",
+      "A subnet that automatically exposes every instance",
+      "A subnet used only for RDS"
+    ],
     answer: 0
   },
   {
-    question: "Which service helps detect potentially malicious or anomalous activity in AWS accounts?",
-    options: ["AWS Glue", "Amazon GuardDuty", "AWS Artifact", "Amazon Lightsail"],
+    question: "30. What is a private subnet commonly used for?",
+    options: [
+      "Hosting resources that must all have public IP addresses",
+      "Hosting resources that do not need direct inbound internet access",
+      "Replacing IAM roles",
+      "Storing CloudTrail logs only"
+    ],
     answer: 1
   },
   {
-    question: "Which AWS service assesses supported workloads for software vulnerabilities?",
-    options: ["AWS Organizations", "Amazon SQS", "Amazon Inspector", "Amazon Route 53"],
+    question: "31. What does an Internet Gateway provide to a VPC?",
+    options: [
+      "Automatic database backups",
+      "Private DNS records only",
+      "A connection path between a VPC and the internet when routing and other requirements are met",
+      "Automatic encryption for every resource"
+    ],
     answer: 2
   },
   {
-    question: "Which service filters HTTP and HTTPS requests to protect web applications?",
-    options: ["AWS KMS", "Amazon EBS", "AWS Backup", "AWS WAF"],
+    question: "32. What is a NAT Gateway commonly used for?",
+    options: [
+      "Allowing unsolicited internet connections directly into private instances",
+      "Replacing all security groups",
+      "Providing IAM credentials",
+      "Allowing private subnet resources to initiate outbound IPv4 internet connections"
+    ],
     answer: 3
   },
   {
-    question: "Which service helps protect AWS applications against distributed denial-of-service attacks?",
-    options: ["AWS Shield", "AWS Glue", "Amazon Athena", "AWS CodeArtifact"],
+    question: "33. What is a VPC route table used for?",
+    options: [
+      "Determining where network traffic is directed",
+      "Storing EC2 passwords",
+      "Managing S3 lifecycle rules",
+      "Creating database schemas"
+    ],
     answer: 0
   },
   {
-    question: "Which service records AWS API activity for auditing?",
-    options: ["Amazon CloudWatch", "AWS CloudTrail", "Amazon EFS", "AWS Fargate"],
+    question: "34. What is a CIDR block such as 10.0.1.0/24 used to represent?",
+    options: [
+      "An IAM permission",
+      "An IP address range",
+      "An EC2 instance type",
+      "A database engine"
+    ],
     answer: 1
   },
   {
-    question: "What is the primary purpose of AWS Secrets Manager?",
-    options: ["Create container images", "Configure DNS routing", "Store, retrieve, and manage secrets such as database credentials", "Provision VPC subnets"],
-    answer: 2
-  },
-
-  // 41–50: Databases and Analytics
-  {
-    question: "Which AWS service provides managed relational databases?",
-    options: ["Amazon RDS", "Amazon S3", "Amazon SQS", "Amazon CloudFront"],
-    answer: 0
-  },
-  {
-    question: "Which AWS service provides a managed NoSQL key-value and document database?",
-    options: ["Amazon Redshift", "Amazon DynamoDB", "Amazon EBS", "Amazon Route 53"],
-    answer: 1
-  },
-  {
-    question: "Which AWS service is designed for cloud data warehousing and analytical SQL queries?",
-    options: ["Amazon SQS", "Amazon EFS", "Amazon Redshift", "AWS IAM"],
+    question: "35. What is VPC peering used for?",
+    options: [
+      "Sharing one IAM password",
+      "Copying Docker images",
+      "Connecting two VPCs privately using their private IP addresses",
+      "Automatically merging their CIDR ranges"
+    ],
     answer: 2
   },
   {
-    question: "Which service queries data in Amazon S3 using SQL without managing query servers?",
-    options: ["Amazon RDS", "Amazon EKS", "AWS Direct Connect", "Amazon Athena"],
+    question: "36. What is AWS Site-to-Site VPN commonly used for?",
+    options: [
+      "Creating S3 storage classes",
+      "Managing Lambda versions",
+      "Creating IAM policies automatically",
+      "Establishing encrypted network connectivity between a VPC and an external network"
+    ],
     answer: 3
   },
   {
-    question: "What is the main purpose of an RDS Multi-AZ deployment?",
-    options: ["Improve database availability through standby infrastructure and failover", "Automatically make every database table public", "Replace database authentication", "Eliminate the need for database backups"],
+    question: "37. What is AWS Direct Connect?",
+    options: [
+      "A dedicated network connection between an organization and AWS",
+      "A serverless database",
+      "An EC2 backup tool",
+      "An S3 encryption algorithm"
+    ],
     answer: 0
   },
   {
-    question: "Which Amazon RDS feature helps distribute read traffic across database replicas?",
-    options: ["IAM Access Analyzer", "Read replicas", "VPC peering", "S3 Lifecycle"],
+    question: "38. Which AWS service provides DNS domain registration and DNS routing?",
+    options: [
+      "Amazon EBS",
+      "Amazon Route 53",
+      "AWS IAM",
+      "Amazon ECR"
+    ],
     answer: 1
   },
   {
-    question: "Which AWS service is designed for managed Apache Spark processing?",
-    options: ["Amazon Route 53", "AWS Shield", "Amazon EMR", "Amazon EBS"],
+    question: "39. What is Amazon CloudFront?",
+    options: [
+      "A relational database",
+      "A virtual machine service",
+      "A content delivery network (CDN)",
+      "A secrets management service"
+    ],
     answer: 2
   },
   {
-    question: "Which AWS service helps build, operate, and govern data pipelines and data catalogs?",
-    options: ["Amazon CloudFront", "AWS WAF", "AWS Shield", "AWS Glue"],
+    question: "40. What is AWS WAF used for?",
+    options: [
+      "Managing EBS snapshots",
+      "Creating VPC subnets",
+      "Running container images",
+      "Filtering web requests using configured security rules"
+    ],
     answer: 3
   },
   {
-    question: "Which AWS service provides a managed, MySQL- and PostgreSQL-compatible relational database engine?",
-    options: ["Amazon Aurora", "Amazon SQS", "Amazon EFS", "Amazon CloudWatch"],
+    question: "41. What is an S3 bucket?",
+    options: [
+      "A container for storing objects in Amazon S3",
+      "A virtual private server",
+      "A VPC route table",
+      "An IAM group"
+    ],
     answer: 0
   },
   {
-    question: "Which AWS service provides a managed in-memory cache compatible with Redis or Memcached engines?",
-    options: ["Amazon Athena", "Amazon ElastiCache", "Amazon EBS", "AWS Config"],
+    question: "42. What is an S3 object?",
+    options: [
+      "An EC2 instance",
+      "Data stored in S3 along with its key and metadata",
+      "A subnet route",
+      "An IAM role"
+    ],
     answer: 1
   },
-
-  // 51–60: Monitoring and Messaging
   {
-    question: "Which AWS service collects metrics, logs, and alarms for AWS resources?",
-    options: ["AWS CloudTrail", "AWS Artifact", "Amazon CloudWatch", "Amazon Inspector"],
+    question: "43. What does S3 Versioning help with?",
+    options: [
+      "Increasing EC2 CPU capacity",
+      "Creating VPC peering connections",
+      "Keeping multiple versions of an object",
+      "Automatically fixing application bugs"
+    ],
     answer: 2
   },
   {
-    question: "Which service can notify subscribers when a CloudWatch alarm changes state?",
-    options: ["Amazon EBS", "Amazon EFS", "AWS Config", "Amazon SNS"],
+    question: "44. What is the purpose of an S3 lifecycle policy?",
+    options: [
+      "To create IAM users",
+      "To assign public IP addresses",
+      "To configure EC2 instance types",
+      "To transition or expire objects according to configured rules"
+    ],
     answer: 3
   },
   {
-    question: "Which AWS service provides a durable message queue for decoupling application components?",
-    options: ["Amazon SQS", "Amazon Route 53", "Amazon EBS", "AWS KMS"],
+    question: "45. Which S3 storage class is designed for frequently accessed data?",
+    options: [
+      "S3 Standard",
+      "S3 Glacier Deep Archive",
+      "S3 Glacier Flexible Retrieval",
+      "S3 One Zone-IA"
+    ],
     answer: 0
   },
   {
-    question: "What is the primary purpose of Amazon SNS?",
-    options: ["Provision virtual machines", "Publish messages to subscribers using a publish/subscribe model", "Create relational database indexes", "Manage Kubernetes worker nodes"],
+    question: "46. Which S3 storage class is designed for long-term archival with very low storage cost and slower retrieval?",
+    options: [
+      "S3 Standard",
+      "S3 Glacier Deep Archive",
+      "S3 Express One Zone",
+      "S3 Standard-IA"
+    ],
     answer: 1
   },
   {
-    question: "Which AWS service helps capture distributed traces across application components?",
-    options: ["AWS Artifact", "Amazon S3 Glacier", "AWS X-Ray", "AWS Backup"],
+    question: "47. What does S3 Block Public Access help prevent?",
+    options: [
+      "All authorized access to every bucket",
+      "All object uploads",
+      "Public exposure of S3 data through covered public access settings",
+      "All lifecycle transitions"
+    ],
     answer: 2
   },
   {
-    question: "Which service evaluates AWS resource configurations against desired rules?",
-    options: ["Amazon SQS", "AWS Lambda@Edge", "Amazon EFS", "AWS Config"],
+    question: "48. What is an S3 presigned URL?",
+    options: [
+      "A permanent public URL that never expires",
+      "An EC2 login credential",
+      "A VPC endpoint",
+      "A time-limited URL that grants specified access to an S3 operation"
+    ],
     answer: 3
   },
   {
-    question: "Which AWS service can route events from AWS services and applications to targets based on rules?",
-    options: ["Amazon EventBridge", "Amazon EBS", "AWS Direct Connect", "Amazon EFS"],
+    question: "49. What is S3 server-side encryption?",
+    options: [
+      "Encryption of object data by S3 after receiving it",
+      "Encryption of EC2 CPU instructions",
+      "A method of assigning IP addresses",
+      "A type of DNS routing"
+    ],
     answer: 0
   },
   {
-    question: "Which AWS service provides centralized visibility into security findings from multiple AWS services?",
-    options: ["Amazon Route 53", "AWS Security Hub", "Amazon EFS", "AWS CodeDeploy"],
+    question: "50. Which AWS service helps centrally manage encryption keys?",
+    options: [
+      "Amazon Route 53",
+      "AWS Key Management Service (KMS)",
+      "Amazon ECR",
+      "AWS CloudShell"
+    ],
     answer: 1
   },
   {
-    question: "Which AWS service provides recommendations to improve cost, performance, security, and reliability?",
-    options: ["Amazon SQS", "AWS WAF", "AWS Trusted Advisor", "Amazon EBS"],
+    question: "51. What is Amazon EFS?",
+    options: [
+      "A DNS management service",
+      "A serverless function runtime",
+      "A managed elastic file storage service",
+      "A container image registry"
+    ],
     answer: 2
   },
   {
-    question: "Which AWS service helps manage operational tasks and automate runbooks across AWS resources?",
-    options: ["Amazon CloudFront", "AWS Artifact", "Amazon Redshift", "AWS Systems Manager"],
-    answer: 3
-  },
-
-  // 61–70: Infrastructure as Code and DevOps
-  {
-    question: "Which AWS service provisions infrastructure using declarative templates?",
-    options: ["AWS CloudFormation", "Amazon CloudWatch", "AWS Shield", "Amazon Athena"],
-    answer: 0
-  },
-  {
-    question: "Which AWS service provides a managed Git-based repository for source code?",
-    options: ["AWS CodeDeploy", "AWS CodeCommit", "Amazon Inspector", "AWS Config"],
-    answer: 1
-  },
-  {
-    question: "Which AWS service builds and tests source code in a managed build environment?",
-    options: ["AWS CodeArtifact", "Amazon CloudFront", "AWS CodeBuild", "Amazon Route 53"],
-    answer: 2
-  },
-  {
-    question: "Which AWS service automates application deployments to supported compute environments?",
-    options: ["Amazon Athena", "AWS KMS", "Amazon EFS", "AWS CodeDeploy"],
-    answer: 3
-  },
-  {
-    question: "Which AWS service orchestrates build, test, and deployment stages in a release pipeline?",
-    options: ["AWS CodePipeline", "AWS CloudTrail", "Amazon EBS", "AWS Shield"],
-    answer: 0
-  },
-  {
-    question: "Which AWS service manages private package repositories for software dependencies?",
-    options: ["AWS Config", "AWS CodeArtifact", "Amazon Route 53", "Amazon CloudWatch"],
-    answer: 1
-  },
-  {
-    question: "Which AWS service provides a managed Kubernetes control plane?",
-    options: ["Amazon ECS", "AWS Batch", "Amazon EKS", "AWS Elastic Beanstalk"],
-    answer: 2
-  },
-  {
-    question: "Which AWS service provides a managed container image registry?",
-    options: ["Amazon EFS", "Amazon SQS", "AWS CloudTrail", "Amazon ECR"],
+    question: "52. What is an EBS snapshot?",
+    options: [
+      "An IAM access key",
+      "A DNS routing policy",
+      "A running container",
+      "A point-in-time backup of an EBS volume"
+    ],
     answer: 3
   },
   {
-    question: "What is the main purpose of an AWS CloudFormation change set?",
-    options: ["Preview proposed stack changes before applying them", "Rotate every IAM user's password automatically", "Delete all resources in a Region", "Create a public DNS zone"],
+    question: "53. What is Amazon RDS Multi-AZ primarily designed to improve?",
+    options: [
+      "Database availability and failover resilience",
+      "Frontend page rendering",
+      "IAM user creation speed",
+      "S3 object compression"
+    ],
     answer: 0
   },
   {
-    question: "What is the primary purpose of Terraform state when managing AWS infrastructure?",
-    options: ["Store application passwords in plain text", "Track managed resources and map configuration to real infrastructure", "Replace all AWS APIs", "Act as a load balancer"],
+    question: "54. What is an RDS read replica primarily used for?",
+    options: [
+      "Replacing every database backup",
+      "Scaling read workloads and supporting certain replication use cases",
+      "Providing DNS hosting",
+      "Running EC2 operating systems"
+    ],
     answer: 1
   },
-
-  // 71–80: Advanced Networking and Access
   {
-    question: "Which AWS service provides an application-level content delivery network?",
-    options: ["Amazon EBS", "AWS Config", "Amazon CloudFront", "Amazon SQS"],
+    question: "55. Which AWS database service is a managed relational database service?",
+    options: [
+      "Amazon SQS",
+      "Amazon CloudFront",
+      "Amazon RDS",
+      "Amazon SNS"
+    ],
     answer: 2
   },
   {
-    question: "What is the primary purpose of an S3 VPC endpoint?",
-    options: ["Create a public IP for every EC2 instance", "Replace S3 bucket policies in all cases", "Provide a managed SQL database", "Allow VPC resources to access S3 through AWS network paths without requiring an internet gateway or NAT for that access"],
+    question: "56. Which AWS database service is a managed NoSQL key-value and document database?",
+    options: [
+      "Amazon RDS",
+      "Amazon Redshift",
+      "Amazon EBS",
+      "Amazon DynamoDB"
+    ],
     answer: 3
   },
   {
-    question: "Which AWS service provides private connectivity to supported AWS services without using public IP addresses?",
-    options: ["AWS PrivateLink", "Amazon CloudFront", "AWS Shield", "Amazon S3 Glacier"],
+    question: "57. What is Amazon Aurora?",
+    options: [
+      "A relational database engine compatible with MySQL and PostgreSQL",
+      "A container orchestration service",
+      "A DNS resolver",
+      "A file transfer protocol"
+    ],
     answer: 0
   },
   {
-    question: "What is the purpose of an Elastic IP address?",
-    options: ["Encrypt an EBS volume", "Provide a static public IPv4 address that can be associated with supported resources", "Create a database replica", "Store CloudTrail logs"],
+    question: "58. What is the purpose of automated RDS backups?",
+    options: [
+      "To create additional IAM users",
+      "To support point-in-time recovery within the configured backup retention period",
+      "To publish database ports publicly",
+      "To replace database access controls"
+    ],
     answer: 1
   },
   {
-    question: "Which service helps distribute incoming DNS requests across endpoints using health checks and routing policies?",
-    options: ["Amazon EFS", "AWS KMS", "Amazon Route 53", "Amazon ECR"],
+    question: "59. Which AWS service is designed for data warehousing and analytics?",
+    options: [
+      "Amazon Route 53",
+      "Amazon EBS",
+      "Amazon Redshift",
+      "AWS IAM"
+    ],
     answer: 2
   },
   {
-    question: "What is the purpose of a VPC flow log?",
-    options: ["Record all application source code changes", "Store EC2 AMIs", "Replace CloudTrail API auditing", "Capture information about IP traffic to and from network interfaces"],
+    question: "60. What is a database parameter group in RDS?",
+    options: [
+      "A collection of IAM users",
+      "A VPC subnet group only",
+      "A container image repository",
+      "A collection of database engine configuration parameters"
+    ],
     answer: 3
   },
   {
-    question: "Which AWS service establishes an encrypted connection between an on-premises network and a VPC over the internet?",
-    options: ["AWS Site-to-Site VPN", "Amazon CloudFront", "AWS CodeBuild", "Amazon Athena"],
+    question: "61. What triggers an AWS Lambda function?",
+    options: [
+      "An event or invocation request from a supported source",
+      "Only an EC2 instance reboot",
+      "Only a manual operating system login",
+      "Only a VPC route table update"
+    ],
     answer: 0
   },
   {
-    question: "What is the purpose of a route table in a VPC?",
-    options: ["Manage IAM passwords", "Determine where network traffic is directed", "Store application logs", "Encrypt database columns"],
+    question: "62. What is an API Gateway commonly used for with Lambda?",
+    options: [
+      "Creating EBS snapshots",
+      "Exposing and managing APIs that invoke backend integrations",
+      "Encrypting EC2 disks automatically",
+      "Creating IAM users"
+    ],
     answer: 1
   },
   {
-    question: "Which VPC component allows instances in a private subnet to communicate with resources in a public subnet when routes and security rules permit?",
-    options: ["S3 bucket", "IAM permission boundary", "VPC local route", "CloudWatch alarm"],
+    question: "63. Which AWS service provides a managed message queue?",
+    options: [
+      "Amazon CloudFront",
+      "Amazon Route 53",
+      "Amazon SQS",
+      "Amazon EBS"
+    ],
     answer: 2
   },
   {
-    question: "What is the primary purpose of AWS Network Firewall?",
-    options: ["Compile application source code", "Create managed SQL databases", "Store long-term backups", "Inspect and filter network traffic for VPC protection"],
-    answer: 3
-  },
-
-  // 81–90: Governance, Cost, and Resilience
-  {
-    question: "Which AWS service helps centrally manage multiple AWS accounts?",
-    options: ["AWS Organizations", "Amazon EFS", "Amazon Athena", "AWS CodeDeploy"],
-    answer: 0
-  },
-  {
-    question: "Which AWS service helps set up and govern a multi-account landing zone?",
-    options: ["Amazon SQS", "AWS Control Tower", "Amazon EBS", "Amazon CloudFront"],
-    answer: 1
-  },
-  {
-    question: "Which AWS feature can restrict the maximum permissions available to principals in member accounts?",
-    options: ["S3 Lifecycle rules", "CloudWatch dashboards", "Service control policies (SCPs)", "EBS snapshots"],
-    answer: 2
-  },
-  {
-    question: "Which AWS service provides access to compliance reports and agreements?",
-    options: ["Amazon Inspector", "Amazon Athena", "AWS Fargate", "AWS Artifact"],
-    answer: 3
-  },
-  {
-    question: "Which AWS service helps estimate expected costs before deploying a planned architecture?",
-    options: ["AWS Pricing Calculator", "AWS CloudTrail", "Amazon GuardDuty", "Amazon ECR"],
-    answer: 0
-  },
-  {
-    question: "Which AWS tool helps analyze historical spending and usage patterns?",
-    options: ["AWS CodeBuild", "AWS Cost Explorer", "Amazon Route 53", "AWS WAF"],
-    answer: 1
-  },
-  {
-    question: "What does an AWS budget alert help you do?",
-    options: ["Automatically eliminate every AWS charge", "Guarantee zero future spending", "Receive notifications when spending or usage approaches defined thresholds", "Replace IAM policies"],
-    answer: 2
-  },
-  {
-    question: "What does a Recovery Point Objective (RPO) define?",
-    options: ["The maximum number of EC2 instances", "The maximum network bandwidth", "The time required to deploy a container", "The acceptable amount of data loss measured in time"],
+    question: "64. Which AWS service provides a publish/subscribe notification service?",
+    options: [
+      "Amazon EFS",
+      "Amazon EC2",
+      "Amazon RDS",
+      "Amazon SNS"
+    ],
     answer: 3
   },
   {
-    question: "What does a Recovery Time Objective (RTO) define?",
-    options: ["The target time to restore a service after disruption", "The number of retained S3 versions", "The maximum IAM policy size", "The number of Availability Zones in a Region"],
+    question: "65. What is the main purpose of Amazon EventBridge?",
+    options: [
+      "Routing events between event sources and targets",
+      "Hosting virtual machines only",
+      "Managing EBS disk partitions",
+      "Replacing IAM authentication"
+    ],
     answer: 0
   },
   {
-    question: "Which AWS capability helps replicate supported resources and recover workloads in another Region?",
-    options: ["Security groups only", "Cross-Region disaster recovery architecture", "IAM access keys only", "CloudWatch dashboards only"],
+    question: "66. What is AWS Step Functions used for?",
+    options: [
+      "Creating DNS records only",
+      "Orchestrating workflows across services and tasks",
+      "Replacing S3 storage",
+      "Managing physical networking cables"
+    ],
     answer: 1
   },
-
-  // 91–100: Serverless, Integration, and Real-World Scenarios
   {
-    question: "Which AWS service helps coordinate multiple serverless functions into workflows?",
-    options: ["Amazon EBS", "AWS Artifact", "AWS Step Functions", "Amazon Route 53"],
+    question: "67. Which AWS service manages Kubernetes clusters?",
+    options: [
+      "Amazon Inspector",
+      "AWS Config",
+      "Amazon EKS",
+      "Amazon SES"
+    ],
     answer: 2
   },
   {
-    question: "Which AWS service provides managed message streaming using Apache Kafka?",
-    options: ["Amazon SQS", "Amazon SNS", "AWS CodeArtifact", "Amazon MSK"],
+    question: "68. Which AWS service provides a managed container image registry?",
+    options: [
+      "Amazon EFS",
+      "Amazon Route 53",
+      "Amazon CloudWatch",
+      "Amazon ECR"
+    ],
     answer: 3
   },
   {
-    question: "Which AWS service provides a managed Apache Kafka-compatible streaming platform based on Kafka?",
-    options: ["Amazon MSK", "Amazon EFS", "AWS Backup", "Amazon Inspector"],
+    question: "69. Which AWS service provides a managed container orchestration option based on ECS?",
+    options: [
+      "Amazon ECS",
+      "Amazon S3",
+      "AWS KMS",
+      "Amazon SNS"
+    ],
     answer: 0
   },
   {
-    question: "Which AWS service lets applications publish and consume events through a managed event bus?",
-    options: ["Amazon EBS", "Amazon EventBridge", "AWS KMS", "Amazon Redshift"],
+    question: "70. What is AWS Fargate?",
+    options: [
+      "A DNS routing policy",
+      "A serverless compute engine for supported containers",
+      "An object storage class",
+      "A relational database engine"
+    ],
     answer: 1
   },
   {
-    question: "An application needs to process uploaded S3 objects automatically. Which approach is suitable?",
-    options: ["Manually restart the EC2 instance for every upload", "Disable S3 event notifications", "Trigger a Lambda function from an S3 object-created event", "Store the object in an IAM policy"],
+    question: "71. What is an ECS task definition?",
+    options: [
+      "A VPC internet gateway",
+      "An IAM password policy",
+      "A blueprint describing containers and their runtime configuration for ECS tasks",
+      "An S3 lifecycle rule"
+    ],
     answer: 2
   },
   {
-    question: "An EC2 instance must access S3 without storing long-term access keys on the server. What should you use?",
-    options: ["Hardcoded root credentials", "A shared access key in source code", "An unrestricted public bucket", "An IAM role attached to the EC2 instance"],
+    question: "72. What does an EKS node group provide?",
+    options: [
+      "An S3 bucket policy",
+      "A CloudTrail event",
+      "A DNS hosted zone",
+      "A group of worker nodes managed for an EKS cluster"
+    ],
     answer: 3
   },
   {
-    question: "A web application must scale automatically and distribute requests across healthy EC2 instances. Which combination is appropriate?",
-    options: ["Application Load Balancer and EC2 Auto Scaling", "CloudTrail and AWS Artifact", "EBS snapshots and S3 Lifecycle", "IAM users and Route 53 private hosted zones only"],
+    question: "73. Which AWS service can help manage application configuration and secrets?",
+    options: [
+      "AWS Systems Manager Parameter Store",
+      "Amazon Route 53",
+      "Amazon EBS",
+      "Amazon CloudFront"
+    ],
     answer: 0
   },
   {
-    question: "An application in a private subnet needs outbound internet access for software updates. What is a common solution?",
-    options: ["Assign every instance a private IP only", "Configure a NAT Gateway and appropriate route tables", "Remove the subnet route table", "Disable all security groups"],
+    question: "74. Which AWS service is specifically designed to manage secrets such as database credentials?",
+    options: [
+      "Amazon ECR",
+      "AWS Secrets Manager",
+      "Amazon VPC",
+      "Amazon SQS"
+    ],
     answer: 1
   },
   {
-    question: "A company needs to preserve audit evidence of AWS API calls for security investigations. Which service should it configure?",
-    options: ["Amazon EFS", "AWS Elastic Beanstalk", "AWS CloudTrail", "Amazon ElastiCache"],
+    question: "75. What is AWS Systems Manager Session Manager useful for?",
+    options: [
+      "Creating S3 storage classes",
+      "Registering domain names",
+      "Managing supported instances through a browser or CLI session without requiring inbound SSH access",
+      "Building container images"
+    ],
     answer: 2
   },
   {
-    question: "A production workload needs highly available architecture across Availability Zones. Which design is most appropriate?",
-    options: ["Run everything on one EC2 instance in one AZ", "Keep the only backup on the same instance", "Use a single database without recovery planning", "Distribute supported application components across multiple AZs and design for failover"],
+    question: "76. Which AWS service can assess workloads for software vulnerabilities and unintended network exposure?",
+    options: [
+      "Amazon Route 53",
+      "Amazon SNS",
+      "Amazon EFS",
+      "Amazon Inspector"
+    ],
+    answer: 3
+  },
+  {
+    question: "77. What is AWS Config used for?",
+    options: [
+      "Recording resource configurations and evaluating them against rules",
+      "Running containers without servers",
+      "Creating DNS domain registrations",
+      "Compiling application source code"
+    ],
+    answer: 0
+  },
+  {
+    question: "78. Which AWS service provides threat detection by analyzing relevant activity and data sources?",
+    options: [
+      "Amazon EBS",
+      "Amazon GuardDuty",
+      "Amazon EFS",
+      "Amazon Route 53"
+    ],
+    answer: 1
+  },
+  {
+    question: "79. What is AWS Security Hub used for?",
+    options: [
+      "Hosting relational databases",
+      "Building Docker images",
+      "Aggregating and prioritizing security findings from supported services and checks",
+      "Assigning private IP addresses"
+    ],
+    answer: 2
+  },
+  {
+    question: "80. What is AWS Organizations used for?",
+    options: [
+      "Running individual Linux processes",
+      "Creating container images only",
+      "Replacing all IAM policies",
+      "Centrally managing multiple AWS accounts"
+    ],
+    answer: 3
+  },
+  {
+    question: "81. What is an AWS Organizations Service Control Policy (SCP) used for?",
+    options: [
+      "Setting permission guardrails for accounts or organizational units",
+      "Granting every user administrator permissions",
+      "Creating S3 object versions",
+      "Increasing EC2 CPU speed"
+    ],
+    answer: 0
+  },
+  {
+    question: "82. Which AWS service helps estimate expected AWS charges before deploying resources?",
+    options: [
+      "AWS CloudTrail",
+      "AWS Pricing Calculator",
+      "Amazon ECR",
+      "AWS Config"
+    ],
+    answer: 1
+  },
+  {
+    question: "83. Which AWS service helps track spending and analyze costs?",
+    options: [
+      "Amazon EKS",
+      "Amazon SNS",
+      "AWS Cost Explorer",
+      "Amazon EBS"
+    ],
+    answer: 2
+  },
+  {
+    question: "84. What is AWS Budgets used for?",
+    options: [
+      "Creating security groups",
+      "Deploying Kubernetes pods",
+      "Storing database records",
+      "Setting cost or usage thresholds and receiving alerts"
+    ],
+    answer: 3
+  },
+  {
+    question: "85. Which AWS service supports creating infrastructure using templates and stacks?",
+    options: [
+      "AWS CloudFormation",
+      "Amazon Route 53",
+      "Amazon EFS",
+      "AWS CloudTrail"
+    ],
+    answer: 0
+  },
+  {
+    question: "86. What is AWS CodeBuild used for?",
+    options: [
+      "Managing DNS records",
+      "Building and testing source code in a managed build environment",
+      "Storing relational database backups only",
+      "Creating IAM users automatically"
+    ],
+    answer: 1
+  },
+  {
+    question: "87. What is AWS CodePipeline used for?",
+    options: [
+      "Assigning EC2 public IP addresses",
+      "Managing S3 encryption keys only",
+      "Automating stages in a software release pipeline",
+      "Replacing all source control systems"
+    ],
+    answer: 2
+  },
+  {
+    question: "88. Which AWS service provides managed Git-based source repositories as part of AWS developer tools?",
+    options: [
+      "Amazon CloudFront",
+      "Amazon RDS",
+      "Amazon EBS",
+      "AWS CodeCommit"
+    ],
+    answer: 3
+  },
+  {
+    question: "89. What is AWS CloudFormation drift detection used for?",
+    options: [
+      "Identifying differences between a stack's expected configuration and actual resource configuration",
+      "Automatically repairing every application bug",
+      "Creating DNS zones",
+      "Increasing database storage automatically in all cases"
+    ],
+    answer: 0
+  },
+  {
+    question: "90. Which AWS service provides centralized collection and analysis of logs, metrics, and traces?",
+    options: [
+      "Amazon ECR",
+      "Amazon CloudWatch",
+      "Amazon VPC",
+      "AWS Organizations"
+    ],
+    answer: 1
+  },
+  {
+    question: "91. An EC2 instance cannot be reached over SSH. What should you check first?",
+    options: [
+      "Only the instance name",
+      "Only the S3 bucket region",
+      "Instance state, network routes, public IP or access path, security groups, NACLs, and SSH credentials",
+      "Only the CloudWatch dashboard color"
+    ],
+    answer: 2
+  },
+  {
+    question: "92. An EC2 instance has no internet access from a private subnet. What should you investigate?",
+    options: [
+      "Only the EC2 instance tag",
+      "Only the S3 object version",
+      "Only the IAM group name",
+      "Route tables, NAT Gateway, subnet configuration, and security rules"
+    ],
+    answer: 3
+  },
+  {
+    question: "93. An application behind an Application Load Balancer returns unhealthy targets. What should you investigate?",
+    options: [
+      "Health-check path and port, target application health, security rules, and response codes",
+      "Only the S3 bucket name",
+      "Only the AWS account alias",
+      "Only the EC2 AMI description"
+    ],
+    answer: 0
+  },
+  {
+    question: "94. An application receives AccessDenied when accessing an S3 object. What should you check?",
+    options: [
+      "Only the EC2 instance size",
+      "IAM permissions, bucket policy, object ownership, encryption permissions, and applicable access controls",
+      "Only the Route 53 record type",
+      "Only the VPC CIDR length"
+    ],
+    answer: 1
+  },
+  {
+    question: "95. An RDS database connection fails from an EC2 application. What should you check?",
+    options: [
+      "Only the database display name",
+      "Only the EC2 AMI creation date",
+      "Database endpoint and port, security groups, subnet routing, credentials, and database availability",
+      "Only the S3 lifecycle policy"
+    ],
+    answer: 2
+  },
+  {
+    question: "96. An AWS Lambda function fails repeatedly. Which information is useful for troubleshooting?",
+    options: [
+      "Only the AWS account nickname",
+      "Only the function's display color",
+      "Only the S3 bucket creation date",
+      "CloudWatch logs, error messages, timeout, permissions, configuration, and downstream dependencies"
+    ],
+    answer: 3
+  },
+  {
+    question: "97. An EC2 instance's CPU usage is consistently high. What is a good response?",
+    options: [
+      "Review CloudWatch metrics and application processes, then scale or optimize based on evidence",
+      "Delete all IAM roles immediately",
+      "Disable monitoring",
+      "Make the instance publicly accessible without restrictions"
+    ],
+    answer: 0
+  },
+  {
+    question: "98. How can an application improve availability across an AWS Region?",
+    options: [
+      "Run everything in one Availability Zone without backups",
+      "Deploy across multiple Availability Zones and configure suitable load balancing and recovery",
+      "Disable health checks",
+      "Store all persistent data only on temporary instance storage"
+    ],
+    answer: 1
+  },
+  {
+    question: "99. What is a key benefit of Infrastructure as Code in AWS?",
+    options: [
+      "It eliminates the need for security reviews",
+      "It guarantees zero failures",
+      "It enables repeatable, reviewable, and automated infrastructure provisioning",
+      "It replaces application monitoring"
+    ],
+    answer: 2
+  },
+  {
+    question: "100. What should be considered when running production workloads on AWS?",
+    options: [
+      "Only the EC2 instance name",
+      "Only the number of S3 buckets",
+      "Only the region selected during account creation",
+      "Security, high availability, monitoring, backups, cost, scaling, and disaster recovery"
+    ],
     answer: 3
   }
 ];
