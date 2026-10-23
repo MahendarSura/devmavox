@@ -1006,4 +1006,3 @@ export const kubernetesQuestions: KubernetesQuestion[] = [
     answer: 3
   }
 ];
-```
