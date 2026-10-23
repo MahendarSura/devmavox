@@ -1,12 +1,11 @@
-
-export interface TopicQuestion {
+export interface gitopsQuestion {
   id: string;
   question: string;
   options: string[];
   answer: number;
 }
 
-export const topicQuestions: TopicQuestion[] = [
+export const gitopsQuestions: gitopsQuestion[] = [
   {
     id: "gitops-1",
     question: "What is GitOps?",
