@@ -1,11 +1,11 @@
-export interface KubernetesQuestion {
+export interface kubernetesAdvancedQuestion {
   id: string;
   question: string;
   options: string[];
   answer: number;
 }
 
-export const kubernetesAdvancedQuestions: KubernetesQuestion[] = [
+export const kubernetesAdvancedQuestions: kubernetesAdvancedQuestion[] = [
   {
     id: "kubernetes-advanced-1",
     question: "Why is a PodDisruptionBudget (PDB) used?",
