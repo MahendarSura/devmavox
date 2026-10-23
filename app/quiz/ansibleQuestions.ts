@@ -504,9 +504,8 @@ export const ansibleQuestions: AnsibleQuestion[] = [
       "--private-key-file"
     ],
     answer: 2
-  }
-];
-{
+  },
+  {
     question: "Which keyword enables privilege escalation for a task or play?",
     options: [
       "sudo_mode",
@@ -761,7 +760,7 @@ export const ansibleQuestions: AnsibleQuestion[] = [
     options: [
       "--skip-tags",
       "--exclude-tasks",
-      "--ignore-tags",
+      "--ignore-tasks",
       "--omit-tags"
     ],
     answer: 0
