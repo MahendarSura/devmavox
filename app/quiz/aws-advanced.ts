@@ -1,12 +1,11 @@
-```typescript
-export interface TopicQuestion {
+export interface aws-advancedQuestion {
   id: string;
   question: string;
   options: string[];
   answer: number;
 }
 
-export const topicQuestions: TopicQuestion[] = [
+export const aws-advancedQuestions: aws-advancedQuestion[] = [
   {
     id: "aws-advanced-1",
     question: "What is the main purpose of an AWS Transit Gateway?",
