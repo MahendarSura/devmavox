@@ -64,8 +64,6 @@ const topics: Topic[] = [
   { id: 'helm', name: 'Helm', description: 'Kubernetes package manager and chart templating.' },
   { id: 'maven', name: 'Apache Maven', description: 'Java build automation and dependency management.' },
   { id: 'sonarqube', name: 'SonarQube', description: 'Continuous inspection of code quality and security analysis.' },
-
-  // Extra 14 Advanced Options added here cleanly
   { id: 'kubernetes-advanced', name: 'Kubernetes Advanced', description: 'PDBs, Probes, StatefulSets, Taints, Tolerations, and scheduling.' },
   { id: 'terraform-iac-advanced', name: 'Terraform Advanced (IaC)', description: 'State management, modules, drift detection, and refactoring.' },
   { id: 'production-incidents-sre', name: 'Production Incidents & SRE', description: 'SLOs, SLIs, error budgets, postmortems, and incident response.' },
