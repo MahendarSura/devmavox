@@ -3,6 +3,7 @@ export interface AnsibleQuestion {
   options: string[];
   answer: number;
 }
+
 export const argocdQuestions = [
   
   {
