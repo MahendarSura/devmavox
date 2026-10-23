@@ -1,11 +1,10 @@
-export interface TopicQuestion {
-  id: string;
+export interface gitQuestion {
   question: string;
   options: string[];
   answer: number;
 }
 
-export const topicQuestions: TopicQuestion[] = [
+export const gitQuestions: gitQuestion[] = [
   {
     id: "q-1",
     question: "You accidentally committed a production password and pushed it to the remote repository. What should you do first?",
