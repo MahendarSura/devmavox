@@ -1,1008 +1,1109 @@
-export interface GitQuestion {
+export interface TopicQuestion {
+  id: string;
   question: string;
   options: string[];
   answer: number;
 }
 
-export const gitQuestions: GitQuestion[] = [
+export const topicQuestions: TopicQuestion[] = [
   {
-    question: "1. What is Git?",
+    id: "q-1",
+    question: "You accidentally committed a production password and pushed it to the remote repository. What should you do first?",
     options: [
-      "A programming language",
-      "A distributed version control system",
-      "A database",
-      "A web server"
+      "Delete the repository immediately",
+      "Revoke or rotate the exposed password and investigate the exposure",
+      "Rename the password variable",
+      "Run git pull"
     ],
     answer: 1
   },
   {
-    question: "2. Who created Git?",
+    id: "q-2",
+    question: "Your push is rejected because the remote branch contains commits missing from your local branch. What should you do?",
     options: [
-      "James Gosling",
-      "Guido van Rossum",
-      "Linus Torvalds",
-      "Dennis Ritchie"
+      "Force-push immediately",
+      "Delete the remote branch",
+      "Fetch and integrate the remote changes, resolve conflicts, and push",
+      "Run git init"
     ],
     answer: 2
   },
   {
-    question: "3. What is the main purpose of Git?",
-    options: [
-      "To track changes in source code",
-      "To host websites",
-      "To create virtual machines",
-      "To manage databases"
-    ],
-    answer: 0
-  },
-  {
-    question: "4. Which command checks the installed Git version?",
-    options: [
-      "git check",
-      "git version-check",
-      "git --version",
-      "git status --version"
-    ],
-    answer: 2
-  },
-  {
-    question: "5. Which command initializes a Git repository?",
-    options: [
-      "git start",
-      "git init",
-      "git create",
-      "git new"
-    ],
-    answer: 1
-  },
-  {
-    question: "6. Which command shows the working tree status?",
-    options: [
-      "git log",
-      "git branch",
-      "git show",
-      "git status"
-    ],
-    answer: 3
-  },
-  {
-    question: "7. Which command stages a specific file?",
-    options: [
-      "git add filename",
-      "git commit filename",
-      "git push filename",
-      "git save filename"
-    ],
-    answer: 0
-  },
-  {
-    question: "8. Which command creates a commit?",
-    options: [
-      "git add",
-      "git push",
-      "git commit",
-      "git stage"
-    ],
-    answer: 2
-  },
-  {
-    question: "9. Which command sets your Git username globally?",
-    options: [
-      "git user set",
-      "git config --global user.name \"Your Name\"",
-      "git username --global",
-      "git profile set"
-    ],
-    answer: 1
-  },
-  {
-    question: "10. Which command sets your Git email globally?",
-    options: [
-      "git email set",
-      "git config user.email --all",
-      "git set-email",
-      "git config --global user.email \"you@example.com\""
-    ],
-    answer: 3
-  },
-  {
-    question: "11. What is a Git repository?",
-    options: [
-      "A place where Git stores project history and metadata",
-      "A programming framework",
-      "A network cable",
-      "A text editor"
-    ],
-    answer: 0
-  },
-  {
-    question: "12. What does the staging area do?",
-    options: [
-      "Deletes old commits",
-      "Uploads code to GitHub",
-      "Holds selected changes for the next commit",
-      "Creates a remote repository"
-    ],
-    answer: 2
-  },
-  {
-    question: "13. Which command stages all changes in the current directory?",
-    options: [
-      "git commit -a",
-      "git add .",
-      "git push .",
-      "git stage --all"
-    ],
-    answer: 1
-  },
-  {
-    question: "14. Which command displays commit history?",
-    options: [
-      "git status",
-      "git branch",
-      "git init",
-      "git log"
-    ],
-    answer: 3
-  },
-  {
-    question: "15. Which command displays a compact commit history?",
-    options: [
-      "git log --oneline",
-      "git status --shortlog",
-      "git commit --short",
-      "git history --compact"
-    ],
-    answer: 0
-  },
-  {
-    question: "16. What is a Git commit?",
-    options: [
-      "A remote server",
-      "A branch deletion",
-      "A recorded snapshot of repository changes",
-      "A file download"
-    ],
-    answer: 2
-  },
-  {
-    question: "17. Which command creates a new branch named feature?",
-    options: [
-      "git create feature",
-      "git branch feature",
-      "git init feature",
-      "git new-branch feature"
-    ],
-    answer: 1
-  },
-  {
-    question: "18. Which command switches to an existing branch?",
-    options: [
-      "git merge branch",
-      "git branch --switch-only",
-      "git push branch",
-      "git switch branch"
-    ],
-    answer: 3
-  },
-  {
-    question: "19. Which command creates a new branch and switches to it?",
-    options: [
-      "git switch -c feature",
-      "git merge -c feature",
-      "git push -c feature",
-      "git checkout --delete feature"
-    ],
-    answer: 0
-  },
-  {
-    question: "20. Which command lists local branches?",
-    options: [
-      "git list",
-      "git show-branches",
-      "git branch",
-      "git branches --remote-only"
-    ],
-    answer: 2
-  },
-  {
-    question: "21. Which command merges feature into the current branch?",
-    options: [
-      "git push feature",
-      "git merge feature",
-      "git add feature",
-      "git commit feature"
-    ],
-    answer: 1
-  },
-  {
-    question: "22. What is a merge conflict?",
-    options: [
-      "A missing Git installation",
-      "A successful push",
-      "A deleted repository",
-      "An incompatible change Git cannot automatically reconcile"
-    ],
-    answer: 3
-  },
-  {
-    question: "23. Which command downloads a remote repository as a local copy?",
-    options: [
-      "git clone URL",
-      "git copy URL",
-      "git download URL",
-      "git init URL"
-    ],
-    answer: 0
-  },
-  {
-    question: "24. Which command uploads local commits to a remote repository?",
-    options: [
-      "git fetch",
-      "git pull",
-      "git push",
-      "git status"
-    ],
-    answer: 2
-  },
-  {
-    question: "25. Which command downloads remote changes without integrating them into your current branch?",
-    options: [
-      "git push",
-      "git fetch",
-      "git commit",
-      "git add"
-    ],
-    answer: 1
-  },
-  {
-    question: "26. Which command fetches and integrates remote changes into the current branch?",
-    options: [
-      "git init",
-      "git branch",
-      "git clean",
-      "git pull"
-    ],
-    answer: 3
-  },
-  {
-    question: "27. What is a remote repository?",
-    options: [
-      "A repository hosted at another location, such as GitHub",
-      "A local text file",
-      "A staging directory",
-      "A deleted branch"
-    ],
-    answer: 0
-  },
-  {
-    question: "28. Which command lists configured remote repositories?",
-    options: [
-      "git remote-delete",
-      "git list-remotes",
-      "git remote -v",
-      "git show-config"
-    ],
-    answer: 2
-  },
-  {
-    question: "29. Which command adds a remote named origin?",
-    options: [
-      "git origin add URL",
-      "git remote add origin URL",
-      "git add remote origin",
-      "git push origin URL"
-    ],
-    answer: 1
-  },
-  {
-    question: "30. What is GitHub?",
-    options: [
-      "A Git command",
-      "An operating system",
-      "A programming language",
-      "A platform for hosting Git repositories and collaborating"
-    ],
-    answer: 3
-  },
-  {
-    question: "31. What is the difference between Git and GitHub?",
-    options: [
-      "Git is version control software; GitHub is a hosting and collaboration platform",
-      "They are exactly the same",
-      "GitHub is a Linux command",
-      "Git only works with databases"
-    ],
-    answer: 0
-  },
-  {
-    question: "32. Which command shows the changes between the working tree and staging area?",
-    options: [
-      "git log",
-      "git branch",
-      "git diff",
-      "git remote"
-    ],
-    answer: 2
-  },
-  {
-    question: "33. Which command shows staged changes compared with the last commit?",
-    options: [
-      "git diff",
-      "git diff --cached",
-      "git status --remote",
-      "git log --cached"
-    ],
-    answer: 1
-  },
-  {
-    question: "34. Which command unstages a staged file while keeping its changes?",
-    options: [
-      "git clean filename",
-      "git delete filename",
-      "git reset --hard HEAD",
-      "git restore --staged filename"
-    ],
-    answer: 3
-  },
-  {
-    question: "35. Which command discards unstaged changes in a tracked file?",
-    options: [
-      "git restore filename",
-      "git commit filename",
-      "git push filename",
-      "git fetch filename"
-    ],
-    answer: 0
-  },
-  {
-    question: "36. Which command creates a new commit that reverses an earlier commit?",
-    options: [
-      "git reset",
-      "git clean",
-      "git revert COMMIT_ID",
-      "git delete COMMIT_ID"
-    ],
-    answer: 2
-  },
-  {
-    question: "37. What does git reset --soft HEAD~1 do?",
-    options: [
-      "Deletes the entire repository",
-      "Moves HEAD back one commit and keeps changes staged",
-      "Deletes all branches",
-      "Pushes a commit to origin"
-    ],
-    answer: 1
-  },
-  {
-    question: "38. What does git reset --hard HEAD do?",
-    options: [
-      "Creates a new branch",
-      "Uploads all files",
-      "Reverts a remote repository automatically",
-      "Resets tracked files and staging to HEAD, discarding local tracked changes"
-    ],
-    answer: 3
-  },
-  {
-    question: "39. Which command temporarily saves tracked modifications and optionally untracked files?",
-    options: [
-      "git stash",
-      "git save",
-      "git archive",
-      "git hold"
-    ],
-    answer: 0
-  },
-  {
-    question: "40. Which command reapplies the latest stash and removes it from the stash list if successful?",
-    options: [
-      "git stash list",
-      "git stash show",
-      "git stash pop",
-      "git stash clear"
-    ],
-    answer: 2
-  },
-  {
-    question: "41. Which command lists saved stashes?",
-    options: [
-      "git stash show",
-      "git stash list",
-      "git stash pop",
-      "git stash remove-all"
-    ],
-    answer: 1
-  },
-  {
-    question: "42. Which command applies a stash without removing it from the stash list?",
-    options: [
-      "git stash delete",
-      "git stash clear",
-      "git stash pop",
-      "git stash apply"
-    ],
-    answer: 3
-  },
-  {
-    question: "43. What is a .gitignore file used for?",
-    options: [
-      "Specifying intentionally untracked files for Git to ignore",
-      "Storing commit messages",
-      "Saving remote passwords",
-      "Creating Git branches"
-    ],
-    answer: 0
-  },
-  {
-    question: "44. Which command removes untracked files from the working tree?",
-    options: [
-      "git restore",
-      "git reset",
-      "git clean",
-      "git revert"
-    ],
-    answer: 2
-  },
-  {
-    question: "45. Which command previews which untracked files git clean would remove?",
-    options: [
-      "git clean -f",
-      "git clean -n",
-      "git clean -x",
-      "git clean --delete"
-    ],
-    answer: 1
-  },
-  {
-    question: "46. What does HEAD usually represent in Git?",
-    options: [
-      "The remote server address",
-      "The Git installation directory",
-      "The .gitignore file",
-      "The currently checked-out commit or reference"
-    ],
-    answer: 3
-  },
-  {
-    question: "47. What is a detached HEAD state?",
-    options: [
-      "HEAD points directly to a commit rather than a local branch",
-      "Git is uninstalled",
-      "The repository has no files",
-      "The remote server is offline"
-    ],
-    answer: 0
-  },
-  {
-    question: "48. Which command displays information about a specific commit?",
-    options: [
-      "git init",
-      "git clean",
-      "git show COMMIT_ID",
-      "git remote"
-    ],
-    answer: 2
-  },
-  {
-    question: "49. Which command searches commit messages for a keyword?",
-    options: [
-      "git grep keyword",
-      "git log --grep=\"keyword\"",
-      "git status keyword",
-      "git branch keyword"
-    ],
-    answer: 1
-  },
-  {
-    question: "50. Which command searches tracked files for a text pattern?",
-    options: [
-      "git find",
-      "git log --search-only",
-      "git locate",
-      "git grep \"pattern\""
-    ],
-    answer: 3
-  },
-  {
-    question: "51. What is a Git tag commonly used for?",
-    options: [
-      "Marking a specific point in history, often a release",
-      "Deleting a remote",
-      "Staging all files",
-      "Resolving every merge conflict"
-    ],
-    answer: 0
-  },
-  {
-    question: "52. Which command creates a lightweight tag named v1.0?",
-    options: [
-      "git branch v1.0",
-      "git commit v1.0",
-      "git tag v1.0",
-      "git release v1.0"
-    ],
-    answer: 2
-  },
-  {
-    question: "53. Which command pushes the v1.0 tag to origin?",
-    options: [
-      "git push origin --branch v1.0",
-      "git push origin v1.0",
-      "git tag push v1.0",
-      "git upload-tag v1.0"
-    ],
-    answer: 1
-  },
-  {
-    question: "54. Which command deletes a local tag named v1.0?",
-    options: [
-      "git branch -d v1.0",
-      "git tag --remove-remote v1.0",
-      "git clean v1.0",
-      "git tag -d v1.0"
-    ],
-    answer: 3
-  },
-  {
-    question: "55. What does git cherry-pick do?",
-    options: [
-      "Applies changes from a specified commit onto the current branch",
-      "Deletes all commits",
-      "Creates a remote repository",
-      "Ignores a commit"
-    ],
-    answer: 0
-  },
-  {
-    question: "56. What does git rebase do?",
-    options: [
-      "Removes Git history permanently in every case",
-      "Uploads files without commits",
-      "Replays commits onto a new base commit",
-      "Creates a .gitignore file"
-    ],
-    answer: 2
-  },
-  {
-    question: "57. What is one major difference between merge and rebase?",
-    options: [
-      "Merge cannot combine branches",
-      "Merge can create a merge commit; rebase replays commits onto a new base",
-      "Rebase only works with remote branches",
-      "Merge always deletes the source branch"
-    ],
-    answer: 1
-  },
-  {
-    question: "58. Why should you be careful rebasing commits already shared with others?",
-    options: [
-      "Rebase disables Git",
-      "Rebase deletes every remote repository",
-      "Rebase makes all files read-only",
-      "Rebase rewrites commit history and can disrupt collaborators"
-    ],
-    answer: 3
-  },
-  {
-    question: "59. Which command continues a rebase after conflicts are resolved and files staged?",
-    options: [
-      "git rebase --continue",
-      "git merge --finish",
-      "git commit --rebase",
-      "git push --continue"
-    ],
-    answer: 0
-  },
-  {
-    question: "60. Which command aborts an in-progress rebase?",
-    options: [
-      "git rebase --delete",
-      "git reset --remote",
-      "git rebase --abort",
-      "git rebase --remove"
-    ],
-    answer: 2
-  },
-  {
-    question: "61. Which command shows the difference between two commits?",
-    options: [
-      "git status COMMIT1 COMMIT2",
-      "git diff COMMIT1 COMMIT2",
-      "git branch COMMIT1 COMMIT2",
-      "git remote COMMIT1 COMMIT2"
-    ],
-    answer: 1
-  },
-  {
-    question: "62. Which command displays the history of changes to HEAD and branch references?",
+    id: "q-3",
+    question: "You accidentally ran git reset --hard and lost a recent commit. Which command can help you locate the previous commit reference?",
     options: [
       "git reflog",
+      "git clean -fd",
+      "git remote -v",
+      "git status"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-4",
+    question: "A merge stops because two developers changed the same lines. What should you do?",
+    options: [
+      "Delete the conflicted files",
+      "Force-push the branch",
+      "Restart the computer",
+      "Resolve the conflicts, test the changes, stage the files, and complete the merge"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-5",
+    question: "You need to switch branches while keeping your uncommitted work. Which command can temporarily save your changes?",
+    options: [
+      "git clean -fd",
+      "git stash push",
+      "git reset --hard",
+      "git branch -D"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-6",
+    question: "Your latest local commit contains an incorrect commit message and has not been pushed. What can you use?",
+    options: [
+      "git fetch",
       "git clean",
-      "git init",
-      "git remote -v"
+      "git commit --amend",
+      "git remote remove origin"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-7",
+    question: "Your feature branch has several commits, but the team wants one clean commit before merging. What can you use?",
+    options: [
+      "Interactive rebase to squash commits",
+      "git clean -fd",
+      "git remote prune",
+      "git init"
     ],
     answer: 0
   },
   {
-    question: "63. You accidentally reset a branch. Which command may help locate the previous commit reference?",
+    id: "q-8",
+    question: "A faulty commit has already been shared with your team. You need to undo its changes without rewriting shared history. What should you use?",
     options: [
-      "git ignore",
-      "git config",
+      "git reset --hard",
+      "git clean -fd",
+      "git branch -D",
+      "git revert"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-9",
+    question: "You staged a log file accidentally but have not committed it. How do you unstage it without deleting the file?",
+    options: [
+      "git clean -fd",
+      "git restore --staged application.log",
+      "git reset --hard",
+      "git remote remove origin"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-10",
+    question: "Before committing a production fix, you want to inspect exactly what is staged. Which command should you run?",
+    options: [
+      "git branch -a",
+      "git remote -v",
+      "git diff --cached",
+      "git init"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-11",
+    question: "A pull request is blocked because a required CI status check failed. What should the developer do?",
+    options: [
+      "Inspect the failed check, fix the problem, and rerun the validation",
+      "Disable all branch protection rules",
+      "Merge using an administrator bypass immediately",
+      "Delete the pull request"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-12",
+    question: "A deployment workflow prints a cloud access token in its logs. What is the safest immediate response?",
+    options: [
+      "Only rename the workflow",
+      "Delete the log link and do nothing else",
+      "Wait until the next deployment",
+      "Revoke or rotate the token, assess exposure, and fix the logging issue"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-13",
+    question: "Your feature branch needs the latest changes from main. What is a reasonable approach?",
+    options: [
+      "Delete main",
+      "Fetch the latest changes and merge or rebase main according to team policy",
+      "Force-push main",
+      "Run git clean -fd"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-14",
+    question: "A workflow cannot publish a release because GitHub returns a permissions error. What should you inspect?",
+    options: [
+      "The repository logo",
+      "The README title",
+      "The workflow token permissions and required release permissions",
+      "The number of repository stars"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-15",
+    question: "A hotfix commit exists on another branch, but you do not want to merge the entire branch. Which command can apply just that commit?",
+    options: [
+      "git cherry-pick",
       "git clean",
-      "git reflog"
-    ],
-    answer: 3
-  },
-  {
-    question: "64. What is the purpose of git bisect?",
-    options: [
-      "To rename remote repositories",
-      "To encrypt files",
-      "To find the commit that introduced a bug using binary search",
-      "To delete old branches automatically"
-    ],
-    answer: 2
-  },
-  {
-    question: "65. Which command starts a binary-search debugging session?",
-    options: [
-      "git bisect start",
-      "git debug begin",
-      "git log --bisect-only",
-      "git branch --debug"
+      "git stash clear",
+      "git remote prune"
     ],
     answer: 0
   },
   {
-    question: "66. Which command applies a commit's changes without creating a commit immediately?",
+    id: "q-16",
+    question: "A production deployment health check fails after a new version is released. What should the pipeline do?",
     options: [
-      "git cherry-pick --delete",
-      "git cherry-pick --no-commit COMMIT_ID",
-      "git revert --remote",
-      "git merge --remove"
-    ],
-    answer: 1
-  },
-  {
-    question: "67. Which command renames a local branch?",
-    options: [
-      "git branch --move-remote",
-      "git rename branch",
-      "git switch --rename",
-      "git branch -m new-name"
+      "Ignore the failure",
+      "Continue deploying to every environment",
+      "Delete the production database",
+      "Stop promotion, investigate the failure, and roll back when appropriate"
     ],
     answer: 3
   },
   {
-    question: "68. Which command deletes a local branch that has been safely merged?",
+    id: "q-17",
+    question: "A file remains tracked even after you add it to .gitignore. What is the likely reason?",
     options: [
-      "git branch --delete-all",
-      "git clean -b",
-      "git branch -d branch-name",
-      "git remove branch-name"
+      "Git does not support ignore rules",
+      "The file is already tracked, so you must untrack it if appropriate",
+      "The remote server is offline",
+      "The branch name is invalid"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-18",
+    question: "A self-hosted CI runner is unavailable, and jobs remain queued. What should you investigate?",
+    options: [
+      "The README formatting",
+      "The repository description",
+      "Runner availability, labels, service health, and capacity",
+      "The pull request title"
     ],
     answer: 2
   },
   {
-    question: "69. Which command force-deletes a local branch?",
+    id: "q-19",
+    question: "A deployment regression appeared sometime during the last twenty commits. Which Git tool can help identify the offending commit?",
     options: [
-      "git branch -D branch-name",
-      "git branch -d --safe branch-name",
-      "git push -D branch-name",
-      "git clean branch-name"
+      "git bisect",
+      "git stash",
+      "git remote",
+      "git config"
     ],
     answer: 0
   },
   {
-    question: "70. Which command deletes a remote branch from origin?",
+    id: "q-20",
+    question: "A workflow deploys successfully but uses an older container image than expected. What should you verify?",
     options: [
-      "git branch -d origin/branch-name",
-      "git push origin --delete branch-name",
-      "git remote remove branch-name",
-      "git fetch --delete branch-name"
-    ],
-    answer: 1
-  },
-  {
-    question: "71. What is a pull request used for on platforms like GitHub?",
-    options: [
-      "Installing Git",
-      "Deleting a local repository",
-      "Reviewing and proposing changes to merge into another branch",
-      "Changing the operating system"
-    ],
-    answer: 2
-  },
-  {
-    question: "72. What is a fork in GitHub?",
-    options: [
-      "A commit conflict",
-      "A Git command that stages files",
-      "A local branch rename",
-      "A separate copy of a repository under another account or namespace"
+      "The README title",
+      "The repository avatar",
+      "The number of open issues",
+      "The image tag or digest, registry path, and deployment configuration"
     ],
     answer: 3
   },
   {
-    question: "73. What is the purpose of a code review?",
+    id: "q-21",
+    question: "Your local branch and origin/main have diverged. Which command updates remote-tracking references without merging changes?",
     options: [
-      "To inspect proposed changes for correctness, quality, and maintainability",
-      "To disable version control",
-      "To delete all tests",
-      "To replace Git with Docker"
+      "git commit",
+      "git fetch origin",
+      "git clean -fd",
+      "git tag -d"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-22",
+    question: "A workflow needs cloud access but your organization does not want long-lived cloud keys stored as secrets. What should you consider?",
+    options: [
+      "Commit the credentials into YAML",
+      "Share a personal password",
+      "Use OpenID Connect federation with a narrowly scoped cloud role",
+      "Disable cloud authentication"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-23",
+    question: "You need to apply a specific change to a release branch while preserving the original branch. Which command is suitable?",
+    options: [
+      "git cherry-pick <commit>",
+      "git clean -fd",
+      "git branch -D main",
+      "git init"
     ],
     answer: 0
   },
   {
-    question: "74. Which command updates remote-tracking references and prunes deleted remote branches?",
+    id: "q-24",
+    question: "A pull request from a fork attempts to access repository secrets. What is the safest approach?",
     options: [
-      "git push --prune-only",
-      "git branch --clean",
-      "git fetch --prune",
-      "git clean --remote"
-    ],
-    answer: 2
-  },
-  {
-    question: "75. What does origin usually mean in a Git repository?",
-    options: [
-      "The first commit",
-      "A conventional name for a remote repository",
-      "The staging area",
-      "The current Git username"
-    ],
-    answer: 1
-  },
-  {
-    question: "76. What is the default branch name in many newly created repositories today?",
-    options: [
-      "master-only",
-      "production",
-      "release",
-      "main"
+      "Expose all secrets to the fork",
+      "Give the contributor administrator access",
+      "Store credentials in the workflow file",
+      "Treat fork code as untrusted and restrict permissions and secret access"
     ],
     answer: 3
   },
   {
-    question: "77. Which command changes the last commit message without changing its contents?",
+    id: "q-25",
+    question: "You accidentally deleted a local branch containing unmerged work. What should you investigate?",
     options: [
-      "git commit --amend -m \"New message\"",
-      "git log --change-message",
-      "git push --amend",
-      "git message --update"
-    ],
-    answer: 0
-  },
-  {
-    question: "78. What can happen if you amend a commit that has already been pushed?",
-    options: [
-      "Git automatically updates every collaborator's copy",
-      "The repository is always deleted",
-      "The commit hash changes and updating the remote may require a history rewrite",
-      "Git prevents all future commits"
-    ],
-    answer: 2
-  },
-  {
-    question: "79. Which command pushes a local branch and sets its upstream tracking branch?",
-    options: [
-      "git pull --set-upstream origin feature",
-      "git push -u origin feature",
-      "git branch --set-origin feature",
-      "git remote track feature"
-    ],
-    answer: 1
-  },
-  {
-    question: "80. What is an upstream branch?",
-    options: [
-      "A deleted branch",
-      "A branch that cannot be merged",
-      "A branch containing only tags",
-      "A branch another local branch tracks for operations such as pull and status"
-    ],
-    answer: 3
-  },
-  {
-    question: "81. Which command shows the configured Git settings?",
-    options: [
+      "git clean -fd",
+      "git reflog and available references to recover the commit",
       "git config --list",
-      "git status --config-only",
-      "git settings --show",
-      "git list --settings"
-    ],
-    answer: 0
-  },
-  {
-    question: "82. Which command sets the default initial branch name for new repositories to main?",
-    options: [
-      "git branch --global main",
-      "git init --branch-default main",
-      "git config --global init.defaultBranch main",
-      "git config --branch main"
-    ],
-    answer: 2
-  },
-  {
-    question: "83. What does git diff --stat display?",
-    options: [
-      "All repository passwords",
-      "A summary of changed files and the number of insertions and deletions",
-      "Only remote branches",
-      "The full content of every commit"
+      "git remote remove origin"
     ],
     answer: 1
   },
   {
-    question: "84. Which command shows a list of files changed in a commit?",
+    id: "q-26",
+    question: "A GitHub Actions workflow runs twice for one change because it listens to push and pull_request events. What should you inspect?",
     options: [
-      "git branch --files",
-      "git remote --files",
-      "git init --files",
-      "git show --name-only COMMIT_ID"
-    ],
-    answer: 3
-  },
-  {
-    question: "85. Which command lists files tracked by Git?",
-    options: [
-      "git ls-files",
-      "git list-remote-files",
-      "git status --tracked-only",
-      "git files --all"
-    ],
-    answer: 0
-  },
-  {
-    question: "86. What happens if you add a file to .gitignore after Git already tracks it?",
-    options: [
-      "Git automatically stops tracking it",
-      "The repository becomes invalid",
-      "Git continues tracking it until it is removed from the index",
-      "Git deletes the file immediately"
+      "The repository logo",
+      "The README formatting",
+      "The event triggers and job conditions",
+      "The license badge"
     ],
     answer: 2
   },
   {
-    question: "87. Which command stops tracking a file but keeps the local file?",
+    id: "q-27",
+    question: "You want to inspect the history of a file that was renamed several times. Which command can help?",
     options: [
-      "git clean filename",
-      "git rm --cached filename",
-      "git restore --delete filename",
-      "git reset --hard filename"
-    ],
-    answer: 1
-  },
-  {
-    question: "88. What is the purpose of a Git hook?",
-    options: [
-      "To create a GitHub account",
-      "To replace all commits",
-      "To store large files by default",
-      "To run custom scripts at specific Git events"
-    ],
-    answer: 3
-  },
-  {
-    question: "89. Where are repository-specific Git hooks commonly stored?",
-    options: [
-      ".git/hooks",
-      ".git/branches/hooks",
-      "hooks.git",
-      "git/hooks.config"
+      "git log --follow -- path/to/file",
+      "git clean -fd",
+      "git stash clear",
+      "git remote remove origin"
     ],
     answer: 0
   },
   {
-    question: "90. What is Git LFS used for?",
+    id: "q-28",
+    question: "A workflow downloads dependencies on every run, making CI slow. What is a useful improvement?",
     options: [
-      "Creating Linux file systems",
-      "Replacing every Git commit",
-      "Managing large files using pointers and separate storage",
-      "Automatically resolving all merge conflicts"
-    ],
-    answer: 2
-  },
-  {
-    question: "91. What is a shallow clone?",
-    options: [
-      "A clone without any files",
-      "A clone that retrieves limited commit history",
-      "A clone containing only tags",
-      "A clone that cannot use branches"
-    ],
-    answer: 1
-  },
-  {
-    question: "92. Which command creates a shallow clone with only the latest commit history depth?",
-    options: [
-      "git clone --single-file URL",
-      "git clone --no-branches URL",
-      "git clone --history-none URL",
-      "git clone --depth 1 URL"
+      "Delete the test job",
+      "Skip dependency installation",
+      "Commit downloaded packages without review",
+      "Cache dependencies using keys based on lockfiles and relevant tool versions"
     ],
     answer: 3
   },
   {
-    question: "93. Which command initializes a repository with a specified initial branch name?",
+    id: "q-29",
+    question: "Your push fails because the repository rejects a file that exceeds its size limit. What should you do?",
     options: [
-      "git init -b main",
-      "git branch init main",
-      "git create --remote main",
-      "git switch --init main"
+      "Retry the same push indefinitely",
+      "Remove the oversized file from the commit/history as needed or use approved large-file storage",
+      "Rename the file only",
+      "Delete the remote URL"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-30",
+    question: "A workflow succeeds on staging but fails in production because a configuration variable is missing. What should you check?",
+    options: [
+      "The repository avatar",
+      "The pull request title",
+      "Environment-specific variables, secrets, and job environment configuration",
+      "The number of contributors"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-31",
+    question: "You need to see which commit introduced a suspicious line in a source file. Which command is useful?",
+    options: [
+      "git blame path/to/file",
+      "git remote -v",
+      "git clean -fd",
+      "git init"
     ],
     answer: 0
   },
   {
-    question: "94. What is a bare Git repository?",
+    id: "q-32",
+    question: "A production deployment must wait for approval from an authorized reviewer. What should be configured?",
     options: [
-      "A repository with no commits allowed",
-      "A repository that ignores all files",
-      "A repository containing Git data without a normal checked-out working tree",
-      "A repository that only works offline"
-    ],
-    answer: 2
-  },
-  {
-    question: "95. Which command creates a bare repository?",
-    options: [
-      "git init --empty",
-      "git init --bare",
-      "git clone --bare-working-tree",
-      "git create --server-only"
-    ],
-    answer: 1
-  },
-  {
-    question: "96. In a CI/CD pipeline, why is Git commonly used?",
-    options: [
-      "To replace the build server",
-      "To host running containers",
-      "To provision cloud networks by itself",
-      "To track source changes and trigger automated build or deployment workflows"
+      "A README checklist alone",
+      "A repository description",
+      "A local Git alias",
+      "A protected deployment environment with required reviewers"
     ],
     answer: 3
   },
   {
-    question: "97. A developer committed a secret API key. What is the best immediate action?",
+    id: "q-33",
+    question: "A developer accidentally pushed an incorrect commit to a shared branch. What is generally safer than rewriting shared history?",
     options: [
-      "Revoke or rotate the exposed key, then address the repository history and exposure",
-      "Only rename the file",
-      "Add the key to .gitignore and do nothing else",
-      "Delete the local Git installation"
+      "Delete the entire branch",
+      "Create a revert commit and validate the resulting code",
+      "Run git clean -fd",
+      "Remove the remote repository"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-34",
+    question: "A workflow fails because an external package registry returns HTTP 429. What should you do?",
+    options: [
+      "Retry continuously without delays",
+      "Disable authentication",
+      "Respect rate limits and use bounded retries with backoff and appropriate authentication",
+      "Delete the repository"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-35",
+    question: "You want to inspect which files changed in a particular commit before deployment. Which command can help?",
+    options: [
+      "git show --stat <commit>",
+      "git remote -v",
+      "git stash list",
+      "git branch -a"
     ],
     answer: 0
   },
   {
-    question: "98. Which authentication method is commonly used to access Git remotes securely?",
+    id: "q-36",
+    question: "A deployment workflow runs from an untrusted pull request and can access production credentials. What should you do?",
     options: [
-      "A Git commit message",
-      "A branch name",
-      "SSH keys or an HTTPS credential/token supported by the hosting service",
-      "The .gitignore file"
+      "Give it more permissions",
+      "Print credentials for debugging",
+      "Allow deployment from every branch",
+      "Restrict production deployment to trusted events, branches, permissions, and protected environments"
     ],
-    answer: 2
+    answer: 3
   },
   {
-    question: "99. A push is rejected because the remote branch has new commits. What is a common safe next step?",
+    id: "q-37",
+    question: "You need to rename a local branch without losing its commits. Which command can do this?",
     options: [
-      "Immediately delete the remote repository",
-      "Fetch and integrate the remote changes, resolve conflicts if needed, then push",
-      "Run git init again in the same repository",
-      "Delete every local commit"
+      "git clean -fd",
+      "git branch -m new-name",
+      "git reset --hard",
+      "git init"
     ],
     answer: 1
   },
   {
-    question: "100. Which Git practice is recommended for a production DevOps team?",
+    id: "q-38",
+    question: "A dependency security alert identifies a vulnerable package. What should the developer do?",
     options: [
-      "Commit passwords directly into source code",
-      "Force-push shared branches whenever possible",
-      "Avoid reviewing code changes",
-      "Use meaningful commits, review changes, protect important branches, and never commit secrets"
+      "Ignore the alert permanently",
+      "Disable dependency scanning",
+      "Review the advisory, upgrade or mitigate the dependency, and run tests",
+      "Delete all workflow files"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-39",
+    question: "You want to compare your feature branch with main before requesting review. Which command is useful?",
+    options: [
+      "git diff main...feature",
+      "git clean -fd",
+      "git config --list",
+      "git stash clear"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-40",
+    question: "A GitHub Actions job has permission to write to every repository resource, but only needs to read source code. What should you do?",
+    options: [
+      "Keep broad permissions permanently",
+      "Commit a personal access token",
+      "Disable all access controls",
+      "Set least-privilege GITHUB_TOKEN permissions"
     ],
     answer: 3
+  },
+  {
+    id: "q-41",
+    question: "A developer accidentally staged a secret but has not committed it. What should they do?",
+    options: [
+      "Push it and remove it later",
+      "Unstage it, remove it from the intended change, and rotate it if exposure occurred",
+      "Rename the repository",
+      "Run git branch -D"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-42",
+    question: "A workflow uploads a build artifact, but the deployment job cannot find it. What should you verify?",
+    options: [
+      "The pull request title",
+      "The repository avatar",
+      "Artifact name, upload path, workflow scope, and download configuration",
+      "The README heading"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-43",
+    question: "Your local branch contains a commit that should be removed, but the file changes must remain available for editing. Which command can help?",
+    options: [
+      "git reset --mixed HEAD~1",
+      "git reset --hard",
+      "git clean -fd",
+      "git remote prune"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-44",
+    question: "Two production deployment workflows start at the same time and may overwrite each other's changes. What should you implement?",
+    options: [
+      "Allow both deployments without checks",
+      "Disable health checks",
+      "Delete release tags",
+      "Use concurrency controls and a clear deployment promotion policy"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-45",
+    question: "You need to verify which URL your local origin remote uses before pushing. Which command should you run?",
+    options: [
+      "git clean -fd",
+      "git remote -v",
+      "git reset --hard",
+      "git stash clear"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-46",
+    question: "A code-scanning alert appears on a pull request. What is the correct response?",
+    options: [
+      "Close every alert without review",
+      "Disable scanning",
+      "Assess the finding, fix or mitigate the issue, and document any justified exception",
+      "Delete the workflow"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-47",
+    question: "You accidentally deleted a file from the working tree and want its committed version back without discarding other changes. What can you use?",
+    options: [
+      "git restore path/to/file",
+      "git clean -fd",
+      "git push --force",
+      "git branch -D"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-48",
+    question: "A production pipeline deploys an artifact different from the one tested in CI. What is the strongest improvement?",
+    options: [
+      "Rebuild from the newest branch during deployment",
+      "Skip artifact verification",
+      "Manually copy files without tracking them",
+      "Promote the same verified immutable artifact between environments and record its digest"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-49",
+    question: "A local branch tracks the wrong remote branch. How can you correct its upstream configuration?",
+    options: [
+      "git reset --hard",
+      "git branch --set-upstream-to=origin/correct-branch",
+      "git clean -fd",
+      "git stash drop"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-50",
+    question: "A critical production fix is ready. What should you do before pushing it?",
+    options: [
+      "Force-push before testing",
+      "Delete and recreate the branch",
+      "Review the diff, run relevant tests, commit the intended changes, and push to the correct branch",
+      "Run git clean -fd without checking its effects"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-51",
+    question: "A production deployment fails because cloud credentials configured for the workflow are rejected. What should you investigate?",
+    options: [
+      "Rename the repository",
+      "Disable authentication",
+      "Delete the workflow immediately",
+      "Check credential validity, secret or OIDC configuration, permissions, and sanitized logs"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-52",
+    question: "A required status check is missing from a pull request, so merging is blocked. What should you inspect?",
+    options: [
+      "The repository logo",
+      "Workflow triggers, job conditions, and the exact required check name",
+      "The README title",
+      "The number of repository stars"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-53",
+    question: "A workflow prints an API key in its logs. What should the team do first?",
+    options: [
+      "Only rename the environment variable",
+      "Delete the workflow file and stop there",
+      "Revoke or rotate the key, investigate exposure, and prevent further secret logging",
+      "Wait for the next release"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-54",
+    question: "A pull request is blocked because required reviewers have not approved it. What should the author do?",
+    options: [
+      "Request the required reviews and address the feedback",
+      "Disable branch protection",
+      "Force-push to the protected branch",
+      "Delete the pull request"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-55",
+    question: "A production workflow should deploy only after reviewed changes reach main. What is a suitable design?",
+    options: [
+      "Deploy every pull request immediately",
+      "Store credentials in source code",
+      "Disable testing on main",
+      "Separate validation and deployment triggers and restrict deployment to the approved branch or environment"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-56",
+    question: "A workflow cannot access a secret when triggered by a pull request from a fork. What is the likely reason?",
+    options: [
+      "GitHub never supports pull requests from forks",
+      "Fork pull-request workflows generally do not receive ordinary repository secrets for security",
+      "The repository name is invalid",
+      "Secrets must be written into YAML"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-57",
+    question: "A deployment job cannot push a container image to a registry. What should you verify?",
+    options: [
+      "The README title",
+      "The issue labels",
+      "Registry authentication, token permissions, image naming, and publishing logs",
+      "The number of contributors"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-58",
+    question: "A workflow uses a third-party action with excessive permissions. What is a stronger security practice?",
+    options: [
+      "Pin the action to a verified full commit SHA and review its permissions",
+      "Grant unlimited permissions",
+      "Print all secrets in the logs",
+      "Disable all dependency updates"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-59",
+    question: "An external contractor only needs access to one repository. What is the safer access configuration?",
+    options: [
+      "Make the contractor an organization owner",
+      "Share an administrator's password",
+      "Make the organization public",
+      "Grant the minimum required repository access and review or expire it when appropriate"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-60",
+    question: "A webhook integration stops receiving deployment events. What should you inspect?",
+    options: [
+      "The README heading",
+      "Webhook delivery history, endpoint response codes, secret verification, and subscribed events",
+      "The number of stars",
+      "The repository avatar"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-61",
+    question: "A pull request contains a vulnerable dependency detected by an automated alert. What should the developer do?",
+    options: [
+      "Close the alert without checking it",
+      "Disable dependency updates",
+      "Review the advisory, update or mitigate the dependency, and validate the application",
+      "Delete the source repository"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-62",
+    question: "A deployment succeeds, but the application is unreachable. What should you check?",
+    options: [
+      "The deployment target, network connectivity, service health, and application logs",
+      "Only the green workflow status",
+      "Only the README",
+      "The number of open issues"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-63",
+    question: "You need to remove a stale remote-tracking branch from your local repository. Which command is useful?",
+    options: [
+      "git reset --hard",
+      "git commit --amend",
+      "git branch -D main",
+      "git fetch --prune"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-64",
+    question: "A production workflow should require manual approval before deployment. The job currently deploys immediately. What should you check?",
+    options: [
+      "The pull request title",
+      "Whether the job references the correct protected environment and its required reviewers are configured",
+      "The README line count",
+      "The repository avatar"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-65",
+    question: "A workflow fails because an API request returns HTTP 429. What is the appropriate response?",
+    options: [
+      "Send unlimited immediate retries",
+      "Disable authentication",
+      "Respect rate-limit information and use bounded retries with backoff",
+      "Delete the repository"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-66",
+    question: "A team wants to prevent direct pushes to main and require reviewed changes. What should be configured?",
+    options: [
+      "Branch protection or repository rules requiring pull requests and appropriate reviews",
+      "A README badge",
+      "A repository description",
+      "A new release tag"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-67",
+    question: "A workflow uses a floating version tag for a third-party action, and the action changes unexpectedly. What reduces this risk?",
+    options: [
+      "Give the action more permissions",
+      "Store secrets in the action source",
+      "Disable workflow logs",
+      "Pin the action to a verified full commit SHA and update it through reviewed changes"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-68",
+    question: "A self-hosted runner may have executed untrusted pull-request code. What is the main concern?",
+    options: [
+      "The repository will lose its stars",
+      "Untrusted code may access runner files, credentials, or network resources",
+      "The repository name will change",
+      "The README may become shorter"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-69",
+    question: "A release workflow publishes an older image even though a new build passed. What should you investigate?",
+    options: [
+      "The issue title",
+      "The repository avatar",
+      "Artifact upload/download, image tags or digests, and the deployment checkout reference",
+      "The README language"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-70",
+    question: "An employee leaves the organization, but their personal access token may still work. What should the administrator do?",
+    options: [
+      "Revoke or expire the token and audit the associated access",
+      "Only rename the repository",
+      "Delete the README",
+      "Wait for the token to be used"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-71",
+    question: "A workflow matrix creates too many jobs and exceeds available runner capacity. What is a sensible solution?",
+    options: [
+      "Delete all tests",
+      "Disable branch protection",
+      "Create a new account",
+      "Refine the matrix combinations and control parallelism based on required coverage"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-72",
+    question: "A repository accidentally becomes public and contains internal information. What should the organization do?",
+    options: [
+      "Only change the repository description",
+      "Restrict visibility promptly, investigate what was exposed, and rotate affected secrets",
+      "Assume changing visibility removes every existing copy",
+      "Wait for a report"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-73",
+    question: "A deployment workflow needs to create an issue but receives a permissions error. What should you inspect?",
+    options: [
+      "The repository logo",
+      "The pull request title",
+      "GITHUB_TOKEN permissions, event restrictions, and the API request context",
+      "The number of stars"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-74",
+    question: "A team needs to identify which source commit produced a deployed container image. What should the pipeline record?",
+    options: [
+      "The immutable image digest and traceable source revision metadata",
+      "Only the branch name",
+      "Only the developer username",
+      "Only the workflow start time"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-75",
+    question: "A scheduled workflow does not run at the expected time. What should you check?",
+    options: [
+      "The README line count",
+      "The repository avatar",
+      "The latest pull request title",
+      "The cron expression, default-branch requirements, workflow syntax, and Actions status"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-76",
+    question: "A workflow deployment uses a personal access token belonging to one employee. What is a better long-term approach?",
+    options: [
+      "Share the employee's password",
+      "Use a narrowly scoped GITHUB_TOKEN, GitHub App, or OIDC approach when appropriate",
+      "Commit the token into YAML",
+      "Never rotate the token"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-77",
+    question: "A workflow succeeds in CI but the deployment job starts before its artifact is available. What should you configure?",
+    options: [
+      "A longer repository description",
+      "A random sleep as the only safeguard",
+      "Explicit job dependencies and reliable artifact upload/download steps",
+      "A second unrelated repository"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-78",
+    question: "A pull request changes a critical directory and must request review from a specific team. What can help automate this?",
+    options: [
+      "A CODEOWNERS file",
+      "A repository topic",
+      "A README badge",
+      "A release draft"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-79",
+    question: "A workflow's required check is no longer recognized after the job was renamed. What should you do?",
+    options: [
+      "Disable all required checks",
+      "Delete main",
+      "Force-merge all pull requests",
+      "Update the required status-check configuration to match the correct check and validate it"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-80",
+    question: "A dependency cache causes CI to use outdated packages after the lockfile changes. What should you improve?",
+    options: [
+      "Use the same cache key forever",
+      "Include lockfile hashes in cache keys and manage restore-key behavior carefully",
+      "Disable tests",
+      "Rename the repository"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-81",
+    question: "A deployment pipeline must not release an unreviewed commit. Which controls provide a stronger safeguard?",
+    options: [
+      "A README checklist alone",
+      "A chat message alone",
+      "Required reviews and checks, protected branches, and restricted deployment environments",
+      "A repository topic"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-82",
+    question: "A GitHub App integration has more permissions than it needs. What should the administrator do?",
+    options: [
+      "Reduce its permissions to the minimum required and rotate credentials if exposure is suspected",
+      "Grant organization-owner access",
+      "Share its private key with every developer",
+      "Disable audit logging"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-83",
+    question: "A workflow fails because a command behaves differently on Windows and Linux runners. What should you do?",
+    options: [
+      "Remove all CI jobs",
+      "Use the same incompatible command everywhere",
+      "Disable tests permanently",
+      "Use platform-appropriate commands or a deliberate cross-platform matrix"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-84",
+    question: "A workflow allows a failed security scan to continue without blocking the release. What is the risk?",
+    options: [
+      "It automatically improves security",
+      "A failed security gate may not block the pipeline, allowing risky code to be released",
+      "It rotates every credential",
+      "It prevents all logs from being created"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-85",
+    question: "A webhook receives duplicate delivery attempts and creates duplicate deployment tickets. What should the integration implement?",
+    options: [
+      "A larger issue title",
+      "Disable all logs",
+      "Idempotent processing and deduplication using delivery identifiers",
+      "A new repository for every event"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-86",
+    question: "A workflow uploads a package successfully, but the later deployment step fails. What should you inspect?",
+    options: [
+      "Publishing results, artifact coordinates or digest, credentials, and deployment logs",
+      "The repository description",
+      "The issue labels",
+      "The README heading"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-87",
+    question: "A release is associated with the wrong source commit. What should you verify?",
+    options: [
+      "The release author's avatar",
+      "The number of open issues",
+      "The repository description",
+      "The selected tag, tag target commit, workflow checkout reference, and artifact provenance"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-88",
+    question: "A repository needs a repeatable template for testing, deployment, and rollback information in every pull request. What should you use?",
+    options: [
+      "A repository topic",
+      "A pull request template",
+      "A profile biography",
+      "A release tag"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-89",
+    question: "A production deployment must be rolled back to a known-good version. What should the workflow support?",
+    options: [
+      "Rebuilding from the newest unreviewed branch",
+      "Deleting release history",
+      "Redeploying a previously verified immutable artifact and checking application health",
+      "Disabling monitoring"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-90",
+    question: "A workflow's test job fails, but its deployment job still runs. What should you inspect?",
+    options: [
+      "The needs dependencies, job conditions, and whether failures are being ignored",
+      "The repository logo",
+      "The README title",
+      "The number of stars"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-91",
+    question: "A workflow cannot download a private package. What should you verify?",
+    options: [
+      "The repository avatar",
+      "The pull request title",
+      "The number of contributors",
+      "Package access, token permissions, authentication, and registry URL"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-92",
+    question: "A team wants production deployment records linked to approvals and source changes. What is a good approach?",
+    options: [
+      "Rely only on developer memory",
+      "Use deployment and environment records, workflow logs, approvals, and source commit metadata",
+      "Delete all workflow history immediately",
+      "Share production credentials in chat"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-93",
+    question: "A workflow is failing intermittently even though the source code has not changed. What should you do?",
+    options: [
+      "Mark all failures as successful",
+      "Delete the test suite",
+      "Inspect logs, reproduce the issue, isolate flaky dependencies, and fix or quarantine it under policy",
+      "Disable CI permanently"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-94",
+    question: "A deployment succeeds in one cloud region but fails in another. What should you investigate?",
+    options: [
+      "Region-specific variables, credentials, permissions, networking, quotas, and health-check logs",
+      "The README title",
+      "The repository avatar",
+      "The number of pull requests"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-95",
+    question: "You need to identify who changed repository permissions. Where should an administrator look?",
+    options: [
+      "Only the README history",
+      "Only the commit graph",
+      "The repository's social preview",
+      "Available organization or enterprise audit logs and access-management records"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-96",
+    question: "A release workflow attempts to publish the same package version twice. What should you implement?",
+    options: [
+      "Ignore registry errors",
+      "Validate version uniqueness and make publishing steps safely idempotent where possible",
+      "Delete all release records",
+      "Use random versions without recording them"
+    ],
+    answer: 1
+  },
+  {
+    id: "q-97",
+    question: "A reusable workflow fails because a required input was not passed by the calling workflow. What should you inspect?",
+    options: [
+      "The README badge",
+      "The organization avatar",
+      "The reusable workflow's input declarations and the caller's with configuration",
+      "The number of open issues"
+    ],
+    answer: 2
+  },
+  {
+    id: "q-98",
+    question: "A workflow uses an untrusted pull request event to execute code with privileged credentials. What should you do?",
+    options: [
+      "Avoid executing untrusted code in a privileged context and restrict tokens, secrets, and event permissions",
+      "Give it more permissions",
+      "Print secrets for debugging",
+      "Allow deployments from every branch"
+    ],
+    answer: 0
+  },
+  {
+    id: "q-99",
+    question: "A production deployment workflow reports success even though the application health check fails. What should you change?",
+    options: [
+      "Remove the health check",
+      "Ignore application failures",
+      "Delete deployment logs",
+      "Make successful post-deployment health verification a requirement for reporting success"
+    ],
+    answer: 3
+  },
+  {
+    id: "q-100",
+    question: "Your team is building a production-ready CI/CD pipeline. Which overall approach is strongest?",
+    options: [
+      "Deploy every commit with broad credentials and no tests",
+      "Use reviewed changes, required checks, least-privilege credentials, protected deployments, verified artifacts, monitoring, and a tested rollback plan",
+      "Store cloud keys in source code and allow direct pushes",
+      "Skip security checks to release faster"
+    ],
+    answer: 1
   }
 ];
