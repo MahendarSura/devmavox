@@ -29,7 +29,7 @@ import { productionIncidentsSreQuestions } from './production-incidents-sre';
 import { ciCdPipelinesJenkinsQuestions } from './ci-cd-pipelines-jenkins';
 import { systemDesignDevOpsQuestions } from './system-design-devops';
 import { cloudCostOptimizationQuestions } from './cloud-cost-optimization';
-import { gitopsQuetions as gitopsQuestions } from './gitops';
+import { gitopsQuestions as gitopsQuestions } from './gitops';
 import { linuxTroubleshootingQuestions } from './linux-troubleshooting';
 import { devSecOpsQuestions } from './devsecops';
 import { observabilityLoggingQuestions } from './observability-logging';
@@ -100,8 +100,6 @@ const topicQuestions: Record<string, { question: string; options: string[]; answ
   helm: helmQuestions,
   maven: mavenQuestions,
   sonarqube: sonarqubeQuestions,
-
-  // Mapping corresponding question arrays for the extra 14 options
   'kubernetes-advanced': kubernetesAdvancedQuestions,
   'terraform-iac-advanced': terraformIacAdvancedQuestions,
   'production-incidents-sre': productionIncidentsSreQuestions,
