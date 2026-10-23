@@ -1,5 +1,5 @@
 export const argocdQuestions = [
-  // --- 1 to 20 ---
+  
   {
     question: "What is Argo CD primarily used for in Kubernetes environments?",
     options: [
