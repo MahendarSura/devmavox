@@ -1,4 +1,3 @@
-```ts
 export interface KubernetesQuestion {
   question: string;
   options: string[];
