@@ -1,4 +1,4 @@
-export interface aws-advancedQuestion {
+export interface AwsAdvancedQuestion {
   id: string;
   question: string;
   options: string[];
