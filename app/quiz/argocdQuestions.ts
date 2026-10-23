@@ -4,7 +4,7 @@ export interface ArgocdQuestion {
   answer: number;
 }
 
-export const argocdQuestions = [
+export const argocdQuestions = [argocdQuetion [] = [
   
   {
     question: "What is Argo CD primarily used for in Kubernetes environments?",
