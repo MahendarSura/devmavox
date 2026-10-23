@@ -5,7 +5,7 @@ export interface AwsAdvancedQuestion {
   answer: number;
 }
 
-export const aws-advancedQuestions: aws-advancedQuestion[] = [
+export const awsAdvancedQuestions: AwsAdvancedQuestion[] = [
   {
     id: "aws-advanced-1",
     question: "What is the main purpose of an AWS Transit Gateway?",
