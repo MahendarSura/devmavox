@@ -1,4 +1,3 @@
-```typescript
 export interface TopicQuestion {
   id: string;
   question: string;
