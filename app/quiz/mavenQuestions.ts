@@ -1006,4 +1006,3 @@ export const mavenQuestions: MavenQuestion[] = [
     answer: 3
   }
 ];
-```
