@@ -23,7 +23,7 @@ import { productionIncidentsSreQuestions } from './production-incidents-sre';
 import { ciCdPipelinesJenkinsQuestions } from './ci-cd-pipelines-jenkins';
 import { systemDesignDevOpsQuestions } from './system-design-devops';
 import { cloudCostOptimizationQuestions } from './cloud-cost-optimization';
-import { gitopsInterviewQA as gitopsQuestions } from './gitops';
+import { gitopsQuestions } from './gitops';
 import { linuxtroubleshootingQuestions } from './linux-troubleshooting';
 import { devsecopsQuestions } from './devsecops';
 import { observabilityloggingQuestions } from './observability-logging';
@@ -102,10 +102,12 @@ export const topicQuestions: Record<string, { question: string; options: string[
   'cloud-cost-optimization': cloudCostOptimizationQuestions,
   gitops: gitopsQuestions,
   'linux-troubleshooting': linuxtroubleshootingQuestions,
-  devsecops: devSecOpsQuestions,
-  'observability-logging': observabilityLoggingQuestions,
+  devsecops: devsecopsQuestions,
+  'observability-logging': observabilityloggingQuestions,
   'aws-advanced': awsAdvancedQuestions,
   'python-bash-scripting': pythonBashScriptingQuestions,
   'nginx-load-balancing': nginxLoadBalancingQuestions,
-  'networking-dns': networkingDnsQuestions,
+  'networking-dns': networkingdnsQuestions,
 };
+
+

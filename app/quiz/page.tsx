@@ -107,13 +107,13 @@ const topicQuestions: Record<string, { question: string; options: string[]; answ
   'system-design-devops': systemDesignDevOpsQuestions,
   'cloud-cost-optimization': cloudCostOptimizationQuestions,
   'gitops': gitopsQuestions,
-  'linux-troubleshooting': linuxTroubleshootingQuestions,
+  'linux-troubleshooting': linuxtroubleshootingQuestions,
   'devsecops': devsecopsQuestions,
-  'observability-logging': observabilityLoggingQuestions,
+  'observability-logging': observabilityloggingQuestions,
   'aws-advanced': awsAdvancedQuestions,
   'python-bash-scripting': pythonBashScriptingQuestions,
   'nginx-load-balancing': nginxLoadBalancingQuestions,
-  'networking-dns': networkingDnsQuestions,
+  'networking-dns': networkingdnsQuestions,
 };
 
 export default function QuizPage() {
@@ -261,3 +261,4 @@ export default function QuizPage() {
     </div>
   );
 }
+
