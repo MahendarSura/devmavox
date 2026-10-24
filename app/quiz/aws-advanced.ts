@@ -1107,4 +1107,3 @@ export const awsAdvancedQuestions: AwsAdvancedQuestion[] = [
     answer: 1
   }
 ];
-```

@@ -73,6 +73,61 @@ export default function Home() {
             </Link>
           </div>
         </section>
+
+        <section className="mx-auto max-w-7xl px-6 py-12">
+          <h2 className="mb-3 text-3xl font-extrabold tracking-tight md:text-4xl">
+            22 Advanced DevOps Features
+          </h2>
+          <p className="mb-8 text-slate-400">
+            Explore practical tools and resources to improve your DevOps skills.
+          </p>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {[
+              { title: "DevOps Learning Roadmap", desc: "Follow a structured DevOps learning path.", icon: "🗺️", link: "/devops-learning-roadmap" },
+              { title: "Hands-on Labs", desc: "Practise Linux, Git, Docker and Kubernetes.", icon: "💻", link: "/hands-on-labs" },
+              { title: "Real-Time Projects", desc: "Build practical cloud and CI/CD projects.", icon: "🚀", link: "/real-time-projects" },
+              { title: "Troubleshooting Center", desc: "Learn to diagnose and fix common errors.", icon: "🔧", link: "/troubleshooting-center" },
+              { title: "Notes & Cheat Sheets", desc: "Revise commands and technical concepts.", icon: "📝", link: "/notes-cheat-sheets" },
+              { title: "DevOps Glossary", desc: "Understand DevOps terms with examples.", icon: "📖", link: "/devops-glossary" },
+              { title: "CI/CD Pipeline Visualizer", desc: "Understand pipeline stages and deployments.", icon: "⚡", link: "/cicd-pipeline-visualizer" },
+              { title: "Architecture Diagram Library", desc: "Explore cloud and DevOps architecture diagrams.", icon: "🏛️", link: "/architecture-diagram-library" },
+              { title: "YAML Config Playground", desc: "Practise Kubernetes and pipeline YAML.", icon: "📄", link: "/yaml-config-playground" },
+              { title: "Command Explorer", desc: "Explore Linux, Git, Docker and kubectl commands.", icon: "⌨️", link: "/command-explorer" },
+              { title: "Incident Simulator", desc: "Practise responding to service incidents.", icon: "🚨", link: "/incident-simulator" },
+              { title: "Cloud Cost Lab", desc: "Learn cloud cost optimization techniques.", icon: "💰", link: "/cloud-cost-lab" },
+              { title: "Git Workflow Simulator", desc: "Practise branching, merging and conflict resolution.", icon: "🌿", link: "/git-workflow-simulator" },
+              { title: "Monitoring Playground", desc: "Explore metrics, logs and alerts.", icon: "📈", link: "/monitoring-playground" },
+              { title: "DevOps Knowledge Base", desc: "Find technical explanations and references.", icon: "📚", link: "/devops-knowledge-base" },
+              { title: "Portfolio Builder", desc: "Organize your DevOps projects and achievements.", icon: "💼", link: "/portfolio-builder" },
+              { title: "Study Planner & Progress Tracker", desc: "Plan learning goals and track progress.", icon: "📅", link: "/study-planner" },
+              { title: "DevOps Career Center", desc: "Prepare for DevOps roles and interviews.", icon: "🧭", link: "/devops-career-center" },
+              { title: "DevOps AI Assistant", desc: "Get help with concepts and troubleshooting.", icon: "🤖", link: "/devops-ai-assistant" },
+              { title: "Daily DevOps Challenge", desc: "Practise a new DevOps task every day.", icon: "🏆", link: "/daily-devops-challenge" },
+              { title: "Tech Version Compatibility", desc: "Review compatibility across DevOps tools.", icon: "🔗", link: "/tech-version-compatibility" },
+              { title: "DevSecOps Security Lab", desc: "Learn IAM, secrets and container security.", icon: "🛡️", link: "/devsecops-security-lab" },
+            ].map((item) => (
+              <Link
+                key={item.link}
+                href={item.link}
+                className="group flex min-h-64 flex-col rounded-2xl border border-slate-800 bg-slate-900/70 p-8 transition-all hover:-translate-y-1 hover:border-cyan-500 hover:bg-slate-900"
+              >
+                <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-xl border border-slate-700 bg-slate-800 text-4xl">
+                  {item.icon}
+                </div>
+                <h3 className="text-2xl font-bold transition-all group-hover:text-cyan-400">
+                  {item.title}
+                </h3>
+                <p className="mt-3 flex-1 text-base leading-7 text-slate-400">
+                  {item.desc}
+                </p>
+                <div className="mt-5 border-t border-slate-800 pt-4 font-bold text-cyan-400">
+                  Explore Feature ➔
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
       </main>
 
       <footer className="border-t border-slate-900 py-8 text-center text-sm text-slate-500">
@@ -81,3 +136,5 @@ export default function Home() {
     </div>
   );
 }
+
+
