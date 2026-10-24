@@ -1080,24 +1080,21 @@ export const gitQuestions: gitQuestion[] = [
       "Give it more permissions",
       "Print secrets for debugging",
       "Allow deployments from every branch"
-    ],
-    answer: 0
-  },
-  {
-    id: "q-99",
-    question: "A production deployment workflow reports success even though the application health check fails. What should you change?",
-    options: [
-      "Remove the health check",
-      "Ignore application failures",
-      "Delete deployment logs",
-      "Make successful post-deployment health verification a requirement for reporting success"
-    ],
-    answer: 3
-  },
-  {
-    id: "q-100",
-    question: "Your team is building a production-ready CI/CD pipeline. Which overall approach is strongest?",
-    options: [
+   {
+  id: "q-99",
+  question: "A production deployment workflow reports success even though the application health check fails. What should you change?",
+  options: [
+    "Remove the health check",
+    "Ignore application failures",
+    "Delete deployment logs",
+    "Make successful post-deployment health verification a requirement for reporting success"
+  ],
+  answer: 3
+},
+{
+  id: "q-100",
+  question: "Your team is building a production-ready CI/CD pipeline. Which overall approach is strongest?",
+  options: [
       "Deploy every commit with broad credentials and no tests",
       "Use reviewed changes, required checks, least-privilege credentials, protected deployments, verified artifacts, monitoring, and a tested rollback plan",
       "Store cloud keys in source code and allow direct pushes",
