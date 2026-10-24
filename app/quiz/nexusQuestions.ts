@@ -1,11 +1,10 @@
-```ts
-export interface NexusQuestion {
+export interface nexusQuestion {
   question: string;
   options: string[];
   answer: number;
 }
 
-export const nexusQuestions: NexusQuestion[] = [
+export const nexusQuestions: eexusQuestion[] = [
   {
     question: "1. What is Sonatype Nexus Repository Manager?",
     options: [
