@@ -1,4 +1,3 @@
-```typescript
 export interface SonarQubeQuestion {
   id: number;
   question: string;
