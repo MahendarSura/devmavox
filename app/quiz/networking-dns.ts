@@ -1,12 +1,12 @@
 
-export interface TopicQuestion {
+export interface networkingdnsQuestion {
   id: string;
   question: string;
   options: string[];
   answer: number;
 }
 
-export const topicQuestions: TopicQuestion[] = [
+export const networkingdnsQuestions: networkingdnsQuestion[] = [
   {
     id: "networking-dns-1",
     question: "What is the primary purpose of a computer network?",
