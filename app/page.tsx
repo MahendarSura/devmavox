@@ -4,121 +4,78 @@ import React from 'react';
 import Link from 'next/link';
 
 export default function Home() {
-  const courses = [
-    { title: "Linux & Shell Scripting", desc: "OS fundamentals, file systems, bash scripting.", icon: "🐧" },
-    { title: "Git & GitHub", desc: "Version control, branching, merge conflicts, workflows.", icon: "🌿" },
-    { title: "Docker & Containers", desc: "Containerization, Dockerfile, image management.", icon: "🐳" },
-    { title: "Kubernetes (EKS)", desc: "Cluster architecture, pods, deployments, services.", icon: "☸️" },
-    { title: "AWS Cloud", desc: "EC2, S3, IAM, VPC, real-world cloud infrastructure.", icon: "☁️" },
-    { title: "Terraform & IaC", desc: "Infrastructure as Code, automation, state management.", icon: "🏗️" },
-    { title: "Jenkins CI/CD", desc: "Pipeline automation, build triggers, plugins, agents.", icon: "⚙️" },
-    { title: "ArgoCD (GitOps)", desc: "Declarative continuous delivery for Kubernetes.", icon: "🐙" },
-    { title: "Ansible", desc: "Configuration management, playbooks, automation.", icon: "📜" },
-    { title: "Prometheus & Grafana", desc: "Monitoring, alerting, metrics collection, dashboards.", icon: "📊" },
-    { title: "Apache Tomcat", desc: "Java application server deployment and management.", icon: "☕" },
-    { title: "Jira & Agile", desc: "Issue tracking, sprint planning, project management.", icon: "📋" },
-    { title: "Slack & Collaboration", desc: "CI/CD webhook notifications and alerts integration.", icon: "💬" }
-  ];
-
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-slate-950">
-      {/* Navbar */}
-      <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-900/50 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <Link href="/" className="flex items-center space-x-3">
-            <span className="text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-2xl font-black text-transparent">
               Devmavox
             </span>
-            <span className="text-xs px-2 py-0.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-full font-medium">
+            <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2 py-0.5 text-xs font-medium text-cyan-400">
               Beta
             </span>
           </Link>
 
-          <div className="flex items-center space-x-6">
-            <Link href="/" className="text-sm font-semibold text-cyan-400 transition-all">
+          <nav className="flex items-center space-x-4 sm:space-x-6">
+            <Link href="/" className="text-sm font-semibold text-cyan-400">
               Home
             </Link>
-            <a href="#courses" className="text-sm font-semibold text-slate-400 hover:text-white transition-all">
-              Courses
-            </a>
-            <Link 
-              href="/quiz" 
-              className="text-sm font-semibold px-4 py-1.5 rounded-lg bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-all font-bold shadow-lg shadow-cyan-500/20"
+            <Link href="/explore-courses" className="text-sm font-semibold text-slate-400 transition-all hover:text-white">
+              Explore Courses
+            </Link>
+            <Link
+              href="/quiz"
+              className="rounded-lg bg-cyan-500 px-4 py-1.5 text-sm font-bold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:bg-cyan-400"
             >
               Quiz Practice
             </Link>
-          </div>
+          </nav>
         </div>
       </header>
 
-      {/* Main Content Area */}
       <main className="pb-20">
-        {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-6 py-20 text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 via-transparent to-transparent pointer-events-none blur-3xl"></div>
-          <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
+        <section className="relative mx-auto max-w-7xl overflow-hidden px-6 py-20 text-center">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-cyan-500/10 via-transparent to-transparent blur-3xl" />
+
+          <div className="mb-4 inline-block rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-sm font-medium text-blue-400">
             🚀 Android App Coming Soon!
           </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 max-w-4xl mx-auto leading-tight">
-            Learn DevOps in Telugu & English
+
+          <h1 className="mx-auto mb-6 max-w-4xl text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">
+            Learn DevOps in Telugu &amp; English
           </h1>
-          <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10">
+
+          <p className="mx-auto mb-10 max-w-2xl text-lg text-slate-400 md:text-xl">
             Master AWS, Linux, Docker, Kubernetes, Jenkins, Terraform, Ansible, and more step-by-step. Practical labs and courses designed for beginners.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <a
-              href="#courses"
-              className="px-8 py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold transition-all shadow-lg shadow-cyan-500/20"
+
+          <div className="flex flex-col justify-center gap-4 sm:flex-row">
+            <Link
+              href="/explore-courses"
+              className="rounded-xl bg-cyan-500 px-8 py-3.5 font-bold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:bg-cyan-400"
             >
               Explore Courses
-            </a>
+            </Link>
+
             <Link
               href="/quiz"
-              className="px-8 py-3.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-500 text-slate-100 font-bold transition-all shadow-lg text-center"
+              className="rounded-xl border border-slate-700 bg-slate-900 px-8 py-3.5 text-center font-bold text-slate-100 shadow-lg transition-all hover:border-cyan-500"
             >
               Quiz Practice ➔
             </Link>
+
             <Link
               href="/interview"
-              className="px-8 py-3.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-500 text-cyan-400 font-bold transition-all shadow-lg text-center hover:bg-slate-800"
+              className="rounded-xl border border-slate-700 bg-slate-900 px-8 py-3.5 text-center font-bold text-cyan-400 shadow-lg transition-all hover:border-cyan-500 hover:bg-slate-800"
             >
-              Interview Q&A ➔
+              Interview Q&amp;A ➔
             </Link>
-          </div>
-        </section>
-
-        {/* Courses Section */}
-        <section id="courses" className="max-w-7xl mx-auto px-6 py-16 border-t border-slate-900 scroll-mt-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-3">Core DevOps Courses & Tools</h2>
-            <p className="text-slate-400">From absolute zero to production-ready engineer. Explore our video courses below!</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courses.map((course, idx) => (
-              <div
-                key={idx}
-                className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/50 transition-all group hover:shadow-xl hover:shadow-cyan-500/5 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="text-4xl mb-4 p-3 bg-slate-800/80 w-fit rounded-xl border border-slate-700/50 group-hover:scale-110 transition-transform">
-                    {course.icon}
-                  </div>
-                  <h3 className="text-xl font-bold mb-2 group-hover:text-cyan-400 transition-colors">
-                    {course.title}
-                  </h3>
-                  <p className="text-slate-400 text-sm leading-relaxed">
-                    {course.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-900 py-8 text-center text-slate-500 text-sm">
+      <footer className="border-t border-slate-900 py-8 text-center text-sm text-slate-500">
         <p>© 2026 Devmavox. Built with passion for learners.</p>
       </footer>
     </div>
