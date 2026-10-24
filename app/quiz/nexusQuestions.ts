@@ -4,7 +4,7 @@ export interface nexusQuestion {
   answer: number;
 }
 
-export const nexusQuestions: eexusQuestion[] = [
+export const nexusQuestions: nexusQuestion[] = [
   {
     question: "1. What is Sonatype Nexus Repository Manager?",
     options: [
