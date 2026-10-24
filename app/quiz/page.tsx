@@ -29,10 +29,10 @@ import { productionIncidentsSreQuestions } from './production-incidents-sre';
 import { ciCdPipelinesJenkinsQuestions } from './ci-cd-pipelines-jenkins';
 import { systemDesignDevOpsQuestions } from './system-design-devops';
 import { cloudCostOptimizationQuestions } from './cloud-cost-optimization';
-import { gitopsQuestions as gitopsQuestions } from './gitops';
+import { gitopsQuestions } from './gitops';
 import { linuxTroubleshootingQuestions } from './linux-troubleshooting';
 import { devsecopsQuestions } from './devsecops';
-import { observabilityLoggingQuestions } from './observability-logging';
+import { observabilityloggingQuestions } from './observability-logging';
 import { awsAdvancedQuestions } from './aws-advanced';
 import { pythonBashScriptingQuestions } from './python-bash-scripting';
 import { nginxLoadBalancingQuestions } from './nginx-load-balancing';
@@ -106,9 +106,9 @@ const topicQuestions: Record<string, { question: string; options: string[]; answ
   'ci-cd-pipelines-jenkins': ciCdPipelinesJenkinsQuestions,
   'system-design-devops': systemDesignDevOpsQuestions,
   'cloud-cost-optimization': cloudCostOptimizationQuestions,
-  gitops: gitopsQuestions,
+  'gitops': gitopsQuestions,
   'linux-troubleshooting': linuxTroubleshootingQuestions,
-  devsecops: devsecopsQuestions,
+  'devsecops': devsecopsQuestions,
   'observability-logging': observabilityLoggingQuestions,
   'aws-advanced': awsAdvancedQuestions,
   'python-bash-scripting': pythonBashScriptingQuestions,
