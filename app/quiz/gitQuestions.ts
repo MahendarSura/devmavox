@@ -1090,7 +1090,7 @@ export const gitQuestions: gitQuestion[] = [
     "Make successful post-deployment health verification a requirement for reporting success"
   ],
   answer: 3
-},
+}
 {
   id: "q-100",
   question: "Your team is building a production-ready CI/CD pipeline. Which overall approach is strongest?",
