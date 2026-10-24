@@ -1,4 +1,3 @@
-```ts
 export interface MavenQuestion {
   question: string;
   options: string[];
