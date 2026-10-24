@@ -962,4 +962,3 @@ export const pythonBashScriptingQuestions: pythonBashScriptingQuestion[] = [
     answer: 3
   }
 ];
-```
