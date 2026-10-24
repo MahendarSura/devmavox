@@ -1,11 +1,11 @@
-export interface TopicQuestion {
+export interface observabilityloggingQuestion {
   id: string;
   question: string;
   options: string[];
   answer: number;
 }
 
-export const topicQuestions: TopicQuestion[] = [
+export const observabilityloggingQuestions: observabilityloggingQuestion[] = [
   {
     id: "observability-1",
     question: "What is observability?",
