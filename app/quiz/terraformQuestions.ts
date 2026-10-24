@@ -1097,4 +1097,3 @@ export const terraformQuestions: TerraformQuestion[] = [
     answer: 3
   }
 ];
-```
