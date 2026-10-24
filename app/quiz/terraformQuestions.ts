@@ -1,4 +1,3 @@
-```typescript
 export interface TerraformQuestion {
   id: number;
   question: string;
