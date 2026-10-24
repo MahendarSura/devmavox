@@ -1,11 +1,11 @@
-export interface TopicQuestion {
+export interface linuxtroubleshootingQuestion {
   id: string;
   question: string;
   options: string[];
   answer: number;
 }
 
-export const topicQuestions: TopicQuestion[] = [
+export const linuxtroubleshootingQuestions: linuxtroubleshootingQuestion[] = [
   {
     id: "linux-troubleshooting-1",
     question: "Which command displays the current working directory?",
