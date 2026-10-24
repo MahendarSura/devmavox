@@ -31,7 +31,7 @@ import { systemDesignDevOpsQuestions } from './system-design-devops';
 import { cloudCostOptimizationQuestions } from './cloud-cost-optimization';
 import { gitopsQuestions as gitopsQuestions } from './gitops';
 import { linuxTroubleshootingQuestions } from './linux-troubleshooting';
-import { devSecOpsQuestions } from './devsecops';
+import { devsecopsQuestions } from './devsecops';
 import { observabilityLoggingQuestions } from './observability-logging';
 import { awsAdvancedQuestions } from './aws-advanced';
 import { pythonBashScriptingQuestions } from './python-bash-scripting';
@@ -108,7 +108,7 @@ const topicQuestions: Record<string, { question: string; options: string[]; answ
   'cloud-cost-optimization': cloudCostOptimizationQuestions,
   gitops: gitopsQuestions,
   'linux-troubleshooting': linuxTroubleshootingQuestions,
-  devsecops: devSecOpsQuestions,
+  devsecops: devsecopsQuestions,
   'observability-logging': observabilityLoggingQuestions,
   'aws-advanced': awsAdvancedQuestions,
   'python-bash-scripting': pythonBashScriptingQuestions,
