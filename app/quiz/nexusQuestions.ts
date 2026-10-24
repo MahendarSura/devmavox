@@ -1006,4 +1006,3 @@ export const nexusQuestions: eexusQuestion[] = [
     answer: 3
   }
 ];
-```
