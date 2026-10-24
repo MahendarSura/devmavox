@@ -76,7 +76,7 @@ export default function Home() {
 
         <section className="mx-auto max-w-7xl px-6 py-12">
           <h2 className="mb-3 text-3xl font-extrabold tracking-tight md:text-4xl">
-            22 Advanced DevOps Features
+              Advanced DevOps Features
           </h2>
           <p className="mb-8 text-slate-400">
             Explore practical tools and resources to improve your DevOps skills.
