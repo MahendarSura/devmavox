@@ -1,4 +1,3 @@
-```typescript
 export interface PrometheusQuestion {
   id: number;
   question: string;
