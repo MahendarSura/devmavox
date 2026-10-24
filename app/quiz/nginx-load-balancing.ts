@@ -1,11 +1,11 @@
-export interface TopicQuestion {
+export interface nginxLoadBalancingQuestion {
   id: string;
   question: string;
   options: string[];
   answer: number;
 }
 
-export const topicQuestions: TopicQuestion[] = [
+export const nginxLoadBalancingQuestions: nginxLoadBalancingQuestion[] = [
   {
     id: "nginx-1",
     question: "What is Nginx primarily used for?",
