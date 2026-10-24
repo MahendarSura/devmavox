@@ -1062,4 +1062,3 @@ export const prometheusQuestions: PrometheusQuestion[] = [
     answer: 2
   }
 ];
-```
