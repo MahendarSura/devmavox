@@ -1107,4 +1107,3 @@ export const sonarqubeQuestions: SonarQubeQuestion[] = [
     answer: 3
   }
 ];
-```
