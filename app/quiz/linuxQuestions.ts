@@ -1006,4 +1006,3 @@ export const linuxQuestions: LinuxQuestion[] = [
     answer: 3
   }
 ];
-```
