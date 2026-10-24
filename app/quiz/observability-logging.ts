@@ -1107,4 +1107,3 @@ export const observabilityloggingQuestions: observabilityloggingQuestion[] = [
     answer: 1
   }
 ];
-```
