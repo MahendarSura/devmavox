@@ -1,12 +1,11 @@
-```typescript
-export interface TopicQuestion {
+export interface pythonBashScriptingQuestion {
   id: string;
   question: string;
   options: string[];
   answer: number;
 }
 
-export const topicQuestions: TopicQuestion[] = [
+export const pythonBashScriptingQuestions: pythonBashScriptingQuestion[] = [
   {
     id: "python-bash-1",
     question: "Why is Python commonly used in DevOps?",
