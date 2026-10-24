@@ -30,13 +30,13 @@ import { ciCdPipelinesJenkinsQuestions } from './ci-cd-pipelines-jenkins';
 import { systemDesignDevOpsQuestions } from './system-design-devops';
 import { cloudCostOptimizationQuestions } from './cloud-cost-optimization';
 import { gitopsQuestions } from './gitops';
-import { linuxTroubleshootingQuestions } from './linux-troubleshooting';
+import { linuxtroubleshootingQuestions } from './linux-troubleshooting';
 import { devsecopsQuestions } from './devsecops';
 import { observabilityloggingQuestions } from './observability-logging';
 import { awsAdvancedQuestions } from './aws-advanced';
 import { pythonBashScriptingQuestions } from './python-bash-scripting';
 import { nginxLoadBalancingQuestions } from './nginx-load-balancing';
-import { networkingDnsQuestions } from './networking-dns';
+import { networkingdnsQuestions } from './networking-dns';
 
 interface Topic {
   id: string;
