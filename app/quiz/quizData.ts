@@ -101,7 +101,7 @@ export const topicQuestions: Record<string, { question: string; options: string[
   'system-design-devops': systemDesignDevOpsQuestions,
   'cloud-cost-optimization': cloudCostOptimizationQuestions,
   gitops: gitopsQuestions,
-  'linux-troubleshooting': linuxTroubleshootingQuestions,
+  'linux-troubleshooting': linuxtroubleshootingQuestions,
   devsecops: devSecOpsQuestions,
   'observability-logging': observabilityLoggingQuestions,
   'aws-advanced': awsAdvancedQuestions,
