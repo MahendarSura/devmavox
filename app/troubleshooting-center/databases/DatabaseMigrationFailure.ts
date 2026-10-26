@@ -6,6 +6,6 @@ export const DatabaseMigrationFailureGuide = {
   title: "DatabaseMigrationFailure Troubleshooting",
   category: "databases",
   severity: "High",
-  description: "Production diagnostic guide for resolving DatabaseMigrationFailure."
+  description: "Production guide for DatabaseMigrationFailure."
 };
 export default DatabaseMigrationFailureGuide;

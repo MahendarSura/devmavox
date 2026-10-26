@@ -1,11 +1,11 @@
 // ============================================================================
-// DevMavox Enterprise Troubleshooting Guide: aws - VPC-RouteTableIssue
+// DevMavox Enterprise Troubleshooting Guide: aws-eks - VPC-RouteTableIssue
 // ============================================================================
 export const VPC-RouteTableIssueGuide = {
-  id: "aws-VPC-RouteTableIssue".toLowerCase(),
+  id: "aws-eks-VPC-RouteTableIssue".toLowerCase(),
   title: "VPC-RouteTableIssue Troubleshooting",
-  category: "aws",
+  category: "aws-eks",
   severity: "High",
-  description: "Production diagnostic guide for resolving VPC-RouteTableIssue."
+  description: "Production guide for VPC-RouteTableIssue."
 };
 export default VPC-RouteTableIssueGuide;

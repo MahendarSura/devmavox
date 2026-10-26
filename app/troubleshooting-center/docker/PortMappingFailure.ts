@@ -6,6 +6,6 @@ export const PortMappingFailureGuide = {
   title: "PortMappingFailure Troubleshooting",
   category: "docker",
   severity: "High",
-  description: "Production diagnostic guide for resolving PortMappingFailure."
+  description: "Production guide for PortMappingFailure."
 };
 export default PortMappingFailureGuide;

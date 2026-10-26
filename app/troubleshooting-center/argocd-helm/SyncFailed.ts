@@ -1,11 +1,11 @@
 // ============================================================================
-// DevMavox Enterprise Troubleshooting Guide: argocd - SyncFailed
+// DevMavox Enterprise Troubleshooting Guide: argocd-helm - SyncFailed
 // ============================================================================
 export const SyncFailedGuide = {
-  id: "argocd-SyncFailed".toLowerCase(),
+  id: "argocd-helm-SyncFailed".toLowerCase(),
   title: "SyncFailed Troubleshooting",
-  category: "argocd",
+  category: "argocd-helm",
   severity: "High",
-  description: "Production diagnostic guide for resolving SyncFailed."
+  description: "Production guide for SyncFailed."
 };
 export default SyncFailedGuide;

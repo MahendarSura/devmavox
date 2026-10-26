@@ -1,11 +1,11 @@
 // ============================================================================
-// DevMavox Enterprise Troubleshooting Guide: aws - S3AccessDenied
+// DevMavox Enterprise Troubleshooting Guide: aws-eks - S3AccessDenied
 // ============================================================================
 export const S3AccessDeniedGuide = {
-  id: "aws-S3AccessDenied".toLowerCase(),
+  id: "aws-eks-S3AccessDenied".toLowerCase(),
   title: "S3AccessDenied Troubleshooting",
-  category: "aws",
+  category: "aws-eks",
   severity: "High",
-  description: "Production diagnostic guide for resolving S3AccessDenied."
+  description: "Production guide for S3AccessDenied."
 };
 export default S3AccessDeniedGuide;

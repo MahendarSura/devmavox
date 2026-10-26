@@ -6,6 +6,6 @@ export const ValidateConfigurationErrorGuide = {
   title: "ValidateConfigurationError Troubleshooting",
   category: "terraform",
   severity: "High",
-  description: "Production diagnostic guide for resolving ValidateConfigurationError."
+  description: "Production guide for ValidateConfigurationError."
 };
 export default ValidateConfigurationErrorGuide;

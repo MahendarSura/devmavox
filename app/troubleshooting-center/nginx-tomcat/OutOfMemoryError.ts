@@ -6,6 +6,6 @@ export const OutOfMemoryErrorGuide = {
   title: "OutOfMemoryError Troubleshooting",
   category: "nginx-tomcat",
   severity: "High",
-  description: "Production diagnostic guide for resolving OutOfMemoryError."
+  description: "Production guide for OutOfMemoryError."
 };
 export default OutOfMemoryErrorGuide;

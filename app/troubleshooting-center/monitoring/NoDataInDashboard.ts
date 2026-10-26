@@ -6,6 +6,6 @@ export const NoDataInDashboardGuide = {
   title: "NoDataInDashboard Troubleshooting",
   category: "monitoring",
   severity: "High",
-  description: "Production diagnostic guide for resolving NoDataInDashboard."
+  description: "Production guide for NoDataInDashboard."
 };
 export default NoDataInDashboardGuide;

@@ -6,6 +6,6 @@ export const BuildFailsInCIGuide = {
   title: "BuildFailsInCI Troubleshooting",
   category: "jenkins-github",
   severity: "High",
-  description: "Production diagnostic guide for resolving BuildFailsInCI."
+  description: "Production guide for BuildFailsInCI."
 };
 export default BuildFailsInCIGuide;

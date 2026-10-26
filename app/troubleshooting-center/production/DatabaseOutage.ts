@@ -6,6 +6,6 @@ export const DatabaseOutageGuide = {
   title: "DatabaseOutage Troubleshooting",
   category: "production",
   severity: "High",
-  description: "Production diagnostic guide for resolving DatabaseOutage."
+  description: "Production guide for DatabaseOutage."
 };
 export default DatabaseOutageGuide;

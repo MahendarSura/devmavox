@@ -6,6 +6,6 @@ export const TrivyScanFailureGuide = {
   title: "TrivyScanFailure Troubleshooting",
   category: "security",
   severity: "High",
-  description: "Production diagnostic guide for resolving TrivyScanFailure."
+  description: "Production guide for TrivyScanFailure."
 };
 export default TrivyScanFailureGuide;

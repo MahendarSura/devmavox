@@ -6,6 +6,6 @@ export const TooManyConnectionsGuide = {
   title: "TooManyConnections Troubleshooting",
   category: "databases",
   severity: "High",
-  description: "Production diagnostic guide for resolving TooManyConnections."
+  description: "Production guide for TooManyConnections."
 };
 export default TooManyConnectionsGuide;

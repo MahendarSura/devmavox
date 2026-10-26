@@ -6,6 +6,6 @@ export const PodSchedulingGuide = {
   title: "PodScheduling Troubleshooting",
   category: "kubernetes",
   severity: "High",
-  description: "Production diagnostic guide for resolving PodScheduling."
+  description: "Production guide for PodScheduling."
 };
 export default PodSchedulingGuide;

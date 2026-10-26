@@ -6,6 +6,6 @@ export const SSHConnectionFailureGuide = {
   title: "SSHConnectionFailure Troubleshooting",
   category: "linux-networking",
   severity: "High",
-  description: "Production diagnostic guide for resolving SSHConnectionFailure."
+  description: "Production guide for SSHConnectionFailure."
 };
 export default SSHConnectionFailureGuide;

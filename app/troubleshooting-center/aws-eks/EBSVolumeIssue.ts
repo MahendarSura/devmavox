@@ -1,11 +1,11 @@
 // ============================================================================
-// DevMavox Enterprise Troubleshooting Guide: aws - EBSVolumeIssue
+// DevMavox Enterprise Troubleshooting Guide: aws-eks - EBSVolumeIssue
 // ============================================================================
 export const EBSVolumeIssueGuide = {
-  id: "aws-EBSVolumeIssue".toLowerCase(),
+  id: "aws-eks-EBSVolumeIssue".toLowerCase(),
   title: "EBSVolumeIssue Troubleshooting",
-  category: "aws",
+  category: "aws-eks",
   severity: "High",
-  description: "Production diagnostic guide for resolving EBSVolumeIssue."
+  description: "Production guide for EBSVolumeIssue."
 };
 export default EBSVolumeIssueGuide;

@@ -6,6 +6,6 @@ export const ContainerRestartLoopGuide = {
   title: "ContainerRestartLoop Troubleshooting",
   category: "docker",
   severity: "High",
-  description: "Production diagnostic guide for resolving ContainerRestartLoop."
+  description: "Production guide for ContainerRestartLoop."
 };
 export default ContainerRestartLoopGuide;

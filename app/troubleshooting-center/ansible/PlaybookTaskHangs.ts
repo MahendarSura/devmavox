@@ -6,6 +6,6 @@ export const PlaybookTaskHangsGuide = {
   title: "PlaybookTaskHangs Troubleshooting",
   category: "ansible",
   severity: "High",
-  description: "Production diagnostic guide for resolving PlaybookTaskHangs."
+  description: "Production guide for PlaybookTaskHangs."
 };
 export default PlaybookTaskHangsGuide;

@@ -1,11 +1,11 @@
 // ============================================================================
-// DevMavox Enterprise Troubleshooting Guide: helm - TemplateRenderingError
+// DevMavox Enterprise Troubleshooting Guide: argocd-helm - TemplateRenderingError
 // ============================================================================
 export const TemplateRenderingErrorGuide = {
-  id: "helm-TemplateRenderingError".toLowerCase(),
+  id: "argocd-helm-TemplateRenderingError".toLowerCase(),
   title: "TemplateRenderingError Troubleshooting",
-  category: "helm",
+  category: "argocd-helm",
   severity: "High",
-  description: "Production diagnostic guide for resolving TemplateRenderingError."
+  description: "Production guide for TemplateRenderingError."
 };
 export default TemplateRenderingErrorGuide;

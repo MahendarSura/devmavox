@@ -6,6 +6,6 @@ export const InventoryHostNotFoundGuide = {
   title: "InventoryHostNotFound Troubleshooting",
   category: "ansible",
   severity: "High",
-  description: "Production diagnostic guide for resolving InventoryHostNotFound."
+  description: "Production guide for InventoryHostNotFound."
 };
 export default InventoryHostNotFoundGuide;

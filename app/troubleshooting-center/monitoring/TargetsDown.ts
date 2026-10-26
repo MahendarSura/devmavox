@@ -6,6 +6,6 @@ export const TargetsDownGuide = {
   title: "TargetsDown Troubleshooting",
   category: "monitoring",
   severity: "High",
-  description: "Production diagnostic guide for resolving TargetsDown."
+  description: "Production guide for TargetsDown."
 };
 export default TargetsDownGuide;

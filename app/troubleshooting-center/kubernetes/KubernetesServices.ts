@@ -6,6 +6,6 @@ export const KubernetesServicesGuide = {
   title: "KubernetesServices Troubleshooting",
   category: "kubernetes",
   severity: "High",
-  description: "Production diagnostic guide for resolving KubernetesServices."
+  description: "Production guide for KubernetesServices."
 };
 export default KubernetesServicesGuide;

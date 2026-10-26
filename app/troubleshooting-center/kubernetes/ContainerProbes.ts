@@ -6,6 +6,6 @@ export const ContainerProbesGuide = {
   title: "ContainerProbes Troubleshooting",
   category: "kubernetes",
   severity: "High",
-  description: "Production diagnostic guide for resolving ContainerProbes."
+  description: "Production guide for ContainerProbes."
 };
 export default ContainerProbesGuide;

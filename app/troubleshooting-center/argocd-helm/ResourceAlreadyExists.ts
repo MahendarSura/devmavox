@@ -1,11 +1,11 @@
 // ============================================================================
-// DevMavox Enterprise Troubleshooting Guide: helm - ResourceAlreadyExists
+// DevMavox Enterprise Troubleshooting Guide: argocd-helm - ResourceAlreadyExists
 // ============================================================================
 export const ResourceAlreadyExistsGuide = {
-  id: "helm-ResourceAlreadyExists".toLowerCase(),
+  id: "argocd-helm-ResourceAlreadyExists".toLowerCase(),
   title: "ResourceAlreadyExists Troubleshooting",
-  category: "helm",
+  category: "argocd-helm",
   severity: "High",
-  description: "Production diagnostic guide for resolving ResourceAlreadyExists."
+  description: "Production guide for ResourceAlreadyExists."
 };
 export default ResourceAlreadyExistsGuide;

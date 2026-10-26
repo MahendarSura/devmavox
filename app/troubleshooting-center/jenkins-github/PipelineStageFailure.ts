@@ -6,6 +6,6 @@ export const PipelineStageFailureGuide = {
   title: "PipelineStageFailure Troubleshooting",
   category: "jenkins-github",
   severity: "High",
-  description: "Production diagnostic guide for resolving PipelineStageFailure."
+  description: "Production guide for PipelineStageFailure."
 };
 export default PipelineStageFailureGuide;

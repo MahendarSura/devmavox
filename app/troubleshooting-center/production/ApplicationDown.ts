@@ -6,6 +6,6 @@ export const ApplicationDownGuide = {
   title: "ApplicationDown Troubleshooting",
   category: "production",
   severity: "High",
-  description: "Production diagnostic guide for resolving ApplicationDown."
+  description: "Production guide for ApplicationDown."
 };
 export default ApplicationDownGuide;

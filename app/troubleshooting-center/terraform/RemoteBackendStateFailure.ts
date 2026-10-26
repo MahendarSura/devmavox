@@ -6,6 +6,6 @@ export const RemoteBackendStateFailureGuide = {
   title: "RemoteBackendStateFailure Troubleshooting",
   category: "terraform",
   severity: "High",
-  description: "Production diagnostic guide for resolving RemoteBackendStateFailure."
+  description: "Production guide for RemoteBackendStateFailure."
 };
 export default RemoteBackendStateFailureGuide;

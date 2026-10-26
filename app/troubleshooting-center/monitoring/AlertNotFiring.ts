@@ -6,6 +6,6 @@ export const AlertNotFiringGuide = {
   title: "AlertNotFiring Troubleshooting",
   category: "monitoring",
   severity: "High",
-  description: "Production diagnostic guide for resolving AlertNotFiring."
+  description: "Production guide for AlertNotFiring."
 };
 export default AlertNotFiringGuide;

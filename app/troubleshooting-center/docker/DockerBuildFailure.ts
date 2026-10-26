@@ -6,6 +6,6 @@ export const DockerBuildFailureGuide = {
   title: "DockerBuildFailure Troubleshooting",
   category: "docker",
   severity: "High",
-  description: "Production diagnostic guide for resolving DockerBuildFailure."
+  description: "Production guide for DockerBuildFailure."
 };
 export default DockerBuildFailureGuide;

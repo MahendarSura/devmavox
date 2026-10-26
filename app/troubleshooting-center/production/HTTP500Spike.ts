@@ -6,6 +6,6 @@ export const HTTP500SpikeGuide = {
   title: "HTTP500Spike Troubleshooting",
   category: "production",
   severity: "High",
-  description: "Production diagnostic guide for resolving HTTP500Spike."
+  description: "Production guide for HTTP500Spike."
 };
 export default HTTP500SpikeGuide;

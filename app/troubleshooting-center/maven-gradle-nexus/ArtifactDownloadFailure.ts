@@ -6,6 +6,6 @@ export const ArtifactDownloadFailureGuide = {
   title: "ArtifactDownloadFailure Troubleshooting",
   category: "maven-gradle-nexus",
   severity: "High",
-  description: "Production diagnostic guide for resolving ArtifactDownloadFailure."
+  description: "Production guide for ArtifactDownloadFailure."
 };
 export default ArtifactDownloadFailureGuide;

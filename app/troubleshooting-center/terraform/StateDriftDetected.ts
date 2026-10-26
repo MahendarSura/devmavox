@@ -6,6 +6,6 @@ export const StateDriftDetectedGuide = {
   title: "StateDriftDetected Troubleshooting",
   category: "terraform",
   severity: "High",
-  description: "Production diagnostic guide for resolving StateDriftDetected."
+  description: "Production guide for StateDriftDetected."
 };
 export default StateDriftDetectedGuide;

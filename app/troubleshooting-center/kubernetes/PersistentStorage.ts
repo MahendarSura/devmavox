@@ -6,6 +6,6 @@ export const PersistentStorageGuide = {
   title: "PersistentStorage Troubleshooting",
   category: "kubernetes",
   severity: "High",
-  description: "Production diagnostic guide for resolving PersistentStorage."
+  description: "Production guide for PersistentStorage."
 };
 export default PersistentStorageGuide;

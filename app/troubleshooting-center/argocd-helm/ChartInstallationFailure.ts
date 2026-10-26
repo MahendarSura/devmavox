@@ -1,11 +1,11 @@
 // ============================================================================
-// DevMavox Enterprise Troubleshooting Guide: helm - ChartInstallationFailure
+// DevMavox Enterprise Troubleshooting Guide: argocd-helm - ChartInstallationFailure
 // ============================================================================
 export const ChartInstallationFailureGuide = {
-  id: "helm-ChartInstallationFailure".toLowerCase(),
+  id: "argocd-helm-ChartInstallationFailure".toLowerCase(),
   title: "ChartInstallationFailure Troubleshooting",
-  category: "helm",
+  category: "argocd-helm",
   severity: "High",
-  description: "Production diagnostic guide for resolving ChartInstallationFailure."
+  description: "Production guide for ChartInstallationFailure."
 };
 export default ChartInstallationFailureGuide;

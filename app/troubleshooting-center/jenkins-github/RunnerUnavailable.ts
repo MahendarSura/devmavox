@@ -6,6 +6,6 @@ export const RunnerUnavailableGuide = {
   title: "RunnerUnavailable Troubleshooting",
   category: "jenkins-github",
   severity: "High",
-  description: "Production diagnostic guide for resolving RunnerUnavailable."
+  description: "Production guide for RunnerUnavailable."
 };
 export default RunnerUnavailableGuide;

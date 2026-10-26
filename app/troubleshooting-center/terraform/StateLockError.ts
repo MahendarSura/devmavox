@@ -6,6 +6,6 @@ export const StateLockErrorGuide = {
   title: "StateLockError Troubleshooting",
   category: "terraform",
   severity: "High",
-  description: "Production diagnostic guide for resolving StateLockError."
+  description: "Production guide for StateLockError."
 };
 export default StateLockErrorGuide;

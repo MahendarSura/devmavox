@@ -6,6 +6,6 @@ export const GradleBuildFailureGuide = {
   title: "GradleBuildFailure Troubleshooting",
   category: "maven-gradle-nexus",
   severity: "High",
-  description: "Production diagnostic guide for resolving GradleBuildFailure."
+  description: "Production guide for GradleBuildFailure."
 };
 export default GradleBuildFailureGuide;

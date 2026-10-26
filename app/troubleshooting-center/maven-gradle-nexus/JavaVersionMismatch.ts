@@ -6,6 +6,6 @@ export const JavaVersionMismatchGuide = {
   title: "JavaVersionMismatch Troubleshooting",
   category: "maven-gradle-nexus",
   severity: "High",
-  description: "Production diagnostic guide for resolving JavaVersionMismatch."
+  description: "Production guide for JavaVersionMismatch."
 };
 export default JavaVersionMismatchGuide;

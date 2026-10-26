@@ -6,6 +6,6 @@ export const NexusServiceUnavailableGuide = {
   title: "NexusServiceUnavailable Troubleshooting",
   category: "maven-gradle-nexus",
   severity: "High",
-  description: "Production diagnostic guide for resolving NexusServiceUnavailable."
+  description: "Production guide for NexusServiceUnavailable."
 };
 export default NexusServiceUnavailableGuide;

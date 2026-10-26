@@ -6,6 +6,6 @@ export const WebhookNotTriggeringGuide = {
   title: "WebhookNotTriggering Troubleshooting",
   category: "jenkins-github",
   severity: "High",
-  description: "Production diagnostic guide for resolving WebhookNotTriggering."
+  description: "Production guide for WebhookNotTriggering."
 };
 export default WebhookNotTriggeringGuide;

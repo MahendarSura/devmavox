@@ -1,11 +1,11 @@
 // ============================================================================
-// DevMavox Enterprise Troubleshooting Guide: argocd - ApplicationOutOfSync
+// DevMavox Enterprise Troubleshooting Guide: argocd-helm - ApplicationOutOfSync
 // ============================================================================
 export const ApplicationOutOfSyncGuide = {
-  id: "argocd-ApplicationOutOfSync".toLowerCase(),
+  id: "argocd-helm-ApplicationOutOfSync".toLowerCase(),
   title: "ApplicationOutOfSync Troubleshooting",
-  category: "argocd",
+  category: "argocd-helm",
   severity: "High",
-  description: "Production diagnostic guide for resolving ApplicationOutOfSync."
+  description: "Production guide for ApplicationOutOfSync."
 };
 export default ApplicationOutOfSyncGuide;

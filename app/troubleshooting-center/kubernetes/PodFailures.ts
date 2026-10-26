@@ -6,6 +6,6 @@ export const PodFailuresGuide = {
   title: "PodFailures Troubleshooting",
   category: "kubernetes",
   severity: "High",
-  description: "Production diagnostic guide for resolving PodFailures."
+  description: "Production guide for PodFailures."
 };
 export default PodFailuresGuide;

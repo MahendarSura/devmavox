@@ -6,6 +6,6 @@ export const HighMemoryUsageGuide = {
   title: "HighMemoryUsage Troubleshooting",
   category: "linux-networking",
   severity: "High",
-  description: "Production diagnostic guide for resolving HighMemoryUsage."
+  description: "Production guide for HighMemoryUsage."
 };
 export default HighMemoryUsageGuide;

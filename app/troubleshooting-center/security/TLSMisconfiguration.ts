@@ -6,6 +6,6 @@ export const TLSMisconfigurationGuide = {
   title: "TLSMisconfiguration Troubleshooting",
   category: "security",
   severity: "High",
-  description: "Production diagnostic guide for resolving TLSMisconfiguration."
+  description: "Production guide for TLSMisconfiguration."
 };
 export default TLSMisconfigurationGuide;

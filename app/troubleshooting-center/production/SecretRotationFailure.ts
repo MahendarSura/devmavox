@@ -6,6 +6,6 @@ export const SecretRotationFailureGuide = {
   title: "SecretRotationFailure Troubleshooting",
   category: "production",
   severity: "High",
-  description: "Production diagnostic guide for resolving SecretRotationFailure."
+  description: "Production guide for SecretRotationFailure."
 };
 export default SecretRotationFailureGuide;

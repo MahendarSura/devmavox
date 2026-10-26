@@ -6,6 +6,6 @@ export const CoreDNSResolutionGuide = {
   title: "CoreDNSResolution Troubleshooting",
   category: "kubernetes",
   severity: "High",
-  description: "Production diagnostic guide for resolving CoreDNSResolution."
+  description: "Production guide for CoreDNSResolution."
 };
 export default CoreDNSResolutionGuide;

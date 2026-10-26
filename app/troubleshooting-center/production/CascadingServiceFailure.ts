@@ -6,6 +6,6 @@ export const CascadingServiceFailureGuide = {
   title: "CascadingServiceFailure Troubleshooting",
   category: "production",
   severity: "High",
-  description: "Production diagnostic guide for resolving CascadingServiceFailure."
+  description: "Production guide for CascadingServiceFailure."
 };
 export default CascadingServiceFailureGuide;

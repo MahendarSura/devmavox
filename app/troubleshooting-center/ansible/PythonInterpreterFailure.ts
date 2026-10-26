@@ -6,6 +6,6 @@ export const PythonInterpreterFailureGuide = {
   title: "PythonInterpreterFailure Troubleshooting",
   category: "ansible",
   severity: "High",
-  description: "Production diagnostic guide for resolving PythonInterpreterFailure."
+  description: "Production guide for PythonInterpreterFailure."
 };
 export default PythonInterpreterFailureGuide;

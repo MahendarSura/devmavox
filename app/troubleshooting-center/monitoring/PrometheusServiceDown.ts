@@ -6,6 +6,6 @@ export const PrometheusServiceDownGuide = {
   title: "PrometheusServiceDown Troubleshooting",
   category: "monitoring",
   severity: "High",
-  description: "Production diagnostic guide for resolving PrometheusServiceDown."
+  description: "Production guide for PrometheusServiceDown."
 };
 export default PrometheusServiceDownGuide;

@@ -6,6 +6,6 @@ export const HTTP504GatewayTimeoutGuide = {
   title: "HTTP504GatewayTimeout Troubleshooting",
   category: "nginx-tomcat",
   severity: "High",
-  description: "Production diagnostic guide for resolving HTTP504GatewayTimeout."
+  description: "Production guide for HTTP504GatewayTimeout."
 };
 export default HTTP504GatewayTimeoutGuide;

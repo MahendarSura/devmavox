@@ -6,6 +6,6 @@ export const DiskSpaceFullGuide = {
   title: "DiskSpaceFull Troubleshooting",
   category: "databases",
   severity: "High",
-  description: "Production diagnostic guide for resolving DiskSpaceFull."
+  description: "Production guide for DiskSpaceFull."
 };
 export default DiskSpaceFullGuide;

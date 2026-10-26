@@ -6,6 +6,6 @@ export const GrafanaServiceDownGuide = {
   title: "GrafanaServiceDown Troubleshooting",
   category: "monitoring",
   severity: "High",
-  description: "Production diagnostic guide for resolving GrafanaServiceDown."
+  description: "Production guide for GrafanaServiceDown."
 };
 export default GrafanaServiceDownGuide;

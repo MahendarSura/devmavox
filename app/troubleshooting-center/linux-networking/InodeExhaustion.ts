@@ -6,6 +6,6 @@ export const InodeExhaustionGuide = {
   title: "InodeExhaustion Troubleshooting",
   category: "linux-networking",
   severity: "High",
-  description: "Production diagnostic guide for resolving InodeExhaustion."
+  description: "Production guide for InodeExhaustion."
 };
 export default InodeExhaustionGuide;

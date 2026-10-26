@@ -6,6 +6,6 @@ export const FirewallRuleFailureGuide = {
   title: "FirewallRuleFailure Troubleshooting",
   category: "linux-networking",
   severity: "High",
-  description: "Production diagnostic guide for resolving FirewallRuleFailure."
+  description: "Production guide for FirewallRuleFailure."
 };
 export default FirewallRuleFailureGuide;

@@ -6,6 +6,6 @@ export const QueryTimeoutGuide = {
   title: "QueryTimeout Troubleshooting",
   category: "databases",
   severity: "High",
-  description: "Production diagnostic guide for resolving QueryTimeout."
+  description: "Production guide for QueryTimeout."
 };
 export default QueryTimeoutGuide;

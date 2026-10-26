@@ -6,6 +6,6 @@ export const DockerDaemonNotRunningGuide = {
   title: "DockerDaemonNotRunning Troubleshooting",
   category: "docker",
   severity: "High",
-  description: "Production diagnostic guide for resolving DockerDaemonNotRunning."
+  description: "Production guide for DockerDaemonNotRunning."
 };
 export default DockerDaemonNotRunningGuide;

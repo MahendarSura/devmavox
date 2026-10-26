@@ -6,6 +6,6 @@ export const PortAlreadyInUseGuide = {
   title: "PortAlreadyInUse Troubleshooting",
   category: "nginx-tomcat",
   severity: "High",
-  description: "Production diagnostic guide for resolving PortAlreadyInUse."
+  description: "Production guide for PortAlreadyInUse."
 };
 export default PortAlreadyInUseGuide;

@@ -6,6 +6,6 @@ export const ResourceDependencyCycleGuide = {
   title: "ResourceDependencyCycle Troubleshooting",
   category: "terraform",
   severity: "High",
-  description: "Production diagnostic guide for resolving ResourceDependencyCycle."
+  description: "Production guide for ResourceDependencyCycle."
 };
 export default ResourceDependencyCycleGuide;

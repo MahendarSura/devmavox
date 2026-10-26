@@ -6,6 +6,6 @@ export const CredentialsBindingFailureGuide = {
   title: "CredentialsBindingFailure Troubleshooting",
   category: "jenkins-github",
   severity: "High",
-  description: "Production diagnostic guide for resolving CredentialsBindingFailure."
+  description: "Production guide for CredentialsBindingFailure."
 };
 export default CredentialsBindingFailureGuide;

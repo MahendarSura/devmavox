@@ -6,6 +6,6 @@ export const ArtifactUploadFailureGuide = {
   title: "ArtifactUploadFailure Troubleshooting",
   category: "jenkins-github",
   severity: "High",
-  description: "Production diagnostic guide for resolving ArtifactUploadFailure."
+  description: "Production guide for ArtifactUploadFailure."
 };
 export default ArtifactUploadFailureGuide;

@@ -6,6 +6,6 @@ export const IAMLeastPrivilegeViolationGuide = {
   title: "IAMLeastPrivilegeViolation Troubleshooting",
   category: "security",
   severity: "High",
-  description: "Production diagnostic guide for resolving IAMLeastPrivilegeViolation."
+  description: "Production guide for IAMLeastPrivilegeViolation."
 };
 export default IAMLeastPrivilegeViolationGuide;

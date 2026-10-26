@@ -6,6 +6,6 @@ export const UndefinedVariableGuide = {
   title: "UndefinedVariable Troubleshooting",
   category: "ansible",
   severity: "High",
-  description: "Production diagnostic guide for resolving UndefinedVariable."
+  description: "Production guide for UndefinedVariable."
 };
 export default UndefinedVariableGuide;

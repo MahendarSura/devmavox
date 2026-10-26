@@ -6,6 +6,6 @@ export const ProviderVersionConflictGuide = {
   title: "ProviderVersionConflict Troubleshooting",
   category: "terraform",
   severity: "High",
-  description: "Production diagnostic guide for resolving ProviderVersionConflict."
+  description: "Production guide for ProviderVersionConflict."
 };
 export default ProviderVersionConflictGuide;

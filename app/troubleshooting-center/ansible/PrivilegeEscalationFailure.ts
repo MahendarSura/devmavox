@@ -6,6 +6,6 @@ export const PrivilegeEscalationFailureGuide = {
   title: "PrivilegeEscalationFailure Troubleshooting",
   category: "ansible",
   severity: "High",
-  description: "Production diagnostic guide for resolving PrivilegeEscalationFailure."
+  description: "Production guide for PrivilegeEscalationFailure."
 };
 export default PrivilegeEscalationFailureGuide;

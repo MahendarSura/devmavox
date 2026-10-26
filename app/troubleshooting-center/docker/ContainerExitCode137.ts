@@ -6,6 +6,6 @@ export const ContainerExitCode137Guide = {
   title: "ContainerExitCode137 Troubleshooting",
   category: "docker",
   severity: "High",
-  description: "Production diagnostic guide for resolving ContainerExitCode137."
+  description: "Production guide for ContainerExitCode137."
 };
 export default ContainerExitCode137Guide;

@@ -1,11 +1,11 @@
 // ============================================================================
-// DevMavox Enterprise Troubleshooting Guide: aws - IAMAccessDenied
+// DevMavox Enterprise Troubleshooting Guide: aws-eks - IAMAccessDenied
 // ============================================================================
 export const IAMAccessDeniedGuide = {
-  id: "aws-IAMAccessDenied".toLowerCase(),
+  id: "aws-eks-IAMAccessDenied".toLowerCase(),
   title: "IAMAccessDenied Troubleshooting",
-  category: "aws",
+  category: "aws-eks",
   severity: "High",
-  description: "Production diagnostic guide for resolving IAMAccessDenied."
+  description: "Production guide for IAMAccessDenied."
 };
 export default IAMAccessDeniedGuide;

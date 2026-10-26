@@ -6,6 +6,6 @@ export const VolumeDataMissingGuide = {
   title: "VolumeDataMissing Troubleshooting",
   category: "docker",
   severity: "High",
-  description: "Production diagnostic guide for resolving VolumeDataMissing."
+  description: "Production guide for VolumeDataMissing."
 };
 export default VolumeDataMissingGuide;

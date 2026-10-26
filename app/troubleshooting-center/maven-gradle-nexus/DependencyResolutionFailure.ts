@@ -6,6 +6,6 @@ export const DependencyResolutionFailureGuide = {
   title: "DependencyResolutionFailure Troubleshooting",
   category: "maven-gradle-nexus",
   severity: "High",
-  description: "Production diagnostic guide for resolving DependencyResolutionFailure."
+  description: "Production guide for DependencyResolutionFailure."
 };
 export default DependencyResolutionFailureGuide;

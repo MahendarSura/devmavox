@@ -6,6 +6,6 @@ export const SSLCertificateFailureGuide = {
   title: "SSLCertificateFailure Troubleshooting",
   category: "nginx-tomcat",
   severity: "High",
-  description: "Production diagnostic guide for resolving SSLCertificateFailure."
+  description: "Production guide for SSLCertificateFailure."
 };
 export default SSLCertificateFailureGuide;

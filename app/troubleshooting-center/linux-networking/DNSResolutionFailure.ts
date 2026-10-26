@@ -6,6 +6,6 @@ export const DNSResolutionFailureGuide = {
   title: "DNSResolutionFailure Troubleshooting",
   category: "linux-networking",
   severity: "High",
-  description: "Production diagnostic guide for resolving DNSResolutionFailure."
+  description: "Production guide for DNSResolutionFailure."
 };
 export default DNSResolutionFailureGuide;

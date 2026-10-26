@@ -6,6 +6,6 @@ export const ScrapeFailureGuide = {
   title: "ScrapeFailure Troubleshooting",
   category: "monitoring",
   severity: "High",
-  description: "Production diagnostic guide for resolving ScrapeFailure."
+  description: "Production guide for ScrapeFailure."
 };
 export default ScrapeFailureGuide;

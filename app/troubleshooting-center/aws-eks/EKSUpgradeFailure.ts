@@ -1,11 +1,11 @@
 // ============================================================================
-// DevMavox Enterprise Troubleshooting Guide: eks - EKSUpgradeFailure
+// DevMavox Enterprise Troubleshooting Guide: aws-eks - EKSUpgradeFailure
 // ============================================================================
 export const EKSUpgradeFailureGuide = {
-  id: "eks-EKSUpgradeFailure".toLowerCase(),
+  id: "aws-eks-EKSUpgradeFailure".toLowerCase(),
   title: "EKSUpgradeFailure Troubleshooting",
-  category: "eks",
+  category: "aws-eks",
   severity: "High",
-  description: "Production diagnostic guide for resolving EKSUpgradeFailure."
+  description: "Production guide for EKSUpgradeFailure."
 };
 export default EKSUpgradeFailureGuide;

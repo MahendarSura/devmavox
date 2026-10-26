@@ -6,6 +6,6 @@ export const UpstreamConnectionRefusedGuide = {
   title: "UpstreamConnectionRefused Troubleshooting",
   category: "nginx-tomcat",
   severity: "High",
-  description: "Production diagnostic guide for resolving UpstreamConnectionRefused."
+  description: "Production guide for UpstreamConnectionRefused."
 };
 export default UpstreamConnectionRefusedGuide;

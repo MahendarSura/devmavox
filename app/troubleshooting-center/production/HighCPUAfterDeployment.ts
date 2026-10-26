@@ -6,6 +6,6 @@ export const HighCPUAfterDeploymentGuide = {
   title: "HighCPUAfterDeployment Troubleshooting",
   category: "production",
   severity: "High",
-  description: "Production diagnostic guide for resolving HighCPUAfterDeployment."
+  description: "Production guide for HighCPUAfterDeployment."
 };
 export default HighCPUAfterDeploymentGuide;

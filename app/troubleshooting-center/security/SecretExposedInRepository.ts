@@ -6,6 +6,6 @@ export const SecretExposedInRepositoryGuide = {
   title: "SecretExposedInRepository Troubleshooting",
   category: "security",
   severity: "High",
-  description: "Production diagnostic guide for resolving SecretExposedInRepository."
+  description: "Production guide for SecretExposedInRepository."
 };
 export default SecretExposedInRepositoryGuide;

@@ -6,6 +6,6 @@ export const HighCPUUsageGuide = {
   title: "HighCPUUsage Troubleshooting",
   category: "linux-networking",
   severity: "High",
-  description: "Production diagnostic guide for resolving HighCPUUsage."
+  description: "Production guide for HighCPUUsage."
 };
 export default HighCPUUsageGuide;

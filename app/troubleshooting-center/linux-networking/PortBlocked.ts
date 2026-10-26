@@ -6,6 +6,6 @@ export const PortBlockedGuide = {
   title: "PortBlocked Troubleshooting",
   category: "linux-networking",
   severity: "High",
-  description: "Production diagnostic guide for resolving PortBlocked."
+  description: "Production guide for PortBlocked."
 };
 export default PortBlockedGuide;

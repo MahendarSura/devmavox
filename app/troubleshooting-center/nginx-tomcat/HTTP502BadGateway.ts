@@ -6,6 +6,6 @@ export const HTTP502BadGatewayGuide = {
   title: "HTTP502BadGateway Troubleshooting",
   category: "nginx-tomcat",
   severity: "High",
-  description: "Production diagnostic guide for resolving HTTP502BadGateway."
+  description: "Production guide for HTTP502BadGateway."
 };
 export default HTTP502BadGatewayGuide;
