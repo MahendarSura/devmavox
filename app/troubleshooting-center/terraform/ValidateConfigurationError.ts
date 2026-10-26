@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: TERRAFORM
+// Tool / Category: TERRAFORM
 // Issue: Validate Configuration Error
 // ============================================================================
 

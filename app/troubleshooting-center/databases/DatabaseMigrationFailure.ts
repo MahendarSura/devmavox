@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: DATABASES
+// Tool / Category: DATABASES
 // Issue: Database Migration Failure
 // ============================================================================
 

@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: ARGOCD-HELM
+// Tool / Category: ARGOCD-HELM
 // Issue: Resource Already Exists
 // ============================================================================
 

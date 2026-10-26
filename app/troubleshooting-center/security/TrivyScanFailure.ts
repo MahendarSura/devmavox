@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: SECURITY
+// Tool / Category: SECURITY
 // Issue: Trivy Scan Failure
 // ============================================================================
 

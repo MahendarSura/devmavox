@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: KUBERNETES
+// Tool / Category: KUBERNETES
 // Issue: Core D N S Resolution Failure
 // ============================================================================
 

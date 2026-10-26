@@ -3,7 +3,7 @@ const path = require('path');
 
 const rootDir = path.join(__dirname, '..');
 
-const categories = {
+const toolCategories = {
   kubernetes: [
     "CrashLoopBackOff", "ImagePullBackOff", "PodOOMKilled", "PodStuckInPending", 
     "NodeNotReady", "ServiceNotReachingPods", "Ingress404-502", "CoreDNSResolutionFailure"
@@ -12,7 +12,7 @@ const categories = {
     "ContainerExitCode137", "DockerBuildFailure", "ContainerRestartLoop", 
     "DockerDaemonNotRunning", "PortMappingFailure", "VolumeDataMissing"
   ],
-  aws: [
+  "aws-eks": [
     "EC2SSHNotWorking", "IAMAccessDenied", "ALB502-503", "S3AccessDenied", 
     "VPC-RouteTableIssue", "EKSUpgradeFailure", "EBSVolumeIssue"
   ],
@@ -62,18 +62,18 @@ const categories = {
   ]
 };
 
-// Create category folders and .ts files with deep enterprise content
-for (const [cat, issues] of Object.entries(categories)) {
-  const catDir = path.join(rootDir, cat);
-  fs.mkdirSync(catDir, { recursive: true });
+// Create tool folders and .ts files inside app/troubleshooting-center/
+for (const [tool, issues] of Object.entries(toolCategories)) {
+  const toolDir = path.join(rootDir, tool);
+  fs.mkdirSync(toolDir, { recursive: true });
 
   for (const issue of issues) {
-    const filePath = path.join(catDir, `${issue}.ts`);
+    const filePath = path.join(toolDir, `${issue}.ts`);
     const title = issue.replace(/([A-Z])/g, ' $1').trim();
 
     const fileContent = `// ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: ${cat.toUpperCase()}
+// Tool / Category: ${tool.toUpperCase()}
 // Issue: ${title}
 // ============================================================================
 
@@ -95,13 +95,13 @@ export interface TroubleshootingGuideItem {
 }
 
 export const ${issue}Guide: TroubleshootingGuideItem = {
-  id: "${cat}-${issue.toLowerCase()}",
+  id: "${tool}-${issue.toLowerCase()}",
   title: "${title}",
-  category: "${cat}",
+  category: "${tool}",
   severity: "Critical",
-  description: "Comprehensive production-grade diagnostic and resolution guide for handling ${title} in enterprise ${cat} environments.",
+  description: "Comprehensive production-grade diagnostic and resolution guide for handling ${title} in enterprise ${tool} environments.",
   symptoms: [
-    "Critical service degradation or unhandled exception loops in ${cat}",
+    "Critical service degradation or unhandled exception loops in ${tool}",
     "Automated monitoring alerts firing high-priority incidents",
     "System journals and audit logs showing recurring timeout signatures"
   ],
@@ -114,19 +114,19 @@ export const ${issue}Guide: TroubleshootingGuideItem = {
     {
       stepNumber: 1,
       title: "Initial Telemetry & Log Extraction",
-      command: "journalctl -u ${cat} -n 100 --no-pager || kubectl logs -l app=${cat} --tail=100",
+      command: "journalctl -u ${tool} -n 100 --no-pager || kubectl logs -l app=${tool} --tail=100",
       explanation: "Isolate precise stack traces and error codes correlating with ${title}."
     },
     {
       stepNumber: 2,
       title: "Validate Configuration & Permissions",
-      command: "cat /etc/${cat}/config.yaml || printenv | grep -i ${cat}",
+      command: "cat /etc/${tool}/config.yaml || printenv | grep -i ${tool}",
       explanation: "Ensure all parameters conform strictly to enterprise schema and permissions."
     },
     {
       stepNumber: 3,
       title: "Execute Remediation & Restart",
-      command: "systemctl restart ${cat} || kubectl rollout restart deployment/${cat}",
+      command: "systemctl restart ${tool} || kubectl rollout restart deployment/${tool}",
       explanation: "Apply corrective configuration and perform a clean service restart."
     },
     {
@@ -149,17 +149,4 @@ export default ${issue}Guide;
   }
 }
 
-// Create guides.ts registry index
-let registryContent = `// Auto-generated Enterprise Troubleshooting Index\n\n`;
-registryContent += `export interface GuideSummary { id: string; title: string; category: string; severity: string; }\n\n`;
-registryContent += `export const allGuides: GuideSummary[] = [\n`;
-for (const [cat, issues] of Object.entries(categories)) {
-  for (const issue of issues) {
-    const title = issue.replace(/([A-Z])/g, ' $1').trim();
-    registryContent += `  { id: "${cat}-${issue.toLowerCase()}", title: "${title}", category: "${cat}", severity: "Critical" },\n`;
-  }
-}
-registryContent += `];\n`;
-fs.writeFileSync(path.join(rootDir, 'guides.ts'), registryContent, 'utf8');
-
-console.log('Successfully generated all troubleshooting categories and guide files!');
+console.log('All tool folders and .ts files generated successfully inside troubleshooting-center!');

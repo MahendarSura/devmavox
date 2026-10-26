@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: NGINX-TOMCAT
+// Tool / Category: NGINX-TOMCAT
 // Issue: S S L Certificate Failure
 // ============================================================================
 

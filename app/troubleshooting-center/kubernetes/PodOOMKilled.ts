@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: KUBERNETES
+// Tool / Category: KUBERNETES
 // Issue: Pod O O M Killed
 // ============================================================================
 

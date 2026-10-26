@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: JENKINS-GITHUB
+// Tool / Category: JENKINS-GITHUB
 // Issue: Build Fails In C I
 // ============================================================================
 

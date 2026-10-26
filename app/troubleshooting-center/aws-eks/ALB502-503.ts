@@ -1,7 +1,7 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: AWS
-// Issue: S3 Access Denied
+// Tool / Category: AWS-EKS
+// Issue: A L B502-503
 // ============================================================================
 
 export interface TroubleshootingGuideItem {
@@ -21,14 +21,14 @@ export interface TroubleshootingGuideItem {
   preventionTips: string[];
 }
 
-export const S3AccessDeniedGuide: TroubleshootingGuideItem = {
-  id: "aws-s3accessdenied",
-  title: "S3 Access Denied",
-  category: "aws",
+export const ALB502-503Guide: TroubleshootingGuideItem = {
+  id: "aws-eks-alb502-503",
+  title: "A L B502-503",
+  category: "aws-eks",
   severity: "Critical",
-  description: "Comprehensive production-grade diagnostic and resolution guide for handling S3 Access Denied in enterprise aws environments.",
+  description: "Comprehensive production-grade diagnostic and resolution guide for handling A L B502-503 in enterprise aws-eks environments.",
   symptoms: [
-    "Critical service degradation or unhandled exception loops in aws",
+    "Critical service degradation or unhandled exception loops in aws-eks",
     "Automated monitoring alerts firing high-priority incidents",
     "System journals and audit logs showing recurring timeout signatures"
   ],
@@ -41,19 +41,19 @@ export const S3AccessDeniedGuide: TroubleshootingGuideItem = {
     {
       stepNumber: 1,
       title: "Initial Telemetry & Log Extraction",
-      command: "journalctl -u aws -n 100 --no-pager || kubectl logs -l app=aws --tail=100",
-      explanation: "Isolate precise stack traces and error codes correlating with S3 Access Denied."
+      command: "journalctl -u aws-eks -n 100 --no-pager || kubectl logs -l app=aws-eks --tail=100",
+      explanation: "Isolate precise stack traces and error codes correlating with A L B502-503."
     },
     {
       stepNumber: 2,
       title: "Validate Configuration & Permissions",
-      command: "cat /etc/aws/config.yaml || printenv | grep -i aws",
+      command: "cat /etc/aws-eks/config.yaml || printenv | grep -i aws-eks",
       explanation: "Ensure all parameters conform strictly to enterprise schema and permissions."
     },
     {
       stepNumber: 3,
       title: "Execute Remediation & Restart",
-      command: "systemctl restart aws || kubectl rollout restart deployment/aws",
+      command: "systemctl restart aws-eks || kubectl rollout restart deployment/aws-eks",
       explanation: "Apply corrective configuration and perform a clean service restart."
     },
     {
@@ -70,4 +70,4 @@ export const S3AccessDeniedGuide: TroubleshootingGuideItem = {
   ]
 };
 
-export default S3AccessDeniedGuide;
+export default ALB502-503Guide;

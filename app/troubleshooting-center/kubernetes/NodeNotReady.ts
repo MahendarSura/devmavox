@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: KUBERNETES
+// Tool / Category: KUBERNETES
 // Issue: Node Not Ready
 // ============================================================================
 

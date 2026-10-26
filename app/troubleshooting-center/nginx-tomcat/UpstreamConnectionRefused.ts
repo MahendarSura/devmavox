@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: NGINX-TOMCAT
+// Tool / Category: NGINX-TOMCAT
 // Issue: Upstream Connection Refused
 // ============================================================================
 

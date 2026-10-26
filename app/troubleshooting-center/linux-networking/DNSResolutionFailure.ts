@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: LINUX-NETWORKING
+// Tool / Category: LINUX-NETWORKING
 // Issue: D N S Resolution Failure
 // ============================================================================
 

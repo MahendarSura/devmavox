@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: ANSIBLE
+// Tool / Category: ANSIBLE
 // Issue: S S H Connection Failure
 // ============================================================================
 

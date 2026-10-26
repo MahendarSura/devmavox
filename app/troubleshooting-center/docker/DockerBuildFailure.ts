@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: DOCKER
+// Tool / Category: DOCKER
 // Issue: Docker Build Failure
 // ============================================================================
 

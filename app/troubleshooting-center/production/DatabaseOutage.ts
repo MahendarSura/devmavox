@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: PRODUCTION
+// Tool / Category: PRODUCTION
 // Issue: Database Outage
 // ============================================================================
 

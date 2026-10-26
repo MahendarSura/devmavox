@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: MONITORING
+// Tool / Category: MONITORING
 // Issue: Grafana Service Down
 // ============================================================================
 

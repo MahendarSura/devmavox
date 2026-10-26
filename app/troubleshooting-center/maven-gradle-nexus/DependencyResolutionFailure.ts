@@ -1,6 +1,6 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: MAVEN-GRADLE-NEXUS
+// Tool / Category: MAVEN-GRADLE-NEXUS
 // Issue: Dependency Resolution Failure
 // ============================================================================
 

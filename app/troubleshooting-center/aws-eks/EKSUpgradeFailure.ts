@@ -1,7 +1,7 @@
 // ============================================================================
 // DevMavox Enterprise Troubleshooting Guide
-// Category: AWS
-// Issue: E B S Volume Issue
+// Tool / Category: AWS-EKS
+// Issue: E K S Upgrade Failure
 // ============================================================================
 
 export interface TroubleshootingGuideItem {
@@ -21,14 +21,14 @@ export interface TroubleshootingGuideItem {
   preventionTips: string[];
 }
 
-export const EBSVolumeIssueGuide: TroubleshootingGuideItem = {
-  id: "aws-ebsvolumeissue",
-  title: "E B S Volume Issue",
-  category: "aws",
+export const EKSUpgradeFailureGuide: TroubleshootingGuideItem = {
+  id: "aws-eks-eksupgradefailure",
+  title: "E K S Upgrade Failure",
+  category: "aws-eks",
   severity: "Critical",
-  description: "Comprehensive production-grade diagnostic and resolution guide for handling E B S Volume Issue in enterprise aws environments.",
+  description: "Comprehensive production-grade diagnostic and resolution guide for handling E K S Upgrade Failure in enterprise aws-eks environments.",
   symptoms: [
-    "Critical service degradation or unhandled exception loops in aws",
+    "Critical service degradation or unhandled exception loops in aws-eks",
     "Automated monitoring alerts firing high-priority incidents",
     "System journals and audit logs showing recurring timeout signatures"
   ],
@@ -41,19 +41,19 @@ export const EBSVolumeIssueGuide: TroubleshootingGuideItem = {
     {
       stepNumber: 1,
       title: "Initial Telemetry & Log Extraction",
-      command: "journalctl -u aws -n 100 --no-pager || kubectl logs -l app=aws --tail=100",
-      explanation: "Isolate precise stack traces and error codes correlating with E B S Volume Issue."
+      command: "journalctl -u aws-eks -n 100 --no-pager || kubectl logs -l app=aws-eks --tail=100",
+      explanation: "Isolate precise stack traces and error codes correlating with E K S Upgrade Failure."
     },
     {
       stepNumber: 2,
       title: "Validate Configuration & Permissions",
-      command: "cat /etc/aws/config.yaml || printenv | grep -i aws",
+      command: "cat /etc/aws-eks/config.yaml || printenv | grep -i aws-eks",
       explanation: "Ensure all parameters conform strictly to enterprise schema and permissions."
     },
     {
       stepNumber: 3,
       title: "Execute Remediation & Restart",
-      command: "systemctl restart aws || kubectl rollout restart deployment/aws",
+      command: "systemctl restart aws-eks || kubectl rollout restart deployment/aws-eks",
       explanation: "Apply corrective configuration and perform a clean service restart."
     },
     {
@@ -70,4 +70,4 @@ export const EBSVolumeIssueGuide: TroubleshootingGuideItem = {
   ]
 };
 
-export default EBSVolumeIssueGuide;
+export default EKSUpgradeFailureGuide;
