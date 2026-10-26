@@ -5,7 +5,7 @@ export const ClusterEndpointUnreachableGuide = {
   id: "eks-ClusterEndpointUnreachable".toLowerCase(),
   title: "ClusterEndpointUnreachable Troubleshooting",
   category: "eks",
-  severity: "High",
-  description: "Production guide for ClusterEndpointUnreachable."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving ClusterEndpointUnreachable."
 };
 export default ClusterEndpointUnreachableGuide;

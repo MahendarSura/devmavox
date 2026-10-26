@@ -5,7 +5,7 @@ export const DependencyFetchFailureGuide = {
   id: "helm-DependencyFetchFailure".toLowerCase(),
   title: "DependencyFetchFailure Troubleshooting",
   category: "helm",
-  severity: "High",
-  description: "Production guide for DependencyFetchFailure."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving DependencyFetchFailure."
 };
 export default DependencyFetchFailureGuide;

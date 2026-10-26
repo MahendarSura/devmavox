@@ -5,7 +5,7 @@ export const InodeExhaustionGuide = {
   id: "networking-InodeExhaustion".toLowerCase(),
   title: "InodeExhaustion Troubleshooting",
   category: "networking",
-  severity: "High",
-  description: "Production guide for InodeExhaustion."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving InodeExhaustion."
 };
 export default InodeExhaustionGuide;

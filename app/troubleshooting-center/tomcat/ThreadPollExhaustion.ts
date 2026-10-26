@@ -5,7 +5,7 @@ export const ThreadPollExhaustionGuide = {
   id: "tomcat-ThreadPollExhaustion".toLowerCase(),
   title: "ThreadPollExhaustion Troubleshooting",
   category: "tomcat",
-  severity: "High",
-  description: "Production guide for ThreadPollExhaustion."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving ThreadPollExhaustion."
 };
 export default ThreadPollExhaustionGuide;

@@ -5,7 +5,7 @@ export const ContainerRestartLoopGuide = {
   id: "docker-ContainerRestartLoop".toLowerCase(),
   title: "ContainerRestartLoop Troubleshooting",
   category: "docker",
-  severity: "High",
-  description: "Production guide for ContainerRestartLoop."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving ContainerRestartLoop."
 };
 export default ContainerRestartLoopGuide;

@@ -5,7 +5,7 @@ export const KubeProxyCrashGuide = {
   id: "eks-KubeProxyCrash".toLowerCase(),
   title: "KubeProxyCrash Troubleshooting",
   category: "eks",
-  severity: "High",
-  description: "Production guide for KubeProxyCrash."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving KubeProxyCrash."
 };
 export default KubeProxyCrashGuide;

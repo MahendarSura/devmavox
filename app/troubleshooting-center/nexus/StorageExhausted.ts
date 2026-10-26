@@ -5,7 +5,7 @@ export const StorageExhaustedGuide = {
   id: "nexus-StorageExhausted".toLowerCase(),
   title: "StorageExhausted Troubleshooting",
   category: "nexus",
-  severity: "High",
-  description: "Production guide for StorageExhausted."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving StorageExhausted."
 };
 export default StorageExhaustedGuide;

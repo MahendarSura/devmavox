@@ -5,7 +5,7 @@ export const BranchProtectionBlockGuide = {
   id: "github-BranchProtectionBlock".toLowerCase(),
   title: "BranchProtectionBlock Troubleshooting",
   category: "github",
-  severity: "High",
-  description: "Production guide for BranchProtectionBlock."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving BranchProtectionBlock."
 };
 export default BranchProtectionBlockGuide;

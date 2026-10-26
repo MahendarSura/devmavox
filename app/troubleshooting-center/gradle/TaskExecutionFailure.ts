@@ -5,7 +5,7 @@ export const TaskExecutionFailureGuide = {
   id: "gradle-TaskExecutionFailure".toLowerCase(),
   title: "TaskExecutionFailure Troubleshooting",
   category: "gradle",
-  severity: "High",
-  description: "Production guide for TaskExecutionFailure."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving TaskExecutionFailure."
 };
 export default TaskExecutionFailureGuide;

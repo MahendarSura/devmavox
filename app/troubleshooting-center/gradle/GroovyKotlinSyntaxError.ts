@@ -5,7 +5,7 @@ export const GroovyKotlinSyntaxErrorGuide = {
   id: "gradle-GroovyKotlinSyntaxError".toLowerCase(),
   title: "GroovyKotlinSyntaxError Troubleshooting",
   category: "gradle",
-  severity: "High",
-  description: "Production guide for GroovyKotlinSyntaxError."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving GroovyKotlinSyntaxError."
 };
 export default GroovyKotlinSyntaxErrorGuide;

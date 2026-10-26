@@ -5,7 +5,7 @@ export const HTTP504GatewayTimeoutGuide = {
   id: "nginx-HTTP504GatewayTimeout".toLowerCase(),
   title: "HTTP504GatewayTimeout Troubleshooting",
   category: "nginx",
-  severity: "High",
-  description: "Production guide for HTTP504GatewayTimeout."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving HTTP504GatewayTimeout."
 };
 export default HTTP504GatewayTimeoutGuide;

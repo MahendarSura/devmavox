@@ -5,7 +5,7 @@ export const RepositoryConnectionErrorGuide = {
   id: "argocd-RepositoryConnectionError".toLowerCase(),
   title: "RepositoryConnectionError Troubleshooting",
   category: "argocd",
-  severity: "High",
-  description: "Production guide for RepositoryConnectionError."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving RepositoryConnectionError."
 };
 export default RepositoryConnectionErrorGuide;

@@ -5,7 +5,7 @@ export const IAMAccessDeniedGuide = {
   id: "aws-IAMAccessDenied".toLowerCase(),
   title: "IAMAccessDenied Troubleshooting",
   category: "aws",
-  severity: "High",
-  description: "Production guide for IAMAccessDenied."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving IAMAccessDenied."
 };
 export default IAMAccessDeniedGuide;

@@ -5,7 +5,7 @@ export const APIThrottlingGuide = {
   id: "github-APIThrottling".toLowerCase(),
   title: "APIThrottling Troubleshooting",
   category: "github",
-  severity: "High",
-  description: "Production guide for APIThrottling."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving APIThrottling."
 };
 export default APIThrottlingGuide;

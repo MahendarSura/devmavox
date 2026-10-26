@@ -5,7 +5,7 @@ export const JNDIConnectionLeakGuide = {
   id: "tomcat-JNDIConnectionLeak".toLowerCase(),
   title: "JNDIConnectionLeak Troubleshooting",
   category: "tomcat",
-  severity: "High",
-  description: "Production guide for JNDIConnectionLeak."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving JNDIConnectionLeak."
 };
 export default JNDIConnectionLeakGuide;

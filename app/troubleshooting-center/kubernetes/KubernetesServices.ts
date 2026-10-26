@@ -5,7 +5,7 @@ export const KubernetesServicesGuide = {
   id: "kubernetes-KubernetesServices".toLowerCase(),
   title: "KubernetesServices Troubleshooting",
   category: "kubernetes",
-  severity: "High",
-  description: "Production guide for KubernetesServices."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving KubernetesServices."
 };
 export default KubernetesServicesGuide;

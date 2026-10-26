@@ -5,7 +5,7 @@ export const ArtifactDownloadFailureGuide = {
   id: "maven-ArtifactDownloadFailure".toLowerCase(),
   title: "ArtifactDownloadFailure Troubleshooting",
   category: "maven",
-  severity: "High",
-  description: "Production guide for ArtifactDownloadFailure."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving ArtifactDownloadFailure."
 };
 export default ArtifactDownloadFailureGuide;

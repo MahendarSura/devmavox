@@ -5,7 +5,7 @@ export const DaemonCrashGuide = {
   id: "gradle-DaemonCrash".toLowerCase(),
   title: "DaemonCrash Troubleshooting",
   category: "gradle",
-  severity: "High",
-  description: "Production guide for DaemonCrash."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving DaemonCrash."
 };
 export default DaemonCrashGuide;

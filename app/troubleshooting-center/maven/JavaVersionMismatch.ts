@@ -5,7 +5,7 @@ export const JavaVersionMismatchGuide = {
   id: "maven-JavaVersionMismatch".toLowerCase(),
   title: "JavaVersionMismatch Troubleshooting",
   category: "maven",
-  severity: "High",
-  description: "Production guide for JavaVersionMismatch."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving JavaVersionMismatch."
 };
 export default JavaVersionMismatchGuide;

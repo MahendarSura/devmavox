@@ -5,7 +5,7 @@ export const PortAlreadyInUseGuide = {
   id: "nginx-PortAlreadyInUse".toLowerCase(),
   title: "PortAlreadyInUse Troubleshooting",
   category: "nginx",
-  severity: "High",
-  description: "Production guide for PortAlreadyInUse."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving PortAlreadyInUse."
 };
 export default PortAlreadyInUseGuide;

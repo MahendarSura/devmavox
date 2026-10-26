@@ -5,7 +5,7 @@ export const HelmUpgradeFailureGuide = {
   id: "helm-HelmUpgradeFailure".toLowerCase(),
   title: "HelmUpgradeFailure Troubleshooting",
   category: "helm",
-  severity: "High",
-  description: "Production guide for HelmUpgradeFailure."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving HelmUpgradeFailure."
 };
 export default HelmUpgradeFailureGuide;

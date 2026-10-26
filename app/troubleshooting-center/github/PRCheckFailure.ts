@@ -5,7 +5,7 @@ export const PRCheckFailureGuide = {
   id: "github-PRCheckFailure".toLowerCase(),
   title: "PRCheckFailure Troubleshooting",
   category: "github",
-  severity: "High",
-  description: "Production guide for PRCheckFailure."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving PRCheckFailure."
 };
 export default PRCheckFailureGuide;

@@ -5,7 +5,7 @@ export const InterfaceDownGuide = {
   id: "networking-InterfaceDown".toLowerCase(),
   title: "InterfaceDown Troubleshooting",
   category: "networking",
-  severity: "High",
-  description: "Production guide for InterfaceDown."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving InterfaceDown."
 };
 export default InterfaceDownGuide;

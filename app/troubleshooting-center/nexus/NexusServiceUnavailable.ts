@@ -5,7 +5,7 @@ export const NexusServiceUnavailableGuide = {
   id: "nexus-NexusServiceUnavailable".toLowerCase(),
   title: "NexusServiceUnavailable Troubleshooting",
   category: "nexus",
-  severity: "High",
-  description: "Production guide for NexusServiceUnavailable."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving NexusServiceUnavailable."
 };
 export default NexusServiceUnavailableGuide;

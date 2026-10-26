@@ -5,7 +5,7 @@ export const OutOfMemoryErrorGuide = {
   id: "tomcat-OutOfMemoryError".toLowerCase(),
   title: "OutOfMemoryError Troubleshooting",
   category: "tomcat",
-  severity: "High",
-  description: "Production guide for OutOfMemoryError."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving OutOfMemoryError."
 };
 export default OutOfMemoryErrorGuide;

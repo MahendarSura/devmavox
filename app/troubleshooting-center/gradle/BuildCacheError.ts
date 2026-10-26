@@ -5,7 +5,7 @@ export const BuildCacheErrorGuide = {
   id: "gradle-BuildCacheError".toLowerCase(),
   title: "BuildCacheError Troubleshooting",
   category: "gradle",
-  severity: "High",
-  description: "Production guide for BuildCacheError."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving BuildCacheError."
 };
 export default BuildCacheErrorGuide;

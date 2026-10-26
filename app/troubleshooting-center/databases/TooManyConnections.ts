@@ -5,7 +5,7 @@ export const TooManyConnectionsGuide = {
   id: "databases-TooManyConnections".toLowerCase(),
   title: "TooManyConnections Troubleshooting",
   category: "databases",
-  severity: "High",
-  description: "Production guide for TooManyConnections."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving TooManyConnections."
 };
 export default TooManyConnectionsGuide;

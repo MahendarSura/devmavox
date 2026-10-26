@@ -5,7 +5,7 @@ export const TemplateRenderingErrorGuide = {
   id: "helm-TemplateRenderingError".toLowerCase(),
   title: "TemplateRenderingError Troubleshooting",
   category: "helm",
-  severity: "High",
-  description: "Production guide for TemplateRenderingError."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving TemplateRenderingError."
 };
 export default TemplateRenderingErrorGuide;

@@ -5,7 +5,7 @@ export const PacketLossGuide = {
   id: "networking-PacketLoss".toLowerCase(),
   title: "PacketLoss Troubleshooting",
   category: "networking",
-  severity: "High",
-  description: "Production guide for PacketLoss."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving PacketLoss."
 };
 export default PacketLossGuide;

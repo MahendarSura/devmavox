@@ -5,7 +5,7 @@ export const ReplicationLagGuide = {
   id: "databases-ReplicationLag".toLowerCase(),
   title: "ReplicationLag Troubleshooting",
   category: "databases",
-  severity: "High",
-  description: "Production guide for ReplicationLag."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving ReplicationLag."
 };
 export default ReplicationLagGuide;

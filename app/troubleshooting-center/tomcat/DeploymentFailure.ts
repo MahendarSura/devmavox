@@ -5,7 +5,7 @@ export const DeploymentFailureGuide = {
   id: "tomcat-DeploymentFailure".toLowerCase(),
   title: "DeploymentFailure Troubleshooting",
   category: "tomcat",
-  severity: "High",
-  description: "Production guide for DeploymentFailure."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving DeploymentFailure."
 };
 export default DeploymentFailureGuide;

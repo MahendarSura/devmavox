@@ -5,7 +5,7 @@ export const RepositoryOfflineGuide = {
   id: "nexus-RepositoryOffline".toLowerCase(),
   title: "RepositoryOffline Troubleshooting",
   category: "nexus",
-  severity: "High",
-  description: "Production guide for RepositoryOffline."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving RepositoryOffline."
 };
 export default RepositoryOfflineGuide;

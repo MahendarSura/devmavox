@@ -5,7 +5,7 @@ export const UpstreamConnectionRefusedGuide = {
   id: "nginx-UpstreamConnectionRefused".toLowerCase(),
   title: "UpstreamConnectionRefused Troubleshooting",
   category: "nginx",
-  severity: "High",
-  description: "Production guide for UpstreamConnectionRefused."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving UpstreamConnectionRefused."
 };
 export default UpstreamConnectionRefusedGuide;

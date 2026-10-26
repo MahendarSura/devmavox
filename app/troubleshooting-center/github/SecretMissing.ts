@@ -5,7 +5,7 @@ export const SecretMissingGuide = {
   id: "github-SecretMissing".toLowerCase(),
   title: "SecretMissing Troubleshooting",
   category: "github",
-  severity: "High",
-  description: "Production guide for SecretMissing."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving SecretMissing."
 };
 export default SecretMissingGuide;

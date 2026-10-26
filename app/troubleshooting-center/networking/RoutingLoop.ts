@@ -5,7 +5,7 @@ export const RoutingLoopGuide = {
   id: "networking-RoutingLoop".toLowerCase(),
   title: "RoutingLoop Troubleshooting",
   category: "networking",
-  severity: "High",
-  description: "Production guide for RoutingLoop."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving RoutingLoop."
 };
 export default RoutingLoopGuide;

@@ -5,7 +5,7 @@ export const FirewallRuleFailureGuide = {
   id: "networking-FirewallRuleFailure".toLowerCase(),
   title: "FirewallRuleFailure Troubleshooting",
   category: "networking",
-  severity: "High",
-  description: "Production guide for FirewallRuleFailure."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving FirewallRuleFailure."
 };
 export default FirewallRuleFailureGuide;

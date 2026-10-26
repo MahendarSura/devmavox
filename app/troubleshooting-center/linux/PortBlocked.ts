@@ -5,7 +5,7 @@ export const PortBlockedGuide = {
   id: "linux-PortBlocked".toLowerCase(),
   title: "PortBlocked Troubleshooting",
   category: "linux",
-  severity: "High",
-  description: "Production guide for PortBlocked."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving PortBlocked."
 };
 export default PortBlockedGuide;

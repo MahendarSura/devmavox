@@ -5,7 +5,7 @@ export const BandwidthSaturationGuide = {
   id: "networking-BandwidthSaturation".toLowerCase(),
   title: "BandwidthSaturation Troubleshooting",
   category: "networking",
-  severity: "High",
-  description: "Production guide for BandwidthSaturation."
+  severity: "Critical",
+  description: "Production diagnostic guide for resolving BandwidthSaturation."
 };
 export default BandwidthSaturationGuide;
