@@ -1,5 +1,7 @@
+'use client';
 
 import Link from 'next/link';
+import { useState, useMemo } from 'react';
 
 interface CheatItem {
   title: string;
@@ -14,80 +16,169 @@ interface CategoryGroup {
 
 const cheatSheetData: CategoryGroup[] = [
   {
-    category: 'Docker Essentials',
+    category: "Kubernetes (kubectl)",
     items: [
-      { title: 'Build Image', command: 'docker build -t my-app:v1 .', description: 'Builds a Docker image from a Dockerfile.' },
-      { title: 'Run Container', command: 'docker run -d -p 8080:80 my-app:v1', description: 'Runs container in detached mode mapping port 8080.' },
-      { title: 'List Running Containers', command: 'docker ps', description: 'Shows active containers.' },
-      { title: 'Clean System', command: 'docker system prune -a', description: 'Removes unused data, stopped containers, and images.' },
-    ],
+      {
+        title: "Get Pods across all namespaces",
+        command: "kubectl get pods -A",
+        description: "Lists every running pod in all namespaces with their current status and node allocation."
+      },
+      {
+        title: "Stream Pod Logs",
+        command: "kubectl logs -f <pod-name> -n <namespace>",
+        description: "Follows real-time logs for a specific container inside a pod for troubleshooting crash loops."
+      },
+      {
+        title: "Describe failing resource",
+        command: "kubectl describe pod <pod-name> -n <namespace>",
+        description: "Inspects events, liveness probe failures, and image pull errors."
+      }
+    ]
   },
   {
-    category: 'Kubernetes (kubectl)',
+    category: "Docker & BuildKit",
     items: [
-      { title: 'Get Pods', command: 'kubectl get pods -A', description: 'Lists all pods across all namespaces.' },
-      { title: 'Describe Resource', command: 'kubectl describe pod <pod-name>', description: 'Shows detailed diagnostic info for a pod.' },
-      { title: 'View Logs', command: 'kubectl logs -f <pod-name>', description: 'Streams container logs in real-time.' },
-      { title: 'Apply Manifest', command: 'kubectl apply -f deployment.yaml', description: 'Creates or updates resources from a YAML file.' },
-    ],
+      {
+        title: "Prune unused containers & volumes",
+        command: "docker system prune -a --volumes",
+        description: "Frees up runner disk space by removing stopped containers, unused networks, and dangling images."
+      },
+      {
+        title: "Build with plain progress",
+        command: "docker build --progress=plain -t my-app:latest .",
+        description: "Outputs full diagnostic build steps when investigating build failures or cache misses."
+      }
+    ]
   },
   {
-    category: 'Terraform Workflow',
+    category: "Git & Version Control",
     items: [
-      { title: 'Initialize', command: 'terraform init', description: 'Initializes working directory and downloads providers.' },
-      { title: 'Plan Execution', command: 'terraform plan', description: 'Previews the infrastructure changes to be made.' },
-      { title: 'Apply Changes', command: 'terraform apply --auto-approve', description: 'Provisions or updates cloud infrastructure.' },
-      { title: 'Destroy Infrastructure', command: 'terraform destroy', description: 'Deletes all resources managed by Terraform.' },
-    ],
+      {
+        title: "Interactive rebase last 3 commits",
+        command: "git rebase -i HEAD~3",
+        description: "Squashes or reorders commit history before opening a pull request."
+      },
+      {
+        title: "Stash untracked files",
+        command: "git stash -u",
+        description: "Temporarily shelves uncommitted changes including new files without losing workspace state."
+      }
+    ]
   },
   {
-    category: 'Git & GitHub Workflow',
+    category: "Ansible Automation",
     items: [
-      { title: 'Check Status', command: 'git status', description: 'Displays paths that have differences between index and commit.' },
-      { title: 'Stage Changes', command: 'git add .', description: 'Adds all modified or new files to staging area.' },
-      { title: 'Commit Changes', command: 'git commit -m "feat: added new feature"', description: 'Records changes to the repository.' },
-      { title: 'Push to Remote', command: 'git push origin main', description: 'Uploads local commits to GitHub.' },
-    ],
-  },
+      {
+        title: "Run playbook syntax check",
+        command: "ansible-playbook -i inventory/prod site.yml --syntax-check",
+        description: "Validates playbook YAML syntax before executing deployment automation."
+      },
+      {
+        title: "Test host connectivity",
+        command: "ansible all -m ping -i inventory/prod",
+        description: "Confirms SSH authentication and Python interpreter readiness across managed nodes."
+      }
+    ]
+  }
 ];
 
-export default function CheatSheetPage() {
+export default function NotesCheatSheetsPage() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [copiedCommand, setCopiedCommand] = useState<string | null>(null);
+
+  const handleCopy = (cmd: string) => {
+    navigator.clipboard.writeText(cmd);
+    setCopiedCommand(cmd);
+    setTimeout(() => setCopiedCommand(null), 2000);
+  };
+
+  const filteredData = useMemo(() => {
+    if (!searchQuery.trim()) return cheatSheetData;
+    const q = searchQuery.toLowerCase();
+    return cheatSheetData.map(group => ({
+      ...group,
+      items: group.items.filter(item => 
+        item.title.toLowerCase().includes(q) ||
+        item.command.toLowerCase().includes(q) ||
+        item.description.toLowerCase().includes(q)
+      )
+    })).filter(group => group.items.length > 0);
+  }, [searchQuery]);
+
   return (
-    <div className="min-h-screen bg-[#0b0f19] text-white p-6 md:p-10">
-      {/* Navbar */}
-      <div className="max-w-4xl mx-auto flex justify-between items-center mb-10 pb-4 border-b border-gray-800">
+    <div className="max-w-6xl mx-auto px-4 py-12">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-wider text-cyan-400">Devmavox Cheat Sheet</h1>
-          <p className="text-sm text-gray-400 mt-1">Handy Quick Reference Guide for DevOps & Cloud Commands</p>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="text-4xl">📝</span>
+            <h1 className="text-3xl font-bold tracking-tight text-white">DevOps Notes & Cheat Sheets</h1>
+          </div>
+          <p className="text-zinc-400 text-lg">
+            Essential production commands, quick references, and enterprise troubleshooting snippets.
+          </p>
         </div>
-        <Link href="/" className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-200 px-4 py-2 rounded-xl transition border border-gray-700">
+        <Link 
+          href="/"
+          className="inline-flex items-center justify-center px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-sm font-medium rounded-lg transition self-start"
+        >
           ← Back to Home
         </Link>
       </div>
 
-      {/* Content Sections */}
-      <div className="max-w-4xl mx-auto space-y-8">
-        {cheatSheetData.map((group, idx) => (
-          <div key={idx} className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-xl">
-            <h2 className="text-lg font-bold text-cyan-400 mb-4 pb-2 border-b border-gray-800">
-              {group.category}
-            </h2>
+      {/* Search Bar */}
+      <div className="mb-10">
+        <input
+          type="text"
+          placeholder="Search commands, tools, or keywords (e.g. kubectl, git, prune)..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-700 transition"
+        />
+      </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {group.items.map((item, i) => (
-                <div key={i} className="bg-gray-950/70 border border-gray-800/80 p-4 rounded-xl flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-sm font-semibold text-white mb-1">{item.title}</h3>
-                    <p className="text-xs text-gray-400 mb-3">{item.description}</p>
-                  </div>
-                  <div className="bg-black/60 border border-gray-800 p-2.5 rounded-lg font-mono text-xs text-cyan-300 overflow-x-auto">
-                    <code>{item.command}</code>
-                  </div>
-                </div>
-              ))}
-            </div>
+      {/* Content Groups */}
+      <div className="space-y-12">
+        {filteredData.length === 0 ? (
+          <div className="text-center py-16 bg-zinc-900/50 border border-zinc-800 rounded-2xl">
+            <p className="text-zinc-400 text-lg">No cheat sheet items found matching "{searchQuery}".</p>
           </div>
-        ))}
+        ) : (
+          filteredData.map((group, groupIdx) => (
+            <div key={groupIdx} className="space-y-4">
+              <h2 className="text-xl font-bold text-white border-b border-zinc-800 pb-3 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                {group.category}
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {group.items.map((item, itemIdx) => (
+                  <div 
+                    key={itemIdx}
+                    className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex flex-col justify-between hover:border-zinc-700 transition group"
+                  >
+                    <div>
+                      <h3 className="text-base font-semibold text-zinc-100 mb-2">{item.title}</h3>
+                      <p className="text-zinc-400 text-xs mb-4 leading-relaxed">{item.description}</p>
+                    </div>
+
+                    <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-3 flex items-center justify-between gap-3">
+                      <code className="text-xs font-mono text-emerald-400 overflow-x-auto whitespace-nowrap py-1">
+                        {item.command}
+                      </code>
+                      <button
+                        onClick={() => handleCopy(item.command)}
+                        className="text-xs px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded transition shrink-0 font-medium"
+                      >
+                        {copiedCommand === item.command ? "Copied!" : "Copy"}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
