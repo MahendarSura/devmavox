@@ -1,4 +1,4 @@
-```typescript
+
 export interface ActionRunnerOfflineGuide {
   title: string;
   slug: string;
