@@ -1,13 +1,10 @@
-from pathlib import Path
-
-content = r''' "use client";
-
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 type Level = "Beginner" | "Intermediate" | "Advanced";
 
 type Lab = {
+  id: string;
   title: string;
   category: string;
   level: Level;
