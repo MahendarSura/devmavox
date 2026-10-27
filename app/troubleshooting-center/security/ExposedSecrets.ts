@@ -470,7 +470,7 @@ export const exposedSecretsGuide = {
   },
 
   storageAndArtifacts: {
-    .envFiles: [
+    ".envFiles": [
       "Keep real .env files out of version control.",
       "Commit only a .env.example containing placeholder values.",
       "Check ignore rules, tracked files, editor backups, and deployment bundles.",

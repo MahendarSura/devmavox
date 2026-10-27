@@ -1,1183 +1,915 @@
+export const pythonError = {
+  title: "Ansible Python Errors and Production Troubleshooting",
+  slug: "python-error",
+  category: "Ansible",
+  severity: "High",
+  estimatedTime: "30–90 minutes",
+  description:
+    "Diagnose and resolve Ansible Python interpreter, dependency, module execution, " +
+    "inventory, permissions, and CI/CD execution failures using a safe production workflow.",
 
   symptoms: [
-    "The Ansible task fails with 'No module named ...'.",
-    "A managed host reports that Python could not be found.",
-    "Ansible selects an unexpected Python interpreter.",
-    "A module works on one host but fails on another.",
-    "A Python library exists for one user but is missing for another.",
-    "A playbook works on a developer laptop but fails in a CI runner.",
-    "A package installation fails because the OS Python environment is externally managed.",
-    "A Python upgrade breaks system utilities or existing automation.",
-    "A task fails with a Python syntax or compatibility error.",
-    "A collection requires a newer Python or Ansible version than the environment provides.",
-    "The remote module fails even though SSH connectivity succeeds.",
-    "A deployment partially completes before a Python-related failure.",
+    "Ansible reports No module named ...",
+    "Python interpreter cannot be discovered on a managed host.",
+    "Ansible modules fail even though SSH connectivity succeeds.",
+    "A playbook works locally but fails in the CI/CD runner.",
+    "Python dependencies are installed for a different interpreter.",
+    "Ansible reports a syntax error or incompatible Python version.",
+    "Only a subset of managed hosts fails.",
+    "A deployment pipeline suddenly reports zero hosts.",
+    "Dynamic inventory returns no hosts or fails to load.",
+    "The playbook runs against the wrong inventory or environment.",
+    "A task fails with Permission denied or become-related errors.",
+    "A package upgrade breaks a previously working playbook.",
+    "A task succeeds on one host but fails on another.",
+    "A deployment partially completes before Python execution fails.",
   ],
 
   incidentScenario: {
-    title: "Production rollout fails after a managed host's Python environment changes",
+    title: "Production deployment suddenly fails across managed hosts",
+
     situation:
-      "A configuration-management pipeline deploys to a fleet of Linux hosts. " +
-      "The controller can connect over SSH, but module execution fails on a subset " +
-      "of hosts after an OS image update. The failures mention Python interpreter " +
-      "discovery and a missing dependency. Some earlier tasks have already changed state.",
-    impact: [
-      "The deployment is incomplete and hosts may have inconsistent configuration.",
-      "Application instances may run different releases.",
-      "A controller-side dependency failure could block every target in the environment.",
-      "Changing the system Python blindly could break OS package tools or other automation.",
-      "A repeated deployment could repeat operations that already completed.",
+      "A CI/CD pipeline starts an Ansible deployment. The pipeline was successful " +
+      "in earlier runs, but the current run either targets zero hosts or fails during " +
+      "Python module execution. Some tasks may already have changed production state.",
+
+    businessImpact: [
+      "Application deployment is delayed.",
+      "Production hosts may have inconsistent configurations.",
+      "A release may be partially deployed.",
+      "Repeated retries may repeat changes or increase the outage.",
+      "A controller-side Python issue may block multiple environments.",
+      "A wrong inventory may cause changes to unintended hosts.",
     ],
-    firstResponse: [
-      "Pause conflicting deployment runs and uncontrolled automatic retries.",
-      "Preserve the original task output and full play recap.",
-      "Identify whether the error occurred on the controller or on a managed host.",
-      "Record the commit, runner image, Ansible version, Python version, and affected hosts.",
-      "Inspect the state of hosts that reported changed before the failure.",
-      "Use read-only checks before modifying interpreters or installing packages.",
-      "Follow the production approval and incident escalation process.",
+
+    initialActions: [
+      "Pause repeated deployment attempts until the failure is understood.",
+      "Identify the affected application, environment, pipeline, and release.",
+      "Determine whether any production changes already occurred.",
+      "Save the complete job log and the first failing task.",
+      "Confirm the approved incident severity and escalation process.",
+      "Assign an incident owner and communicate the deployment status.",
+      "Do not replace system Python or modify production packages blindly.",
     ],
+
     successCriteria: [
-      "The failure domain is identified with evidence.",
-      "The selected Python runtime is compatible with the required Ansible modules.",
-      "Required dependencies are available in the correct execution environment.",
-      "All intended hosts reach the desired state.",
-      "Application health checks pass after recovery.",
-      "The final play recap and CI/CD result accurately reflect the outcome.",
-      "Preventive actions are documented and assigned.",
+      "The actual failure domain is identified.",
+      "The correct repository, inventory, and environment are confirmed.",
+      "The root cause is supported by evidence.",
+      "The smallest safe correction is validated.",
+      "The deployment is rerun in a controlled manner.",
+      "Application health checks pass.",
+      "The incident report and preventive actions are recorded.",
+    ],
+  },
+
+  impactAssessment: {
+    questions: [
+      "Is the failure limited to development, staging, or production?",
+      "Is the entire deployment blocked or only a subset of hosts?",
+      "Does the inventory contain the expected host count?",
+      "Did the playbook change any hosts before failing?",
+      "Is the application currently healthy?",
+      "Did the runner image, Python version, collection, or dependency change?",
+      "Could a rerun repeat database, service, or infrastructure changes?",
+      "Is rollback required, or is forward recovery safer?",
+    ],
+
+    severityGuidance: [
+      {
+        level: "SEV-1",
+        condition:
+          "A critical production service is unavailable or widespread impact is occurring.",
+        response:
+          "Follow the organization's emergency incident process and involve the service owner immediately.",
+      },
+      {
+        level: "SEV-2",
+        condition:
+          "A critical deployment is blocked or production hosts have inconsistent state.",
+        response:
+          "Stop uncontrolled changes, assess impact, and coordinate a controlled recovery.",
+      },
+      {
+        level: "SEV-3",
+        condition:
+          "A non-critical environment or limited group of hosts is affected.",
+        response:
+          "Investigate with normal incident procedures and validate the fix before rerunning.",
+      },
     ],
   },
 
   safetyChecks: [
-    "Confirm the current repository, branch, and deployed commit.",
-    "Confirm the controller or execution-container identity.",
-    "Confirm the inventory source and target host scope.",
+    "Confirm the current repository and Git branch.",
+    "Confirm the commit or release being deployed.",
+    "Confirm the working directory used by the pipeline.",
     "Confirm the active Ansible configuration file.",
-    "Distinguish controller Python from managed-host Python before changing anything.",
-    "Do not upgrade or replace system Python during an incident without an approved compatibility plan.",
-    "Do not delete virtual environments or package directories to fix an unexplained import error.",
-    "Do not install arbitrary latest package versions on production systems.",
-    "Do not expose environment variables, Vault passwords, tokens, or private keys in logs.",
-    "Check whether the failed run already changed files, packages, services, or external resources.",
-    "Use the organization's approved package manager and dependency source.",
-    "Test interpreter changes on a disposable host or staging environment first.",
-    "Do not assume that a successful SSH connection proves Python module execution will work.",
+    "Confirm the intended inventory and target environment.",
+    "Confirm the actual host count before running changes.",
+    "Confirm the CI/CD runner or execution-container identity.",
+    "Distinguish controller Python from managed-host Python.",
+    "Check whether any tasks already reported changed.",
+    "Use approved production access and change approvals.",
+    "Use --check only where the relevant modules support check mode correctly.",
+    "Use --diff cautiously because it can expose sensitive configuration values.",
+    "Never print Vault passwords, private keys, tokens, or full secret-bearing environments.",
+    "Do not upgrade system Python without an approved compatibility and rollback plan.",
+    "Do not run an unrestricted production playbook just to test connectivity.",
   ],
 
-  evidenceCollection: [
-    "Capture the full Python traceback and the Ansible task name.",
-    "Record whether the error is reported locally by the controller or remotely by the target.",
-    "Record ansible --version output.",
-    "Record Python executable paths and versions in the relevant execution context.",
-    "Record the active virtual environment and package installation context.",
-    "Record the installed Ansible collections and roles.",
-    "Record the managed operating system and image version.",
-    "Record the selected interpreter from Ansible output where available.",
-    "Record the first failing task and per-host recap.",
-    "Compare affected hosts with a healthy peer using the same approved read-only checks.",
-    "Capture the runner image digest, dependency lock files, and recent pipeline changes.",
-    "Record package-manager and system logs relevant to the failure.",
-    "Redact secrets, credentials, personal data, and sensitive environment values before sharing logs.",
-  ],
+  evidenceCollection: {
+    collect: [
+      "Complete CI/CD job logs and timestamps.",
+      "The first failing task and full traceback.",
+      "Repository commit, branch, and changed files.",
+      "Pipeline working directory and command-line arguments.",
+      "Ansible version and active configuration path.",
+      "Inventory source and expected target count.",
+      "Python executable and version on the controller.",
+      "Python executable and version on affected managed hosts.",
+      "Ansible collection and role versions.",
+      "Runner image or execution-environment version.",
+      "Operating system and image version on affected hosts.",
+      "Relevant package-manager logs.",
+      "Per-host PLAY RECAP output.",
+      "Recent dependency, inventory, runner, or playbook changes.",
+    ],
+
+    protect: [
+      "Redact passwords, tokens, private keys, and secret values.",
+      "Do not upload unredacted production logs to public issue trackers.",
+      "Keep evidence in the organization's approved incident system.",
+      "Record timestamps with the relevant timezone.",
+      "Compare an affected host with a healthy host using approved read-only checks.",
+    ],
+  },
 
   diagnosticWorkflow: [
     {
-      title: "1. Identify the failure domain",
-      purpose:
-        "Determine whether the error originates in the controller, execution environment, or managed host.",
+      step: 1,
+      title: "Confirm the controller and repository context",
+
+      objective:
+        "Verify that the pipeline is executing from the expected repository and commit.",
+
+      commands: [
+        "pwd",
+        "git rev-parse --show-toplevel",
+        "git rev-parse HEAD",
+        "git branch --show-current",
+        "git status --short",
+        "ansible --version",
+      ],
+
+      interpret: [
+        {
+          evidence: "The repository root or commit is unexpected.",
+          meaning: "The pipeline may be using the wrong checkout or working directory.",
+          action:
+            "Correct the checkout, working directory, or release reference and rerun validation.",
+        },
+        {
+          evidence: "Ansible uses a different Python interpreter than expected.",
+          meaning:
+            "The shell's Python command may not be the interpreter used by Ansible.",
+          action:
+            "Inspect the virtual environment, runner image, and Ansible installation.",
+        },
+        {
+          evidence: "Unexpected local modifications exist.",
+          meaning:
+            "The pipeline or workspace may contain uncommitted changes.",
+          action:
+            "Review the changes before using the workspace for a deployment.",
+        },
+      ],
+    },
+
+    {
+      step: 2,
+      title: "Investigate a pipeline targeting zero hosts",
+
+      objective:
+        "Find out whether the problem is caused by inventory selection, host patterns, or dynamic inventory.",
+
+      commands: [
+        "ansible-inventory -i inventory/production.ini --graph",
+        "ansible-inventory -i inventory/production.ini --list",
+        "ansible all -i inventory/production.ini --list-hosts",
+      ],
+
+      important:
+        "Replace inventory/production.ini with the exact inventory source used by your pipeline. " +
+        "Do not assume that this example path exists in your repository.",
+
+      interpret: [
+        {
+          evidence: "The inventory graph is empty.",
+          meaning:
+            "The inventory source may be empty, incorrectly parsed, unavailable, or returning no hosts.",
+          action:
+            "Check the actual inventory path, inventory plugin, source credentials, and dynamic inventory output.",
+        },
+        {
+          evidence: "Hosts appear in the inventory, but the playbook matches none.",
+          meaning:
+            "The play's hosts pattern or command-line limit may exclude the available hosts.",
+          action:
+            "Compare the play's hosts value, --limit, inventory groups, and pipeline variables.",
+        },
+        {
+          evidence: "The inventory command fails.",
+          meaning:
+            "An inventory parser, plugin, credential, dependency, or source-access issue may exist.",
+          action:
+            "Read the exact error and test the inventory source using the same approved execution environment.",
+        },
+        {
+          evidence: "The inventory contains the wrong environment.",
+          meaning:
+            "The pipeline may be using an incorrect variable, inventory file, or environment mapping.",
+          action:
+            "Stop the deployment and correct environment selection before any modifying task runs.",
+        },
+      ],
+
+      safety:
+        "Do not run the deployment until the target host list is confirmed to match the intended environment.",
+    },
+
+    {
+      step: 3,
+      title: "Validate the playbook before execution",
+
+      objective:
+        "Catch syntax, inventory, and variable issues before making changes.",
+
+      commands: [
+        "ansible-playbook -i inventory/production.ini site.yml --syntax-check",
+        "ansible-playbook -i inventory/production.ini site.yml --list-hosts",
+        "ansible-playbook -i inventory/production.ini site.yml --list-tasks",
+      ],
+
+      interpret: [
+        {
+          evidence: "Syntax check fails.",
+          meaning: "The playbook or one of its referenced files may contain invalid syntax.",
+          action:
+            "Fix the reported file and line, then rerun syntax validation.",
+        },
+        {
+          evidence: "The host list is empty or unexpected.",
+          meaning: "Inventory or host selection is incorrect.",
+          action:
+            "Correct the inventory, group, hosts pattern, or limit.",
+        },
+        {
+          evidence: "Unexpected tasks appear in the task list.",
+          meaning:
+            "The wrong playbook, role, tags, or imported task file may be selected.",
+          action:
+            "Confirm the intended release entry point and task selection.",
+        },
+      ],
+
+      note:
+        "Replace site.yml and the inventory path with your repository's real paths. " +
+        "A successful syntax check does not guarantee that every runtime dependency or target is correct.",
+    },
+
+    {
+      step: 4,
+      title: "Check controller-side Python",
+
+      objective:
+        "Identify whether the Ansible controller or execution environment has a Python dependency problem.",
+
+      commands: [
+        "python --version",
+        "python3 --version",
+        "python -m pip --version",
+        "python -m pip check",
+        "ansible --version",
+      ],
+
+      interpret: [
+        {
+          evidence: "The Python command is missing.",
+          meaning: "The expected Python executable may not be installed or on PATH.",
+          action:
+            "Inspect the runner image and approved Python installation procedure.",
+        },
+        {
+          evidence: "pip reports broken dependencies.",
+          meaning: "Installed packages may have incompatible dependency requirements.",
+          action:
+            "Compare the lock file and installed packages with the last known-good execution environment.",
+        },
+        {
+          evidence: "The shell Python and Ansible Python differ.",
+          meaning:
+            "Packages may have been installed into a different interpreter environment.",
+          action:
+            "Use the approved virtual environment or rebuild the pinned execution environment.",
+        },
+      ],
+
+      warning:
+        "Run these commands inside the same container or virtual environment that runs Ansible. " +
+        "The output from a separate interactive shell may not represent the pipeline environment.",
+    },
+
+    {
+      step: 5,
+      title: "Check Python on the managed host",
+
+      objective:
+        "Determine whether the target host has a usable and compatible interpreter.",
+
+      commands: [
+        "ansible affected_hosts -i inventory/production.ini -m ansible.builtin.raw -a 'command -v python3 || command -v python'",
+        "ansible affected_hosts -i inventory/production.ini -m ansible.builtin.raw -a 'python3 --version'",
+      ],
+
+      interpret: [
+        {
+          evidence: "No Python executable is found.",
+          meaning:
+            "The host may be a minimal image or may not have the expected interpreter installed.",
+          action:
+            "Use the organization's approved bootstrap process for that operating system.",
+        },
+        {
+          evidence: "Python exists but is too old for the module or collection.",
+          meaning:
+            "The target runtime may be incompatible with the selected Ansible content.",
+          action:
+            "Check the compatibility matrix and select a supported runtime or compatible collection version.",
+        },
+        {
+          evidence: "The command works on healthy hosts but not affected hosts.",
+          meaning:
+            "The issue may be limited to the affected image, PATH, permissions, or interpreter configuration.",
+          action:
+            "Compare the affected and healthy hosts before making changes.",
+        },
+      ],
+
+      note:
+        "The raw module can execute commands without the normal Python module transport on many Unix-like hosts. " +
+        "It still requires working connectivity and a usable remote shell. Adapt the command for the target OS.",
+
+      safety:
+        "Keep the target pattern narrow. Do not use all hosts for an initial production investigation.",
+    },
+
+    {
+      step: 6,
+      title: "Inspect interpreter discovery and configuration",
+
+      objective:
+        "Verify which Python interpreter Ansible selects for the managed host.",
+
+      commands: [
+        "ansible affected_hosts -i inventory/production.ini -m ansible.builtin.setup -a 'filter=ansible_python*'",
+        "ansible-config dump --only-changed",
+        "ansible-inventory -i inventory/production.ini --host affected_host",
+      ],
+
+      interpret: [
+        {
+          evidence: "The selected interpreter points to a missing executable.",
+          meaning:
+            "A host variable or configuration may reference an invalid interpreter path.",
+          action:
+            "Correct the interpreter setting after verifying the real executable path.",
+        },
+        {
+          evidence: "A group or host variable overrides the expected interpreter.",
+          meaning:
+            "Inventory variables may be selecting a different runtime.",
+          action:
+            "Review host_vars, group_vars, inventory plugin data, and command-line extra variables.",
+        },
+        {
+          evidence: "Interpreter discovery fails only on new images.",
+          meaning:
+            "The image may have changed its installed Python path or package layout.",
+          action:
+            "Update the image configuration and test it in staging.",
+        },
+      ],
+
+      exampleConfiguration: [
+        "[linux_servers:vars]",
+        "ansible_python_interpreter=/usr/bin/python3",
+      ],
+
+      configurationWarning:
+        "The example path must exist and be supported on the target hosts. " +
+        "Do not copy it blindly to hosts with a different operating system or Python layout.",
+    },
+
+    {
+      step: 7,
+      title: "Resolve missing Python modules and dependencies",
+
+      objective:
+        "Determine which package is missing, which interpreter needs it, and where it must be installed.",
+
+      commands: [
+        "python -m pip show PACKAGE_NAME",
+        "python -m pip check",
+        "python -c 'import PACKAGE_NAME; print(PACKAGE_NAME.__file__)'",
+      ],
+
+      interpret: [
+        {
+          evidence: "The import fails in the controller environment.",
+          meaning: "The controller-side dependency is missing or installed in another environment.",
+          action:
+            "Install the approved pinned dependency in the execution environment that actually runs Ansible.",
+        },
+        {
+          evidence: "The import succeeds locally but fails in CI.",
+          meaning:
+            "The runner image, virtual environment, dependency installation, or cache differs.",
+          action:
+            "Rebuild the runner using the repository's dependency lock and verify the same interpreter is used.",
+        },
+        {
+          evidence: "A remote module reports a missing import.",
+          meaning:
+            "The dependency may be required on the managed host rather than on the controller.",
+          action:
+            "Check the module documentation and install the dependency in the correct host environment if required.",
+        },
+      ],
+
+      important:
+        "Replace PACKAGE_NAME with the real import or package name. " +
+        "Python import names and package-manager names are not always identical.",
+
+      prevention: [
+        "Pin tested dependencies.",
+        "Maintain a requirements file or approved execution-environment definition.",
+        "Build immutable runner images.",
+        "Test upgrades in staging before production.",
+        "Avoid unpinned latest package installations in production pipelines.",
+      ],
+    },
+
+    {
+      step: 8,
+      title: "Check SSH, privilege escalation, and permissions",
+
+      objective:
+        "Separate Python errors from connectivity and authorization failures.",
+
+      commands: [
+        "ansible affected_hosts -i inventory/production.ini -m ansible.builtin.ping -vv",
+        "ansible affected_hosts -i inventory/production.ini -m ansible.builtin.command -a 'id'",
+      ],
+
+      interpret: [
+        {
+          evidence: "SSH authentication fails.",
+          meaning: "The issue is connectivity or authentication, not necessarily Python.",
+          action:
+            "Verify the approved account, key access, SSH configuration, host reachability, and security controls.",
+        },
+        {
+          evidence: "Ping succeeds but a privileged task fails.",
+          meaning:
+            "Privilege escalation, sudo policy, or target permissions may be incorrect.",
+          action:
+            "Review become configuration and approved privilege policy.",
+        },
+        {
+          evidence: "Permission denied occurs for a file or directory.",
+          meaning:
+            "The remote account may not have the required access.",
+          action:
+            "Inspect ownership, permissions, and intended execution identity before changing them.",
+        },
+      ],
+
+      note:
+        "Ansible's ping module is not the same as ICMP ping. For typical POSIX targets, " +
+        "the Ansible ping module verifies connectivity and Python-based module execution.",
+    },
+
+    {
+      step: 9,
+      title: "Inspect CI/CD differences",
+
+      objective:
+        "Find differences between a successful local run and a failed pipeline.",
+
+      compare: [
+        "Runner image and image digest.",
+        "Working directory.",
+        "Repository commit.",
+        "Ansible version.",
+        "Python version and executable path.",
+        "Installed collections and roles.",
+        "Dependency lock files.",
+        "Inventory source and credentials.",
+        "Environment variables and command-line options.",
+        "Network access to package repositories.",
+        "File permissions and case-sensitive paths.",
+        "Cache contents and dependency installation order.",
+      ],
+
       commands: [
         "ansible --version",
         "python --version",
-        "python3 --version",
-        "pwd",
         "git rev-parse HEAD",
         "git status --short",
       ],
-      expectedEvidence: [
-        "Ansible version and the Python runtime used by the Ansible installation.",
-        "Available Python commands in the current shell.",
-        "Current working directory, commit, and local changes.",
-      ],
-      interpretation: [
-        "The Python version printed by a shell may not be the interpreter used by Ansible.",
-        "Ansible may run inside a container or virtual environment different from the interactive shell.",
-        "A traceback from the controller indicates a different investigation path from a remote module traceback.",
-      ],
-      nextAction: [
-        "Read the complete traceback and identify where it was generated.",
-        "Inspect the runner or execution-container configuration.",
-        "Continue with controller-side or managed-host checks as appropriate.",
-      ],
-      safetyNotes: [
-        "These commands are intended for local diagnostics.",
-        "Do not publish complete environment dumps because they can contain credentials.",
+
+      actions: [
+        "Run diagnostics inside the same CI job or execution container.",
+        "Compare with a known-good pipeline run.",
+        "Rebuild from pinned dependencies if the runner environment is inconsistent.",
+        "Do not print secret values while comparing environment configuration.",
+        "Do not depend on packages installed manually on a long-lived runner.",
       ],
     },
+
     {
-      title: "2. Verify Ansible and its Python runtime",
-      purpose:
-        "Check which executable and runtime actually launch Ansible.",
-      commands: [
-        "command -v ansible",
-        "command -v python",
-        "command -v python3",
-        "ansible --version",
-        "python3 -m pip --version",
-      ],
-      expectedEvidence: [
-        "Resolved executable paths.",
-        "Ansible's reported Python interpreter.",
-        "The pip installation context for the selected Python executable.",
-      ],
-      interpretation: [
-        "Ansible and pip can refer to different Python environments.",
-        "Installing a package with one pip does not guarantee it is available to the Python runtime running Ansible.",
-        "An unexpected executable path may indicate PATH ordering or a virtual-environment activation issue.",
-      ],
-      nextAction: [
-        "Use the interpreter path reported by Ansible as the starting point for controller-side investigation.",
-        "Check the approved virtual environment or execution image.",
-        "Reproduce the issue in an isolated environment before changing dependencies.",
-      ],
-      safetyNotes: [
-        "Do not use sudo pip to modify a system-managed Python installation as a general fix.",
-        "Do not replace system symlinks to force a different Python version.",
-      ],
-    },
-    {
-      title: "3. Verify managed-host Python availability",
-      purpose:
-        "Determine whether a target host has a compatible Python interpreter available.",
-      commands: [
-        "ansible app_servers -i inventory/staging.ini -m ansible.builtin.raw -a 'command -v python3 || command -v python || true'",
-        "ansible app_servers -i inventory/staging.ini -m ansible.builtin.raw -a 'cat /etc/os-release'",
-      ],
-      expectedEvidence: [
-        "Python executable path, if present.",
-        "Operating system identification from the target.",
-        "Differences between affected and healthy hosts.",
-      ],
-      interpretation: [
-        "The raw module is useful for bootstrapping or inspecting hosts when Python-based module execution is not yet available.",
-        "An absent Python executable can prevent many normal Ansible modules from running.",
-        "The correct interpreter and installation method depend on the target OS and policy.",
-      ],
-      nextAction: [
-        "Confirm the target OS and approved Python package.",
-        "Use an approved bootstrap process if Python is genuinely missing.",
-        "Retest normal Ansible module execution after the interpreter is available.",
-      ],
-      safetyNotes: [
-        "The raw module bypasses normal Python module execution; its commands still execute on target hosts.",
-        "Confirm inventory and scope before running commands against any environment.",
-        "Do not install packages on production hosts without approval.",
-      ],
-    },
-    {
-      title: "4. Check the selected interpreter",
-      purpose:
-        "Identify incorrect interpreter discovery or an unsuitable configured interpreter.",
-      commands: [
-        "ansible-inventory -i inventory/staging.ini --host app01",
-        "ansible-config dump --only-changed",
-        "ansible staging -i inventory/staging.ini -m ansible.builtin.setup -a 'filter=ansible_python*'",
-      ],
-      expectedEvidence: [
-        "Inventory variables that may set ansible_python_interpreter.",
-        "Relevant Ansible configuration overrides.",
-        "Interpreter facts for hosts where fact gathering succeeds.",
-      ],
-      interpretation: [
-        "A hard-coded interpreter path can become invalid after an OS image change.",
-        "Interpreter discovery can select a different Python than expected.",
-        "Facts may be unavailable when interpreter startup fails, so absence of a fact is not proof of a specific root cause.",
-      ],
-      nextAction: [
-        "Compare the selected interpreter with the actual executable on the target.",
-        "Inspect group_vars, host_vars, inventory plugins, and play-level variables.",
-        "Set an explicit interpreter only when the environment requires it and the path is verified.",
-      ],
-      safetyNotes: [
-        "Inventory output can expose sensitive variables; redact before sharing.",
-        "Do not hard-code one interpreter path across dissimilar operating systems without validating it.",
-      ],
-    },
-    {
-      title: "5. Reproduce the smallest failing operation",
-      purpose:
-        "Separate Python module execution from the application task that originally failed.",
-      commands: [
-        "ansible staging -i inventory/staging.ini -m ansible.builtin.ping",
-        "ansible staging -i inventory/staging.ini -m ansible.builtin.setup -a 'filter=ansible_python*'",
-      ],
-      expectedEvidence: [
-        "Whether a basic Ansible module executes.",
-        "Whether interpreter facts can be collected.",
-        "The exact host and error for any failure.",
-      ],
-      interpretation: [
-        "If ping fails with a Python traceback, investigate the module runtime before debugging the application task.",
-        "If ping succeeds but one module fails, investigate that module's dependencies and arguments.",
-        "If only one host fails, compare its OS image, interpreter path, permissions, and installed packages with a healthy peer.",
-      ],
-      nextAction: [
-        "Classify the issue as general module execution, module-specific dependency, or application-task failure.",
-        "Use the traceback and installed module requirements to narrow the next check.",
-        "Avoid rerunning the entire deployment just to reproduce a basic execution problem.",
-      ],
-      safetyNotes: [
-        "Use staging or a disposable target where possible.",
-        "The ping module tests Ansible module execution, not ICMP reachability or application health.",
-      ],
-    },
-    {
-      title: "6. Diagnose missing Python packages",
-      purpose:
-        "Determine which environment needs a dependency and whether it is a controller-side or target-side dependency.",
-      commands: [
-        "python3 -m pip show Jinja2",
-        "python3 -m pip list",
-        "ansible-galaxy collection list",
-        "ansible-doc ansible.builtin.template",
-      ],
-      expectedEvidence: [
-        "Package version and installation location for the selected Python environment.",
-        "Installed collections and module documentation.",
-        "The dependency requirement of the failing feature or plugin.",
-      ],
-      interpretation: [
-        "A package missing from the controller environment may affect plugins, filters, lookups, or Ansible itself.",
-        "A module may require a library on the managed host instead.",
-        "A package can be installed but unavailable because it belongs to a different interpreter or virtual environment.",
-      ],
-      nextAction: [
-        "Identify the dependency's execution side from the traceback and module documentation.",
-        "Install the pinned dependency in the correct environment through the approved process.",
-        "Rebuild the execution image when dependencies are managed immutably.",
-      ],
-      safetyNotes: [
-        "Do not install packages into the wrong Python environment.",
-        "Avoid unreviewed dependency upgrades during an incident.",
-      ],
-    },
-    {
-      title: "7. Investigate virtual-environment and PATH drift",
-      purpose:
-        "Find differences between interactive shells, CI jobs, containers, and scheduled automation.",
-      commands: [
-        "command -v ansible",
-        "command -v python3",
-        "python3 -m pip --version",
-        "env | grep -E '^(PATH|VIRTUAL_ENV|PYTHONPATH)='",
-      ],
-      expectedEvidence: [
-        "Executable resolution and virtual-environment context.",
-        "Relevant non-secret path variables.",
-        "Differences between successful and failing execution contexts.",
-      ],
-      interpretation: [
-        "A CI step may not activate the same virtual environment as a developer shell.",
-        "PYTHONPATH can cause unexpected imports or shadow packages.",
-        "PATH order can select an unexpected Ansible executable.",
-      ],
-      nextAction: [
-        "Make the intended environment activation explicit in CI.",
-        "Remove accidental path overrides after confirming their origin.",
-        "Rebuild a clean environment and rerun the validation suite.",
-      ],
-      safetyNotes: [
-        "Do not print all environment variables in CI logs.",
-        "Review path values before sharing them outside the team.",
-      ],
-    },
-    {
-      title: "8. Check Python and collection compatibility",
-      purpose:
-        "Determine whether the selected Python runtime satisfies the versions required by Ansible and its collections.",
-      commands: [
-        "ansible --version",
-        "python3 --version",
-        "ansible-galaxy collection list",
-        "ansible-doc -t module ansible.builtin.command",
-      ],
-      expectedEvidence: [
-        "Ansible core version and its controller Python runtime.",
-        "Installed collection versions.",
-        "Documentation and support information for the relevant module.",
-      ],
-      interpretation: [
-        "Controller-side Python requirements can differ from managed-host Python requirements.",
-        "A collection or plugin may have a narrower compatibility range than the Ansible core installation.",
-        "A runtime upgrade can expose incompatibilities in custom plugins or dependencies.",
-      ],
-      nextAction: [
-        "Compare installed versions with official support requirements.",
-        "Select a compatible, tested version combination.",
-        "Pin versions and validate them in a reproducible environment.",
-      ],
-      safetyNotes: [
-        "Do not assume the latest versions are compatible with the existing playbooks.",
-        "Use official compatibility documentation rather than guessing version requirements.",
-      ],
-    },
-    {
-      title: "9. Inspect OS package-management constraints",
-      purpose:
-        "Diagnose package installation errors without damaging the operating system's Python environment.",
-      commands: [
-        "cat /etc/os-release",
-        "python3 --version",
-        "python3 -m pip --version",
-      ],
-      expectedEvidence: [
-        "OS distribution and version.",
-        "Python version and pip context.",
-        "Whether the environment is managed by the OS package manager or an isolated virtual environment.",
-      ],
-      interpretation: [
-        "Some distributions restrict direct pip installation into system-managed Python environments.",
-        "A missing package may be supplied by an OS package rather than a pip package.",
-        "The appropriate remediation depends on whether the dependency belongs to the controller, target, or isolated application environment.",
-      ],
-      nextAction: [
-        "Follow the distribution's supported package-management approach.",
-        "Use a virtual environment for application or tooling dependencies when appropriate.",
-        "Validate the package source and version before installing.",
-      ],
-      safetyNotes: [
-        "Do not force installation into an externally managed system Python without an approved exception.",
-        "Avoid removing OS-managed Python packages to resolve a local dependency conflict.",
-      ],
-    },
-    {
-      title: "10. Assess partial changes and recover safely",
-      purpose:
-        "Avoid creating a second incident while fixing the Python execution environment.",
+      step: 10,
+      title: "Use a controlled validation run",
+
+      objective:
+        "Validate the intended hosts and tasks before attempting a production recovery.",
+
       commands: [
         "ansible-playbook -i inventory/staging.ini site.yml --syntax-check",
         "ansible-playbook -i inventory/staging.ini site.yml --list-hosts",
-        "ansible-playbook -i inventory/staging.ini site.yml --list-tasks",
+        "ansible-playbook -i inventory/staging.ini site.yml --check --limit affected_hosts",
       ],
-      expectedEvidence: [
-        "Syntax validation and intended task sequence.",
-        "Target host scope.",
-        "Original failed-run recap and independent current-state checks.",
-      ],
-      interpretation: [
-        "These commands help validate the plan but do not reveal every change from the original failed execution.",
-        "The original recap and independent host inspection are required to understand partial deployment state.",
-        "A Python fix may restore task execution but does not itself prove application recovery.",
-      ],
-      nextAction: [
-        "Use original logs to determine what changed.",
-        "Test the Python correction on a representative staging host.",
-        "Execute the approved, smallest safe recovery scope.",
-        "Verify application health and all intended hosts before closing the incident.",
-      ],
+
       safetyNotes: [
-        "Do not run a production recovery based solely on a successful syntax check.",
-        "Do not assume a failed task made no changes.",
+        "Replace example paths and host patterns with approved values.",
+        "Check mode is not supported or fully predictive for every module.",
+        "Check mode does not prove that external systems will accept the changes.",
+        "Review the planned changes with the service owner.",
+        "Use staging or a disposable host whenever possible.",
       ],
     },
   ],
 
-  rootCauses: [
+  rootCauseIsolation: [
     {
-      id: "controller-python-mismatch",
-      title: "Controller Python mismatch",
-      severity: "High",
-      symptoms: [
-        "Ansible fails during startup or plugin loading.",
-        "A package import fails before remote tasks execute.",
-        "A local run works only after activating a particular virtual environment.",
+      cause: "Wrong working directory",
+      evidence:
+        "Relative inventory or playbook paths fail, or a different repository file is loaded.",
+      fix:
+        "Set the pipeline working directory explicitly and use verified paths.",
+      prevention:
+        "Add a preflight step that prints the repository root and verifies required files.",
+    },
+    {
+      cause: "Inventory returns zero hosts",
+      evidence:
+        "The inventory graph is empty or the selected play pattern matches no hosts.",
+      fix:
+        "Correct the inventory source, host pattern, group membership, or limit.",
+      prevention:
+        "Validate expected host count and environment selection before deployment.",
+    },
+    {
+      cause: "Dynamic inventory failure",
+      evidence:
+        "The inventory plugin reports authentication, parsing, dependency, or API errors.",
+      fix:
+        "Repair the plugin configuration, approved credentials, dependency, or source permissions.",
+      prevention:
+        "Monitor inventory freshness and validate dynamic inventory in CI.",
+    },
+    {
+      cause: "Python missing on a managed host",
+      evidence:
+        "A remote interpreter check shows that the expected executable is unavailable.",
+      fix:
+        "Use the approved OS-specific bootstrap process and configure the verified interpreter.",
+      prevention:
+        "Build and test machine images with required runtime prerequisites.",
+    },
+    {
+      cause: "Wrong Python interpreter",
+      evidence:
+        "Ansible selects a nonexistent path or a path with incompatible dependencies.",
+      fix:
+        "Correct the host or group interpreter setting after verifying the actual executable.",
+      prevention:
+        "Test interpreter configuration on every supported image family.",
+    },
+    {
+      cause: "Missing dependency",
+      evidence:
+        "An import fails in the exact runtime that executes the affected module.",
+      fix:
+        "Install the approved dependency into the correct controller or target environment.",
+      prevention:
+        "Pin dependencies and build reproducible execution environments.",
+    },
+    {
+      cause: "Python or Ansible version incompatibility",
+      evidence:
+        "The installed version is outside the documented compatibility requirements.",
+      fix:
+        "Choose a tested compatible version combination and validate it in staging.",
+      prevention:
+        "Maintain a compatibility matrix and controlled upgrade process.",
+    },
+    {
+      cause: "Privilege escalation or file permissions",
+      evidence:
+        "Connectivity works but privileged commands or file operations fail.",
+      fix:
+        "Correct the approved become configuration or intended file ownership and permissions.",
+      prevention:
+        "Test access policies and least-privilege permissions in CI.",
+    },
+    {
+      cause: "Runner drift",
+      evidence:
+        "A previous runner succeeds while the current image or dependency set differs.",
+      fix:
+        "Restore the known-good execution environment or release a tested runner image.",
+      prevention:
+        "Use immutable runner images and pinned dependencies.",
+    },
+    {
+      cause: "Partial deployment",
+      evidence:
+        "Some hosts report changed before another host fails.",
+      fix:
+        "Assess actual state and follow an approved forward-recovery or rollback plan.",
+      prevention:
+        "Use staged rollouts, health checks, and safe rerun design.",
+    },
+  ],
+
+  recoveryPlan: {
+    phase1: {
+      title: "Contain",
+      actions: [
+        "Stop uncontrolled retries.",
+        "Prevent concurrent deployments from changing the same targets.",
+        "Confirm the affected host list and environment.",
+        "Preserve logs and identify completed changes.",
       ],
-      evidence: [
-        "ansible --version identifies a different Python interpreter from the one expected.",
-        "The traceback originates on the controller or execution container.",
+    },
+
+    phase2: {
+      title: "Correct the confirmed cause",
+      actions: [
+        "Fix the verified inventory, path, interpreter, dependency, or permission issue.",
+        "Keep the change narrow and reviewable.",
+        "Avoid unrelated upgrades or cleanup during incident recovery.",
+        "Validate configuration and syntax before deployment.",
       ],
-      diagnosticCommands: [
-        "command -v ansible",
-        "ansible --version",
-        "python3 -m pip --version",
+    },
+
+    phase3: {
+      title: "Validate",
+      actions: [
+        "Run diagnostics against a limited test target.",
+        "Verify interpreter discovery and required imports.",
+        "Validate the inventory host count.",
+        "Run the playbook in staging or an approved check-mode workflow.",
+        "Confirm expected changes with the service owner.",
       ],
-      interpretation: [
-        "The package may be installed into a different Python environment.",
-        "The controller runtime may have changed after an image or package update.",
+    },
+
+    phase4: {
+      title: "Recover",
+      actions: [
+        "Obtain required production approval.",
+        "Rerun against the explicitly confirmed host pattern.",
+        "Use staged batches where appropriate.",
+        "Monitor the first hosts before continuing.",
+        "Inspect the complete play recap.",
+        "Validate application endpoints, services, logs, and health checks.",
       ],
-      remediation: [
-        "Restore or rebuild the approved virtual environment.",
-        "Install pinned dependencies into the Python environment used by Ansible.",
-        "Avoid modifying the system Python to compensate for an incorrectly configured environment.",
+    },
+
+    phase5: {
+      title: "Rollback or forward recovery",
+      actions: [
+        "Determine whether the failed run changed production state.",
+        "Use the application's documented rollback or forward-recovery procedure.",
+        "Restore configuration from a known-good version if approved and appropriate.",
+        "Do not assume that rerunning the playbook reverses prior changes.",
+        "Confirm service health after the recovery.",
+        "Record the recovery decision and evidence.",
       ],
-      validation: [
-        "Ansible launches using the intended interpreter.",
-        "Required plugins and collections load successfully.",
-        "Staging tests pass from a clean execution environment.",
-      ],
-      prevention: [
-        "Pin Python and Ansible versions.",
-        "Use reproducible runner images.",
-        "Log non-secret tool versions in each pipeline run.",
+    },
+  },
+
+  productionRunbook: [
+    {
+      stage: "Detect",
+      tasks: [
+        "Identify the failed pipeline and release.",
+        "Find the first failing task and affected hosts.",
+        "Record the incident start time.",
       ],
     },
     {
-      id: "remote-python-missing",
-      title: "Python missing on managed host",
-      severity: "High",
-      symptoms: [
-        "A target reports that the Python interpreter cannot be found.",
-        "Normal Python-based modules fail on a newly provisioned host.",
-        "A raw command succeeds while a normal module fails.",
-      ],
-      evidence: [
-        "A raw command confirms that the expected interpreter is absent.",
-        "The host OS and image indicate Python was not installed or is located elsewhere.",
-      ],
-      diagnosticCommands: [
-        "ansible app_servers -i inventory/staging.ini -m ansible.builtin.raw -a 'command -v python3 || command -v python || true'",
-        "ansible app_servers -i inventory/staging.ini -m ansible.builtin.raw -a 'cat /etc/os-release'",
-      ],
-      interpretation: [
-        "Interpreter discovery cannot select an executable that is not present.",
-        "Minimal images may intentionally omit Python.",
-      ],
-      remediation: [
-        "Use the approved OS package or image-building process to provide a compatible interpreter.",
-        "Use raw only for necessary bootstrap operations.",
-        "Rerun a basic module test once Python is available.",
-      ],
-      validation: [
-        "The interpreter path exists and executes.",
-        "Ansible ping and setup modules succeed.",
-      ],
-      prevention: [
-        "Install required runtime dependencies when building images.",
-        "Add a host bootstrap check before application configuration.",
+      stage: "Triage",
+      tasks: [
+        "Determine severity and business impact.",
+        "Check whether deployment changes were partially applied.",
+        "Confirm the environment and expected host count.",
       ],
     },
     {
-      id: "wrong-interpreter",
-      title: "Incorrect ansible_python_interpreter setting",
-      severity: "Medium",
-      symptoms: [
-        "Ansible selects a nonexistent or incompatible interpreter.",
-        "Only one group or host fails after an image change.",
-        "A hard-coded path appears in inventory variables.",
-      ],
-      evidence: [
-        "The configured path differs from the interpreter available on the host.",
-        "The failure aligns with a group_vars, host_vars, or inventory change.",
-      ],
-      diagnosticCommands: [
-        "ansible-config dump --only-changed",
-        "ansible-inventory -i inventory/staging.ini --host app01",
-        "ansible staging -i inventory/staging.ini -m ansible.builtin.setup -a 'filter=ansible_python*'",
-      ],
-      interpretation: [
-        "A stale interpreter path may override otherwise successful discovery.",
-        "A variable can be defined at multiple precedence levels.",
-      ],
-      remediation: [
-        "Correct the path after verifying the target executable.",
-        "Remove unnecessary hard-coded overrides when automatic discovery is appropriate.",
-        "Test all affected OS groups before rollout.",
-      ],
-      validation: [
-        "Ansible uses the expected runtime on representative hosts.",
-        "The basic module suite passes.",
-      ],
-      prevention: [
-        "Keep interpreter settings OS-specific when necessary.",
-        "Test inventory changes in CI.",
+      stage: "Diagnose",
+      tasks: [
+        "Check repository and working directory.",
+        "Inspect Ansible version and active configuration.",
+        "Inspect inventory and host selection.",
+        "Check controller and managed-host Python separately.",
+        "Check dependencies, permissions, and recent changes.",
       ],
     },
     {
-      id: "missing-dependency",
-      title: "Required Python package missing",
-      severity: "High",
-      symptoms: [
-        "A traceback contains ModuleNotFoundError or ImportError.",
-        "A plugin, filter, lookup, or task works in one environment but not another.",
-      ],
-      evidence: [
-        "The traceback names the missing import.",
-        "Package inspection confirms the dependency is missing from the relevant runtime.",
-      ],
-      diagnosticCommands: [
-        "python3 -m pip show Jinja2",
-        "python3 -m pip --version",
-        "ansible-galaxy collection list",
-      ],
-      interpretation: [
-        "The missing dependency may belong to the controller or target.",
-        "The package could be installed in a different interpreter's site-packages.",
-      ],
-      remediation: [
-        "Identify the correct execution side and documented dependency.",
-        "Install the approved pinned version in that environment.",
-        "Rebuild immutable runner images instead of hot-patching shared runners.",
-      ],
-      validation: [
-        "The relevant import succeeds in the intended environment.",
-        "The failed module or plugin passes a controlled test.",
-      ],
-      prevention: [
-        "Maintain dependency manifests.",
-        "Test clean builds and plugin imports in CI.",
+      stage: "Fix",
+      tasks: [
+        "Document the evidence-supported root cause.",
+        "Prepare the smallest safe correction.",
+        "Review the correction with the responsible engineer.",
+        "Validate it in staging or a limited test environment.",
       ],
     },
     {
-      id: "version-incompatibility",
-      title: "Python, Ansible, or collection version incompatibility",
-      severity: "High",
-      symptoms: [
-        "A syntax error occurs in a dependency.",
-        "An API or module parameter is unavailable.",
-        "A recent runtime upgrade causes failures without a playbook change.",
-      ],
-      evidence: [
-        "The failing version falls outside the dependency's supported compatibility range.",
-        "A comparison with the last successful build reveals version drift.",
-      ],
-      diagnosticCommands: [
-        "ansible --version",
-        "python3 --version",
-        "ansible-galaxy collection list",
-      ],
-      interpretation: [
-        "A dependency may support a narrower version range than the overall application.",
-        "Controller and target runtimes may have separate requirements.",
-      ],
-      remediation: [
-        "Choose a tested compatible version set.",
-        "Pin the execution image and dependencies.",
-        "Validate upgrades in a separate pipeline before rollout.",
-      ],
-      validation: [
-        "All supported environments pass the regression suite.",
-        "The original failing task succeeds in staging.",
-      ],
-      prevention: [
-        "Use dependency constraints and automated compatibility tests.",
-        "Review runtime upgrades as controlled changes.",
+      stage: "Recover",
+      tasks: [
+        "Obtain production approval.",
+        "Rerun with explicit inventory and target limits.",
+        "Monitor task results and application health.",
+        "Assess rollback if the recovery does not meet success criteria.",
       ],
     },
     {
-      id: "virtualenv-path",
-      title: "Virtual environment or PATH mismatch",
-      severity: "Medium",
-      symptoms: [
-        "A command works interactively but fails in CI.",
-        "Ansible resolves to an unexpected installation.",
-        "A package appears missing despite having been installed.",
-      ],
-      evidence: [
-        "Executable paths or virtual-environment settings differ between successful and failing runs.",
-        "The package is installed under a different interpreter.",
-      ],
-      diagnosticCommands: [
-        "command -v ansible",
-        "command -v python3",
-        "python3 -m pip --version",
-        "env | grep -E '^(PATH|VIRTUAL_ENV|PYTHONPATH)='",
-      ],
-      interpretation: [
-        "The CI job may run in a fresh shell without the expected activation.",
-        "A path override may load an unintended package.",
-      ],
-      remediation: [
-        "Make environment activation explicit.",
-        "Remove unintended path overrides after verifying their source.",
-        "Use a clean, reproducible execution environment.",
-      ],
-      validation: [
-        "Executable and package paths match the intended environment.",
-        "The pipeline succeeds from a clean runner.",
-      ],
-      prevention: [
-        "Keep CI setup explicit and repeatable.",
-        "Avoid relying on shell state from previous steps.",
-      ],
-    },
-    {
-      id: "system-python-conflict",
-      title: "OS-managed Python conflicts with pip installation",
-      severity: "High",
-      symptoms: [
-        "pip refuses a system-level installation.",
-        "An upgrade changes behavior of system utilities.",
-        "Packages conflict with the OS package manager.",
-      ],
-      evidence: [
-        "The OS identifies a system-managed Python installation.",
-        "The error indicates externally managed environment restrictions or package conflicts.",
-      ],
-      diagnosticCommands: [
-        "cat /etc/os-release",
-        "python3 --version",
-        "python3 -m pip --version",
-      ],
-      interpretation: [
-        "The OS package manager may own the system Python packages.",
-        "Forcing pip into that environment can create difficult-to-recover package conflicts.",
-      ],
-      remediation: [
-        "Use a virtual environment for tooling dependencies where appropriate.",
-        "Use approved OS packages for system-level requirements.",
-        "Revert unintended package changes through the supported package-management process.",
-      ],
-      validation: [
-        "System package tools work normally.",
-        "Ansible uses a compatible isolated runtime.",
-      ],
-      prevention: [
-        "Document supported installation methods.",
-        "Avoid unreviewed system Python changes.",
-      ],
-    },
-    {
-      id: "partial-deployment",
-      title: "Python failure after partial deployment",
-      severity: "Critical",
-      symptoms: [
-        "Some hosts completed tasks while others failed during module execution.",
-        "A rollout has mixed versions or configuration.",
-        "The play recap shows changed hosts before the failure.",
-      ],
-      evidence: [
-        "Original task logs show successful state changes before the first Python error.",
-        "Independent checks confirm different states across hosts.",
-      ],
-      diagnosticCommands: [
-        "ansible-playbook -i inventory/staging.ini site.yml --list-hosts",
-        "ansible-playbook -i inventory/staging.ini site.yml --list-tasks",
-      ],
-      interpretation: [
-        "Fixing Python restores automation capability but does not automatically reconcile previously changed hosts.",
-        "A blind rerun can repeat non-idempotent operations.",
-      ],
-      remediation: [
-        "Pause rollout expansion.",
-        "Determine per-host state and whether any remote operation is still running.",
-        "Repair or roll back through an approved, state-aware procedure.",
-      ],
-      validation: [
-        "All intended hosts converge to the desired state.",
-        "Application and service health checks pass.",
-      ],
-      prevention: [
-        "Use staged rollouts and health gates.",
-        "Design retry-safe tasks and retain deployment state evidence.",
+      stage: "Close",
+      tasks: [
+        "Confirm service health and deployment completion.",
+        "Save sanitized logs and final evidence.",
+        "Write the incident timeline and root-cause summary.",
+        "Create preventive engineering tasks with owners and due dates.",
       ],
     },
   ],
 
-  productionScenarios: [
-    {
-      title: "Scenario 1 — Python missing after a new server image rollout",
-      symptom:
-        "Newly provisioned hosts fail normal Ansible modules, while older hosts still work.",
-      impact: [
-        "Configuration rollout stops on the new host group.",
-        "New application capacity may remain unconfigured.",
-      ],
-      investigation: [
-        "Use a raw command to inspect Python executable availability.",
-        "Identify the OS and image version.",
-        "Compare with a healthy host built from the previous image.",
-      ],
-      recovery: [
-        "Correct the image or follow the approved bootstrap process.",
-        "Verify Python availability and run a basic Ansible module test.",
-        "Resume rollout only after the target group passes preflight checks.",
-      ],
-      validation: [
-        "Normal Ansible modules execute successfully.",
-        "Application configuration and health checks pass.",
-      ],
-      prevention: [
-        "Add interpreter checks to image qualification.",
-        "Require a bootstrap test before an image becomes production-ready.",
-      ],
-    },
-    {
-      title: "Scenario 2 — Controller import error after a runner upgrade",
-      symptom:
-        "The pipeline fails before connecting to hosts with a Python import traceback.",
-      impact: [
-        "All deployments using the affected runner image may be blocked.",
-        "A hotfix on target servers will not solve a controller-side import failure.",
-      ],
-      investigation: [
-        "Read ansible --version and identify the controller runtime.",
-        "Inspect the traceback and the dependency that cannot be imported.",
-        "Compare the runner image and dependency set with the last successful build.",
-      ],
-      recovery: [
-        "Restore the approved execution image if rollback is permitted.",
-        "Otherwise rebuild with a reviewed compatible dependency set.",
-        "Run the pipeline validation suite before production promotion.",
-      ],
-      validation: [
-        "Ansible and required plugins load in a clean runner.",
-        "Staging deployment succeeds.",
-      ],
-      prevention: [
-        "Pin runner image digests and Python dependencies.",
-        "Run clean-image smoke tests before rollout.",
-      ],
-    },
-    {
-      title: "Scenario 3 — One host uses the wrong interpreter",
-      symptom:
-        "Most hosts succeed, but one host reports interpreter errors.",
-      impact: [
-        "One instance remains on an older configuration.",
-        "Deployment consistency may be compromised.",
-      ],
-      investigation: [
-        "Compare the affected host's interpreter path with a healthy peer.",
-        "Inspect inventory and host-specific variables.",
-        "Confirm the executable exists and can run.",
-      ],
-      recovery: [
-        "Correct the host-specific configuration or approved interpreter installation.",
-        "Run a basic module test on that host.",
-        "Apply the missing configuration only after checking its current state.",
-      ],
-      validation: [
-        "The host passes the same module tests as its peers.",
-        "The application joins the healthy pool.",
-      ],
-      prevention: [
-        "Validate interpreter variables in inventory CI.",
-        "Use OS-specific group settings where necessary.",
-      ],
-    },
-    {
-      title: "Scenario 4 — A package exists but Ansible cannot import it",
-      symptom:
-        "An operator confirms a package is installed, but the failing task still reports ModuleNotFoundError.",
-      impact: [
-        "Deployment remains blocked despite apparently correct package installation.",
-        "Repeated installations may introduce dependency conflicts.",
-      ],
-      investigation: [
-        "Determine whether the traceback originates on the controller or managed host.",
-        "Inspect the exact Python executable and its pip context.",
-        "Compare package installation paths with the runtime that executes the code.",
-      ],
-      recovery: [
-        "Install the dependency into the correct isolated environment.",
-        "Use a clean runner build or controlled target-side package update as appropriate.",
-        "Rerun the smallest reproducible test.",
-      ],
-      validation: [
-        "The package imports successfully from the intended interpreter.",
-        "The original Ansible operation succeeds.",
-      ],
-      prevention: [
-        "Use python -m pip with the intended interpreter in tooling setup.",
-        "Keep controller and target dependency requirements documented.",
-      ],
-    },
-    {
-      title: "Scenario 5 — System Python was modified during troubleshooting",
-      symptom:
-        "After a package upgrade, OS tools or other automation fail.",
-      impact: [
-        "The issue expands beyond the original Ansible playbook.",
-        "Host maintenance or recovery tasks may be affected.",
-      ],
-      investigation: [
-        "Record package-manager history and recent changes.",
-        "Identify which OS-managed packages or interpreter links changed.",
-        "Assess host health and the availability of approved recovery channels.",
-      ],
-      recovery: [
-        "Stop further package changes.",
-        "Follow the distribution's supported repair or image-replacement procedure.",
-        "Move automation dependencies into a supported isolated environment where appropriate.",
-      ],
-      validation: [
-        "OS package tools and system utilities work.",
-        "Ansible uses a supported interpreter and dependencies.",
-      ],
-      prevention: [
-        "Prohibit ad hoc system Python upgrades in production.",
-        "Document supported runtime installation methods.",
-      ],
-    },
-  ],
+  prevention: {
+    ciChecks: [
+      "Run Ansible syntax checks on every relevant change.",
+      "Validate inventory sources and expected host counts.",
+      "Run linting using the team's approved Ansible lint configuration.",
+      "Pin Ansible, Python, collections, roles, and required dependencies.",
+      "Build immutable execution environments.",
+      "Test supported Python and operating system combinations.",
+      "Validate that required inventory and playbook paths exist.",
+      "Fail the pipeline when a production inventory unexpectedly resolves to zero hosts.",
+      "Require approval for production deployment jobs.",
+      "Keep staging and production inventory selection explicit.",
+      "Add integration tests for critical roles and modules.",
+      "Use controlled rollout batches and post-deployment health checks.",
+    ],
 
-  decisionTree: [
-    {
-      condition: "The error appears before any host connection is attempted.",
-      action: "Investigate controller Python, Ansible installation, plugin imports, and the runner environment.",
-      nextStep: "Compare the current runner with the last known-good image.",
-    },
-    {
-      condition: "SSH works but Python-based Ansible modules fail on a host.",
-      action: "Check remote interpreter availability and selection.",
-      nextStep: "Use approved raw diagnostics, then test the ping and setup modules.",
-    },
-    {
-      condition: "Only one host fails.",
-      action: "Compare interpreter path, OS image, variables, packages, and permissions with a healthy peer.",
-      nextStep: "Apply a targeted correction after confirming the host's current state.",
-    },
-    {
-      condition: "The traceback reports ModuleNotFoundError.",
-      action: "Identify the missing import and whether it is needed on the controller or target.",
-      nextStep: "Verify the package is installed in the correct runtime and at a compatible version.",
-    },
-    {
-      condition: "The issue started after a runner or dependency update.",
-      action: "Compare Python, Ansible, collection, and execution-image versions.",
-      nextStep: "Restore a known-good compatible set or test a reviewed upgrade.",
-    },
-    {
-      condition: "pip refuses to modify the system environment.",
-      action: "Check the OS distribution and supported package-management model.",
-      nextStep: "Use an approved OS package or isolated virtual environment.",
-    },
-    {
-      condition: "Some hosts changed before Python execution failed.",
-      action: "Pause rollout expansion and determine actual per-host state.",
-      nextStep: "Perform state-aware recovery and verify application health.",
-    },
-  ],
+    monitoring: [
+      "Alert on repeated deployment failures.",
+      "Track failure rate by environment and target group.",
+      "Track inventory host count changes.",
+      "Monitor runner image and dependency changes.",
+      "Record play recap statistics for every deployment.",
+      "Alert when deployment completion or health checks exceed expected time.",
+    ],
 
-  recoveryProcedure: [
-    "Assign an incident owner and pause conflicting deployments.",
-    "Preserve logs and record the commit, runner image, Ansible version, and Python versions.",
-    "Determine whether the traceback is controller-side or target-side.",
-    "Identify the exact missing interpreter, dependency, or compatibility requirement.",
-    "Compare the affected environment with a healthy reference.",
-    "Check the original recap and identify hosts that changed before failure.",
-    "Choose a root-cause-specific correction and test it in an isolated environment.",
-    "Validate syntax, dependencies, interpreter selection, and basic module execution.",
-    "Obtain required production approval.",
-    "Execute the smallest approved recovery scope.",
-    "Monitor task output and application health.",
-    "Verify the intended configuration and release on all required hosts.",
-    "Check the final play recap, exit status, and any unreachable hosts.",
-    "Record root cause, recovery evidence, remaining risks, and preventive actions.",
-  ],
+    engineeringPractices: [
+      "Keep a known-good runner image available.",
+      "Maintain a tested dependency lock file.",
+      "Document interpreter paths for each supported operating system.",
+      "Review Python and Ansible upgrades before rollout.",
+      "Use least-privilege accounts.",
+      "Keep credentials in an approved secret manager.",
+      "Use idempotent tasks wherever possible.",
+      "Maintain a rollback or forward-recovery runbook.",
+      "Review incidents and turn repeated failures into automated checks.",
+    ],
+  },
 
-  rollbackGuidance: [
-    "Do not assume changing Python back is sufficient if the deployment also changed application state.",
-    "Determine whether package installation or interpreter changes affected OS-managed dependencies.",
-    "Prefer restoring a known-good execution image for controller-side regressions when appropriate.",
-    "For target-side runtime problems, use the supported OS package or image-recovery procedure.",
-    "Check whether the original deployment changed application files, packages, services, or data.",
-    "Avoid reverting application state without checking whether newer changes depend on it.",
-    "For high-risk host changes, use the approved image replacement or recovery process where appropriate.",
-    "Verify both automation capability and application health after recovery.",
-  ],
+  incidentReportTemplate: {
+    title: "Ansible Python or Inventory Failure",
 
-  preventionChecklist: [
-    "Pin the Ansible and Python versions used by the controller.",
-    "Use reproducible execution-environment images.",
-    "Declare and pin collection and role dependencies.",
-    "Test clean runner builds in CI.",
-    "Validate managed-host Python availability during bootstrap.",
-    "Validate interpreter overrides against actual target executables.",
-    "Separate controller-side and target-side dependency requirements.",
-    "Avoid unapproved changes to system-managed Python.",
-    "Add host preflight checks and environment-specific inventory tests.",
-    "Test representative OS versions and image variants.",
-    "Keep failure logs and play recaps available for incident investigation.",
-    "Redact credentials and sensitive variables from diagnostics.",
-    "Use staged rollout and application health gates.",
-    "Test recovery procedures in non-production environments.",
-  ],
-
-  ciCdRecommendations: [
-    "Use a pinned execution-environment image rather than relying on runner-global packages.",
-    "Record Python, Ansible, and collection versions in the build output.",
-    "Install dependencies from reviewed manifests.",
-    "Run syntax checks and lint before deployment.",
-    "Run controller-side import checks for required custom plugins.",
-    "Use representative test hosts to verify managed-host interpreter compatibility.",
-    "Add an explicit preflight stage before write operations.",
-    "Fail early when the required runtime or dependencies are unavailable.",
-    "Preserve full, redacted task logs and the play recap as build artifacts.",
-    "Require approval for production interpreter or OS package changes.",
-    "Prevent concurrent deployments from modifying the same target fleet.",
-  ],
-
-  commonMistakes: [
-    "Assuming every Python error comes from the managed host.",
-    "Assuming the Python command in the current shell is the one used by Ansible.",
-    "Installing a dependency using pip from the wrong interpreter.",
-    "Upgrading system Python during an incident without compatibility review.",
-    "Forcing pip to modify a system-managed environment.",
-    "Using raw commands for all tasks instead of fixing the interpreter setup.",
-    "Changing inventory variables without checking precedence.",
-    "Assuming a successful SSH login proves module execution works.",
-    "Installing the latest versions of all collections to fix one missing import.",
-    "Ignoring the possibility of partial deployment.",
-    "Dumping secrets while investigating environment variables.",
-    "Treating a successful basic ping test as proof of application health.",
-    "Rerunning a non-idempotent task without checking whether it already completed.",
-  ],
-
-  incidentReportTemplate: [
-    "Incident ID:",
-    "Service and environment:",
-    "Severity and customer impact:",
-    "Detection and resolution timestamps:",
-    "Repository and commit SHA:",
-    "Pipeline run ID:",
-    "Execution image digest:",
-    "Ansible version:",
-    "Controller Python version and path:",
-    "Managed-host OS and Python version:",
-    "First failing task:",
-    "Traceback and sanitized error:",
-    "Confirmed failure domain:",
-    "Root cause and supporting evidence:",
-    "Affected hosts:",
-    "Hosts changed before failure:",
-    "Containment action:",
-    "Corrective action:",
-    "Rollback decision:",
-    "Post-recovery verification:",
-    "Preventive actions and owners:",
-  ],
-
-  handsOnLabs: [
-    {
-      title: "Lab 1 — Identify the active controller interpreter",
-      objective:
-        "Learn to distinguish the Python executable running Ansible from the default shell Python.",
-      procedure: [
-        "Run ansible --version in an isolated environment.",
-        "Record the reported Python interpreter.",
-        "Compare it with command -v python3 and python3 -m pip --version.",
-        "Activate a test virtual environment and repeat the checks.",
-        "Document the differences.",
-      ],
-      expectedResult: [
-        "The active Ansible runtime is identified.",
-        "The pip environment is not assumed to match without evidence.",
-      ],
-      learningPoints: [
-        "Executable resolution matters.",
-        "Virtual environments isolate dependencies only when commands use them.",
-      ],
-    },
-    {
-      title: "Lab 2 — Bootstrap a host without Python",
-      objective:
-        "Understand why raw is useful for initial diagnostics on a host that lacks Python.",
-      procedure: [
-        "Create a disposable minimal Linux VM.",
-        "Confirm Python availability using an approved raw command.",
-        "Install Python using the VM's supported package-management procedure.",
-        "Run the Ansible ping and setup modules.",
-        "Record which operation requires remote Python.",
-      ],
-      expectedResult: [
-        "Raw diagnostics work before Python-based modules are available.",
-        "Normal modules succeed after the supported runtime is installed.",
-      ],
-      learningPoints: [
-        "The raw module does not require normal remote Python module execution.",
-        "Bootstrap changes should be explicit and repeatable.",
-      ],
-    },
-    {
-      title: "Lab 3 — Reproduce a dependency mismatch",
-      objective:
-        "Demonstrate how a package can be installed but unavailable to the runtime that needs it.",
-      procedure: [
-        "Create two disposable virtual environments.",
-        "Install a harmless test package in only one environment.",
-        "Run an import check with each environment's Python.",
-        "Run a test script using the environment that lacks the package.",
-        "Install the pinned dependency in the correct environment and retest.",
-      ],
-      expectedResult: [
-        "The import failure is reproducible and explained by the environment difference.",
-        "The corrected environment imports the package successfully.",
-      ],
-      learningPoints: [
-        "Package installation location matters.",
-        "Using the intended interpreter with pip reduces ambiguity.",
-      ],
-    },
-    {
-      title: "Lab 4 — Compare affected and healthy hosts",
-      objective:
-        "Practice targeted diagnostics without changing production systems.",
-      procedure: [
-        "Create two disposable VMs with different Python availability or paths.",
-        "Run approved read-only raw diagnostics against both.",
-        "Compare OS information and interpreter paths.",
-        "Correct the test VM through the documented bootstrap process.",
-        "Run a basic module test on both VMs.",
-      ],
-      expectedResult: [
-        "The failing host's runtime difference is demonstrated.",
-        "Both test hosts pass the same basic module test after correction.",
-      ],
-      learningPoints: [
-        "Comparing healthy peers can narrow the failure domain.",
-        "A targeted fix is preferable to fleet-wide changes without evidence.",
-      ],
-    },
-    {
-      title: "Lab 5 — Simulate a partial deployment failure",
-      objective:
-        "Practice identifying changed hosts before retrying a failed playbook.",
-      procedure: [
-        "Use two disposable hosts and a harmless idempotent file task.",
-        "Introduce a controlled Python execution failure on one host.",
-        "Capture the play recap and actual file state.",
-        "Restore the test runtime.",
-        "Rerun the test and verify the final state on both hosts.",
-      ],
-      expectedResult: [
-        "The recap and actual host state are compared.",
-        "Recovery reaches the intended state without assuming that the first run made no changes.",
-      ],
-      learningPoints: [
-        "A failed run can have partial effects.",
-        "Idempotency and state verification make recovery safer.",
-      ],
-    },
-  ],
+    fields: [
+      "Incident ID",
+      "Incident owner",
+      "Start time and recovery time",
+      "Affected application and environment",
+      "Severity and business impact",
+      "Pipeline URL or job identifier",
+      "Repository, branch, and commit",
+      "Ansible version and execution environment",
+      "Inventory source and expected host count",
+      "First failing task",
+      "Evidence collected",
+      "Root cause and supporting evidence",
+      "Immediate mitigation",
+      "Recovery steps",
+      "Rollback decision and reason",
+      "Validation and service-health results",
+      "Preventive actions",
+      "Action owners and due dates",
+    ],
+  },
 
   interviewQuestions: [
     {
-      question: "What is the difference between controller Python and managed-host Python?",
+      question: "Why can SSH succeed while Ansible module execution fails?",
       answer:
-        "Controller Python runs Ansible and its controller-side plugins. Managed-host Python is commonly used to execute Ansible modules on remote targets. Their requirements and failure symptoms can differ.",
-      productionExample:
-        "A missing controller-side plugin dependency can block the pipeline before any host is contacted, while missing target Python can break module execution on specific hosts.",
-      followUp:
-        "How do you identify which side produced a traceback?",
+        "SSH proves that a connection and authentication path work. Many Ansible modules " +
+        "also require a compatible Python interpreter and dependencies on the managed host.",
     },
     {
-      question: "Why can Ansible connect over SSH but still fail to execute a module?",
+      question: "How do you troubleshoot a playbook that targets zero hosts?",
       answer:
-        "SSH establishes a remote connection, but many Ansible modules also require a usable Python interpreter and compatible dependencies on the target.",
-      productionExample:
-        "A minimal server image allows SSH login but does not include Python.",
-      followUp:
-        "Which Ansible mechanism can help inspect or bootstrap such a host?",
+        "Inspect the exact inventory source, inventory graph, play hosts pattern, group membership, " +
+        "--limit arguments, and dynamic inventory output. Do not run production changes until the target list is verified.",
     },
     {
-      question: "What does ansible_python_interpreter control?",
+      question: "How do you distinguish controller Python from managed-host Python?",
       answer:
-        "It specifies the Python interpreter Ansible should use on a managed host. A stale or incorrect value can cause module execution failures.",
-      productionExample:
-        "An image update changes the interpreter path, but inventory still specifies the old location.",
-      followUp:
-        "When would you use automatic interpreter discovery instead?",
+        "Check ansible --version and the controller execution environment, then inspect interpreter " +
+        "discovery and Python availability on the managed host separately.",
     },
     {
-      question: "Why does installing a package not always fix ModuleNotFoundError?",
+      question: "Why might a Python package be installed but still not import?",
       answer:
-        "The package may have been installed into a different Python environment from the one executing the failing code, or the dependency may be needed on the other side of the connection.",
-      productionExample:
-        "A package is installed into a user's virtual environment, but CI launches Ansible from a separate environment.",
-      followUp:
-        "How do you verify the installation context?",
+        "It may have been installed for a different Python executable, virtual environment, operating-system user, " +
+        "or machine. Verify the interpreter that performs the import.",
     },
     {
-      question: "How would you troubleshoot a Python error that occurs only in CI?",
+      question: "What should you do if a production playbook fails after changing some hosts?",
       answer:
-        "I compare the exact execution image, executable paths, Python and Ansible versions, dependencies, environment activation, and secret references with a successful run.",
-      productionExample:
-        "The developer machine has a global dependency that is absent from the clean runner.",
-      followUp:
-        "How would you make the CI environment reproducible?",
+        "Stop uncontrolled retries, determine which changes completed, assess service health, and use an approved " +
+        "forward-recovery or rollback procedure. Do not assume a rerun reverses changes.",
     },
     {
-      question: "Why is upgrading system Python a risky troubleshooting step?",
+      question: "How do you troubleshoot a CI-only Ansible failure?",
       answer:
-        "OS utilities and package-managed software may depend on the distribution's supported Python runtime. An unplanned upgrade can break unrelated tools or create package conflicts.",
-      productionExample:
-        "A forced pip or interpreter upgrade causes system maintenance utilities to fail.",
-      followUp:
-        "What safer isolation options are available?",
+        "Compare the runner image, working directory, commit, Python and Ansible versions, dependencies, inventory, " +
+        "credentials, and environment variables with a known-good run.",
     },
     {
-      question: "When would you use the raw module?",
+      question: "When would you use the Ansible raw module?",
       answer:
-        "Raw is useful for simple remote commands when normal Python-based module execution is unavailable, such as checking for an interpreter on a minimal host.",
-      productionExample:
-        "A new VM needs an interpreter installed before normal configuration modules can run.",
-      followUp:
-        "Why should raw not replace normal Ansible modules for routine configuration?",
+        "It can help bootstrap or diagnose hosts where the normal Python-based module transport is unavailable, " +
+        "provided connectivity and a usable remote shell exist.",
     },
     {
-      question: "What should you do if Python fails halfway through a production deployment?",
+      question: "Does Ansible check mode guarantee that production is safe?",
       answer:
-        "Pause rollout expansion, preserve the recap, identify changed hosts, fix the execution issue in a controlled way, and recover based on actual state rather than blindly rerunning everything.",
-      productionExample:
-        "Some servers have a new configuration while others failed during interpreter startup.",
-      followUp:
-        "How do you verify that the fleet is consistent again?",
+        "No. Module support varies, external effects may not be fully predicted, and check mode cannot replace " +
+        "change review, staging validation, and an approved recovery plan.",
     },
     {
-      question: "What is the value of a reproducible execution environment?",
+      question: "How do you prevent dependency drift?",
       answer:
-        "It keeps the Python runtime, Ansible version, collections, and dependencies consistent, which improves repeatability and makes incidents easier to reproduce.",
-      productionExample:
-        "A versioned execution image prevents a runner upgrade from silently changing a collection dependency.",
-      followUp:
-        "Which versions and identifiers would you record for each deployment?",
+        "Pin dependencies, maintain lock files, build immutable execution environments, and test upgrades before production.",
     },
     {
-      question: "Does a successful Ansible ping prove the deployment is healthy?",
+      question: "What evidence should be included in an incident report?",
       answer:
-        "No. It proves that a basic Ansible module executed successfully against the selected host. It does not prove that application configuration, service health, or business-level checks pass.",
-      productionExample:
-        "The host is reachable and Python works, but the application service fails after a configuration update.",
-      followUp:
-        "Which post-deployment checks would you add?",
+        "Include timestamps, affected hosts, pipeline and commit identifiers, the first failure, sanitized logs, " +
+        "root cause, recovery actions, validation results, and assigned preventive actions.",
     },
   ],
 
   references: [
     {
+      title: "Ansible Documentation",
+      url: "https://docs.ansible.com/",
+    },
+    {
       title: "Ansible Interpreter Discovery",
       url: "https://docs.ansible.com/ansible/latest/reference_appendices/interpreter_discovery.html",
-      purpose: "How Ansible selects Python interpreters on managed hosts.",
     },
     {
-      title: "Ansible Installation Guide",
-      url: "https://docs.ansible.com/ansible/latest/installation_guide/index.html",
-      purpose: "Supported installation and execution environment concepts.",
+      title: "Ansible Inventory Guide",
+      url: "https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html",
     },
     {
-      title: "Ansible Configuration Settings",
-      url: "https://docs.ansible.com/ansible/latest/reference_appendices/config.html",
-      purpose: "Interpreter-related settings and effective configuration.",
-    },
-    {
-      title: "Ansible Raw Module",
-      url: "https://docs.ansible.com/ansible/latest/collections/ansible/builtin/raw_module.html",
-      purpose: "Remote command execution without normal remote Python module requirements.",
-    },
-    {
-      title: "Ansible FAQ",
-      url: "https://docs.ansible.com/ansible/latest/reference_appendices/faq.html",
-      purpose: "Common Ansible execution and troubleshooting questions.",
-    },
-    {
-      title: "Python Virtual Environments",
-      url: "https://docs.python.org/3/library/venv.html",
-      purpose: "Python environment isolation and dependency management.",
-    },
-    {
-      title: "Python Packaging User Guide",
-      url: "https://packaging.python.org/en/latest/",
-      purpose: "Python package installation and environment management practices.",
+      title: "Ansible Playbook Guide",
+      url: "https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_intro.html",
     },
   ],
 };
+
+export default pythonError;
