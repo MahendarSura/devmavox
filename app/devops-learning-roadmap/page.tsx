@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -45,14 +44,13 @@ export function getRoadmapBySlug(slug: string) {
   return allToolRoadmaps.find((tool) => tool.slug === slug);
 }
 
-type roadmapCard = {
+type RoadmapCard = {
   slug: string;
   title: string;
   description: string;
   icon: string;
   level: string;
 };
-```
 
 const visualMeta: Record<string, { icon: string; category: string; level: string; description: string }> = {
   linux: { icon: '🐧', category: 'Operating Systems', level: 'Foundation', description: 'Linux commands, processes, permissions, services and practical system troubleshooting.' },
