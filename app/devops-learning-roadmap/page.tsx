@@ -2,36 +2,36 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { dockerRoadmap } from './dockerroadmap';
-import { mavenRoadmap } from './mavenroadmap';
-import { jenkinsRoadmap } from './jenkinsroadmap';
-import { linuxRoadmap } from './linuxroadmap';
-import { gitRoadmap } from './gitroadmap';
-import { k8sRoadmap } from './k8sroadmap';
-import { terraformRoadmap } from './terraformroadmap';
-import { argocdRoadmap } from './argocdroadmap';
-import { ansibleRoadmap } from './ansibleroadmap';
-import { prometheusRoadmap } from './prometheusroadmap';
-import { tomcatRoadmap } from './tomcatroadmap';
-import { jiraRoadmap } from './jiraroadmap';
-import { grafanaRoadmap } from './grafanaroadmap';
-import { githubActionsRoadmap } from './githubactionsroadmap';
-import { nexusRoadmap } from './nexusroadmap';
-import { helmRoadmap } from './helmroadmap';
-import { eksRoadmap } from './eksroadmap';
+import { dockerroadmap } from './dockerroadmap';
+import { mavenroadmap } from './mavenroadmap';
+import { jenkinsroadmap } from './jenkinsroadmap';
+import { linuxroadmap } from './linuxroadmap';
+import { gitroadmap } from './gitroadmap';
+import { k8sroadmap } from './k8sroadmap';
+import { terraformroadmap } from './terraformroadmap';
+import { argocdroadmap } from './argocdroadmap';
+import { ansibleroadmap } from './ansibleroadmap';
+import { prometheusroadmap } from './prometheusroadmap';
+import { tomcatroadmap } from './tomcatroadmap';
+import { jiraroadmap } from './jiraroadmap';
+import { grafanaroadmap } from './grafanaroadmap';
+import { githubActionsroadmap } from './githubactionsroadmap';
+import { nexusroadmap } from './nexusroadmap';
+import { helmroadmap } from './helmroadmap';
+import { eksroadmap } from './eksroadmap';
 
 export const allToolRoadmaps = [
-  linuxRoadmap, gitRoadmap, dockerRoadmap, k8sRoadmap, terraformRoadmap,
-  jenkinsRoadmap, argocdRoadmap, ansibleRoadmap, prometheusRoadmap,
-  tomcatRoadmap, jiraRoadmap, grafanaRoadmap, githubActionsRoadmap,
-  nexusRoadmap, helmRoadmap, eksRoadmap, mavenRoadmap,
+  linuxRoadmap, gitroadmap, dockerroadmap, k8sroadmap, terraformroadmap,
+  jenkinsroadmap, argocdroadmap, ansibleroadmap, prometheusroadmap,
+  tomcatroadmap, jiraroadmap, grafanaroadmap, githubActionsroadmap,
+  nexusroadmap, helmroadmap, eksroadmap, mavenroadmap,
 ];
 
 export function getRoadmapBySlug(slug: string) {
   return allToolRoadmaps.find((tool) => tool.slug === slug);
 }
 
-type RoadmapCard = {
+type roadmapCard = {
   slug: string;
   title: string;
   description: string;
