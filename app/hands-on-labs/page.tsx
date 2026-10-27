@@ -4,7 +4,7 @@ import { useState } from "react";
 type Level = "Beginner" | "Intermediate" | "Advanced";
 
 type Lab = {
-  id: string;
+  id?: string;
   title: string;
   category: string;
   level: Level;
@@ -554,9 +554,3 @@ export default function HandsOnLabsPage() {
   );
 }
 
-
-# Fix accidental leading space before "use client"
-content = content.lstrip()
-path = Path("/mnt/data/hands-on-labs-page.tsx")
-path.write_text(content, encoding="utf-8")
-print(f"Created {path} ({len(content.splitlines())} lines, {path.stat().st_size} bytes)")
