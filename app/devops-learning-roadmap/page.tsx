@@ -1,3 +1,8 @@
+Idi black code box lo undi. Direct ga copy-paste chesuko.
+
+tsx
+
+```
 'use client';
 
 import Link from 'next/link';
@@ -21,10 +26,23 @@ import { helmroadmap } from './helmroadmap';
 import { eksroadmap } from './eksroadmap';
 
 export const allToolRoadmaps = [
-  linuxRoadmap, gitroadmap, dockerroadmap, k8sroadmap, terraformroadmap,
-  jenkinsroadmap, argocdroadmap, ansibleroadmap, prometheusroadmap,
-  tomcatroadmap, jiraroadmap, grafanaroadmap, githubActionsroadmap,
-  nexusroadmap, helmroadmap, eksroadmap, mavenroadmap,
+  linuxroadmap,
+  gitroadmap,
+  dockerroadmap,
+  k8sroadmap,
+  terraformroadmap,
+  jenkinsroadmap,
+  argocdroadmap,
+  ansibleroadmap,
+  prometheusroadmap,
+  tomcatroadmap,
+  jiraroadmap,
+  grafanaroadmap,
+  githubActionsroadmap,
+  nexusroadmap,
+  helmroadmap,
+  eksroadmap,
+  mavenroadmap,
 ];
 
 export function getRoadmapBySlug(slug: string) {
@@ -38,6 +56,7 @@ type roadmapCard = {
   icon: string;
   level: string;
 };
+```
 
 const visualMeta: Record<string, { icon: string; category: string; level: string; description: string }> = {
   linux: { icon: '🐧', category: 'Operating Systems', level: 'Foundation', description: 'Linux commands, processes, permissions, services and practical system troubleshooting.' },
