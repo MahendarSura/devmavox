@@ -1,8 +1,4 @@
-Idi black code box lo undi. Direct ga copy-paste chesuko.
 
-tsx
-
-```
 'use client';
 
 import Link from 'next/link';
