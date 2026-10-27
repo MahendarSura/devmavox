@@ -1,775 +1,1170 @@
+export interface RoutingLoopGuide {
+  title: string;
+  slug: string;
+  category: string;
+  severity: string;
+  estimatedTime: string;
+  overview: string;
+  symptoms: string[];
+  incidentScenario: string;
+  impactAssessment: string[];
+  safetyChecks: string[];
+  evidenceCollection: string[];
+  diagnosticWorkflow: {
+    step: number;
+    title: string;
+    objective: string;
+    commands: string[];
+    interpretOutput: string[];
+    nextActions: string[];
+  }[];
+  rootCauseMatrix: {
+    symptom: string;
+    likelyCause: string;
+    verification: string;
+    resolution: string;
+  }[];
+  advancedScenarios: {
+    scenario: string;
+    evidence: string[];
+    fix: string[];
+    validation: string[];
+  }[];
+  recoveryWorkflow: string[];
+  rollbackPlan: string[];
+  prevention: string[];
+  alerting: string[];
+  cicdValidation: string[];
+  handsOnLabs: {
+    title: string;
+    objective: string;
+    steps: string[];
+    successCriteria: string[];
+  }[];
+  incidentRunbook: string[];
+  incidentReportTemplate: string[];
+  interviewQuestions: {
+    question: string;
+    answer: string;
+  }[];
+  officialReferences: {
+    title: string;
+    url: string;
+  }[];
+}
 
-export const routingLoopGuide = {
-  title: "Routing Loop - Real Production Troubleshooting",
-  filePath: "app/troubleshooting-center/networking/RoutingLoop.ts",
+export const routingLoopGuide: RoutingLoopGuide = {
+  title: "Routing Loop Troubleshooting",
+  slug: "routing-loop",
   category: "Networking",
-  difficulty: "Advanced",
-  estimatedTime: "30-120 minutes depending on network scope",
+  severity: "Critical / High",
+  estimatedTime: "30–120 minutes",
 
-  overview: {
-    problem:
-      "Packets repeatedly traverse routers because of inconsistent routes, incorrect next hops, routing protocol convergence problems, policy routing, or network topology/configuration errors.",
-    objective:
-      "Identify the forwarding loop, isolate the routers and route entries involved, apply a controlled correction, verify bidirectional reachability, and prevent recurrence.",
-    symptoms: [
-      "Application requests time out or become extremely slow.",
-      "Traceroute shows repeating router addresses or a repeating hop pattern.",
-      "TTL exceeded or Hop Limit exceeded messages appear.",
-      "Router CPU, interface traffic, or packet drops rise unexpectedly.",
-      "Only a specific destination subnet, protocol, source network, or availability zone is affected.",
-      "Intermittent connectivity appears when multiple paths or ECMP next hops exist.",
-      "A route advertisement or network change is followed by widespread reachability failures."
-    ],
-    keyDistinctions: [
-      {
-        condition: "Routing loop",
-        meaning:
-          "Packets are forwarded repeatedly between next hops instead of progressing to the destination."
-      },
-      {
-        condition: "Routing black hole",
-        meaning:
-          "Packets are dropped because a route, next hop, or forwarding action leads nowhere useful."
-      },
-      {
-        condition: "Traceroute timeout",
-        meaning:
-          "A hop did not respond to a probe. This alone does not prove a routing loop or packet loss."
-      },
-      {
-        condition: "Asymmetric routing",
-        meaning:
-          "Forward and return traffic use different paths. This may be intentional, but can conflict with firewalls or stateful middleboxes."
-      },
-      {
-        condition: "Route flapping",
-        meaning:
-          "A route repeatedly appears, disappears, or changes attributes, potentially causing intermittent forwarding problems."
-      }
-    ]
-  },
+  overview: `
+A routing loop occurs when packets repeatedly travel between routers or
+gateways instead of progressing toward their destination.
 
-  productionScenario: {
-    scenario:
-      "After a network configuration change, application servers in subnet A can no longer reach a service in subnet B. Traceroute from affected hosts repeatedly shows Router-A and Router-B. API latency and timeouts rise, while local services remain healthy.",
-    timeline: [
-      "T+00: Monitoring reports destination timeouts and elevated application errors.",
-      "T+03: Incident commander confirms affected source/destination subnets and business impact.",
-      "T+05: Engineers capture traceroute, routing table entries, next-hop addresses, and recent configuration changes.",
-      "T+10: Router-A and Router-B forwarding decisions are compared for the exact destination prefix.",
-      "T+20: Evidence identifies inconsistent static routes, a routing protocol issue, or a policy-routing mismatch.",
-      "T+30: Approved minimal route correction or rollback is applied.",
-      "Recovery: Validate the forwarding path in both directions and monitor for recurrence.",
-      "Post-incident: Record route changes, root cause, prevention actions, and evidence."
-    ],
-    impactQuestions: [
-      "Which source and destination prefixes are affected?",
-      "Is the problem limited to one protocol or does all traffic fail?",
-      "Does the loop occur in one direction or both directions?",
-      "Which routers or cloud routing domains are involved?",
-      "Did a static route, BGP, OSPF, VPN, firewall, NAT, or route-table change happen recently?",
-      "Are there multiple next hops or ECMP paths?",
-      "Is a production management route or cluster heartbeat path affected?",
-      "Can traffic use a tested redundant path without creating another loop?"
-    ]
-  },
+Example:
+Client -> Router A -> Router B -> Router A -> Router B
 
-  severity: [
-    {
-      level: "SEV-1",
-      criteria:
-        "A routing loop disrupts critical production services across a major network segment or region.",
-      response:
-        "Declare an incident, engage network/platform/cloud owners, preserve evidence, and execute the approved rollback or failover plan."
-    },
-    {
-      level: "SEV-2",
-      criteria:
-        "A production subnet, application dependency, or redundant path is unavailable or degraded.",
-      response:
-        "Investigate route decisions and recent changes; prepare a controlled correction with rollback."
-    },
-    {
-      level: "SEV-3",
-      criteria:
-        "A limited non-production route or isolated destination is affected.",
-      response:
-        "Capture evidence, reproduce safely, and correct under change control."
-    }
+Routers decrease the IPv4 TTL or IPv6 Hop Limit as packets are forwarded.
+When the value expires, the packet is discarded. A router may return an ICMP
+Time Exceeded message.
+
+Common causes include incorrect static routes, routing-policy errors,
+BGP/OSPF redistribution mistakes, cloud transit route conflicts, overlapping
+CIDRs, incorrect Kubernetes CNI routing, and network automation errors.
+
+Distinguish the following before making changes:
+
+- Routing loop: traffic repeatedly traverses a circular forwarding path.
+- Black hole: traffic is discarded or sent toward an unusable next hop.
+- Route convergence: routers temporarily have inconsistent routes following
+  a topology or configuration change.
+- Asymmetric routing: forward and return paths differ; stateful firewalls may
+  reject the return traffic.
+- MTU failure: larger packets fail while smaller packets may succeed.
+- Application failure: routing can be healthy while the application is down.
+
+A repeating traceroute pattern is evidence, not definitive proof. ECMP,
+load balancing, ICMP filtering, rate limiting, and tunnels can influence
+traceroute output. Confirm the suspected loop with routing tables, forwarding
+decisions, packet captures, and tests from multiple sources.
+`,
+
+  symptoms: [
+    "Production applications suddenly experience network timeouts.",
+    "Traceroute repeatedly shows the same gateway addresses.",
+    "ICMP Time Exceeded responses increase.",
+    "One subnet cannot reach a destination while another subnet can.",
+    "TCP SYN packets are retransmitted without a successful handshake.",
+    "A network change is followed by widespread packet loss.",
+    "BGP routes flap or the selected path changes unexpectedly.",
+    "OSPF neighbors repeatedly lose and re-establish adjacency.",
+    "VPN users cannot access private application subnets.",
+    "Kubernetes Pods on different nodes cannot communicate.",
+    "AWS VPC-to-VPC connectivity fails after a route update.",
+    "Network monitoring reports increased latency and failed health checks.",
+    "Only return traffic fails because the reverse path is incorrect.",
+    "A specific destination fails while other destinations remain reachable.",
+    "The problem returns after every infrastructure deployment."
+  ],
+
+  incidentScenario: `
+Production incident: Users cannot access an internal application after a
+network route change.
+
+14:02 - A static route is changed.
+14:04 - Application health checks begin failing.
+14:06 - Users from one office subnet report timeouts.
+14:08 - Another subnet can still reach the application.
+14:10 - Traceroute shows repeating gateway addresses.
+14:12 - The incident commander declares a high-severity incident.
+
+Initial hypothesis:
+Gateway A forwards the destination prefix to Gateway B, but Gateway B routes
+the same prefix back toward Gateway A.
+
+The team must verify the forwarding decisions on both gateways before fixing
+the route. Restarting application servers will not correct a routing loop.
+
+Treat this as a diagnostic workflow, not a predetermined root cause. If
+evidence instead points to filtering, MTU, DNS, or an application failure,
+follow that evidence rather than forcing the routing-loop hypothesis.
+`,
+
+  impactAssessment: [
+    "Identify affected applications, source IPs, destination IPs, ports, and protocols.",
+    "Determine whether production, staging, development, or all environments are affected.",
+    "Identify affected subnets, VPCs, VPNs, offices, availability zones, and Kubernetes nodes.",
+    "Compare affected clients with known-good clients.",
+    "Determine whether existing sessions fail or only new connections fail.",
+    "Estimate affected users, business operations, and SLO violations.",
+    "Check whether a route, firewall, VPN, CNI, or infrastructure deployment preceded the incident.",
+    "Determine whether the issue affects one destination prefix or a shared gateway.",
+    "Check whether a failover path exists and whether it is healthy.",
+    "Assign an incident commander and network, cloud, and application investigators.",
+    "Record the incident start time, current symptoms, and mitigation actions.",
+    "Communicate business impact and updates using the incident process."
   ],
 
   safetyChecks: [
-    "Confirm hostname/device identity, environment, VRF, source prefix, destination prefix, and affected protocol.",
-    "Verify whether the management session uses the route being investigated.",
-    "Use console or out-of-band access before modifying a production router's management route.",
-    "Capture the current route table, routing protocol state, configuration, and relevant counters.",
-    "Check change approval, maintenance window, HA state, and rollback procedure.",
-    "Do not delete default routes or flush the routing table as a troubleshooting shortcut.",
-    "Do not redistribute routes, change route metrics, or modify BGP/OSPF policy without understanding the wider impact.",
-    "Do not assume a traceroute timeout means the router is dropping forwarded production packets.",
-    "Do not change both ends of a path simultaneously unless the approved recovery procedure requires it.",
-    "Use read-only commands first; use vendor-specific commands only on the correct platform.",
-    "Protect network diagrams, device configurations, IP addressing, and packet captures according to security policy."
+    "Confirm the correct host, account, region, VPC, cluster, and network device.",
+    "Verify source and destination IP addresses instead of relying only on DNS names.",
+    "Confirm the affected port and protocol.",
+    "Use read-only commands during initial diagnosis.",
+    "Capture the current routing configuration before modifying it.",
+    "Verify production change approval and incident authorization.",
+    "Do not flush the routing table or delete default routes as a test.",
+    "Do not restart every gateway or network service without understanding the blast radius.",
+    "Do not disable firewalls broadly to make connectivity work.",
+    "Prepare a rollback command and expected route state before applying a fix.",
+    "Check whether the current management session uses the route being modified.",
+    "Preserve timestamps, logs, configuration versions, and packet captures.",
+    "Use approved maintenance windows or emergency-change procedures.",
+    "Protect packet captures and redact credentials or sensitive data.",
+    "Validate both forward and return paths before declaring recovery."
   ],
 
-  evidenceCollection: {
-    hostIdentity: [
-      "date -Is",
-      "hostnamectl",
-      "ip -br address",
-      "ip -br link"
-    ],
-    linuxRoutes: [
-      "ip route show table all",
-      "ip rule show",
-      "ip route get <DESTINATION_IP>",
-      "ip -6 route show table all",
-      "ip -6 route get <DESTINATION_IPV6>"
-    ],
-    pathTests: [
-      "traceroute -n <DESTINATION_IP>",
-      "tracepath <DESTINATION_IP>",
-      "ping -c 3 <DESTINATION_IP>",
-      "mtr -n -r -c 10 <DESTINATION_IP>"
-    ],
-    packetAndKernelEvidence: [
-      "ip -s link show dev <IFACE>",
-      "journalctl -k --since '-30 min' --no-pager",
-      "sudo tcpdump -ni <IFACE> -c 100 host <DESTINATION_IP>"
-    ],
-    routerEvidence: [
-      "Routing table entry for the exact destination prefix",
-      "Selected next hop and outgoing interface",
-      "Routing protocol neighbor/adjacency state",
-      "Route advertisement and withdrawal timestamps",
-      "VRF and policy-routing context",
-      "Interface errors, queue drops, CPU, and forwarding counters",
-      "Recent configuration changes and commit history"
-    ],
-    cloudEvidence: [
-      "Effective routes for the source and destination workloads",
-      "VPC/VNet route tables and propagated routes",
-      "VPN, transit gateway, peering, and virtual appliance routes",
-      "Cloud flow logs and connectivity test results",
-      "Relevant provider health and activity events"
-    ],
-    evidenceRules: [
-      "Record timestamp, device identity, source/destination, VRF, command, and output.",
-      "Capture the exact prefix and selected next hop; a default route may be relevant when no more-specific route exists.",
-      "Compare evidence from both sides of the suspected loop.",
-      "Save the last known-good configuration before changing routes.",
-      "Redact credentials, secrets, and sensitive configuration before sharing evidence."
-    ]
-  },
-
-  diagnosticDecisionTree: [
-    {
-      step: 1,
-      question: "Does traceroute show repeating hop addresses?",
-      ifYes:
-        "Record the repeating pattern, probe type, source, destination, and timestamps. Inspect the forwarding table on the suspected routers.",
-      ifNo:
-        "Do not rule out a loop. Probe filtering, ECMP, asymmetric paths, or TTL handling can hide the pattern. Continue with route and forwarding evidence.",
-      commands: [
-        "traceroute -n <DESTINATION_IP>",
-        "tracepath <DESTINATION_IP>"
-      ]
-    },
-    {
-      step: 2,
-      question: "Does the source host select the expected route?",
-      ifYes:
-        "Inspect the selected gateway and continue to the next hop.",
-      ifNo:
-        "Check prefix length, policy rules, source-address selection, VRF, and recent route changes.",
-      commands: [
-        "ip route get <DESTINATION_IP>",
-        "ip route show table all",
-        "ip rule show"
-      ]
-    },
-    {
-      step: 3,
-      question: "Do the suspected routers point the destination prefix toward each other?",
-      ifYes:
-        "Compare the exact destination route, next-hop recursion, route source, preference, and policy on both routers.",
-      ifNo:
-        "Investigate another hop, ECMP path, tunnel, NAT, or a return-path issue.",
-      commands: [
-        "Vendor-specific route lookup for <DESTINATION_PREFIX>",
-        "Vendor-specific forwarding-table lookup for <DESTINATION_IP>",
-        "Vendor-specific routing protocol status"
-      ]
-    },
-    {
-      step: 4,
-      question: "Did a route or policy change precede the incident?",
-      ifYes:
-        "Compare the current configuration and route advertisements with the last known-good state. Roll back only the confirmed faulty change.",
-      ifNo:
-        "Investigate protocol convergence, route redistribution, next-hop reachability, stale state, and device health.",
-      commands: [
-        "Review configuration commit history",
-        "Review routing protocol logs",
-        "Review route advertisement and withdrawal events"
-      ]
-    },
-    {
-      step: 5,
-      question: "Is the loop limited to one route, VRF, or source?",
-      ifYes:
-        "Check more-specific routes, policy routing, route leaking, source-dependent rules, and overlapping prefixes.",
-      ifNo:
-        "Check shared routing policy, core topology, route redistribution, and widespread protocol events."
-    },
-    {
-      step: 6,
-      question: "Does the return path also work correctly?",
-      ifYes:
-        "Validate application connectivity and monitor route stability.",
-      ifNo:
-        "Trace and inspect the reverse direction independently; do not assume symmetric routing."
-    }
+  evidenceCollection: [
+    "Incident ID, severity, start time, reporter, and business impact.",
+    "Source IP, destination IP, source subnet, destination subnet, port, and protocol.",
+    "Traceroute or tracepath output from affected and unaffected sources.",
+    "Linux route tables, policy-routing rules, and neighbor entries.",
+    "Router forwarding tables and selected next hops.",
+    "BGP neighbor state, received routes, selected paths, and advertisements.",
+    "OSPF adjacency state, route information, and relevant logs.",
+    "Cloud VPC route tables, transit gateway routes, VPN routes, and flow logs.",
+    "Kubernetes node addresses, Pod CIDRs, routes, and CNI status.",
+    "Firewall logs, NAT translations, security policies, and interface counters.",
+    "Short, filtered packet captures from relevant interfaces where authorized.",
+    "Monitoring alerts, deployment timestamps, Git commits, and audit logs.",
+    "Last known good route configuration and last successful connectivity test.",
+    "Change approvals and the identity of the system that applied the change.",
+    "A timeline of tests, observations, changes, and recovery results."
   ],
 
   diagnosticWorkflow: [
     {
       step: 1,
-      name: "Confirm the incident scope",
-      actions: [
-        "Identify affected services, source and destination prefixes, and protocols.",
-        "Compare one affected host with one healthy host.",
-        "Check whether failures began after a route, firewall, VPN, or cloud network change.",
-        "Establish an alternate management path before changing production routes."
+      title: "Confirm scope and reproduce the issue",
+      objective: "Establish a reliable baseline and isolate the affected traffic.",
+      commands: [
+        "date -Is",
+        "hostname -f",
+        "ip -br address",
+        "ip route get <destination-ip>",
+        "ping -c 4 -W 2 <destination-ip>",
+        "nc -vz -w 3 <destination-ip> <port>",
+        "curl -v --connect-timeout 5 http://<destination-ip>:<port>/health"
       ],
-      successCriteria:
-        "Affected scope, business impact, device ownership, and safe access are known."
+      interpretOutput: [
+        "date and hostname record the test time and source machine.",
+        "ip -br address identifies local interfaces and addresses.",
+        "ip route get shows the locally selected route, next hop, interface, and usually source address.",
+        "Ping failure does not prove a routing failure because ICMP may be filtered.",
+        "A successful TCP connection with a failed HTTP request points toward an application or protocol issue.",
+        "If only one source subnet fails, investigate source-specific routing, NAT, ACLs, and return paths."
+      ],
+      nextActions: [
+        "Record the exact source, destination, protocol, and port.",
+        "Repeat the test from an unaffected source.",
+        "Compare routes and source addresses between the two sources.",
+        "Continue with path tracing and route inspection before changing configuration."
+      ]
     },
     {
       step: 2,
-      name: "Capture the source route decision",
+      title: "Inspect Linux routes and policy routing",
+      objective: "Identify the route and routing table used for the failing destination.",
       commands: [
-        "ip route get <DESTINATION_IP>",
+        "ip route show",
+        "ip -6 route show",
         "ip rule show",
-        "ip route show table all"
+        "ip route show table all",
+        "ip route get <destination-ip>",
+        "ip route get <destination-ip> from <source-ip>",
+        "ip neigh show"
       ],
-      actions: [
-        "Record the chosen next hop, outgoing interface, source IP, and routing table.",
-        "Check whether the destination matches a more-specific route.",
-        "Repeat the lookup in the correct network namespace or VRF when relevant."
+      interpretOutput: [
+        "A route such as 10.20.0.0/16 via 10.1.0.1 dev eth0 sends matching traffic to that next hop.",
+        "The most specific matching prefix normally wins within the selected routing table.",
+        "Policy-routing rules may select a different table based on source, mark, or other selectors.",
+        "An unexpected default route may send traffic toward the wrong gateway.",
+        "INCOMPLETE neighbor entries can indicate Layer 2 neighbor resolution problems; they do not prove a routing loop.",
+        "A different source address may lead to a different return path."
+      ],
+      nextActions: [
+        "Identify the effective route and routing table.",
+        "Compare the result with the approved network design.",
+        "Check policy rules, packet marks, and source-based routes.",
+        "Save the output before any modification."
       ]
     },
     {
       step: 3,
-      name: "Trace the path carefully",
+      title: "Trace the path and distinguish a loop from a black hole",
+      objective: "Identify repeated hops, missing responses, and path-specific failures.",
       commands: [
-        "traceroute -n <DESTINATION_IP>",
-        "tracepath <DESTINATION_IP>",
-        "mtr -n -r -c 10 <DESTINATION_IP>"
+        "traceroute -n -m 20 -w 2 <destination-ip>",
+        "traceroute -n -I -m 20 -w 2 <destination-ip>",
+        "traceroute -n -T -p <port> -m 20 -w 2 <destination-ip>",
+        "tracepath <destination-ip>",
+        "mtr -n -r -c 20 <destination-ip>"
       ],
-      actions: [
-        "Look for repeating hop patterns and TTL-exceeded responses.",
-        "Compare results from different affected and healthy source hosts.",
-        "Repeat with a supported probe type when UDP/ICMP probes may be filtered.",
-        "Use a modest probe count and avoid unnecessary diagnostic traffic."
+      interpretOutput: [
+        "Repeated gateway addresses at successive hops may indicate a forwarding loop.",
+        "Asterisks mean probes did not receive responses; filtering or rate limiting may be responsible.",
+        "A trace that stops at one hop without repeated addresses may indicate a silent drop or filtering.",
+        "TCP traceroute can help when UDP or ICMP probes are filtered.",
+        "Different addresses at the same hop can occur with ECMP or load balancing.",
+        "Compare results from multiple sources before concluding that a loop exists."
       ],
-      notes: [
-        "Traceroute uses probes with increasing TTL or Hop Limit to discover responding hops.",
-        "Asterisks can mean a device did not respond to the probe; they do not prove that ordinary forwarded traffic was dropped.",
-        "ECMP and flow hashing can make different probes follow different paths."
+      nextActions: [
+        "Record the last known good hop and repeated gateway sequence.",
+        "Run the same trace from another source subnet.",
+        "Request route lookups from the suspected gateways.",
+        "If no loop is demonstrated, investigate filtering, return routing, MTU, and application behavior."
       ]
     },
     {
       step: 4,
-      name: "Inspect route decisions on each suspected router",
-      actions: [
-        "Look up the exact destination prefix on the first suspected router.",
-        "Record the selected next hop, outgoing interface, route source, and preference.",
-        "Repeat on the next hop and continue until the loop is confirmed or another cause is found.",
-        "Check both the control-plane route table and forwarding table when the platform exposes both."
+      title: "Inspect each suspected router's forwarding decision",
+      objective: "Locate the point where traffic is sent back toward a previous hop.",
+      commands: [
+        "ip route get <destination-ip>",
+        "ip route show",
+        "ip neigh show",
+        "sudo tcpdump -ni <interface> 'host <destination-ip>'",
+        "sudo tcpdump -ni <interface> 'icmp or icmp6'"
       ],
-      decision:
-        "A loop is strongly supported when the selected forwarding next hops repeatedly direct the same traffic back toward a previously visited router."
+      interpretOutput: [
+        "A source-host route only shows the local forwarding decision.",
+        "Intermediate routers may use different VRFs, policy tables, or ECMP paths.",
+        "ICMP Time Exceeded responses may identify routers where probe TTL expires.",
+        "Traffic leaving one gateway and returning through another interface can support a loop hypothesis.",
+        "No packets in a capture may mean another interface, namespace, or forwarding path was used."
+      ],
+      nextActions: [
+        "Record ingress interface, destination prefix, selected next hop, and egress interface.",
+        "Compare the decisions on both suspected gateways.",
+        "Check both forward and return paths.",
+        "Escalate to the network device owner if access is restricted."
+      ]
     },
     {
       step: 5,
-      name: "Investigate static routes and route specificity",
-      actions: [
-        "Check prefix length and longest-prefix-match behavior.",
-        "Check static route next-hop reachability and recursive resolution.",
-        "Review route metrics or administrative preference according to the vendor platform.",
-        "Check whether a default route sends traffic back to a router that has no more-specific route.",
-        "Check for overlapping subnets, incorrect masks, and unintended route leaking."
+      title: "Validate static routes and subnet masks",
+      objective: "Find incorrect next hops, prefixes, or default routes.",
+      commands: [
+        "ip route show",
+        "ip -6 route show",
+        "ip route get <destination-ip>",
+        "ip route show table all"
       ],
-      caution:
-        "Do not assume every platform uses the same route preference or administrative-distance behavior."
+      interpretOutput: [
+        "Gateway A may forward a prefix to Gateway B while Gateway B forwards the same prefix back to Gateway A.",
+        "An incorrect subnet mask can make a remote network appear directly connected.",
+        "An unexpected more-specific prefix may override the intended route.",
+        "A missing specific route may send traffic through an unsuitable default route.",
+        "A Linux host's routes do not reveal the complete configuration of external routers."
+      ],
+      nextActions: [
+        "Compare the prefix and next hop against the IP address plan.",
+        "Inspect both sides of a suspected reciprocal route.",
+        "Determine whether a static route conflicts with a dynamic route.",
+        "Correct only the verified faulty route through an approved change."
+      ]
     },
     {
       step: 6,
-      name: "Investigate dynamic routing",
-      actions: [
-        "Check BGP neighbor status, advertised/received prefixes, next-hop reachability, and route policy.",
-        "For OSPF, check neighbor state, LSDB consistency, area design, and route calculation.",
-        "For other protocols, use the platform-specific route and adjacency commands.",
-        "Review redistribution between static routes, BGP, OSPF, and other routing domains.",
-        "Check whether a route withdrawal, flap, or convergence event aligns with the incident."
+      title: "Investigate BGP route selection and redistribution",
+      objective: "Find incorrect advertisements, next hops, or routing-policy decisions.",
+      commands: [
+        "vtysh -c 'show ip bgp summary'",
+        "vtysh -c 'show ip bgp <destination-prefix>'",
+        "vtysh -c 'show ip route <destination-ip>'",
+        "vtysh -c 'show running-config'"
       ],
-      caution:
-        "Do not reset routing adjacencies or withdraw production prefixes without an approved recovery plan."
+      interpretOutput: [
+        "These are FRRouting examples; vendor syntax differs.",
+        "An Established BGP session does not guarantee that the selected route is correct.",
+        "Inspect received, accepted, best, and advertised routes.",
+        "Review next hop, AS path, local preference, communities, and route policies.",
+        "Route flapping is evidence of instability but is not proof of a forwarding loop."
+      ],
+      nextActions: [
+        "Compare the selected route with the intended topology.",
+        "Inspect redistribution between BGP and other routing protocols.",
+        "Review recent prefix filters, route maps, and communities.",
+        "Apply a reviewed policy correction and confirm convergence."
+      ]
     },
     {
       step: 7,
-      name: "Check policy routing, VRFs, NAT, and tunnels",
-      actions: [
-        "Verify source-based routing rules and packet marks.",
-        "Confirm the route lookup occurs in the expected VRF or routing table.",
-        "Check route leaking between VRFs and overlapping address spaces.",
-        "Inspect VPN/tunnel route selection and the underlay path.",
-        "Review NAT and stateful firewall behavior if forward and return paths differ."
-      ],
+      title: "Investigate OSPF convergence",
+      objective: "Identify adjacency instability or incorrect route selection.",
       commands: [
-        "ip rule show",
-        "ip route show table all",
-        "ip -d link show"
+        "vtysh -c 'show ip ospf neighbor'",
+        "vtysh -c 'show ip ospf route'",
+        "vtysh -c 'show ip route ospf'",
+        "vtysh -c 'show ip route <destination-ip>'"
+      ],
+      interpretOutput: [
+        "These are FRRouting examples; use equivalent commands on other platforms.",
+        "Repeated neighbor state changes can indicate link, timer, MTU, or configuration issues.",
+        "A Full adjacency does not prove that every destination has the correct route.",
+        "Check route redistribution, area boundaries, summarization, and metrics.",
+        "Topology instability can temporarily produce inconsistent forwarding."
+      ],
+      nextActions: [
+        "Capture adjacency state and routing logs.",
+        "Compare route selection on the affected routers.",
+        "Inspect recent interface, metric, area, and redistribution changes.",
+        "Avoid clearing all adjacencies as an initial troubleshooting action."
       ]
     },
     {
       step: 8,
-      name: "Correlate packet and device telemetry",
-      actions: [
-        "Check interface counters and device CPU/forwarding health.",
-        "Collect filtered packet captures at appropriate interfaces.",
-        "Compare timestamps across routers and application hosts.",
-        "Review cloud flow logs, firewall logs, and routing events.",
-        "Distinguish a control-plane probe response issue from an actual data-plane forwarding loop."
-      ],
+      title: "Inspect AWS routes and transit connectivity",
+      objective: "Identify incorrect VPC, peering, transit gateway, or VPN routes.",
       commands: [
-        "ip -s link show dev <IFACE>",
-        "journalctl -k --since '-30 min' --no-pager",
-        "sudo tcpdump -ni <IFACE> -c 100 host <DESTINATION_IP>"
+        "aws sts get-caller-identity",
+        "aws ec2 describe-route-tables --region <region>",
+        "aws ec2 describe-transit-gateway-route-tables --region <region>",
+        "aws ec2 describe-vpn-connections --region <region>",
+        "aws ec2 describe-vpc-peering-connections --region <region>"
+      ],
+      interpretOutput: [
+        "Confirm the AWS account and region before examining resources.",
+        "Inspect destination CIDR, route target, route state, and subnet association.",
+        "Check whether the target is a transit gateway, peering connection, VPN gateway, or network interface.",
+        "An active route does not guarantee correct end-to-end connectivity.",
+        "VPC peering is not automatically transitive.",
+        "Correlate route tables with security groups, network ACLs, flow logs, and return routes."
+      ],
+      nextActions: [
+        "Identify route tables associated with the source and destination subnets.",
+        "Inspect transit gateway associations and route propagation.",
+        "Check VPN advertisements and on-premises return routes.",
+        "Review flow logs and recent infrastructure changes.",
+        "Change only the route or association proven to be incorrect."
       ]
     },
     {
       step: 9,
-      name: "Confirm the root cause before modifying routes",
-      actions: [
-        "Document the incorrect route, next-hop relationship, or policy.",
-        "Compare against a known-good configuration or intended network design.",
-        "Identify all affected prefixes and dependent services.",
-        "Prepare the exact corrective change and rollback command/configuration.",
-        "Get the required production approval."
+      title: "Troubleshoot Kubernetes Pod and node routing",
+      objective: "Separate CNI, Pod routing, node routing, and external network problems.",
+      commands: [
+        "kubectl get nodes -o wide",
+        "kubectl get pods -A -o wide",
+        "kubectl get events -A --sort-by=.lastTimestamp",
+        "kubectl get daemonsets -A",
+        "kubectl get networkpolicies -A",
+        "kubectl describe node <node-name>",
+        "ip route show",
+        "ip route get <pod-ip>"
       ],
-      successCriteria:
-        "The correction targets a specific, evidence-backed route or policy defect."
+      interpretOutput: [
+        "Compare Pod CIDRs and node IPs between affected and healthy nodes.",
+        "Same-node connectivity working while cross-node connectivity fails points toward the node network or CNI path.",
+        "NetworkPolicy can block traffic but should not automatically be assumed to cause a router-level loop.",
+        "A CNI rollout immediately before the incident is a lead, not proof.",
+        "Collect route output from the actual affected node."
+      ],
+      nextActions: [
+        "Compare same-node Pod traffic with cross-node Pod traffic.",
+        "Inspect CNI logs, IPAM allocations, overlay tunnels, and route programming.",
+        "Check overlapping Pod, node, and corporate CIDRs.",
+        "Review recent CNI and cluster-network configuration changes.",
+        "Use the CNI-supported recovery or rollback procedure."
+      ]
     },
     {
       step: 10,
-      name: "Apply controlled recovery",
-      actions: [
-        "Use the approved vendor or cloud management interface.",
-        "Change only the faulty route or policy where possible.",
-        "Check that the corrected next hop is reachable and does not point back into the loop.",
-        "Verify routing convergence and forwarding behavior.",
-        "Avoid broad route flushes or simultaneous uncoordinated changes."
+      title: "Inspect firewall, NAT, and asymmetric routing",
+      objective: "Distinguish a routing loop from stateful firewall drops and incorrect return paths.",
+      commands: [
+        "sudo nft list ruleset",
+        "sudo iptables -S",
+        "sudo iptables -t nat -S",
+        "sudo conntrack -L",
+        "sudo tcpdump -ni <interface> 'host <destination-ip> and (tcp or icmp)'"
+      ],
+      interpretOutput: [
+        "Use commands appropriate to the host's firewall implementation.",
+        "iptables output may not fully represent systems using a different firewall backend.",
+        "A TCP SYN reaching the destination without a SYN-ACK may indicate a listener, route, firewall, or return-path issue.",
+        "NAT can change the source address and affect the return path.",
+        "Do not flush conntrack or disable all firewall rules as a diagnostic shortcut."
+      ],
+      nextActions: [
+        "Capture the flow on both sides of the suspected firewall where authorized.",
+        "Inspect session state, NAT translations, rule counters, and deny logs.",
+        "Compare forward and return routes.",
+        "Apply a narrow, approved correction after identifying the actual failure."
       ]
     },
     {
       step: 11,
-      name: "Validate both directions",
-      actions: [
-        "Repeat traceroute and route lookup from the original source.",
-        "Run a reverse-path test from the destination side.",
-        "Validate the actual application protocol and port.",
-        "Check that the route remains stable and that counters and errors are returning to baseline.",
-        "Confirm the change did not break another subnet or management path."
+      title: "Verify packet behavior with tcpdump",
+      objective: "Correlate packet direction, TTL, timestamps, and gateway responses.",
+      commands: [
+        "sudo tcpdump -ni <interface> -vv 'host <destination-ip>'",
+        "sudo tcpdump -ni <interface> -vv 'icmp or icmp6'",
+        "sudo tcpdump -ni <interface> -w /tmp/routing-loop.pcap 'host <destination-ip>'",
+        "tcpdump -nn -r /tmp/routing-loop.pcap"
+      ],
+      interpretOutput: [
+        "IPv4 TTL and IPv6 Hop Limit values help identify packet expiration.",
+        "Traceroute intentionally sends probes with low TTL values; distinguish these from ordinary application traffic.",
+        "Repeated packets on one interface do not independently prove a loop.",
+        "ICMP Time Exceeded responses may reveal where probes expire.",
+        "Captures can miss traffic because of offloading, hardware forwarding, namespaces, or capture placement."
+      ],
+      nextActions: [
+        "Use a short capture with a narrow host or flow filter.",
+        "Compare ingress and egress captures on the suspected gateways.",
+        "Synchronize timestamps across systems where possible.",
+        "Protect captures because they may contain sensitive data."
       ]
     },
     {
       step: 12,
-      name: "Close the incident and prevent recurrence",
-      actions: [
-        "Record timeline, evidence, root cause, change reference, and rollback decision.",
-        "Add route validation to change review and automation.",
-        "Create alerts for route flaps and reachability failures.",
-        "Update topology diagrams and recovery runbooks.",
-        "Assign prevention actions with owners and due dates."
+      title: "Check MTU and tunnel overhead",
+      objective: "Rule out packet-size problems that resemble connectivity failures.",
+      commands: [
+        "ip link show",
+        "tracepath -n <destination-ip>",
+        "ping -M do -s 1200 -c 3 <destination-ip>",
+        "ping -M do -s 1400 -c 3 <destination-ip>"
+      ],
+      interpretOutput: [
+        "The ping options shown are Linux IPv4 examples.",
+        "Small packets succeeding while larger packets fail can indicate an MTU or Path MTU Discovery issue.",
+        "Blocked ICMP can hide fragmentation-needed or Packet Too Big messages.",
+        "An MTU problem is not proof of a routing loop."
+      ],
+      nextActions: [
+        "Compare interface MTUs and tunnel overhead.",
+        "Inspect ICMP fragmentation-needed and Packet Too Big messages.",
+        "Test representative packet sizes and application protocols.",
+        "Adjust MTU or MSS only when measurements support the change."
+      ]
+    },
+    {
+      step: 13,
+      title: "Correlate routes with Git and infrastructure changes",
+      objective: "Identify the change that introduced the incorrect forwarding decision.",
+      commands: [
+        "git log --oneline -15",
+        "git diff --stat <last-known-good-commit>..<current-commit>",
+        "git diff <last-known-good-commit>..<current-commit>",
+        "terraform plan",
+        "terraform state list"
+      ],
+      interpretOutput: [
+        "Git history shows repository changes, not proof that a change reached production.",
+        "Terraform plan shows proposed changes against the refreshed state; inspect the plan before applying.",
+        "terraform state list inventories managed resources but does not validate route correctness.",
+        "Correlate commits with pipeline logs, approvals, audit logs, and actual device configuration.",
+        "Temporal proximity alone does not prove causation."
+      ],
+      nextActions: [
+        "Find the last known good configuration.",
+        "Compare intended and deployed routes.",
+        "Identify the smallest reversible correction.",
+        "Obtain required approval before changing production."
+      ]
+    },
+    {
+      step: 14,
+      title: "Validate recovery",
+      objective: "Prove the intended route works and application traffic succeeds in both directions.",
+      commands: [
+        "ip route get <destination-ip>",
+        "traceroute -n <destination-ip>",
+        "mtr -n -r -c 20 <destination-ip>",
+        "nc -vz -w 3 <destination-ip> <port>",
+        "curl -fsS --connect-timeout 5 http://<destination-ip>:<port>/health"
+      ],
+      interpretOutput: [
+        "The selected next hop should match the approved design.",
+        "The confirmed circular forwarding pattern should no longer occur.",
+        "Traceroute asterisks alone do not prove recovery failure because routers may suppress responses.",
+        "A successful transport test and healthy application response provide stronger evidence than ping alone.",
+        "Test from affected and unaffected source networks."
+      ],
+      nextActions: [
+        "Repeat the original failing test matrix.",
+        "Check application latency, packet loss, and route stability.",
+        "Monitor for recurrence during the agreed observation period.",
+        "Record the fix, verification results, and remaining risks."
       ]
     }
   ],
 
   rootCauseMatrix: [
     {
-      symptom: "Two routers repeatedly appear in traceroute",
-      likelyCauses: [
-        "Incorrect static routes",
-        "Mutual default-route forwarding",
-        "Incorrect route redistribution"
-      ],
-      confirmation:
-        "Compare the exact destination route and selected next hop on both routers."
+      symptom: "Traceroute repeatedly shows the same gateway addresses.",
+      likelyCause: "Reciprocal static routes or inconsistent dynamic routing.",
+      verification: "Inspect forwarding decisions and selected next hops on the suspected routers.",
+      resolution: "Correct the route or policy that sends traffic back toward the previous hop."
     },
     {
-      symptom: "Loop starts after a routing policy change",
-      likelyCauses: [
-        "Incorrect prefix match",
-        "Wrong route-map or policy",
-        "Unintended route advertisement"
-      ],
-      confirmation:
-        "Compare configuration history, received/advertised routes, and route selection."
+      symptom: "Traceroute stops at one hop without repeated addresses.",
+      likelyCause: "Filtering, rate limiting, missing route, or silent packet drop.",
+      verification: "Use transport tests, route lookups, device logs, and packet captures.",
+      resolution: "Fix the verified drop or missing route; do not assume a loop."
     },
     {
-      symptom: "Only one source subnet experiences a loop",
-      likelyCauses: [
-        "Policy-based routing",
-        "VRF mismatch",
-        "Source-specific route",
-        "Overlapping subnet"
-      ],
-      confirmation:
-        "Compare route lookups and policy rules for affected versus healthy sources."
+      symptom: "Only one source subnet fails.",
+      likelyCause: "Policy routing, source-specific routes, NAT, ACLs, or an asymmetric return path.",
+      verification: "Compare source-specific route lookups, firewall logs, and return routes.",
+      resolution: "Correct the verified route or policy without weakening network segmentation."
     },
     {
-      symptom: "Intermittent failures across multiple paths",
-      likelyCauses: [
-        "ECMP next-hop issue",
-        "Route flapping",
-        "Partial failure of one path",
-        "Inconsistent forwarding state"
-      ],
-      confirmation:
-        "Compare per-next-hop telemetry, routing events, and repeated controlled probes."
+      symptom: "Failure begins after a static route update.",
+      likelyCause: "Incorrect next hop, prefix length, or default route.",
+      verification: "Compare deployed routes with the last known good configuration.",
+      resolution: "Restore or correct the specific route through an approved change."
     },
     {
-      symptom: "Traceroute stops but no repeating hops appear",
-      likelyCauses: [
-        "Probe filtering",
-        "Missing route",
-        "Firewall policy",
-        "Return-path failure",
-        "Device not generating ICMP errors"
-      ],
-      confirmation:
-        "Inspect route tables, test approved application traffic, and check upstream logs."
+      symptom: "BGP routes flap or select an unexpected path.",
+      likelyCause: "Incorrect route policy, redistribution, next hop, or unstable peer.",
+      verification: "Inspect received, selected, and advertised routes and neighbor logs.",
+      resolution: "Correct the policy or underlying peer issue and verify convergence."
     },
     {
-      symptom: "Cloud subnet cannot reach another subnet",
-      likelyCauses: [
-        "Conflicting route-table entries",
-        "Incorrect virtual appliance route",
-        "Peering or transit route issue",
-        "VPN route propagation problem"
-      ],
-      confirmation:
-        "Inspect effective routes and supported cloud connectivity diagnostics."
+      symptom: "OSPF adjacency repeatedly changes state.",
+      likelyCause: "Link instability, MTU mismatch, timers, or topology changes.",
+      verification: "Inspect neighbor state, interface counters, and routing logs.",
+      resolution: "Correct the underlying link or configuration problem."
     },
     {
-      symptom: "Loop appears during failover",
-      likelyCauses: [
-        "Stale route",
-        "Incorrect floating/static route",
-        "Routing convergence issue",
-        "Failover policy inconsistency"
-      ],
-      confirmation:
-        "Correlate failover events, route updates, and next-hop state."
+      symptom: "Same-node Pods work but cross-node Pods fail.",
+      likelyCause: "CNI, overlay tunnel, IPAM, node route, or firewall issue.",
+      verification: "Compare Pod CIDRs, node routes, CNI logs, and cross-node traffic.",
+      resolution: "Use the documented CNI recovery or rollback procedure."
+    },
+    {
+      symptom: "AWS workloads lose reachability after a route change.",
+      likelyCause: "Incorrect VPC, transit gateway, peering, VPN, or return route.",
+      verification: "Inspect route tables, associations, targets, flow logs, and reverse paths.",
+      resolution: "Correct the specific route or attachment configuration."
+    },
+    {
+      symptom: "Small packets work but larger packets fail.",
+      likelyCause: "MTU, fragmentation, tunnel overhead, or blocked Path MTU Discovery.",
+      verification: "Compare MTUs and test packet sizes with packet captures.",
+      resolution: "Correct the verified MTU or MSS configuration."
+    },
+    {
+      symptom: "Traffic reaches the destination but replies do not return.",
+      likelyCause: "Asymmetric routing, firewall state, NAT, or an incorrect reverse route.",
+      verification: "Capture both directions and inspect return routing.",
+      resolution: "Restore the intended return path or correct the approved firewall/NAT design."
+    },
+    {
+      symptom: "The issue returns after each infrastructure deployment.",
+      likelyCause: "Configuration drift or incorrect infrastructure-as-code definitions.",
+      verification: "Compare source-controlled configuration with actual deployed routes.",
+      resolution: "Fix the source of truth and validate the deployment pipeline."
+    },
+    {
+      symptom: "Traceroute succeeds but the application still times out.",
+      likelyCause: "Port filtering, application listener, TLS, DNS, proxy, or load balancer.",
+      verification: "Test the actual protocol and port; inspect application and load-balancer logs.",
+      resolution: "Fix the proven transport or application issue."
     }
   ],
 
-  recoveryPlaybook: [
+  advancedScenarios: [
     {
-      condition: "Confirmed incorrect static route",
-      actions: [
-        "Capture the current route and intended network design.",
-        "Validate the correct next hop from the device that will use it.",
-        "Apply the narrowest approved route correction.",
-        "Verify route selection and forwarding after the change."
+      scenario: "Static route loop between two gateways",
+      evidence: [
+        "Traceroute repeats Gateway A and Gateway B.",
+        "Gateway A forwards the destination prefix to Gateway B.",
+        "Gateway B forwards that same prefix back to Gateway A.",
+        "The failure started after a route change."
       ],
-      avoid:
-        "Deleting the default route or making a broad route change without confirming dependent destinations."
+      fix: [
+        "Capture the route configuration on both gateways.",
+        "Verify the intended destination prefix and next hop.",
+        "Identify the incorrect reciprocal route.",
+        "Correct the narrowest faulty route through an approved change.",
+        "Do not delete default routes or restart both gateways."
+      ],
+      validation: [
+        "Confirm the selected next hop on both gateways.",
+        "Repeat traceroute from affected and unaffected subnets.",
+        "Test the actual application port.",
+        "Monitor packet loss and route stability."
+      ]
     },
     {
-      condition: "Confirmed bad routing policy or advertisement",
-      actions: [
-        "Correct the specific prefix match or policy statement.",
-        "Validate received and advertised routes before and after the change.",
-        "Monitor convergence and reachability for dependent prefixes."
+      scenario: "BGP and static route redistribution creates an unexpected path",
+      evidence: [
+        "A prefix is learned through one routing protocol and re-advertised through another.",
+        "The selected next hop points toward the router that supplied the route.",
+        "Route advertisements change after a policy update.",
+        "The BGP session can remain Established while the data path is incorrect."
       ],
-      avoid:
-        "Resetting all BGP/OSPF neighbors or redistributing all routes as a quick fix."
+      fix: [
+        "Inspect route redistribution policies and prefix filters.",
+        "Review route tags, communities, AS path, and next-hop attributes.",
+        "Identify why the prefix is reintroduced into the wrong routing domain.",
+        "Apply a reviewed redistribution-policy correction.",
+        "Use the supported vendor procedure for route refresh or convergence."
+      ],
+      validation: [
+        "Compare received, selected, and advertised routes.",
+        "Confirm the path matches the intended topology.",
+        "Verify the prefix is not incorrectly reintroduced.",
+        "Monitor routing updates and application reachability."
+      ]
     },
     {
-      condition: "Confirmed cloud route-table problem",
-      actions: [
-        "Compare the affected route table with the intended network architecture.",
-        "Correct the specific route through the cloud management plane.",
-        "Run supported connectivity tests and validate the application path."
+      scenario: "AWS transit gateway route sends traffic toward the wrong attachment",
+      evidence: [
+        "Traffic from VPC A is sent to a transit gateway.",
+        "The transit route table directs the destination to an unexpected attachment.",
+        "A receiving appliance or VPC forwards the destination back toward the transit gateway.",
+        "Flow logs show traffic but the application connection fails."
       ],
-      avoid:
-        "Changing multiple route tables simultaneously without a dependency map and rollback."
+      fix: [
+        "Confirm the AWS account, region, VPC, and transit gateway.",
+        "Inspect route-table associations, propagation, destination CIDRs, and targets.",
+        "Check for overlapping CIDRs and incorrect appliance routes.",
+        "Correct the route or association responsible for the bad path.",
+        "Preserve the last known good configuration."
+      ],
+      validation: [
+        "Verify effective routes for source and destination subnets.",
+        "Inspect flow logs for accepted and rejected traffic.",
+        "Test the application from each affected VPC.",
+        "Confirm return routing and monitor the transit path."
+      ]
     },
     {
-      condition: "Confirmed asymmetric routing and stateful firewall conflict",
-      actions: [
-        "Map forward and return paths.",
-        "Correct routing or firewall architecture using the approved design.",
-        "Validate session establishment and return traffic."
+      scenario: "Kubernetes cross-node traffic fails after a CNI upgrade",
+      evidence: [
+        "Same-node Pod communication works but cross-node traffic fails.",
+        "The issue starts after a CNI or cluster-network change.",
+        "Node routes or overlay tunnel state differ between healthy and affected nodes.",
+        "Pod CIDRs, node addresses, or tunnel settings may be incorrect."
       ],
-      avoid:
-        "Disabling firewall state tracking or opening broad access to mask the routing defect."
+      fix: [
+        "Capture node routes, Pod addresses, CNI logs, and daemon-set status.",
+        "Compare affected nodes with healthy nodes.",
+        "Check CNI version compatibility and documented upgrade requirements.",
+        "Correct the configuration or roll back using the supported procedure.",
+        "Do not manually delete CNI-managed routes unless the vendor documents that recovery method."
+      ],
+      validation: [
+        "Test same-node and cross-node Pod communication.",
+        "Test Service IP and external destination connectivity.",
+        "Check CNI health and node readiness.",
+        "Monitor packet drops and Pod restarts."
+      ]
     },
     {
-      condition: "Routing protocol instability",
-      actions: [
-        "Preserve neighbor state, route advertisements, logs, and configuration.",
-        "Identify the exact unstable adjacency, prefix, policy, or next-hop dependency.",
-        "Use the vendor-supported recovery and escalation procedure."
+      scenario: "Asymmetric routing causes firewall session drops",
+      evidence: [
+        "The forward path reaches the destination.",
+        "The return path uses a different firewall or gateway.",
+        "Firewall logs show missing session state or rejected packets.",
+        "The issue affects only some source networks."
       ],
-      avoid:
-        "Repeatedly clearing protocol state without understanding convergence and traffic impact."
+      fix: [
+        "Capture the flow on both sides of the firewall.",
+        "Inspect forward and reverse route selection.",
+        "Review NAT and stateful inspection requirements.",
+        "Restore the intended symmetric path or implement a supported stateful design.",
+        "Avoid disabling stateful inspection globally."
+      ],
+      validation: [
+        "Verify the return path.",
+        "Establish new TCP sessions.",
+        "Review firewall counters and logs.",
+        "Test affected source subnets and application health."
+      ]
+    },
+    {
+      scenario: "IPv4 works but IPv6 fails",
+      evidence: [
+        "IPv4 traceroute and TCP connectivity succeed.",
+        "IPv6 traceroute fails or reaches unexpected routers.",
+        "IPv6 routes or neighbor discovery differ from IPv4.",
+        "The application resolves both A and AAAA records."
+      ],
+      fix: [
+        "Inspect IPv6 routes, default gateway, neighbor discovery, and ICMPv6 handling.",
+        "Check IPv6 route advertisements and prefix configuration.",
+        "Verify IPv6 firewall and return-path rules.",
+        "Correct the IPv6-specific configuration instead of changing working IPv4 routes."
+      ],
+      validation: [
+        "Run IPv4 and IPv6 tests separately.",
+        "Check application behavior with each address family.",
+        "Confirm correct IPv6 next hops and return routes.",
+        "Monitor IPv6-specific alerts."
+      ]
+    },
+    {
+      scenario: "A black hole is mistaken for a routing loop",
+      evidence: [
+        "Traceroute stops responding at a particular hop.",
+        "No repeated gateway sequence is demonstrated.",
+        "The next hop may be unreachable or traffic may be filtered.",
+        "Packet captures show packets disappearing without a return response."
+      ],
+      fix: [
+        "Check route selection and neighbor resolution.",
+        "Inspect firewall logs and interface counters.",
+        "Verify the next hop and destination route.",
+        "Correct the confirmed drop or missing route."
+      ],
+      validation: [
+        "Confirm packets reach the next expected hop.",
+        "Test transport connectivity.",
+        "Repeat the trace from another source.",
+        "Check whether the route is stable."
+      ]
+    },
+    {
+      scenario: "Overlapping CIDRs across VPN-connected networks",
+      evidence: [
+        "Two connected networks use the same or overlapping private address ranges.",
+        "Traffic for a remote destination is treated as local or follows the wrong route.",
+        "Only some remote destinations are affected.",
+        "VPN route advertisements and local routes disagree."
+      ],
+      fix: [
+        "Compare the local, remote, and Pod CIDR inventories.",
+        "Inspect the most-specific matching route.",
+        "Coordinate a documented renumbering, translation, or supported routing design.",
+        "Avoid adding arbitrary more-specific routes without understanding the overlap."
+      ],
+      validation: [
+        "Test each overlapping destination from both sides.",
+        "Verify forward and return routes.",
+        "Check DNS and NAT behavior where applicable.",
+        "Document the address-space ownership."
+      ]
+    },
+    {
+      scenario: "Routing configuration drifts after Terraform deployment",
+      evidence: [
+        "The repository defines a different route from the deployed route table.",
+        "A pipeline applies a change shortly before the incident.",
+        "The issue recurs after redeployment.",
+        "Manual changes are overwritten by automation."
+      ],
+      fix: [
+        "Compare the committed configuration, Terraform plan, and actual route table.",
+        "Identify whether the error is in the module, variable, environment file, or dependency.",
+        "Correct the source-controlled configuration.",
+        "Review the plan and obtain the required approval.",
+        "Apply through the normal deployment process."
+      ],
+      validation: [
+        "Review the final Terraform plan.",
+        "Verify the deployed route table.",
+        "Run the connectivity test suite.",
+        "Confirm subsequent plans do not recreate the faulty route."
+      ]
+    },
+    {
+      scenario: "ECMP or load balancing resembles a routing loop",
+      evidence: [
+        "Traceroute shows different gateway addresses at the same hop.",
+        "Different probes appear to take different paths.",
+        "The path varies with source, protocol, or flow.",
+        "Forwarding tables contain multiple equal-cost next hops."
+      ],
+      fix: [
+        "Compare repeated traces using consistent source and protocol.",
+        "Inspect the actual ECMP next-hop set.",
+        "Check whether one next hop is invalid or misconfigured.",
+        "Correct only the faulty member or routing policy when evidence supports it."
+      ],
+      validation: [
+        "Test multiple flows and source networks.",
+        "Confirm all selected next hops lead to a valid destination.",
+        "Monitor path consistency and loss.",
+        "Do not remove ECMP merely because traceroute output varies."
+      ]
     }
   ],
 
-  platformSpecificChecks: {
-    linuxHosts: [
-      "Use ip route get <DESTINATION_IP> to inspect the selected route for a destination.",
-      "Use ip route show table all and ip rule show to inspect routes and policy rules.",
-      "Use traceroute -n or tracepath to investigate the path.",
-      "Check IPv6 separately with ip -6 route and IPv6 traceroute where relevant.",
-      "Remember that a host route lookup does not reveal every downstream router's forwarding decision."
-    ],
-    ciscoRouters: [
-      "Use the platform's show ip route <DESTINATION_IP> command.",
-      "Inspect the forwarding table with the platform-supported CEF/FIB lookup command.",
-      "Check show ip protocols and relevant BGP/OSPF neighbor and route details.",
-      "Use traceroute from the router with the appropriate source interface when supported.",
-      "Follow the device's documented change and rollback procedures."
-    ],
-    juniperRouters: [
-      "Use show route <DESTINATION_PREFIX> to inspect route selection.",
-      "Inspect the forwarding table and routing instance for the destination.",
-      "Check relevant protocol neighbor, route advertisement, and configuration commit history.",
-      "Use the platform-supported trace route command and compare source interfaces."
-    ],
-    aws: [
-      "Check VPC route tables, subnet associations, propagated routes, and routes to virtual appliances.",
-      "Inspect Transit Gateway, peering, VPN, and relevant network interfaces.",
-      "Use VPC Reachability Analyzer and Flow Logs where appropriate.",
-      "Verify both source-to-destination and destination-to-source reachability."
-    ],
-    azure: [
-      "Inspect effective routes on the affected NIC.",
-      "Check user-defined routes, next-hop type, peering, VPN, and virtual network gateway paths.",
-      "Use Network Watcher Next Hop and Connectivity Troubleshoot where supported.",
-      "Verify the intended return path and network security controls."
-    ],
-    gcp: [
-      "Inspect VPC routes, dynamic route propagation, peering, VPN, and Cloud Router state.",
-      "Use Connectivity Tests to evaluate the configured path where supported.",
-      "Compare route selection and firewall policy for affected and healthy workloads."
-    ],
-    kubernetes: [
-      "Check node routes, pod routes, CNI health, overlay tunnels, and service routing.",
-      "Inspect kubectl get nodes -o wide and relevant pod events.",
-      "Compare pod-to-pod, pod-to-service, and node-to-external paths separately.",
-      "Do not delete CNI routes or restart all networking components without a cluster-specific plan."
-    ]
-  },
+  recoveryWorkflow: [
+    "1. Confirm the incident scope and assign an incident commander.",
+    "2. Preserve the last known good route configuration and current evidence.",
+    "3. Identify the precise source, destination, prefix, protocol, and affected path.",
+    "4. Prove whether the failure is a loop, black hole, asymmetric path, MTU issue, or another fault.",
+    "5. Locate the exact faulty route, routing policy, or infrastructure change.",
+    "6. Select the smallest safe correction that restores the intended path.",
+    "7. Review the expected impact and rollback procedure.",
+    "8. Obtain required approval or follow the documented emergency-change process.",
+    "9. Apply the change on the intended device or through the source-of-truth automation.",
+    "10. Recheck route selection and forwarding decisions.",
+    "11. Test both directions and the actual application protocol.",
+    "12. Repeat the original failing test from affected and unaffected sources.",
+    "13. Monitor latency, loss, route stability, and application health.",
+    "14. Keep heightened monitoring active for the agreed observation period.",
+    "15. Record the change, validation evidence, and remaining risks."
+  ],
 
-  prevention: {
-    controls: [
-      "Keep network topology and intended route design version-controlled.",
-      "Review static routes, route redistribution, and policy changes before production rollout.",
-      "Validate route changes in a staging or canary environment.",
-      "Use narrow prefix filters and explicit route-policy review.",
-      "Monitor routing adjacency changes, route flaps, and unexpected next-hop changes.",
-      "Alert on service reachability from multiple independent vantage points.",
-      "Test failover paths and rollback procedures regularly.",
-      "Document management access that must remain available during route changes."
-    ],
-    monitoring: [
-      "Destination reachability and application transaction success",
-      "Route changes and routing protocol neighbor state",
-      "Router CPU, memory, interface errors, and queue drops",
-      "TTL exceeded or Hop Limit exceeded observations",
-      "Cloud effective-route changes and connectivity test failures",
-      "Latency, packet loss, and route convergence time"
-    ]
-  },
+  rollbackPlan: [
+    "Identify the exact change that introduced the failure.",
+    "Retrieve the last known good route configuration from an approved source.",
+    "Confirm that restoring it will not remove newer, valid network dependencies.",
+    "Prepare the rollback commands or reviewed infrastructure-as-code change.",
+    "Obtain required approval and verify the target device or account.",
+    "Apply the smallest necessary rollback.",
+    "Verify route selection and forwarding behavior immediately afterward.",
+    "Test connectivity from the original failing sources.",
+    "Confirm application health and return-path behavior.",
+    "If rollback fails, stop additional unplanned changes and escalate to the network owner.",
+    "Document the rollback and preserve the failed configuration for root-cause analysis."
+  ],
 
-  incidentReportTemplate: {
-    incidentId: "",
-    startTime: "",
-    detectionTime: "",
-    recoveryTime: "",
-    environment: "",
-    affectedSourcePrefixes: [],
-    affectedDestinationPrefixes: [],
-    affectedDevices: [],
-    vrfOrRoutingInstance: "",
-    businessImpact: "",
-    severity: "",
-    lastKnownGoodConfiguration: "",
-    recentChanges: [],
-    tracerouteEvidence: [],
-    routeLookupEvidence: [],
-    routingProtocolEvidence: [],
-    confirmedLoopPath: [],
-    rootCause: "",
-    contributingFactors: [],
-    recoveryActions: [],
-    rollbackPerformed: false,
-    forwardPathValidated: false,
-    returnPathValidated: false,
-    applicationValidation: "",
-    preventionTasks: [],
-    ownersAndDueDates: [],
-    lessonsLearned: ""
-  },
+  prevention: [
+    "Maintain a documented IP address plan for subnets, VPCs, Pod CIDRs, and VPN networks.",
+    "Review static routes for reciprocal next hops and incorrect prefix lengths.",
+    "Use explicit route ownership and change approval.",
+    "Validate BGP filters, route maps, communities, and redistribution policies.",
+    "Monitor OSPF neighbor stability and route changes.",
+    "Avoid overlapping CIDRs across connected networks.",
+    "Use infrastructure as code as the source of truth for cloud routing.",
+    "Review Terraform plans before production changes.",
+    "Run route and connectivity validation after network deployments.",
+    "Use staged rollout and canary validation for high-risk changes.",
+    "Maintain a last known good configuration and tested rollback procedure.",
+    "Monitor route flaps, packet loss, ICMP Time Exceeded responses, and application reachability.",
+    "Test cross-node Kubernetes networking after CNI upgrades.",
+    "Validate IPv4 and IPv6 paths independently.",
+    "Review network diagrams and dependencies after architecture changes.",
+    "Conduct incident postmortems and convert findings into automated tests."
+  ],
+
+  alerting: [
+    "Alert on sustained packet loss to critical destinations.",
+    "Alert when application health checks fail across multiple sources.",
+    "Monitor latency and connection failures against service-level objectives.",
+    "Track BGP neighbor changes and route flapping.",
+    "Track OSPF adjacency instability.",
+    "Alert on unexpected route-table modifications.",
+    "Monitor cloud flow logs for abnormal rejects and traffic drops.",
+    "Monitor Kubernetes CNI health, node networking, and cross-node connectivity.",
+    "Detect route changes outside approved deployment windows.",
+    "Correlate network alerts with infrastructure deployment events.",
+    "Use multiple probes so one filtered ICMP path does not trigger misleading alerts.",
+    "Include affected prefix, source, destination, region, and last known good timestamp in alerts."
+  ],
+
+  cicdValidation: [
+    "Store routing configuration in version control.",
+    "Require peer review for production route and network-policy changes.",
+    "Run syntax and configuration validation for the relevant network tooling.",
+    "Run Terraform fmt, validate, and plan checks when Terraform is used.",
+    "Inspect plans for route deletions, broad CIDRs, unexpected targets, and replacement operations.",
+    "Validate route definitions against the approved IP address plan.",
+    "Detect overlapping CIDRs in connected network inventories.",
+    "Test changes in development or staging before production rollout.",
+    "Require production approval for high-risk network modifications.",
+    "Run post-deployment route and application connectivity checks.",
+    "Stop rollout when the expected route or connectivity checks fail.",
+    "Keep the previous known good configuration available for rollback.",
+    "Store deployment ID, Git commit, approver, change time, and validation results.",
+    "Never place cloud credentials or private keys in repository files or pipeline logs."
+  ],
 
   handsOnLabs: [
     {
-      name: "Lab 1 - Inspect routes without changing them",
-      environment: "Linux test host",
-      commands: [
-        "ip route show table all",
-        "ip rule show",
-        "ip route get <DESTINATION_IP>",
-        "traceroute -n <DESTINATION_IP>"
+      title: "Lab 1: Understand TTL and traceroute",
+      objective: "Learn how traceroute identifies intermediate hops.",
+      steps: [
+        "Use a permitted test destination in a non-production environment.",
+        "Run traceroute or tracepath.",
+        "Compare the hop sequence and response times.",
+        "Repeat with ICMP and TCP probes where supported.",
+        "Record which hops respond and which do not.",
+        "Explain why an asterisk does not automatically mean a routing loop."
       ],
-      objective:
-        "Understand route selection and collect baseline path evidence."
+      successCriteria: [
+        "Explain the role of TTL and Hop Limit.",
+        "Distinguish a missing probe response from a confirmed loop.",
+        "Record the source, destination, and protocol used."
+      ]
     },
     {
-      name: "Lab 2 - Identify a loop in a controlled router lab",
-      environment: "Isolated virtual router lab only",
-      actions: [
-        "Create a disposable topology with at least two routers.",
-        "Configure a deliberately incorrect route in the isolated lab.",
-        "Use traceroute and each router's route lookup to identify the repeated next-hop pattern.",
-        "Correct the route and verify that the path reaches the destination."
+      title: "Lab 2: Inspect routes on a Linux host",
+      objective: "Understand route selection and policy routing.",
+      steps: [
+        "Run ip route show.",
+        "Run ip rule show.",
+        "Run ip route get <destination-ip>.",
+        "Compare the selected next hop with the expected network path.",
+        "Repeat with a source address where the system supports it.",
+        "Document how the chosen route affects the outgoing interface."
       ],
-      objective:
-        "Learn how forwarding decisions on adjacent routers combine to create a loop.",
-      warning:
-        "Do not reproduce a routing loop on a shared, home-production, corporate, or cloud production network."
+      successCriteria: [
+        "Identify the matching route and next hop.",
+        "Explain the difference between a routing table and a policy rule.",
+        "Avoid making unnecessary route changes."
+      ]
     },
     {
-      name: "Lab 3 - Compare forward and return routes",
-      environment: "Two isolated test networks",
-      commands: [
-        "ip route get <DESTINATION_IP>",
-        "ip route get <SOURCE_IP>"
+      title: "Lab 3: Diagnose a simulated loop",
+      objective: "Practice identifying reciprocal routes without touching production.",
+      steps: [
+        "Use an isolated virtual network or approved network simulator.",
+        "Create a test topology with two routers and a destination prefix.",
+        "Observe the intended path before making changes.",
+        "Introduce a controlled reciprocal route in the lab.",
+        "Capture traceroute and forwarding-table evidence.",
+        "Correct the faulty route and repeat the tests."
       ],
-      objective:
-        "Compare endpoint route selection and understand why reverse-path validation must be performed independently."
+      successCriteria: [
+        "Identify the reciprocal next-hop configuration.",
+        "Explain why packets circulate between the routers.",
+        "Restore the intended route and demonstrate recovery."
+      ]
     },
     {
-      name: "Lab 4 - Simulate a route-change incident",
-      environment: "Disposable virtual network",
-      actions: [
-        "Capture the initial route table and topology.",
-        "Apply a controlled lab-only route change.",
-        "Record traceroute, route lookup, and protocol state.",
-        "Restore the known-good route and validate both directions."
+      title: "Lab 4: AWS route-table investigation",
+      objective: "Learn how to inspect cloud routing safely.",
+      steps: [
+        "Use a non-production AWS account and a read-only role.",
+        "Confirm the account with aws sts get-caller-identity.",
+        "Inspect relevant VPC route tables.",
+        "Map each destination CIDR to its target.",
+        "Compare the route with the approved network diagram.",
+        "Document the correction that would be required; do not modify production."
       ],
-      objective:
-        "Practice evidence capture, controlled recovery, rollback, and incident documentation."
+      successCriteria: [
+        "Identify route-table associations and targets.",
+        "Explain why active route state does not prove end-to-end connectivity.",
+        "Describe how flow logs and return routing contribute evidence."
+      ]
+    },
+    {
+      title: "Lab 5: Kubernetes cross-node networking",
+      objective: "Separate Pod, node, CNI, and external network failures.",
+      steps: [
+        "Use a disposable Kubernetes cluster.",
+        "Deploy test Pods on different nodes.",
+        "Record Pod IPs, node IPs, and Pod CIDRs.",
+        "Test same-node and cross-node connectivity.",
+        "Inspect node routes and CNI logs.",
+        "Document the recovery procedure before performing any disruptive experiment."
+      ],
+      successCriteria: [
+        "Identify whether the failure is node-specific or cross-node.",
+        "Collect relevant CNI and route evidence.",
+        "Explain how to validate recovery safely."
+      ]
     }
+  ],
+
+  incidentRunbook: [
+    "Declare the incident and record the start time.",
+    "Confirm affected environments, source networks, destination networks, and application ports.",
+    "Identify a known-good source and destination for comparison.",
+    "Capture route tables, traceroute, monitoring data, and recent changes.",
+    "Determine whether evidence supports a loop, black hole, filtering, asymmetry, or MTU issue.",
+    "Inspect the exact next-hop decisions on suspected gateways.",
+    "Identify the smallest verified corrective change.",
+    "Obtain approval and prepare rollback.",
+    "Apply the change using the approved process.",
+    "Validate routes, transport connectivity, application health, and return traffic.",
+    "Monitor for recurrence and communicate recovery.",
+    "Attach evidence and configuration changes to the incident record.",
+    "Create follow-up actions for automated prevention and alerting."
+  ],
+
+  incidentReportTemplate: [
+    "Incident ID:",
+    "Incident title:",
+    "Severity:",
+    "Environment and region:",
+    "Affected applications:",
+    "Incident start time and recovery time:",
+    "Business impact:",
+    "Affected source and destination networks:",
+    "Observed symptoms:",
+    "Timeline of events:",
+    "Last known good configuration:",
+    "Evidence collected:",
+    "Root cause confirmed:",
+    "Contributing factors:",
+    "Corrective action:",
+    "Rollback decision:",
+    "Validation performed:",
+    "Monitoring after recovery:",
+    "Customer or stakeholder communication:",
+    "Preventive action items:",
+    "Action owner and due date:",
+    "Lessons learned:"
   ],
 
   interviewQuestions: [
     {
-      question: "Routing loop ante enti?",
-      expectedAnswer:
-        "Routers next-hop decisions valla packet repeated-ga same routers madhya forward avuthundi; TTL/Hop Limit expire ayye varaku destination ki reach avvakapovachu."
+      question: "What is a routing loop?",
+      answer: "A routing loop occurs when packets repeatedly pass between routers instead of progressing toward their destination. TTL or Hop Limit eventually expires and the packet is discarded."
     },
     {
-      question: "Traceroute-lo same two IPs repeat avuthunnayi. Next enti?",
-      expectedAnswer:
-        "A routers lo exact destination prefix route, selected next hop, forwarding table, and recent changes compare chesi loop confirm chestha."
+      question: "How do you identify a routing loop in production?",
+      answer: "Confirm the affected source and destination, run traceroute from multiple sources, inspect route tables and forwarding decisions on suspected routers, and correlate packet captures or ICMP Time Exceeded responses."
     },
     {
-      question: "Traceroute-lo stars kanipisthe routing loop confirm aa?",
-      expectedAnswer:
-        "Kaadu. Probe filtering, ICMP rate limiting, missing return path, or no ICMP response valla stars ravachu."
+      question: "Does traceroute showing asterisks prove a routing loop?",
+      answer: "No. Asterisks indicate that probes did not receive responses. Filtering, rate limiting, missing routes, or packet drops can produce the same result."
     },
     {
-      question: "Static route loop ela create avuthundi?",
-      expectedAnswer:
-        "Two routers destination prefix kosam okariki okaru next hop-ga select cheskunte, packet destination badulu repeated-ga back-and-forth forward avvachu."
+      question: "What is the difference between a routing loop and a black hole?",
+      answer: "A loop forwards packets repeatedly along a circular path. A black hole discards traffic or directs it toward an unusable next hop without successful delivery."
     },
     {
-      question: "Routing loop and black hole difference enti?",
-      expectedAnswer:
-        "Loop-lo packet repeatedly forward avuthundi; black hole-lo packet usually discard avuthundi without useful forwarding."
+      question: "How can a static route create a loop?",
+      answer: "Two gateways can have reciprocal routes for the same destination prefix, causing each gateway to forward packets back to the other."
     },
     {
-      question: "Production route fix mundu em chesthav?",
-      expectedAnswer:
-        "Current config, exact prefix, next-hop reachability, dependencies, approval, alternate management path, and rollback plan confirm chestha."
+      question: "What does ip route get do?",
+      answer: "It shows the locally selected route for a destination and can reveal the chosen next hop, interface, and source address."
     },
     {
-      question: "Route fix ayyaka ela validate chesthav?",
-      expectedAnswer:
-        "Route lookup, traceroute, application test, forward and return paths, routing stability, and monitoring validate chestha."
+      question: "How can BGP contribute to a routing loop?",
+      answer: "Incorrect route policies, redistribution, or next-hop handling can create an unintended forwarding path. BGP route advertisements and the actual data-plane path must be inspected."
+    },
+    {
+      question: "Can an Established BGP session still have a routing problem?",
+      answer: "Yes. Session health does not guarantee correct route selection, next-hop reachability, advertisement policy, or end-to-end forwarding."
+    },
+    {
+      question: "How would you troubleshoot a routing issue after an AWS change?",
+      answer: "Confirm account and region, inspect VPC and transit gateway routes, associations and propagation, review flow logs, and verify forward and return paths."
+    },
+    {
+      question: "How do you investigate Kubernetes cross-node traffic failure?",
+      answer: "Compare same-node and cross-node communication, inspect Pod and node CIDRs, routes, CNI logs, overlay tunnels, firewall policies, and recent network changes."
+    },
+    {
+      question: "What is asymmetric routing?",
+      answer: "Forward and return packets use different paths. It is not automatically a routing loop, but it can cause stateful firewall or NAT session failures."
+    },
+    {
+      question: "How do you distinguish an MTU problem from a routing loop?",
+      answer: "Test different packet sizes, inspect MTU and Path MTU Discovery behavior, and capture packets. Small packets working while large packets fail suggests an MTU issue."
+    },
+    {
+      question: "Why should production routes not be changed immediately?",
+      answer: "A wrong change can expand the outage or remove management connectivity. Collect evidence, establish the affected path, prepare rollback, and follow approval procedures first."
+    },
+    {
+      question: "What is the purpose of packet capture?",
+      answer: "It helps verify packet direction, TTL or Hop Limit, ICMP responses, retransmissions, and where traffic disappears. Capture placement and offloading limitations must be considered."
+    },
+    {
+      question: "How do you prevent routing loops from recurring?",
+      answer: "Use reviewed infrastructure as code, route validation, IPAM and CIDR checks, controlled rollouts, monitoring, configuration backups, tested rollback procedures, and incident postmortems."
+    },
+    {
+      question: "What do you do after restoring connectivity?",
+      answer: "Repeat the original failure tests, validate forward and return paths, check application health, monitor for recurrence, document the change, and create preventive action items."
     }
   ],
 
-  finalChecklist: [
-    "Affected source/destination prefixes and business impact confirmed",
-    "Correct router, VRF, and environment confirmed",
-    "Out-of-band access and rollback plan verified",
-    "Traceroute and route lookup evidence collected",
-    "Suspected routers' next-hop decisions compared",
-    "Static routes, routing protocols, and policy routing checked",
-    "Recent route advertisements and configuration changes reviewed",
-    "Forward and return paths investigated independently",
-    "Root cause confirmed before modifying production routes",
-    "Minimal approved correction applied",
-    "Routing convergence and application connectivity verified",
-    "No unintended impact to dependent prefixes",
-    "Incident evidence and prevention tasks recorded"
-  ],
-
-  references: [
+  officialReferences: [
     {
       title: "Linux ip-route manual",
       url: "https://man7.org/linux/man-pages/man8/ip-route.8.html"
+    },
+    {
+      title: "Linux ip-rule manual",
+      url: "https://man7.org/linux/man-pages/man8/ip-rule.8.html"
     },
     {
       title: "Linux traceroute manual",
       url: "https://man7.org/linux/man-pages/man8/traceroute.8.html"
     },
     {
-      title: "Cisco - Extended Ping and Traceroute",
-      url: "https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13730-ext-ping-trace.html"
+      title: "tcpdump manual",
+      url: "https://www.tcpdump.org/manpages/tcpdump.1.html"
     },
     {
-      title: "Cisco - Traceroute troubleshooting",
-      url: "https://www.cisco.com/c/en/us/support/docs/ip/ip-routed-protocols/22826-traceroute.html"
+      title: "AWS VPC route tables",
+      url: "https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html"
     },
     {
-      title: "Microsoft - Troubleshoot TCP/IP with TRACERT",
-      url: "https://support.microsoft.com/en-us/windows/experience/how-to-use-tracert-to-troubleshoot-tcp-ip-problems-on-windows"
+      title: "AWS Transit Gateway routing",
+      url: "https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html"
     },
     {
-      title: "AWS VPC User Guide",
-      url: "https://docs.aws.amazon.com/vpc/latest/userguide/"
+      title: "Kubernetes cluster networking",
+      url: "https://kubernetes.io/docs/concepts/cluster-administration/networking/"
     },
     {
-      title: "Azure Network Watcher",
-      url: "https://learn.microsoft.com/en-us/azure/network-watcher/"
+      title: "Kubernetes NetworkPolicy",
+      url: "https://kubernetes.io/docs/concepts/services-networking/network-policies/"
     },
     {
-      title: "Google Cloud Connectivity Tests",
-      url: "https://cloud.google.com/network-intelligence-center/docs/connectivity-tests/concepts/overview"
+      title: "FRRouting documentation",
+      url: "https://docs.frrouting.org/"
     },
     {
-      title: "Kubernetes Debugging Applications",
-      url: "https://kubernetes.io/docs/tasks/debug/"
+      title: "RFC 1812 - Requirements for IP Version 4 Routers",
+      url: "https://www.rfc-editor.org/rfc/rfc1812"
+    },
+    {
+      title: "RFC 4271 - Border Gateway Protocol 4",
+      url: "https://www.rfc-editor.org/rfc/rfc4271"
+    },
+    {
+      title: "RFC 2328 - OSPF Version 2",
+      url: "https://www.rfc-editor.org/rfc/rfc2328"
     }
   ]
-} as const;
-
-export default routingLoopGuide;
+};
