@@ -553,7 +553,7 @@ export default function HandsOnLabsPage() {
     </main>
   );
 }
-'''
+
 
 # Fix accidental leading space before "use client"
 content = content.lstrip()
