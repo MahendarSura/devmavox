@@ -559,4 +559,251 @@ previous attempt already changed production resources.
   recoveryProcedure: [
     "1. Assign an incident owner and determine business and deployment impact.",
     "2. Confirm the affected repository, workflow, runner group, labels, and runner type.",
-    "3. Capture runner
+    "3. Capture runner status, host health, logs, and relevant timestamps.",
+    "4. Determine whether the issue is host availability, service health, connectivity, registration, capacity, or scheduling.",
+    "5. Preserve logs before restarting, deregistering, or replacing a runner.",
+    "6. Correct the proven cause using the approved operational procedure.",
+    "7. Restart only the affected service when safe and approved.",
+    "8. If the host is irrecoverable, replace it using the standard provisioning process.",
+    "9. Verify that GitHub reports the runner as online and that labels and access policies are correct.",
+    "10. Run a minimal validation job before returning the runner to critical production workloads.",
+    "11. Confirm whether previous deployment steps already completed before rerunning a production job.",
+    "12. Resume queued workloads gradually and verify successful completion.",
+    "13. Reconcile partial deployments, failed status updates, and delayed jobs.",
+    "14. Record root cause, recovery time, evidence, and preventive actions.",
+  ],
+
+  githubHostedRunnerTroubleshooting: [
+    "Do not attempt to SSH into or restart the underlying GitHub-hosted VM; the infrastructure is managed by GitHub.",
+    "Inspect the queued job, workflow YAML, runner type, and requested runs-on labels.",
+    "Check GitHub service status for relevant Actions incidents.",
+    "Check whether the workflow is waiting for environment approval or a concurrency slot.",
+    "Inspect job logs after a runner becomes available.",
+    "Verify that the workflow uses a supported runner image and compatible actions.",
+    "If a specific runner image or platform is unavailable, assess whether an approved alternative is suitable.",
+    "Do not switch to an untrusted self-hosted runner merely to bypass a hosted-runner issue.",
+    "If the issue appears to be on GitHub's infrastructure, collect timestamps and run IDs for escalation.",
+  ],
+
+  selfHostedRunnerTroubleshooting: [
+    "Check whether the host is running and reachable.",
+    "Check the runner service and Runner.Listener process.",
+    "Inspect the _diag directory and operating system service logs.",
+    "Check CPU, memory, disk space, filesystem permissions, and host uptime.",
+    "Check DNS, outbound HTTPS, proxy, firewall, and TLS connectivity.",
+    "Inspect runner labels, runner-group access, and repository eligibility.",
+    "Check registration and service configuration without exposing registration tokens.",
+    "For autoscaled runners, inspect controller, bootstrap, cloud, or Kubernetes events.",
+    "Confirm that persistent runner workspaces do not contain unsafe leftovers from previous jobs.",
+    "Keep runner software updated using the organization's approved maintenance process.",
+    "Use ephemeral runners for appropriate workloads when isolation and operational design support them.",
+    "Do not run untrusted pull-request code on a privileged production runner without appropriate isolation.",
+  ],
+
+  networkAndSecurityChecks: [
+    "Review the official GitHub Actions network requirements for the relevant runner type.",
+    "Check DNS resolution for required GitHub endpoints.",
+    "Verify outbound HTTPS connectivity through the approved network path.",
+    "Inspect proxy configuration and any recent proxy or firewall changes.",
+    "Check system time and certificate trust if TLS failures occur.",
+    "Avoid disabling TLS verification as a workaround.",
+    "Do not expose credentials or registration tokens in shell history or diagnostic logs.",
+    "Restrict runner-group access to trusted repositories.",
+    "Use least privilege for runner service accounts and cloud credentials.",
+    "Keep production secrets away from untrusted pull-request workflows.",
+    "Review host hardening and runner isolation before restoring production workloads.",
+  ],
+
+  prevention: [
+    "Monitor runner online status and queued-job duration.",
+    "Alert when all eligible runners are offline or a runner group loses capacity.",
+    "Maintain enough capacity for critical workloads without creating uncontrolled autoscaling.",
+    "Use approved autoscaling and replacement procedures for ephemeral runners.",
+    "Track host health, disk, CPU, memory, and service restarts.",
+    "Keep runner software and host images maintained.",
+    "Validate runner labels and access policies when workflows change.",
+    "Use concurrency controls to avoid unnecessary overlapping deployment runs.",
+    "Document runner ownership, escalation paths, and recovery steps.",
+    "Use ephemeral runners where suitable to improve isolation and reduce workspace contamination.",
+    "Test runner replacement and recovery procedures periodically.",
+    "Separate critical production workloads from untrusted or non-production jobs.",
+    "Keep a known-good fallback plan that preserves production security requirements.",
+  ],
+
+  monitoringAndAlerting: [
+    "Track online and offline runner counts by organization, group, and label.",
+    "Alert when a critical runner group has no eligible online capacity.",
+    "Track queued-job duration and the oldest waiting job.",
+    "Monitor runner service restarts and host resource pressure.",
+    "Monitor DNS and outbound connectivity for self-hosted runner hosts.",
+    "Track autoscaler errors, failed instance launches, and failed runner registrations.",
+    "Monitor repeated workflow queueing and deployment delays.",
+    "Correlate alerts with GitHub service status and infrastructure changes.",
+    "Record workflow run IDs and UTC timestamps in incident evidence.",
+    "Do not send registration tokens, secrets, or sensitive environment values to monitoring systems.",
+  ],
+
+  incidentReportTemplate: [
+    "Incident ID and severity:",
+    "Incident owner:",
+    "Start time and recovery time in UTC:",
+    "Affected organization and repositories:",
+    "Affected workflow runs and jobs:",
+    "Runner name, type, group, and labels:",
+    "Business impact and deployment impact:",
+    "Last known successful run:",
+    "Runner status and host health evidence:",
+    "Relevant service and diagnostic log findings:",
+    "Network, DNS, proxy, or firewall findings:",
+    "Scheduling, label, or access-policy findings:",
+    "Confirmed root cause and supporting evidence:",
+    "Immediate mitigation:",
+    "Recovery and validation steps:",
+    "Partial deployments or duplicate operations reconciled:",
+    "Preventive actions, owners, and due dates:",
+    "Lessons learned:",
+  ],
+
+  handsOnLabs: [
+    {
+      title: "Lab 1 — Inspect self-hosted runner status",
+      objective:
+        "Find offline runners and compare their labels with job requirements.",
+      steps: [
+        "Use an approved GitHub CLI identity with read access.",
+        "Run gh api repos/OWNER/REPO/actions/runners.",
+        "Inspect runner name, status, busy state, and labels.",
+        "Compare the results with the workflow's runs-on declaration.",
+        "Record the findings without sharing sensitive configuration.",
+      ],
+      expectedOutcome:
+        "You can distinguish an offline runner from an online runner that does not match the requested labels.",
+    },
+    {
+      title: "Lab 2 — Diagnose a stopped Linux runner service",
+      objective:
+        "Practice service and log diagnosis on a non-production self-hosted runner.",
+      steps: [
+        "Confirm the correct host and runner installation.",
+        "Inspect the actual runner service unit.",
+        "Review service status and recent journal entries.",
+        "Inspect the runner's _diag logs.",
+        "Determine whether the cause is service configuration, host resources, or connectivity.",
+        "Restore the service through the approved process.",
+      ],
+      expectedOutcome:
+        "You can identify the service failure and verify that the runner reconnects without reinstalling it unnecessarily.",
+    },
+    {
+      title: "Lab 3 — Simulate network failure",
+      objective:
+        "Distinguish DNS failures from HTTPS connectivity failures.",
+      steps: [
+        "Use a non-production test host.",
+        "Check DNS resolution for github.com.",
+        "Test HTTPS connectivity to github.com and api.github.com.",
+        "Review the result alongside runner diagnostic logs.",
+        "Use a controlled network fault simulation if permitted.",
+        "Restore connectivity and repeat the tests.",
+      ],
+      expectedOutcome:
+        "You can identify whether the simulated failure occurs at DNS resolution or outbound connectivity.",
+    },
+    {
+      title: "Lab 4 — Recover an autoscaled runner",
+      objective:
+        "Trace an ephemeral runner failure from provisioning through registration.",
+      steps: [
+        "Inspect the runner controller or autoscaler logs.",
+        "Inspect cloud instance or Kubernetes events.",
+        "Check image availability, capacity, networking, and bootstrap errors.",
+        "Correct the proven issue in a test environment.",
+        "Verify that the replacement runner registers with the expected labels.",
+        "Execute a minimal validation job.",
+      ],
+      expectedOutcome:
+        "You can distinguish provisioning failure from runner registration and scheduling problems.",
+    },
+  ],
+
+  interviewQuestions: [
+    {
+      question: "What does an offline GitHub Actions runner mean?",
+      answer:
+        "It means the runner is not currently available to accept jobs through normal scheduling. For self-hosted runners, investigate the host, service, connectivity, and registration. GitHub-hosted infrastructure is managed by GitHub.",
+    },
+    {
+      question: "Does every queued job mean the runner is offline?",
+      answer:
+        "No. Label mismatches, runner-group restrictions, capacity, concurrency, and environment approvals can also prevent a job from starting.",
+    },
+    {
+      question: "How do you check self-hosted runner status?",
+      answer:
+        "Use the repository or organization runners API with appropriate access, or inspect the runner settings in GitHub. Then compare status, busy state, labels, and the job's requirements.",
+    },
+    {
+      question: "How do you troubleshoot a runner service failure?",
+      answer:
+        "Inspect the actual service unit, service logs, runner diagnostic logs, host resources, and recent configuration changes. Correct the cause before restarting the service.",
+    },
+    {
+      question: "How do you distinguish a network problem from a stopped service?",
+      answer:
+        "Check process and service status, then test DNS and outbound HTTPS connectivity. Correlate those results with the runner's diagnostic logs.",
+    },
+    {
+      question: "Why can a runner be online but unable to execute a job?",
+      answer:
+        "The job may request different labels, the runner may be busy, the runner group may not allow the repository, or another scheduling restriction may apply.",
+    },
+    {
+      question: "How do you troubleshoot ephemeral runner failures?",
+      answer:
+        "Trace the process from autoscaler decision through host or pod creation, bootstrap, registration, and job assignment. Inspect controller logs and infrastructure events.",
+    },
+    {
+      question: "Can you restart a GitHub-hosted runner?",
+      answer:
+        "You do not manage the underlying GitHub-hosted VM. Investigate the workflow, runner configuration, job queue, service status, and GitHub service status instead.",
+    },
+    {
+      question: "What should you check before rerunning a production deployment?",
+      answer:
+        "Determine whether earlier steps already changed production resources. Verify the actual deployment state and resume or rerun only through the approved recovery procedure.",
+    },
+    {
+      question: "How do you prevent recurring runner outages?",
+      answer:
+        "Monitor runner availability, queue duration, host health, and autoscaling; maintain capacity, use approved replacement procedures, validate labels, and document incident recovery.",
+    },
+  ],
+
+  references: [
+    {
+      title: "Monitoring the status of your self-hosted runners",
+      url: "https://docs.github.com/en/actions/hosting-your-own-runners/monitoring-and-troubleshooting-self-hosted-runners",
+    },
+    {
+      title: "Self-hosted runners",
+      url: "https://docs.github.com/en/actions/hosting-your-own-runners",
+    },
+    {
+      title: "GitHub Actions runner groups",
+      url: "https://docs.github.com/en/actions/hosting-your-own-runners/managing-access-to-self-hosted-runners-using-groups",
+    },
+    {
+      title: "GitHub Actions workflow syntax",
+      url: "https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions",
+    },
+    {
+      title: "GitHub CLI — gh run",
+      url: "https://cli.github.com/manual/gh_run",
+    },
+    {
+      title: "GitHub status",
+      url: "https://www.githubstatus.com/",
+    },
+  ],
+};
+```
