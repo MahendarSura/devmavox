@@ -1,4 +1,3 @@
-```typescript
 export interface StorageDiagnosticStep {
   id: string;
   title: string;
@@ -1063,4 +1062,3 @@ export const persistentStorageGuide: PersistentStorageGuide = {
 };
 
 export default persistentStorageGuide;
-```

@@ -614,7 +614,7 @@ export default function LinuxRoadmapPage() {
                           {module.title}
                         </h3>
                         <p className="mt-1 text-sm text-slate-400">
-                          {module.topics.length} topics · {module.duration}
+                          {module.topics.length} topics
                         </p>
                       </div>
                     </div>
@@ -858,3 +858,6 @@ export default function LinuxRoadmapPage() {
     </main>
   );
 }
+
+
+

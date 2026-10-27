@@ -1,4 +1,3 @@
-```typescript
 /**
  * Argo CD Deployment Errors — Real Production Troubleshooting Guide
  *
@@ -1383,4 +1382,3 @@ export const deploymentErrorsGuide = {
 };
 
 export default deploymentErrorsGuide;
-```

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from 'react';
 
 type Module = {
   title: string;
@@ -462,7 +462,7 @@ export default function AnsibleRoadmapPage() {
           </div>
 
           <div className="mt-5 space-y-4">
-            {filteredModules.map((module) => {
+            {filteredModules.map((module: any) => {
               const isExpanded = expanded.includes(module.index);
               const isCompleted = completed.includes(module.index);
 
@@ -523,7 +523,7 @@ export default function AnsibleRoadmapPage() {
                         Concepts to cover
                       </h4>
                       <ul className="mt-3 space-y-2">
-                        {module.topics.map((topic) => (
+                        {module.topics.map((topic: any) => (
                           <li
                             key={topic}
                             className="flex gap-3 text-sm leading-6 text-slate-300"
@@ -634,3 +634,5 @@ export default function AnsibleRoadmapPage() {
     </main>
   );
 }
+
+

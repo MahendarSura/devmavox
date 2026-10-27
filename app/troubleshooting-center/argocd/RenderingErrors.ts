@@ -1,4 +1,3 @@
-```typescript
 /**
  * Argo CD Rendering Errors
  * Target: app/troubleshooting-center/argocd/RenderingErrors.ts
@@ -1116,4 +1115,3 @@ export const renderingErrorsGuide = {
 };
 
 export default renderingErrorsGuide;
-```

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from 'react';
 
 type Level = "Beginner" | "Intermediate" | "Advanced";
 
@@ -445,7 +445,7 @@ export default function HandsOnLabsPage() {
           <button type="button" onClick={() => { setQuery(""); setCategory("All"); setLevel("All"); }} className="text-sm font-bold text-cyan-700 hover:underline dark:text-cyan-300">Clear filters</button>
         </div>
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
-          {filteredLabs.map((lab) => {
+          {filteredLabs.map((lab: any) => {
             const open = expandedLab === lab.title;
             return (
               <article key={lab.title} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -457,14 +457,14 @@ export default function HandsOnLabsPage() {
                 {open && (
                   <div className="border-t border-slate-200 px-5 pb-5 pt-4 dark:border-slate-800 sm:px-6">
                     <h4 className="text-sm font-bold uppercase tracking-wide text-slate-500">Skills practised</h4>
-                    <div className="mt-2 flex flex-wrap gap-2">{lab.skills.map((skill) => <Pill key={skill}>{skill}</Pill>)}</div>
+                    <div className="mt-2 flex flex-wrap gap-2">{lab.skills.map((skill: string) => <Pill key={skill}>{skill}</Pill>)}</div>
                     <h4 className="mt-5 text-sm font-bold uppercase tracking-wide text-slate-500">Success criteria</h4>
                     <p className="mt-2 text-sm leading-6">{lab.outcome}</p>
                     {lab.commands && (
                       <>
                         <h4 className="mt-5 text-sm font-bold uppercase tracking-wide text-slate-500">Starter commands</h4>
                         <div className="mt-2 space-y-2">
-                          {lab.commands.map((command) => (
+                          {lab.commands.map((command: string) => (
                             <div key={command} className="flex items-center justify-between gap-3 rounded-xl bg-slate-950 px-3 py-2.5 text-sm text-white">
                               <code className="overflow-x-auto whitespace-nowrap">{command}</code>
                               <button type="button" onClick={() => void copyCommand(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-xs font-semibold hover:bg-slate-800">{copied === command ? "Copied" : "Copy"}</button>
@@ -555,4 +555,8 @@ export default function HandsOnLabsPage() {
     </main>
   );
 }
+
+
+
+
 

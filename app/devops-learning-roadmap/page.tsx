@@ -2,48 +2,6 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { dockerroadmap } from './dockerroadmap';
-import { mavenroadmap } from './mavenroadmap';
-import { jenkinsroadmap } from './jenkinsroadmap';
-import { linuxroadmap } from './linuxroadmap';
-import { gitroadmap } from './gitroadmap';
-import { k8sroadmap } from './k8sroadmap';
-import { terraformroadmap } from './terraformroadmap';
-import { argocdroadmap } from './argocdroadmap';
-import { ansibleroadmap } from './ansibleroadmap';
-import { prometheusroadmap } from './prometheusroadmap';
-import { tomcatroadmap } from './tomcatroadmap';
-import { jiraroadmap } from './jiraroadmap';
-import { grafanaroadmap } from './grafanaroadmap';
-import { githubActionsroadmap } from './githubactionsroadmap';
-import { nexusroadmap } from './nexusroadmap';
-import { helmroadmap } from './helmroadmap';
-import { eksroadmap } from './eksroadmap';
-
-export const allToolRoadmaps = [
-  linuxroadmap,
-  gitroadmap,
-  dockerroadmap,
-  k8sroadmap,
-  terraformroadmap,
-  jenkinsroadmap,
-  argocdroadmap,
-  ansibleroadmap,
-  prometheusroadmap,
-  tomcatroadmap,
-  jiraroadmap,
-  grafanaroadmap,
-  githubActionsroadmap,
-  nexusroadmap,
-  helmroadmap,
-  eksroadmap,
-  mavenroadmap,
-];
-
-export function getRoadmapBySlug(slug: string) {
-  return allToolRoadmaps.find((tool) => tool.slug === slug);
-}
-
 type RoadmapCard = {
   slug: string;
   title: string;
@@ -72,13 +30,13 @@ const visualMeta: Record<string, { icon: string; category: string; level: string
   maven: { icon: '🪶', category: 'Build Engineering', level: 'Foundation → Intermediate', description: 'Understand Java project structure, dependencies, lifecycle phases, tests and build troubleshooting.' },
 };
 
-function getCard(tool: (typeof allToolRoadmaps)[number]): RoadmapCard {
-  const item = tool as unknown as Record<string, unknown>;
-  const slug = String(item.slug ?? '');
-  const normalized = slug.toLowerCase().replace(/[^a-z]/g, '');
+function getCard(slug: string): RoadmapCard {
+  const item: Record<string, unknown> = { slug };
+  const cardSlug = String(item.slug ?? '');
+  const normalized = cardSlug.toLowerCase().replace(/[^a-z]/g, '');
   const meta = visualMeta[normalized] ?? { icon: '🛠️', category: 'DevOps Engineering', level: 'All levels', description: 'Follow the learning steps, practice the examples and validate your understanding with hands-on work.' };
   return {
-    slug,
+    slug: cardSlug,
     title: String(item.title ?? item.name ?? slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())),
     description: String(item.description ?? item.summary ?? meta.description),
     icon: String(item.icon ?? meta.icon),
@@ -97,7 +55,7 @@ const stages = [
 export default function RoadmapMainPage() {
   const [query, setQuery] = useState('');
   const [level, setLevel] = useState('All levels');
-  const cards = useMemo(() => allToolRoadmaps.map(getCard), []);
+  const cards = useMemo(() => Object.keys(visualMeta).map(getCard), []);
   const filtered = cards.filter((card) => {
     const text = `${card.title} ${card.description} ${card.level}`.toLowerCase();
     const matchesQuery = text.includes(query.toLowerCase().trim());
@@ -144,3 +102,5 @@ export default function RoadmapMainPage() {
     </main>
   );
 }
+
+

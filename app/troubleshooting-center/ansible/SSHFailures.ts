@@ -1,3 +1,4 @@
+export const sshFailuresGuide = {
 
   // Add these properties inside sshFailuresGuide, before runbookChecklist.
 
@@ -585,3 +586,6 @@ echo "Preflight passed. Production deployment still requires its normal approval
       answer: "Private-key contents, passwords, tokens, sensitive environment values and unnecessary personal data. Record secret references or fingerprints where appropriate, along with timestamps and redacted evidence.",
     },
   ],
+
+};
+

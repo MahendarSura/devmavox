@@ -1,4 +1,3 @@
-```typescript
 export interface PodDiagnosticStep {
   id: string;
   title: string;
@@ -1534,4 +1533,3 @@ export const podFailuresGuide: PodFailuresGuide = {
 };
 
 export default podFailuresGuide;
-```
