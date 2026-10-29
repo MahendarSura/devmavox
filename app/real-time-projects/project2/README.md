@@ -1,7 +1,7 @@
 
 # ⚙️ PROJECT 02 — END-TO-END CI/CD WITH GITHUB ACTIONS
 
-<img width="1358" height="1523" alt="image" src="https://github.com/user-attachments/assets/be50d02a-c417-4926-8ed4-568f274e15d2" />
+![Project 2 Architecture](https://github.com/user-attachments/assets/be50d02a-c417-4926-8ed4-568f274e15d2)
 ![Project 2 Architecture](/images/real-time-projects/project2.png)
 
 
@@ -1007,5 +1007,6 @@ Real production rollout ki threat modeling, action pinning policy, dependency up
 **Goal: YAML copy cheyyadam matrame kaadu.** Code change nunchi test, image build, secure AWS authentication, publish, deployment and health verification varaku complete delivery flow ni understand cheyyali. Pipeline fail ayithe logs tho troubleshoot cheyyali; release successful ayithe actual evidence tho prove cheyyali.
 
 **PROJECT 02 — End-to-End CI/CD with GitHub Actions**
+
 
 
