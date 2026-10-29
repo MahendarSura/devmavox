@@ -73,7 +73,7 @@ const projectDetails: Record<string, { title: string; category: string; icon: st
   },
 };
 
-export default async function RealTimeProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function RealTimeProjectDetailPage({ params }: { params: Promise<{ id?: string }> }) {
   const resolvedParams = await params;
   const projectId = resolvedParams?.id ?? '';
   
@@ -117,7 +117,6 @@ export default async function RealTimeProjectDetailPage({ params }: { params: Pr
   );
 }
 
-// Next.js static export kosam idhi kachitanga undali
 export function generateStaticParams() {
   return [
     { id: 'project1' },
