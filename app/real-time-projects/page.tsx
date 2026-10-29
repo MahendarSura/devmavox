@@ -1,121 +1,154 @@
-import Link from 'next/link';
 
-// Prathi project ki sambandhina details and content (readme data) ikkada map chesamu
-const projectDetails: Record<string, { title: string; category: string; icon: string; description: string; content: string }> = {
-  project1: {
-    title: "Project 1: Cloud & Infrastructure",
-    category: "Cloud & Infrastructure",
-    icon: "☁️",
-    description: "Explore the first hands-on cloud and DevOps project.",
-    content: `# Project 1: Cloud & Infrastructure Setup\n\n## Overview\nExplore the foundational cloud components, IAM policies, networking setup, and secure infrastructure provisioning.\n\n## Architecture\n- Virtual Private Cloud (VPC)\n- Public and Private Subnets\n- Internet Gateway & NAT Gateway\n\n## Steps to Execute\n1. Initialize cloud provider configuration.\n2. Provision core networking resources.\n3. Verify connectivity and routing tables.`
-  },
-  project2: {
-    title: "Project 2: DevOps Automation",
-    category: "DevOps Automation",
-    icon: "⚙️",
-    description: "Practice automation, deployment, and infrastructure workflows.",
-    content: `# Project 2: DevOps Automation\n\n## Overview\nAutomate repetitive operational tasks and configuration deployments using scripting and automation tools.\n\n## Key Objectives\n- Scripting routine backups\n- Setting up automated notifications\n- Streamlining environment provisioning`
-  },
-  project3: {
-    title: "Project 3: Docker & Containers",
-    category: "Docker & Containers",
-    icon: "🐳",
-    description: "Learn containerization and application delivery.",
-    content: `# Project 3: Docker & Containers\n\n## Overview\nLearn how to containerize web applications, optimize multi-stage Dockerfiles, and manage container networks.\n\n## Best Practices\n- Use lightweight base images (Alpine)\n- Implement multi-stage builds to reduce image size\n- Secure container runtimes`
-  },
-  project4: {
-    title: "Project 4: Kubernetes",
-    category: "Kubernetes",
-    icon: "☸️",
-    description: "Practice Kubernetes deployment and orchestration.",
-    content: `# Project 4: Kubernetes Orchestration\n\n## Overview\nDeploy, scale, and manage containerized applications using Kubernetes clusters and manifests.\n\n## Components\n- Deployments and Pods\n- Services and Ingress controllers\n- ConfigMaps and Secrets`
-  },
-  project5: {
-    title: "Project 5: CI/CD",
-    category: "CI/CD",
-    icon: "🔄",
-    description: "Build and understand a continuous integration pipeline.",
-    content: `# Project 5: CI/CD Pipeline\n\n## Overview\nBuild automated build, test, and deployment pipelines using modern CI/CD tools.\n\n## Pipeline Stages\n1. Code Checkout\n2. Automated Testing\n3. Artifact Packaging\n4. Staging & Production Deployment`
-  },
-  project6: {
-    title: "Project 6: Infrastructure as Code",
-    category: "Infrastructure as Code",
-    icon: "🏗️",
-    description: "Work with cloud infrastructure and Infrastructure as Code.",
-    content: `# Project 6: Infrastructure as Code (IaC)\n\n## Overview\nProvision reproducible cloud resources using Infrastructure as Code principles and state management.\n\n## Workflow\n- Write declarative configuration files\n- Run dry-run plans\n- Apply changes safely and track state`
-  },
-  project7: {
-    title: "Project 7: GitOps",
-    category: "GitOps",
-    icon: "🚀",
-    description: "Explore GitOps-based application delivery.",
-    content: `# Project 7: GitOps Delivery\n\n## Overview\nImplement GitOps workflows where Git repositories serve as the single source of truth for declarative infrastructure and applications.\n\n## Tools Used\n- Git for version control\n- Automated sync controllers\n- Continuous reconciliation loops`
-  },
-  project8: {
-    title: "Project 8: Monitoring",
-    category: "Monitoring",
-    icon: "📊",
-    description: "Practice monitoring, metrics, and observability.",
-    content: `# Project 8: Monitoring & Observability\n\n## Overview\nCollect system metrics, set up operational dashboards, and configure alerting rules for proactive incident response.\n\n## Key Metrics\n- CPU & Memory utilization\n- Request latency and error rates\n- Disk space and network I/O`
-  },
-  project9: {
-    title: "Project 9: DevSecOps",
-    category: "DevSecOps",
-    icon: "🔐",
-    description: "Explore security checks and DevSecOps workflows.",
-    content: `# Project 9: DevSecOps Security\n\n## Overview\nIntegrate security checks, dependency scanning, and vulnerability assessments early into the software delivery lifecycle.\n\n## Focus Areas\n- Static Application Security Testing (SAST)\n- Container image vulnerability scans\n- Secret management and compliance`
-  },
-  project10: {
-    title: "Project 10: Real-Time Project",
-    category: "Real-Time Project",
-    icon: "🎯",
-    description: "Explore an end-to-end production-style DevOps project.",
-    content: `# Project 10: End-to-End Real-Time DevOps Project\n\n## Overview\nCombine cloud infrastructure, containerization, orchestration, CI/CD pipelines, and monitoring into a complete production architecture.\n\n## Architecture Steps\n1. Provision AWS Cloud infrastructure using Terraform.\n2. Deploy containerized workloads onto Kubernetes.\n3. Configure automated CI/CD and monitoring alerts.`
-  },
-};
+import Link from "next/link";
 
-export default async function RealTimeProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = await params;
-  const projectId = resolvedParams.id;
-  
-  // Project data fetch cheyyadam (lekunte default fallback chupinchadam)
-  const project = projectDetails[projectId] || {
-    title: `Project: ${projectId.toUpperCase()}`,
-    category: "Real-Time DevOps Project",
-    icon: "🚀",
-    description: "Detailed guide and documentation for this enterprise project.",
-    content: `# ${projectId}\n\nDetailed implementation steps, configuration files, and architectural guidelines for this project are currently being updated.`
-  };
+const projects = [
+  {
+    id: 1,
+    title: "Project 1",
+    description: "Explore the first hands-on cloud and DevOps project.",
+    icon: "☁️",
+    category: "Cloud & Infrastructure",
+  },
+  {
+    id: 2,
+    title: "Project 2",
+    description: "Practice automation, deployment, and infrastructure workflows.",
+    icon: "⚙️",
+    category: "DevOps Automation",
+  },
+  {
+    id: 3,
+    title: "Project 3",
+    description: "Learn containerization and application delivery.",
+    icon: "🐳",
+    category: "Docker & Containers",
+  },
+  {
+    id: 4,
+    title: "Project 4",
+    description: "Practice Kubernetes deployment and orchestration.",
+    icon: "☸️",
+    category: "Kubernetes",
+  },
+  {
+    id: 5,
+    title: "Project 5",
+    description: "Build and understand a continuous integration pipeline.",
+    icon: "🔄",
+    category: "CI/CD",
+  },
+  {
+    id: 6,
+    title: "Project 6",
+    description: "Work with cloud infrastructure and Infrastructure as Code.",
+    icon: "🏗️",
+    category: "Infrastructure as Code",
+  },
+  {
+    id: 7,
+    title: "Project 7",
+    description: "Explore GitOps-based application delivery.",
+    icon: "🚀",
+    category: "GitOps",
+  },
+  {
+    id: 8,
+    title: "Project 8",
+    description: "Practice monitoring, metrics, and observability.",
+    icon: "📊",
+    category: "Monitoring",
+  },
+  {
+    id: 9,
+    title: "Project 9",
+    description: "Explore security checks and DevSecOps workflows.",
+    icon: "🔐",
+    category: "DevSecOps",
+  },
+  {
+    id: 10,
+    title: "Project 10",
+    description: "Explore an end-to-end production-style DevOps project.",
+    icon: "🎯",
+    category: "Real-Time Project",
+  },
+];
 
-  return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 p-6 md:p-12">
-      <nav className="mb-8">
-        <Link 
-          href="/real-time-projects" 
-          className="inline-flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm font-bold text-cyan-400 hover:bg-slate-800 transition"
-        >
-          ← Back to Real-Time Projects
-        </Link>
-      </nav>
+export default function RealTimeProjectsPage() {
+  return (
+    <main className="min-h-screen bg-[#0b0f19] px-5 py-12 text-white sm:px-8 lg:px-12">
+      <div className="mx-auto max-w-7xl">
+        <Link
+          href="/"
+          className="mb-8 inline-flex text-sm text-cyan-400 transition hover:text-cyan-300"
+        >
+          ← Back to Home
+        </Link>
 
-      <div className="mx-auto max-w-4xl rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-xl">
-        <div className="flex items-center gap-4 mb-6">
-          <span className="text-5xl">{project.icon}</span>
-          <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">{project.category}</span>
-            <h1 className="text-3xl font-black text-white mt-1">{project.title}</h1>
-          </div>
-        </div>
+        <header className="mb-10 text-center">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-cyan-400">
+            Learn by Building
+          </p>
 
-        <p className="text-slate-300 text-base mb-8 border-b border-slate-800 pb-4">
-          {project.description}
-        </p>
+          <h1 className="text-3xl font-bold tracking-tight sm:text-5xl">
+            Real-Time DevOps Projects
+          </h1>
 
-        {/* Readme / Documentation Content Area */}
-        <div className="prose prose-invert max-w-none text-slate-300 space-y-4 leading-relaxed whitespace-pre-line bg-slate-950/60 p-6 rounded-xl border border-slate-800/80 font-mono text-sm">
-          {project.content}
-        </div>
-      </div>
-    </main>
-  );
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
+            Build practical cloud, CI/CD, Kubernetes, GitOps, automation,
+            monitoring, and DevSecOps projects through hands-on learning.
+          </p>
+
+          <div className="mt-6 inline-flex rounded-full border border-cyan-400/30 bg-cyan-400/10 px-5 py-2 text-sm text-cyan-300">
+            10 Hands-On Projects
+          </div>
+        </header>
+
+        <section
+          aria-label="Real-time DevOps projects"
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {projects.map((project) => (
+            <article
+              key={project.id}
+              className="group flex flex-col rounded-2xl border border-slate-700/80 bg-slate-900/70 p-6 transition duration-300 hover:-translate-y-1 hover:border-cyan-400/60 hover:bg-slate-900"
+            >
+              <div className="mb-5 flex items-center justify-between">
+                <span className="text-4xl" aria-hidden="true">
+                  {project.icon}
+                </span>
+
+                <span className="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300">
+                  Project {project.id}
+                </span>
+              </div>
+
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-cyan-400">
+                {project.category}
+              </p>
+
+              <h2 className="text-xl font-bold text-white">
+                {project.title}
+              </h2>
+
+              <p className="mt-3 flex-1 text-sm leading-6 text-slate-400">
+                {project.description}
+              </p>
+
+              <Link
+                href={`/real-time-projects/project${project.id}`}
+                className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-400"
+              >
+                Explore Project <span aria-hidden="true">→</span>
+              </Link>
+            </article>
+          ))}
+        </section>
+
+        <footer className="mt-12 border-t border-slate-800 pt-6 text-center text-sm text-slate-500">
+          DevMavox · Learn DevOps by building real projects.
+        </footer>
+      </div>
+    </main>
+  );
 }
