@@ -1,7 +1,7 @@
 
 # 🚀 PROJECT 01 — END-TO-END DEVSECOPS ON AWS EKS
 
-<img width="640" height="640" alt="image" src="https://github.com/user-attachments/assets/0afa307b-91eb-4723-9f5f-2c249f4d540d" />
+<img src="/images/real-time-projects/project1.png" alt="Project 1 Architecture" />
 
 
 ### A Real-World Three-Tier Application — From Code to Cloud
