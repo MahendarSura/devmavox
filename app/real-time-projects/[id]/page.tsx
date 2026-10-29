@@ -75,10 +75,10 @@ const projectDetails: Record<string, { title: string; category: string; icon: st
 
 export default async function RealTimeProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
-  const projectId = resolvedParams.id;
+  const projectId = resolvedParams?.id ?? '';
   
   const project = projectDetails[projectId] || {
-    title: `Project: ${projectId.toUpperCase()}`,
+    title: `Project: ${projectId ? projectId.toUpperCase() : 'Unknown'}`,
     category: "Real-Time DevOps Project",
     icon: "🚀",
     description: "Detailed guide and documentation for this enterprise project.",
@@ -115,4 +115,20 @@ export default async function RealTimeProjectDetailPage({ params }: { params: Pr
       </div>
     </main>
   );
+}
+
+// Next.js static export kosam idhi kachitanga undali
+export function generateStaticParams() {
+  return [
+    { id: 'project1' },
+    { id: 'project2' },
+    { id: 'project3' },
+    { id: 'project4' },
+    { id: 'project5' },
+    { id: 'project6' },
+    { id: 'project7' },
+    { id: 'project8' },
+    { id: 'project9' },
+    { id: 'project10' },
+  ];
 }
