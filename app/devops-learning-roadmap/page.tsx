@@ -69,7 +69,6 @@ export default function RoadmapMainPage() {
         <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
           <Link href="/" className="rounded-lg px-3 py-2 font-semibold hover:bg-white hover:text-blue-600 dark:hover:bg-slate-900">← Home</Link>
           <span>/</span><span className="font-semibold text-slate-800 dark:text-slate-200">DevOps Learning Roadmap</span>
-          <Link href="/hands-on-labs" className="ml-auto rounded-lg border border-slate-200 bg-white px-3 py-2 font-semibold text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">Open Hands-on Labs →</Link>
         </nav>
 
         <section className="relative isolate overflow-hidden rounded-3xl bg-slate-950 px-6 py-10 text-white shadow-xl sm:px-10 sm:py-14">
@@ -102,5 +101,3 @@ export default function RoadmapMainPage() {
     </main>
   );
 }
-
-
