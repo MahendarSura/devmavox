@@ -3,7 +3,7 @@
 
 
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/f489bc9b-20a6-4eb9-95a1-dad002e62f14" />
-<img src="/images/real-time-projects/project5.png" alt="Project 5 Architecture" />
+<img src="https://devmavox.vercel.app/images/real-time-projects/project5.png" alt="Project 5 Architecture" />
 
 ## 🔭 Prometheus + Grafana + Loki + Alertmanager + Docker
 
