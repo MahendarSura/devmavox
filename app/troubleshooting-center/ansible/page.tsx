@@ -27,7 +27,7 @@ export default function TroubleshootingToolPage() {
       slug: makeSlug(file),
       title: file
         .replace(/\.ts$/i, "")
-        .replace(/([a-z0-9])([A-Z])/g, " ")
+        .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
         .replace(/[-_]+/g, " "),
     }));
 
