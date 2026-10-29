@@ -2,7 +2,7 @@
 # ⚙️ PROJECT 02 — END-TO-END CI/CD WITH GITHUB ACTIONS
 
 <img width="1358" height="1523" alt="image" src="https://github.com/user-attachments/assets/be50d02a-c417-4926-8ed4-568f274e15d2" />
-<img src="https://devmavox.vercel.app/images/real-time-projects/project2.png" alt="Project 2 Architecture" />
+![Project 2 Architecture](/images/real-time-projects/project2.png)
 
 
 ## Commit nunchi Automated Test, Docker Image, AWS Deployment varaku
