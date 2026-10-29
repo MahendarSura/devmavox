@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import fs from 'fs';
 import path from 'path';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const projectDetails: Record<string, { title: string; category: string; icon: string; description: string; content: string }> = {
   project1: {
@@ -125,9 +127,23 @@ export default async function RealTimeProjectDetailPage({ params }: { params: Pr
           {project.description}
         </p>
 
-        <div className="prose prose-invert max-w-none text-slate-300 space-y-4 leading-relaxed whitespace-pre-line bg-slate-950/60 p-6 rounded-xl border border-slate-800/80 font-mono text-sm">
-          {displayContent}
-        </div>
+        <div className="prose prose-invert max-w-none text-slate-300 leading-relaxed bg-slate-950/60 p-6 rounded-xl border border-slate-800/80">
+  <ReactMarkdown
+    remarkPlugins={[remarkGfm]}
+    components={{
+      img: ({ src, alt }) =>
+        src ? (
+          <img
+            src={src}
+            alt={alt || "Project architecture"}
+            className="my-6 h-auto max-w-full rounded-xl border border-slate-700"
+          />
+        ) : null,
+    }}
+  >
+    {displayContent}
+  </ReactMarkdown>
+</div>
       </div>
     </main>
   );
@@ -147,3 +163,4 @@ export function generateStaticParams() {
     { id: 'project10' },
   ];
 }
+
