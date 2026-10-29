@@ -3,6 +3,8 @@
 
 # KUBERNETES PRODUCTION DEPLOYMENT
 
+<img src="/images/real-time-projects/project8.png" alt="Project 8 Architecture" />
+
 ### Kubernetes · Helm · Argo CD · NGINX Ingress
 
 <p>
