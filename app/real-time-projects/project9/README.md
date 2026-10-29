@@ -1,6 +1,7 @@
 
 
 # 🚀 PROJECT 09 — REAL-TIME MONITORING & ALERTING
+![Project 9 Architecture](/images/real-time-projects/project9.png)
 
 ### 🔥 Prometheus · Grafana · Alertmanager · Docker Compose
 
@@ -19,8 +20,6 @@
 
 ---
 
-<img width="1417" height="541" alt="Screenshot 2026-10-25 134147" src="https://github.com/user-attachments/assets/59867355-2805-4e47-85d2-947991d5e093" />
-<img src="https://devmavox.vercel.app/images/real-time-projects/project9.png" alt="Project 9 Architecture" />
 
 ## 🌈 Project at a glance
 
@@ -516,4 +515,3 @@ Check target configuration, DNS and network connectivity, exporter endpoint, scr
 **Project 09 — Real-Time Monitoring & Alerting**
 
 <sub>Before using this in production, validate versions, configuration, access controls, alert routing, and recovery procedures in your own environment.</sub>
-

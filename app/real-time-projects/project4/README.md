@@ -1,9 +1,8 @@
 
 
 # 🌍🚀 PROJECT 04 — AWS Infrastructure Automation with Terraform + Ansible
+![Project 4 Architecture](/images/real-time-projects/project4.png)
 
-<img width="1077" height="671" alt="image" src="https://github.com/user-attachments/assets/72680265-0995-4a42-9d0d-446eff62b203" />
-<img src="https://devmavox.vercel.app/images/real-time-projects/project4.png" alt="Project 4 Architecture" />
 
 ### 🧱 Infrastructure as Code • Configuration Management • CI Validation • Secure AWS Foundations
 
@@ -1245,4 +1244,3 @@ The badges at the top use Shields.io and official product logos where supported.
 ### 🟪 Terraform provisions • 🟥 Ansible configures • 🟦 CI validates • 🛡️ Security protects
 
 **Your portfolio is strongest when it shows real code, real command output, real troubleshooting, and honest evidence of what you tested.**
-

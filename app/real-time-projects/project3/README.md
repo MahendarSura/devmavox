@@ -1,9 +1,8 @@
 
 
 # 🚀 PROJECT 03 — Production-Style Kubernetes Deployment & GitOps
+![Project 3 Architecture](/images/real-time-projects/project3.png)
 
-<img src="https://devmavox.vercel.app/images/real-time-projects/project3.png" alt="Project 3 Architecture" />
-<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/66f453be-203f-4e8d-adc4-3a60dbb1df5d" />
 
 
 
@@ -1577,5 +1576,3 @@ Always consult the current official documentation for installation instructions 
 If this project is part of your portfolio, include the Git repository URL, a real architecture diagram, verified command output, screenshots, and a short explanation of what you personally implemented.
 
 **Keep learning. Test every change. Never claim production readiness without production-level validation.**
-
-

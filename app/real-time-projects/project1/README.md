@@ -1,8 +1,7 @@
 
 # 🚀 PROJECT 01 — END-TO-END DEVSECOPS ON AWS EKS
 
-<img width="640" height="640" alt="project1" src="https://github.com/user-attachments/assets/e2210db1-74dc-46d4-8e60-4b539a13aa71" />
-<img src="https://devmavox.vercel.app/images/real-time-projects/project1.png" alt="Project 1 Architecture" />
+![Project 1 Architecture](/images/real-time-projects/project1.png)
 
 
 ### A Real-World Three-Tier Application — From Code to Cloud
@@ -978,4 +977,3 @@ Official docs ni primary reference ga use cheyyandi:
 **Goal: tools names memorize cheyyadam kaadu.** Code commit nunchi deployment varaku flow ardham chesukovali; each tool enduku use chestamo explain cheyyali; failure vachinappudu evidence tho troubleshoot cheyyali; and actual results ni screenshots and runbooks tho prove cheyyali.
 
 **Project 01 — End-to-End DevSecOps on AWS EKS**
-

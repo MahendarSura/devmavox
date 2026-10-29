@@ -1,13 +1,11 @@
 
 # 🚀📊 PROJECT 05 — Production Monitoring, Logging & Alerting Platform
 
+![Project 5 Architecture](/images/real-time-projects/project5.png)
 
-<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/f489bc9b-20a6-4eb9-95a1-dad002e62f14" />
-<img src="https://devmavox.vercel.app/images/real-time-projects/project5.png" alt="Project 5 Architecture" />
 
 ## 🔭 Prometheus + Grafana + Loki + Alertmanager + Docker
 
-<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/ed0a0b03-e1e8-41c5-a886-7ef400ca03d3" />
 
 
 
@@ -1588,5 +1586,3 @@ If you only validated configuration but did not run the full stack, say that hon
 ### 📈 Metrics + 📝 Logs + 🚨 Alerts + 📊 Dashboards = Better operational visibility
 
 **A strong DevOps Engineer does not only deploy systems. They build visibility, respond with evidence, verify recovery, and use every incident to improve reliability.**
-
-

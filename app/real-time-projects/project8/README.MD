@@ -1,9 +1,9 @@
 
 
 
+![Project 8 Architecture](/images/real-time-projects/project8.png)
 # KUBERNETES PRODUCTION DEPLOYMENT
 
-<img src="https://devmavox.vercel.app/images/real-time-projects/project8.png" alt="Project 8 Architecture" />
 
 ### Kubernetes · Helm · Argo CD · NGINX Ingress
 
@@ -856,4 +856,3 @@ Only describe the components you have personally configured and tested.
 **PROJECT 08 — KUBERNETES PRODUCTION DEPLOYMENT**
 
 *Kubernetes · Helm · Argo CD · NGINX Ingress*
-

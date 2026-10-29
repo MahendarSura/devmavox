@@ -1,10 +1,9 @@
 
 
 # 🛡️🚀 PROJECT 07 — END-TO-END DEVSECOPS ON AWS EKS
+![Project 7 Architecture](/images/real-time-projects/project7.png)
 
 
-<img width="663" height="462" alt="image" src="https://github.com/user-attachments/assets/0b1f2c8d-63b2-4474-a90d-974c175f342e" />
-<img src="https://devmavox.vercel.app/images/real-time-projects/project7.png" alt="Project 7 Architecture" />
 
 
 # 🛡️🚀 PROJECT 07 — END-TO-END DEVSECOPS ON AWS EKS
@@ -897,5 +896,3 @@ Do not claim AWS deployment, successful scanning, or rollback testing unless you
 **Goal: YAML copy cheyyadam matrame kaadu.** Code change nunchi test, security checks, image build, secure AWS authentication, ECR publishing, EKS rollout, and health verification varaku complete delivery flow ni understand cheyyali.
 
 **PROJECT 07 — End-to-End DevSecOps on AWS EKS**
-
-

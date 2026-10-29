@@ -1,9 +1,8 @@
 
 
 ## ☁️ 🚀🏗️ PROJECT 06 - AWS Infrastructure as Code with Terrafom 
+![Project 6 Architecture](/images/real-time-projects/project6.png)
 
-<img width="1100" height="733" alt="image" src="https://github.com/user-attachments/assets/002ff9ad-6fdd-4aa3-bed1-eaae9a193d43" />
-<img src="https://devmavox.vercel.app/images/real-time-projects/project6.png" alt="Project 6 Architecture" />
 
 ## ☁️ Terraform + AWS + IAM + VPC + EC2
 

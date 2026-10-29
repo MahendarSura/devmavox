@@ -1,6 +1,7 @@
 
 
 # ☁️ PROJECT 10 — AWS INFRASTRUCTURE AS CODE
+![Project 10 Architecture](/images/real-time-projects/project10.png)
 
 ### 🚀 Terraform · AWS · VPC · EC2 · IAM · Security
 
@@ -19,8 +20,6 @@
 
 ---
 
-<img width="1092" height="1151" alt="image" src="https://github.com/user-attachments/assets/990504c1-1ce4-48fa-b429-7a19e3fedd44" />
-<img src="https://devmavox.vercel.app/images/real-time-projects/project10.png" alt="Project 10 Architecture" />
 
 ## 🌈 Project dashboard
 
@@ -616,5 +615,3 @@ State may contain sensitive infrastructure details or secret values. It should b
 **PROJECT 10 — AWS INFRASTRUCTURE AS CODE**
 
 <sub>Terraform · AWS · VPC · EC2 · IAM · Security</sub>
-
-
