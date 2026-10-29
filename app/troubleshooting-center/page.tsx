@@ -10,7 +10,7 @@ export default function TroubleshootingCenterPage() {
     },
     {
       title: "Git & GitHub",
-      slug: "git",
+      slug: "github",
       description: "Resolve merge conflicts, detached HEAD states, remote sync rejections, and branch divergence.",
       icon: "🔀",
     },
@@ -22,7 +22,7 @@ export default function TroubleshootingCenterPage() {
     },
     {
       title: "Kubernetes Workloads",
-      slug: "k8s",
+      slug: "kubernetes",
       description: "Debug CrashLoopBackOff, Pending pods, service connectivity issues, and ingress routing.",
       icon: "☸️",
     },
@@ -34,7 +34,7 @@ export default function TroubleshootingCenterPage() {
     },
     {
       title: "CI/CD Pipelines",
-      slug: "cicd",
+      slug: "jenkins",
       description: "Investigate failed build stages, missing environment variables, test failures, and artifact upload errors.",
       icon: "⚙️",
     },
@@ -106,3 +106,4 @@ export default function TroubleshootingCenterPage() {
     </main>
   );
 }
+
