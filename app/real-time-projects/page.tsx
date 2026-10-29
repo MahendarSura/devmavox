@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+// Prathi project ki sambandhina details and content (readme data) ikkada map chesamu
 const projectDetails: Record<string, { title: string; category: string; icon: string; description: string; content: string }> = {
   project1: {
     title: "Project 1: Cloud & Infrastructure",
