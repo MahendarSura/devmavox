@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import fs from 'fs';
+import path from 'path';
 
 const projectDetails: Record<string, { title: string; category: string; icon: string; description: string; content: string }> = {
   project1: {
@@ -85,6 +87,20 @@ export default async function RealTimeProjectDetailPage({ params }: { params: Pr
     content: `# ${projectId}\n\nDetailed implementation steps, configuration files, and architectural guidelines for this project are currently being updated.`
   };
 
+  // Automatically read the actual README.md from the respective project folder if it exists
+  let displayContent = project.content;
+  try {
+    const filePath = path.join(process.cwd(), 'app', 'real-time-projects', projectId, 'README.md');
+    if (fs.existsSync(filePath)) {
+      const fileData = fs.readFileSync(filePath, 'utf8');
+      if (fileData && fileData.trim().length > 0) {
+        displayContent = fileData;
+      }
+    }
+  } catch (e) {
+    console.error("Error reading README.md:", e);
+  }
+
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 p-6 md:p-12">
       <nav className="mb-8">
@@ -110,7 +126,7 @@ export default async function RealTimeProjectDetailPage({ params }: { params: Pr
         </p>
 
         <div className="prose prose-invert max-w-none text-slate-300 space-y-4 leading-relaxed whitespace-pre-line bg-slate-950/60 p-6 rounded-xl border border-slate-800/80 font-mono text-sm">
-          {project.content}
+          {displayContent}
         </div>
       </div>
     </main>
