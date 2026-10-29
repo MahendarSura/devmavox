@@ -1,90 +1,102 @@
 const guide = {
   title: 'Gradle Compilation Failed',
-  summary: 'Diagnose compiler errors, source compatibility, annotation processors, and generated code.',
-  category: "gradle",
+  summary: 'Placeholder troubleshooting guide. Replace this content with the final guide.',
+  category: 'gradle',
   sections: [
     {
-      heading: "Symptoms and impact",
+      heading: 'Overview',
       content: [
-        'Diagnose compiler errors, source compatibility, annotation processors, and generated code.',
-        "Record the exact error message, timestamp, affected endpoint or task, recent deployments, and whether the failure affects all users or only one environment.",
-        "Assess production impact first. Preserve logs and relevant evidence before restarting services or changing configuration."
+        'PLACEHOLDER: Add the explanation for Overview.',
+        'PLACEHOLDER: Add commands, examples, and expected output.',
+        'PLACEHOLDER: Add verification steps and important cautions.'
       ]
     },
     {
-      heading: "Immediate safety checks",
+      heading: 'Symptoms and impact',
       content: [
-        "Confirm the affected environment, recent releases, health checks, available disk space, CPU, memory, and relevant service status.",
-        "Avoid deleting data, clearing production state, disabling security controls, or applying unreviewed configuration changes.",
-        "If this started immediately after a deployment, compare the current release with the last known healthy release and follow the approved rollback procedure when necessary."
+        'PLACEHOLDER: Add the explanation for Symptoms and impact.',
+        'PLACEHOLDER: Add commands, examples, and expected output.',
+        'PLACEHOLDER: Add verification steps and important cautions.'
       ]
     },
     {
-      heading: "Diagnosis commands",
+      heading: 'Immediate safety checks',
       content: [
-        '.\\gradlew.bat compileJava --stacktrace; .\\gradlew.bat compileTestJava --stacktrace; .\\gradlew.bat --version',
-        "Run commands in the correct host, container, CI runner, or application environment. Replace example hosts, ports, paths, and artifact names with actual values.",
-        "Capture exit codes and timestamps. Redact passwords, tokens, private keys, connection strings, and other secrets before sharing logs."
+        'PLACEHOLDER: Add the explanation for Immediate safety checks.',
+        'PLACEHOLDER: Add commands, examples, and expected output.',
+        'PLACEHOLDER: Add verification steps and important cautions.'
       ]
     },
     {
-      heading: "Likely root causes",
+      heading: 'Diagnosis commands',
       content: [
-        'Source code does not compile; language levels mismatch; annotation processing fails; generated sources are missing; or incompatible compiler dependencies are present.',
-        "Check recent configuration changes, version upgrades, DNS changes, firewall rules, credentials, resource limits, and external dependency health.",
-        "Do not assume the first visible error is the root cause. Follow the earliest relevant error in the logs and correlate it with metrics."
+        'PLACEHOLDER: Add the explanation for Diagnosis commands.',
+        'PLACEHOLDER: Add commands, examples, and expected output.',
+        'PLACEHOLDER: Add verification steps and important cautions.'
       ]
     },
     {
-      heading: "Step-by-step remediation",
+      heading: 'Likely root causes',
       content: [
-        "1. Reproduce the issue safely and identify the exact failing request, process, query, task, or configuration entry.",
-        "2. Inspect the relevant service logs and metrics around the failure timestamp.",
-        "3. Compare the current configuration with a known-good version and validate all referenced paths, versions, ports, and permissions.",
-        'Resolve the first compiler error, confirm source and target compatibility, inspect annotation processor configuration, and rebuild the smallest failing module.',
-        "5. Apply one reviewed change at a time. Validate syntax or configuration before restarting, reloading, deploying, or restoring anything.",
-        "6. If the issue persists, revert the last change when safe and continue with the next evidence-supported hypothesis."
+        'PLACEHOLDER: Add the explanation for Likely root causes.',
+        'PLACEHOLDER: Add commands, examples, and expected output.',
+        'PLACEHOLDER: Add verification steps and important cautions.'
       ]
     },
     {
-      heading: "Verification",
+      heading: 'Step-by-step resolution',
       content: [
-        "Repeat the original failing operation and confirm the expected success status or task result.",
-        "Check service health, logs, latency, resource use, and dependent components. A successful command alone does not prove the complete application path works.",
-        "Run relevant automated tests or a smoke test and confirm that no new errors were introduced."
+        'PLACEHOLDER: Add the explanation for Step-by-step resolution.',
+        'PLACEHOLDER: Add commands, examples, and expected output.',
+        'PLACEHOLDER: Add verification steps and important cautions.'
       ]
     },
     {
-      heading: "Prevention",
+      heading: 'Configuration checks',
       content: [
-        "Add health checks, actionable alerts, structured logs, and dashboards for the failure signals identified during diagnosis.",
-        "Document supported versions, configuration ownership, recovery steps, and rollback procedures.",
-        "Test changes in a non-production environment and use peer review for production-impacting changes.",
-        "Create a regression test or monitoring check that detects this failure before users report it."
+        'PLACEHOLDER: Add the explanation for Configuration checks.',
+        'PLACEHOLDER: Add commands, examples, and expected output.',
+        'PLACEHOLDER: Add verification steps and important cautions.'
       ]
     },
     {
-      heading: "Production incident checklist",
+      heading: 'Validation and testing',
       content: [
-        "Record incident start time, affected services, customer impact, recent changes, and mitigation owner.",
-        "Preserve logs and metrics, communicate status through the approved incident channel, and prefer reversible mitigations.",
-        "After recovery, document root cause, contributing factors, corrective actions, owners, and due dates."
+        'PLACEHOLDER: Add the explanation for Validation and testing.',
+        'PLACEHOLDER: Add commands, examples, and expected output.',
+        'PLACEHOLDER: Add verification steps and important cautions.'
       ]
     },
     {
-      heading: "Practice exercise",
+      heading: 'Prevention',
       content: [
-        "Reproduce the failure in a disposable development environment using a controlled configuration change.",
-        "Collect evidence before changing anything, explain the root cause, apply the smallest safe fix, and verify recovery.",
-        "Write a short incident report with symptoms, commands used, root cause, resolution, and prevention."
+        'PLACEHOLDER: Add the explanation for Prevention.',
+        'PLACEHOLDER: Add commands, examples, and expected output.',
+        'PLACEHOLDER: Add verification steps and important cautions.'
       ]
     },
     {
-      heading: "Interview review",
+      heading: 'Production checklist',
       content: [
-        "Explain the difference between a symptom and a root cause, and describe how you would investigate this issue without guessing.",
-        "Discuss how logs, metrics, configuration validation, controlled changes, and rollback reduce recovery time.",
-        "Describe what evidence you would collect before declaring the incident resolved."
+        'PLACEHOLDER: Add the explanation for Production checklist.',
+        'PLACEHOLDER: Add commands, examples, and expected output.',
+        'PLACEHOLDER: Add verification steps and important cautions.'
+      ]
+    },
+    {
+      heading: 'Rollback plan',
+      content: [
+        'PLACEHOLDER: Add the explanation for Rollback plan.',
+        'PLACEHOLDER: Add commands, examples, and expected output.',
+        'PLACEHOLDER: Add verification steps and important cautions.'
+      ]
+    },
+    {
+      heading: 'Additional notes',
+      content: [
+        'PLACEHOLDER: Add the explanation for Additional notes.',
+        'PLACEHOLDER: Add commands, examples, and expected output.',
+        'PLACEHOLDER: Add verification steps and important cautions.'
       ]
     }
   ]

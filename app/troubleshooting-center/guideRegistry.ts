@@ -17,12 +17,6 @@ import * as guide15 from './aws/IAMAccessDenied';
 import * as guide16 from './aws/LoadBalancers';
 import * as guide17 from './aws/S3AccessDenied';
 import * as guide18 from './aws/VPCNetworking';
-import * as guide19 from './databases/BackupRestoration';
-import * as guide20 from './databases/ConnectionFailures';
-import * as guide21 from './databases/DiskSpaceExhausted';
-import * as guide22 from './databases/ReplicationLag';
-import * as guide23 from './databases/SlowQueries';
-import * as guide24 from './databases/TooManyConnections';
 import * as guide25 from './docker/BuildFailures';
 import * as guide26 from './docker/ContainerExits';
 import * as guide27 from './docker/ContainerRestartLoop';
@@ -41,12 +35,6 @@ import * as guide39 from './github/BranchProtectionBlock';
 import * as guide40 from './github/PRCheckFailure';
 import * as guide41 from './github/SecretMissing';
 import * as guide42 from './github/WorkflowSyntaxError';
-import * as guide43 from './gradle/BuildCacheError';
-import * as guide44 from './gradle/DaemonCrash';
-import * as guide45 from './gradle/DependencyConflict';
-import * as guide46 from './gradle/GradleBuildFailure';
-import * as guide47 from './gradle/GroovyKotlinSyntaxError';
-import * as guide48 from './gradle/TaskExecutionFailure';
 import * as guide49 from './helm/ChartInstallationFailure';
 import * as guide50 from './helm/DependencyFetchFailure';
 import * as guide51 from './helm/HelmUpgradeFailure';
@@ -95,12 +83,6 @@ import * as guide93 from './nexus/NexusServiceUnavailable';
 import * as guide94 from './nexus/ProxyCacheMiss';
 import * as guide95 from './nexus/RepositoryOffline';
 import * as guide96 from './nexus/StorageExhausted';
-import * as guide97 from './nginx/ConfigurationSyntaxError';
-import * as guide98 from './nginx/HTTP502BadGateway';
-import * as guide99 from './nginx/HTTP504GatewayTimeout';
-import * as guide100 from './nginx/PortAlreadyInUse';
-import * as guide101 from './nginx/SSLCertificateFailure';
-import * as guide102 from './nginx/UpstreamConnectionRefused';
 import * as guide103 from './production/ApplicationOutage';
 import * as guide104 from './production/CascadingFailures';
 import * as guide105 from './production/DatabaseOutage';
@@ -165,12 +147,6 @@ export const troubleshootingGuides = {
   'aws/LoadBalancers': guide16,
   'aws/S3AccessDenied': guide17,
   'aws/VPCNetworking': guide18,
-  'databases/BackupRestoration': guide19,
-  'databases/ConnectionFailures': guide20,
-  'databases/DiskSpaceExhausted': guide21,
-  'databases/ReplicationLag': guide22,
-  'databases/SlowQueries': guide23,
-  'databases/TooManyConnections': guide24,
   'docker/BuildFailures': guide25,
   'docker/ContainerExits': guide26,
   'docker/ContainerRestartLoop': guide27,
@@ -189,12 +165,6 @@ export const troubleshootingGuides = {
   'github/PRCheckFailure': guide40,
   'github/SecretMissing': guide41,
   'github/WorkflowSyntaxError': guide42,
-  'gradle/BuildCacheError': guide43,
-  'gradle/DaemonCrash': guide44,
-  'gradle/DependencyConflict': guide45,
-  'gradle/GradleBuildFailure': guide46,
-  'gradle/GroovyKotlinSyntaxError': guide47,
-  'gradle/TaskExecutionFailure': guide48,
   'helm/ChartInstallationFailure': guide49,
   'helm/DependencyFetchFailure': guide50,
   'helm/HelmUpgradeFailure': guide51,
@@ -243,12 +213,6 @@ export const troubleshootingGuides = {
   'nexus/ProxyCacheMiss': guide94,
   'nexus/RepositoryOffline': guide95,
   'nexus/StorageExhausted': guide96,
-  'nginx/ConfigurationSyntaxError': guide97,
-  'nginx/HTTP502BadGateway': guide98,
-  'nginx/HTTP504GatewayTimeout': guide99,
-  'nginx/PortAlreadyInUse': guide100,
-  'nginx/SSLCertificateFailure': guide101,
-  'nginx/UpstreamConnectionRefused': guide102,
   'production/ApplicationOutage': guide103,
   'production/CascadingFailures': guide104,
   'production/DatabaseOutage': guide105,
@@ -273,23 +237,23 @@ export const troubleshootingGuides = {
   'tomcat/OutOfMemoryError': guide124,
   'tomcat/PortConflict': guide125,
   'tomcat/ThreadPollExhaustion': guide126,
-  'nginx/HTTP502BadGatewayNew': guide127,
-  'nginx/HTTP504GatewayTimeoutNew': guide128,
-  'nginx/HTTP403Forbidden': guide129,
-  'nginx/HTTP404NotFound': guide130,
-  'nginx/NginxServiceFailedToStart': guide131,
-  'nginx/SSLTLSCertificateErrors': guide132,
-  'databases/DatabaseConnectionRefused': guide133,
-  'databases/DatabaseAuthenticationFailed': guide134,
-  'databases/TooManyConnectionsNew': guide135,
-  'databases/SlowQueriesAndPerformanceIssues': guide136,
-  'databases/DatabaseDeadlocks': guide137,
-  'databases/DatabaseBackupAndRestoreFailure': guide138,
-  'gradle/GradleBuildFailedNew': guide139,
-  'gradle/GradleDependencyResolutionFailureNew': guide140,
-  'gradle/GradlePluginCompatibilityError': guide141,
-  'gradle/GradleDaemonProblems': guide142,
-  'gradle/GradleCompilationFailed': guide143,
-  'gradle/GradleTestsFailed': guide144,
+  'nginx/502 Bad Gateway': guide127,
+  'nginx/504 Gateway Timeout': guide128,
+  'nginx/403 Forbidden': guide129,
+  'nginx/404 Not Found': guide130,
+  'nginx/Nginx Service Failed to Start': guide131,
+  'nginx/SSL TLS Certificate Errors': guide132,
+  'databases/Database Connection Refused': guide133,
+  'databases/Database Authentication Failed': guide134,
+  'databases/Too Many Connections': guide135,
+  'databases/Slow Queries and Performance Issues': guide136,
+  'databases/Database Deadlocks': guide137,
+  'databases/Database Backup and Restore Failure': guide138,
+  'gradle/Gradle Build Failed': guide139,
+  'gradle/Gradle Dependency Resolution Failure': guide140,
+  'gradle/Gradle Plugin Compatibility Error': guide141,
+  'gradle/Gradle Daemon Problems': guide142,
+  'gradle/Gradle Compilation Failed': guide143,
+  'gradle/Gradle Tests Failed': guide144,
 };
 
