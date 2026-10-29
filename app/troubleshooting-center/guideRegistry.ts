@@ -126,6 +126,25 @@ import * as guide124 from './tomcat/OutOfMemoryError';
 import * as guide125 from './tomcat/PortConflict';
 import * as guide126 from './tomcat/ThreadPollExhaustion';
 
+import * as guide127 from './nginx/502 Bad Gateway';
+import * as guide128 from './nginx/504 Gateway Timeout';
+import * as guide129 from './nginx/403 Forbidden';
+import * as guide130 from './nginx/404 Not Found';
+import * as guide131 from './nginx/Nginx Service Failed to Start';
+import * as guide132 from './nginx/SSL TLS Certificate Errors';
+import * as guide133 from './databases/Database Connection Refused';
+import * as guide134 from './databases/Database Authentication Failed';
+import * as guide135 from './databases/Too Many Connections';
+import * as guide136 from './databases/Slow Queries and Performance Issues';
+import * as guide137 from './databases/Database Deadlocks';
+import * as guide138 from './databases/Database Backup and Restore Failure';
+import * as guide139 from './gradle/Gradle Build Failed';
+import * as guide140 from './gradle/Gradle Dependency Resolution Failure';
+import * as guide141 from './gradle/Gradle Plugin Compatibility Error';
+import * as guide142 from './gradle/Gradle Daemon Problems';
+import * as guide143 from './gradle/Gradle Compilation Failed';
+import * as guide144 from './gradle/Gradle Tests Failed';
+
 export const troubleshootingGuides = {
   'ansible/InventoryNotFound': guide0,
   'ansible/PermissionDenied': guide1,
@@ -254,4 +273,23 @@ export const troubleshootingGuides = {
   'tomcat/OutOfMemoryError': guide124,
   'tomcat/PortConflict': guide125,
   'tomcat/ThreadPollExhaustion': guide126,
+  'nginx/HTTP502BadGatewayNew': guide127,
+  'nginx/HTTP504GatewayTimeoutNew': guide128,
+  'nginx/HTTP403Forbidden': guide129,
+  'nginx/HTTP404NotFound': guide130,
+  'nginx/NginxServiceFailedToStart': guide131,
+  'nginx/SSLTLSCertificateErrors': guide132,
+  'databases/DatabaseConnectionRefused': guide133,
+  'databases/DatabaseAuthenticationFailed': guide134,
+  'databases/TooManyConnectionsNew': guide135,
+  'databases/SlowQueriesAndPerformanceIssues': guide136,
+  'databases/DatabaseDeadlocks': guide137,
+  'databases/DatabaseBackupAndRestoreFailure': guide138,
+  'gradle/GradleBuildFailedNew': guide139,
+  'gradle/GradleDependencyResolutionFailureNew': guide140,
+  'gradle/GradlePluginCompatibilityError': guide141,
+  'gradle/GradleDaemonProblems': guide142,
+  'gradle/GradleCompilationFailed': guide143,
+  'gradle/GradleTestsFailed': guide144,
 };
+
