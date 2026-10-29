@@ -20,6 +20,7 @@
 ---
 
 <img width="1092" height="1151" alt="image" src="https://github.com/user-attachments/assets/990504c1-1ce4-48fa-b429-7a19e3fedd44" />
+<img src="/images/real-time-projects/project10.png" alt="Project 10 Architecture" />
 
 ## 🌈 Project dashboard
 
