@@ -2,74 +2,74 @@ import Link from 'next/link';
 
 const projectDetails: Record<string, { title: string; category: string; icon: string; description: string; content: string }> = {
   project1: {
-    title: "Project 1: Cloud & Infrastructure",
+    title: "AWS Cloud Infrastructure Setup",
     category: "Cloud & Infrastructure",
     icon: "☁️",
-    description: "Explore the first hands-on cloud and DevOps project.",
-    content: `# Project 1: Cloud & Infrastructure Setup\n\n## Overview\nExplore the foundational cloud components, IAM policies, networking setup, and secure infrastructure provisioning.\n\n## Architecture\n- Virtual Private Cloud (VPC)\n- Public and Private Subnets\n- Internet Gateway & NAT Gateway\n\n## Steps to Execute\n1. Initialize cloud provider configuration.\n2. Provision core networking resources.\n3. Verify connectivity and routing tables.`
+    description: "Build scalable and secure cloud infrastructure using AWS services, VPC architecture, and IAM security policies.",
+    content: `# Project 1: AWS Cloud Infrastructure Setup\n\n## Overview\nLearn how to provision foundational cloud components, set up secure networking, and manage IAM access controls following cloud-native best practices.\n\n## Architecture & Components\n- **Virtual Private Cloud (VPC)** with public and private subnets across multiple Availability Zones.\n- **Internet Gateway & NAT Gateways** for secure inbound and outbound traffic routing.\n- **IAM Roles & Policies** enforcing the principle of least privilege.\n\n## Step-by-Step Execution\n1. Initialize your AWS provider configurations and set up remote state storage.\n2. Provision core networking infrastructure using Terraform or AWS Console.\n3. Configure security groups, route tables, and NACLs.\n4. Verify end-to-end connectivity and test routing tables.`
   },
   project2: {
-    title: "Project 2: DevOps Automation",
+    title: "DevOps Automation & Scripting",
     category: "DevOps Automation",
     icon: "⚙️",
-    description: "Practice automation, deployment, and infrastructure workflows.",
-    content: `# Project 2: DevOps Automation\n\n## Overview\nAutomate repetitive operational tasks and configuration deployments using scripting and automation tools.\n\n## Key Objectives\n- Scripting routine backups\n- Setting up automated notifications\n- Streamlining environment provisioning`
+    description: "Automate repetitive operational workflows, server configurations, and routine deployment tasks using robust scripts.",
+    content: `# Project 2: DevOps Automation & Scripting\n\n## Overview\nEliminate manual toil by building automated operational pipelines and configuration scripts for routine system maintenance.\n\n## Key Objectives\n- Writing automated backup scripts for critical system volumes.\n- Setting up webhooks and Slack/Discord notifications for system alerts.\n- Streamlining environment provisioning and dependency checks.`
   },
   project3: {
-    title: "Project 3: Docker & Containers",
+    title: "Docker & Containerization",
     category: "Docker & Containers",
     icon: "🐳",
-    description: "Learn containerization and application delivery.",
-    content: `# Project 3: Docker & Containers\n\n## Overview\nLearn how to containerize web applications, optimize multi-stage Dockerfiles, and manage container networks.\n\n## Best Practices\n- Use lightweight base images (Alpine)\n- Implement multi-stage builds to reduce image size\n- Secure container runtimes`
+    description: "Master application containerization, optimize multi-stage Dockerfiles, and manage container networks securely.",
+    content: `# Project 3: Docker & Containerization\n\n## Overview\nPackage web applications into lightweight containers, optimize image sizes using multi-stage builds, and handle persistent volumes.\n\n## Best Practices Implemented\n- Using lightweight base images (Alpine Linux).\n- Implementing multi-stage builds to strip build-time dependencies.\n- Managing secure container networks and data volumes.`
   },
   project4: {
-    title: "Project 4: Kubernetes",
+    title: "Kubernetes Orchestration",
     category: "Kubernetes",
     icon: "☸️",
-    description: "Practice Kubernetes deployment and orchestration.",
-    content: `# Project 4: Kubernetes Orchestration\n\n## Overview\nDeploy, scale, and manage containerized applications using Kubernetes clusters and manifests.\n\n## Components\n- Deployments and Pods\n- Services and Ingress controllers\n- ConfigMaps and Secrets`
+    description: "Deploy, scale, and manage containerized applications using Kubernetes clusters, Pods, Deployments, and Services.",
+    content: `# Project 4: Kubernetes Orchestration\n\n## Overview\nGain hands-on experience orchestrating microservices across a Kubernetes cluster with production-ready manifests.\n\n## Core Concepts Covered\n- Deployments, ReplicaSets, and Pod lifecycle management.\n- Cluster IP, NodePort, and LoadBalancer Services.\n- Managing configuration data via ConfigMaps and Secrets.`
   },
   project5: {
-    title: "Project 5: CI/CD",
+    title: "CI/CD Pipeline Engineering",
     category: "CI/CD",
     icon: "🔄",
-    description: "Build and understand a continuous integration pipeline.",
-    content: `# Project 5: CI/CD Pipeline\n\n## Overview\nBuild automated build, test, and deployment pipelines using modern CI/CD tools.\n\n## Pipeline Stages\n1. Code Checkout\n2. Automated Testing\n3. Artifact Packaging\n4. Staging & Production Deployment`
+    description: "Build automated continuous integration and continuous deployment pipelines using modern tools and testing frameworks.",
+    content: `# Project 5: CI/CD Pipeline Engineering\n\n## Overview\nAutomate your software release lifecycle from code commit to staging and production environments seamlessly.\n\n## Pipeline Stages\n1. Automated Code Checkout & Linting.\n2. Running Unit and Integration Tests.\n3. Packaging Artifacts & Building Container Images.\n4. Automated Deployment to Target Environments.`
   },
   project6: {
-    title: "Project 6: Infrastructure as Code",
+    title: "Infrastructure as Code (IaC)",
     category: "Infrastructure as Code",
     icon: "🏗️",
-    description: "Work with cloud infrastructure and Infrastructure as Code.",
-    content: `# Project 6: Infrastructure as Code (IaC)\n\n## Overview\nProvision reproducible cloud resources using Infrastructure as Code principles and state management.\n\n## Workflow\n- Write declarative configuration files\n- Run dry-run plans\n- Apply changes safely and track state`
+    description: "Provision and manage cloud resources declaratively using Infrastructure as Code principles and state tracking.",
+    content: `# Project 6: Infrastructure as Code (IaC)\n\n## Overview\nTreat infrastructure code like application code to achieve complete reproducibility and environment parity.\n\n## Workflow Implementation\n- Writing clean, modular declarative configuration files.\n- Executing dry-run plans to review infrastructure changes.\n- Managing state files securely and avoiding drift.`
   },
   project7: {
-    title: "Project 7: GitOps",
+    title: "GitOps Application Delivery",
     category: "GitOps",
     icon: "🚀",
-    description: "Explore GitOps-based application delivery.",
-    content: `# Project 7: GitOps Delivery\n\n## Overview\nImplement GitOps workflows where Git repositories serve as the single source of truth for declarative infrastructure and applications.\n\n## Tools Used\n- Git for version control\n- Automated sync controllers\n- Continuous reconciliation loops`
+    description: "Implement GitOps workflows using Git as the single source of truth for declarative infrastructure and application deployments.",
+    content: `# Project 7: GitOps Delivery\n\n## Overview\nAutomate cluster synchronization and ensure continuous reconciliation between your Git repository and target environments.\n\n## Tools & Workflow\n- Version controlling all cluster manifests in GitHub.\n- Configuring automated sync controllers to apply changes safely.\n- Tracking operational health states and rollbacks.`
   },
   project8: {
-    title: "Project 8: Monitoring",
+    title: "Monitoring & Observability",
     category: "Monitoring",
     icon: "📊",
-    description: "Practice monitoring, metrics, and observability.",
-    content: `# Project 8: Monitoring & Observability\n\n## Overview\nCollect system metrics, set up operational dashboards, and configure alerting rules for proactive incident response.\n\n## Key Metrics\n- CPU & Memory utilization\n- Request latency and error rates\n- Disk space and network I/O`
+    description: "Collect system metrics, set up operational dashboards, and configure alerting rules for proactive incident response.",
+    content: `# Project 8: Monitoring & Observability\n\n## Overview\nEnsure high availability and rapid issue identification by setting up comprehensive observability stacks.\n\n## Key Metrics Monitored\n- CPU, Memory, and Disk utilization tracking.\n- Request latency, throughput, and error rate tracking.\n- Setting up proactive alert rules and notification channels.`
   },
   project9: {
-    title: "Project 9: DevSecOps",
+    title: "DevSecOps & Security Scanning",
     category: "DevSecOps",
     icon: "🔐",
-    description: "Explore security checks and DevSecOps workflows.",
-    content: `# Project 9: DevSecOps Security\n\n## Overview\nIntegrate security checks, dependency scanning, and vulnerability assessments early into the software delivery lifecycle.\n\n## Focus Areas\n- Static Application Security Testing (SAST)\n- Container image vulnerability scans\n- Secret management and compliance`
+    description: "Integrate security checks, vulnerability assessments, and dependency scanning early into the software delivery pipeline.",
+    content: `# Project 9: DevSecOps Security\n\n## Overview\nShift security to the left by embedding automated scanning and compliance checks into your daily workflows.\n\n## Focus Areas\n- Static Application Security Testing (SAST) on codebases.\n- Container image vulnerability scanning.\n- Secret management and compliance auditing.`
   },
   project10: {
-    title: "Project 10: Real-Time Project",
+    title: "End-to-End Real-Time DevOps Project",
     category: "Real-Time Project",
     icon: "🎯",
-    description: "Explore an end-to-end production-style DevOps project.",
-    content: `# Project 10: End-to-End Real-Time DevOps Project\n\n## Overview\nCombine cloud infrastructure, containerization, orchestration, CI/CD pipelines, and monitoring into a complete production architecture.\n\n## Architecture Steps\n1. Provision AWS Cloud infrastructure using Terraform.\n2. Deploy containerized workloads onto Kubernetes.\n3. Configure automated CI/CD and monitoring alerts.`
+    description: "Combine cloud infrastructure, containerization, Kubernetes, CI/CD pipelines, and monitoring into a complete production architecture.",
+    content: `# Project 10: End-to-End Real-Time DevOps Project\n\n## Overview\nAn all-encompassing enterprise capstone project tying together all core DevOps domains into a unified production architecture.\n\n## Implementation Architecture\n1. Provision AWS Cloud infrastructure via Terraform.\n2. Containerize the application and deploy workloads onto Kubernetes (EKS).\n3. Automate releases with a complete CI/CD pipeline and configure operational monitoring dashboards.`
   },
 };
 
