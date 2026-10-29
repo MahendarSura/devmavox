@@ -1,0 +1,64 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import fs from "node:fs";
+import path from "node:path";
+
+function makeSlug(filename: string) {
+  return filename
+    .replace(/\.ts$/i, "")
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .toLowerCase();
+}
+
+function displayName(filename: string) {
+  return filename
+    .replace(/\.ts$/i, "")
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[-_]+/g, " ");
+}
+
+export default async function TroubleshootingTopicPage({
+  params,
+}: {
+  params: Promise<{ tool: string; topic: string[] }>;
+}) {
+  const { tool, topic } = await params;
+  const root = path.join(process.cwd(), "app", "troubleshooting-center");
+  const toolDir = path.join(root, tool);
+
+  if (
+    !fs.existsSync(toolDir) ||
+    !fs.statSync(toolDir).isDirectory() ||
+    !fs.existsSync(path.join(toolDir, "page.tsx"))
+  ) {
+    notFound();
+  }
+
+  const files = fs.readdirSync(toolDir).filter((file) => file.endsWith(".ts"));
+  const selected = files.find((file) => makeSlug(file) === topic.join("/"));
+
+  if (!selected) notFound();
+
+  const content = fs.readFileSync(path.join(toolDir, selected), "utf8");
+
+  return (
+    <main className="min-h-screen bg-slate-50 px-5 py-10 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <div className="mx-auto max-w-4xl">
+        <Link
+          href={"/troubleshooting-center/" + tool}
+          className="text-cyan-600 hover:underline"
+        >
+          ← Back to {tool} Troubleshooting
+        </Link>
+        <h1 className="mt-6 text-3xl font-bold">{displayName(selected)}</h1>
+        <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <pre className="whitespace-pre-wrap break-words font-sans text-sm leading-7">
+            {content}
+          </pre>
+        </section>
+      </div>
+    </main>
+  );
+}

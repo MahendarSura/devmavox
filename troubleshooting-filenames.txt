@@ -1,0 +1,128 @@
+troubleshooting-center  -->  guideRegistry.ts
+ansible  -->  InventoryNotFound.ts
+ansible  -->  PermissionDenied.ts
+ansible  -->  PlaybookFailures.ts
+ansible  -->  PythonError.ts
+ansible  -->  SSHFailures.ts
+ansible  -->  VariableErrors.ts
+ansible  -->  ZeroHosts.ts
+argocd  -->  DeploymentErrors.ts
+argocd  -->  RenderingErrors.ts
+argocd  -->  RepositoryConnectionError.ts
+argocd  -->  SyncFailures.ts
+argocd  -->  SyncWaveTimeout.ts
+argocd  -->  UnhealthyApps.ts
+aws  -->  EC2SSHNotWorking.ts
+aws  -->  ECRAuthFailure.ts
+aws  -->  IAMAccessDenied.ts
+aws  -->  LoadBalancers.ts
+aws  -->  S3AccessDenied.ts
+aws  -->  VPCNetworking.ts
+databases  -->  Database Authentication Failed.ts
+databases  -->  Database Backup and Restore Failure.ts
+databases  -->  Database Connection Refused.ts
+databases  -->  Database Deadlocks.ts
+databases  -->  Slow Queries and Performance Issues.ts
+databases  -->  Too Many Connections.ts
+docker  -->  BuildFailures.ts
+docker  -->  ContainerExits.ts
+docker  -->  ContainerRestartLoop.ts
+docker  -->  MemoryLimits.ts
+docker  -->  Networking.ts
+docker  -->  Volumes.ts
+eks  -->  ClusterEndpointUnreachable.ts
+eks  -->  EKSUpgradeFailure.ts
+eks  -->  KubeProxyCrash.ts
+eks  -->  OIDCProviderMismatch.ts
+eks  -->  PodSecurityPolicyIssue.ts
+eks  -->  WorkerNodeNotReady.ts
+github  -->  ActionRunnerOffline.ts
+github  -->  APIThrottling.ts
+github  -->  BranchProtectionBlock.ts
+github  -->  PRCheckFailure.ts
+github  -->  SecretMissing.ts
+github  -->  WorkflowSyntaxError.ts
+gradle  -->  Gradle Build Failed.ts
+gradle  -->  Gradle Compilation Failed.ts
+gradle  -->  Gradle Daemon Problems.ts
+gradle  -->  Gradle Dependency Resolution Failure.ts
+gradle  -->  Gradle Plugin Compatibility Error.ts
+gradle  -->  Gradle Tests Failed.ts
+helm  -->  ChartInstallationFailure.ts
+helm  -->  DependencyFetchFailure.ts
+helm  -->  HelmUpgradeFailure.ts
+helm  -->  ResourceAlreadyExists.ts
+helm  -->  TemplateRenderingError.ts
+helm  -->  ValuesFileSyntaxError.ts
+jenkins  -->  AgentsRunners.ts
+jenkins  -->  ArtifactUpload.ts
+jenkins  -->  BuildTimeout.ts
+jenkins  -->  CredentialsBinding.ts
+jenkins  -->  PipelineFailures.ts
+jenkins  -->  WebhookError.ts
+kubernetes  -->  ContainerProbes.ts
+kubernetes  -->  CoreDNSResolution.ts
+kubernetes  -->  KubernetesServices.ts
+kubernetes  -->  PersistentStorage.ts
+kubernetes  -->  PodFailures.ts
+kubernetes  -->  PodScheduling.ts
+linux  -->  CPURAMSpike.ts
+linux  -->  DiskFull.ts
+linux  -->  DNSIssues.ts
+linux  -->  PermissionErrors.ts
+linux  -->  PortBlocked.ts
+linux  -->  SSHConnectionError.ts
+maven  -->  ArtifactDownloadFailure.ts
+maven  -->  DependencyResolutionFailure.ts
+maven  -->  JavaVersionMismatch.ts
+maven  -->  MavenBuildFailure.ts
+maven  -->  PluginExecutionError.ts
+maven  -->  SnapshotUpdateError.ts
+monitoring  -->  AlertsNotFiring.ts
+monitoring  -->  DashboardErrors.ts
+monitoring  -->  GrafanaDown.ts
+monitoring  -->  MissingMetrics.ts
+monitoring  -->  PrometheusDown.ts
+monitoring  -->  ScrapeFailures.ts
+networking  -->  BandwidthSaturation.ts
+networking  -->  FirewallRuleFailure.ts
+networking  -->  InodeExhaustion.ts
+networking  -->  InterfaceDown.ts
+networking  -->  PacketLoss.ts
+networking  -->  RoutingLoop.ts
+nexus  -->  AuthenticationFailure.ts
+nexus  -->  ComponentDeleteError.ts
+nexus  -->  NexusServiceUnavailable.ts
+nexus  -->  ProxyCacheMiss.ts
+nexus  -->  RepositoryOffline.ts
+nexus  -->  StorageExhausted.ts
+nginx  -->  403 Forbidden.ts
+nginx  -->  404 Not Found.ts
+nginx  -->  502 Bad Gateway.ts
+nginx  -->  504 Gateway Timeout.ts
+nginx  -->  Nginx Service Failed to Start.ts
+nginx  -->  SSL TLS Certificate Errors.ts
+production  -->  ApplicationOutage.ts
+production  -->  CascadingFailures.ts
+production  -->  DatabaseOutage.ts
+production  -->  HighCPUSpike.ts
+production  -->  LatencySpikes.ts
+production  -->  RollbackProcedures.ts
+security  -->  ExposedSecrets.ts
+security  -->  FailedScans.ts
+security  -->  PermissionViolations.ts
+security  -->  TLSMisconfig.ts
+security  -->  TrivyError.ts
+security  -->  VulnerableImages.ts
+terraform  -->  ApplyFailure.ts
+terraform  -->  DependencyCycle.ts
+terraform  -->  PlanFailure.ts
+terraform  -->  ProviderErrors.ts
+terraform  -->  StateDrift.ts
+terraform  -->  StateLocks.ts
+tomcat  -->  CatalinaLogOverflow.ts
+tomcat  -->  DeploymentFailure.ts
+tomcat  -->  JNDIConnectionLeak.ts
+tomcat  -->  OutOfMemoryError.ts
+tomcat  -->  PortConflict.ts
+tomcat  -->  ThreadPollExhaustion.ts
