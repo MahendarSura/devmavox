@@ -4,7 +4,7 @@
 
 
 <img width="663" height="462" alt="image" src="https://github.com/user-attachments/assets/0b1f2c8d-63b2-4474-a90d-974c175f342e" />
-
+<img src="/images/real-time-projects/project7.png" alt="Project 7 Architecture" />
 
 
 # 🛡️🚀 PROJECT 07 — END-TO-END DEVSECOPS ON AWS EKS
