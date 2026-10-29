@@ -20,7 +20,7 @@
 ---
 
 <img width="1417" height="541" alt="Screenshot 2026-10-25 134147" src="https://github.com/user-attachments/assets/59867355-2805-4e47-85d2-947991d5e093" />
-
+<img src="/images/real-time-projects/project9.png" alt="Project 9 Architecture" />
 
 ## 🌈 Project at a glance
 
