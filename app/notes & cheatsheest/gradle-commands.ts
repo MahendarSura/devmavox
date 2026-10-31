@@ -1,126 +1,217 @@
+
 import type { DevOpsTool } from "./command-types";
 
+type CommandLevel = DevOpsTool["commands"][number]["level"];
+
+const makeCommands = (
+  level: CommandLevel,
+  rows: [string, string, string][]
+) =>
+  rows.map(([command, english, telugu]) => ({
+    command,
+    level,
+    english,
+    telugu,
+  }));
+
 export const gradleTool: DevOpsTool = {
-    name: "Gradle",
-    category: "Automation & Build",
-    commands: [
-      { command: "gradle --version", level: "Basic", english: "to display the Gradle version", telugu: "Gradle version చూడటానికి." },
-      { command: "./gradlew tasks", level: "Intermediate", english: "to list available project tasks", telugu: "Project లో available tasks చూడటానికి." },
-      { command: "./gradlew build", level: "Advanced", english: "to build and test the project", telugu: "Project build చేసి tests run చేయటానికి." },
-      { command: "./gradlew dependencies", level: "Troubleshooting", english: "to inspect project dependencies", telugu: "Project dependencies వివరాలు చూడటానికి." },
-      {
-        command: "gradle tasks",
-        level: "Basic",
-        english: "List available tasks in the project.",
-        telugu: "Project lo available Gradle tasks chudataniki.",
-      },
-      {
-        command: "gradle tasks --all",
-        level: "Intermediate",
-        english: "List all tasks, including detailed task groups.",
-        telugu: "Anni Gradle tasks inspect cheyyataniki.",
-      },
-      {
-        command: "gradle projects",
-        level: "Basic",
-        english: "List subprojects in a multi-project build.",
-        telugu: "Multi-project build lo subprojects chudataniki.",
-      },
-      {
-        command: "gradle properties",
-        level: "Intermediate",
-        english: "Display project properties.",
-        telugu: "Project properties inspect cheyyataniki.",
-      },
-      {
-        command: "gradle dependencies",
-        level: "Intermediate",
-        english: "Display dependency trees for project configurations.",
-        telugu: "Project dependencies tree chudataniki.",
-      },
-      {
-        command: "gradle dependencyInsight --dependency <name>",
-        level: "Advanced",
-        english: "Explain why a dependency version was selected.",
-        telugu: "Dependency version enduku select ayyindo investigate cheyyataniki.",
-      },
-      {
-        command: "gradle clean",
-        level: "Basic",
-        english: "Delete generated build output.",
-        telugu: "Generated build output clean cheyyataniki.",
-      },
-      {
-        command: "gradle assemble",
-        level: "Basic",
-        english: "Assemble project outputs without running all verification tasks.",
-        telugu: "Project artifacts assemble cheyyataniki.",
-      },
-      {
-        command: "gradle build",
-        level: "Basic",
-        english: "Run the standard build lifecycle tasks.",
-        telugu: "Standard build and verification tasks run cheyyataniki.",
-      },
-      {
-        command: "gradle test",
-        level: "Basic",
-        english: "Run project tests.",
-        telugu: "Project tests execute cheyyataniki.",
-      },
-      {
-        command: "gradle check",
-        level: "Intermediate",
-        english: "Run verification tasks configured for the project.",
-        telugu: "Configured verification tasks execute cheyyataniki.",
-      },
-      {
-        command: "gradle build --scan",
-        level: "Advanced",
-        english: "Publish a build scan for build diagnostics if configured and permitted.",
-        telugu: "Build performance/errors investigate cheyyataniki; scan data sharing policy verify cheyyali.",
-      },
-      {
-        command: "gradle --offline build",
-        level: "Troubleshooting",
-        english: "Build using cached dependencies only.",
-        telugu: "Network lekapothe cached dependencies tho build try cheyyataniki.",
-      },
-      {
-        command: "gradle --refresh-dependencies build",
-        level: "Troubleshooting",
-        english: "Refresh dependency cache metadata and resolve dependencies again.",
-        telugu: "Stale dependency cache issue troubleshoot cheyyataniki.",
-      },
-      {
-        command: "gradle --stop",
-        level: "Troubleshooting",
-        english: "Stop Gradle daemon processes for the current user.",
-        telugu: "Gradle daemon issues troubleshoot cheyyataniki.",
-      },
-      {
-        command: "gradle --status",
-        level: "Troubleshooting",
-        english: "Show Gradle daemons for the current Gradle version.",
-        telugu: "Current Gradle version daemons status chudataniki.",
-      },
-      {
-        command: "gradle wrapper --gradle-version <version>",
-        level: "Advanced",
-        english: "Update the Gradle Wrapper version.",
-        telugu: "Project Gradle Wrapper version update cheyyataniki; compatibility check cheyyali.",
-      },
-      {
-        command: "gradle javaToolchains",
-        level: "Advanced",
-        english: "Display detected Java toolchains.",
-        telugu: "Build use cheyagalige Java toolchains inspect cheyyataniki.",
-      },
-      {
-        command: "gradle test --tests '*TestName'",
-        level: "Intermediate",
-        english: "Run tests matching a specified test name pattern.",
-        telugu: "Specific test class/pattern matrame run cheyyataniki.",
-      },
-    ],
-  };
+  name: "Gradle",
+  category: "Build Automation & DevOps",
+  commands: [
+    // BASIC - 8
+    ...makeCommands("Basic", [
+      [
+        "gradle --version",
+        "Displays the installed Gradle version and environment information.",
+        "Install ayina Gradle version mariyu environment information chupistundi.",
+      ],
+      [
+        "gradle --help",
+        "Displays Gradle command-line help.",
+        "Gradle command-line help chupistundi.",
+      ],
+      [
+        "gradle tasks",
+        "Lists the main tasks available in the current project.",
+        "Current project lo available main tasks list chestundi.",
+      ],
+      [
+        "gradle projects",
+        "Displays the project and subproject hierarchy.",
+        "Project mariyu subproject hierarchy chupistundi.",
+      ],
+      [
+        "gradle clean",
+        "Deletes the build directory generated by the project.",
+        "Project generate chesina build directory ni delete chestundi.",
+      ],
+      [
+        "gradle assemble",
+        "Assembles the outputs of the project.",
+        "Project outputs ni assemble chestundi.",
+      ],
+      [
+        "gradle build",
+        "Builds the project and runs its associated checks.",
+        "Project build chesi associated checks run chestundi.",
+      ],
+      [
+        "gradle test",
+        "Executes the project's test tasks.",
+        "Project test tasks execute chestundi.",
+      ],
+    ]),
+
+    // INTERMEDIATE - 10
+    ...makeCommands("Intermediate", [
+      [
+        "gradle check",
+        "Runs verification tasks configured for the project.",
+        "Project ki configure chesina verification tasks run chestundi.",
+      ],
+      [
+        "gradle run",
+        "Runs the application when the application plugin provides the run task.",
+        "Application plugin run task provide chesinappudu application run chestundi.",
+      ],
+      [
+        "gradle dependencies",
+        "Displays dependency information for project configurations.",
+        "Project configurations dependency information chupistundi.",
+      ],
+      [
+        "gradle buildEnvironment",
+        "Displays dependencies used by the build script.",
+        "Build script use chese dependencies chupistundi.",
+      ],
+      [
+        "gradle dependencyInsight --dependency guava --configuration runtimeClasspath",
+        "Explains why a dependency is present in a specified configuration.",
+        "Specified configuration lo dependency enduku undo explain chestundi.",
+      ],
+      [
+        "gradle properties",
+        "Displays properties of the current Gradle project.",
+        "Current Gradle project properties chupistundi.",
+      ],
+      [
+        "gradle help --task build",
+        "Displays detailed information about the build task.",
+        "Build task gurinchi detailed information chupistundi.",
+      ],
+      [
+        "gradle :app:build",
+        "Builds the app subproject in a multi-project Gradle build.",
+        "Multi-project Gradle build lo app subproject build chestundi.",
+      ],
+      [
+        "gradle init --type java-application",
+        "Initializes a Java application Gradle project.",
+        "Java application Gradle project initialize chestundi.",
+      ],
+      [
+        "gradle wrapper --gradle-version=9.8.2",
+        "Generates or updates Gradle Wrapper files for the specified version.",
+        "Specified version kosam Gradle Wrapper files generate leda update chestundi.",
+      ],
+    ]),
+
+    // ADVANCED - 8
+    ...makeCommands("Advanced", [
+      [
+        "gradle build --scan",
+        "Runs the build and creates a Build Scan for detailed analysis.",
+        "Build run chesi detailed analysis kosam Build Scan create chestundi.",
+      ],
+      [
+        "gradle build --parallel",
+        "Runs eligible tasks across projects in parallel.",
+        "Eligible project tasks ni parallel ga run chestundi.",
+      ],
+      [
+        "gradle build --build-cache",
+        "Enables the build cache to reuse task outputs when possible.",
+        "Possible ayinappudu task outputs reuse cheyadaniki build cache enable chestundi.",
+      ],
+      [
+        "gradle build --configuration-cache",
+        "Enables the configuration cache for subsequent compatible builds.",
+        "Compatible builds kosam configuration cache enable chestundi.",
+      ],
+      [
+        "gradle build --max-workers=4",
+        "Limits the maximum number of Gradle workers to four.",
+        "Gradle workers maximum count ni four ki limit chestundi.",
+      ],
+      [
+        "gradle build --continue",
+        "Continues executing eligible tasks after a task failure.",
+        "Task failure vachina eligible tasks execution continue chestundi.",
+      ],
+      [
+        "gradle build --dry-run",
+        "Shows which tasks would run without executing task actions.",
+        "Task actions execute cheyakunda ye tasks run avuthayo chupistundi.",
+      ],
+      [
+        "gradle test --rerun-tasks",
+        "Forces the test task and its task dependencies to execute again.",
+        "Test task mariyu dependencies ni malli execute cheyistundi.",
+      ],
+    ]),
+
+    // TROUBLESHOOTING - 10
+    ...makeCommands("Troubleshooting", [
+      [
+        "gradle build --stacktrace",
+        "Displays stack traces when the build fails.",
+        "Build fail ayinappudu stack traces chupistundi.",
+      ],
+      [
+        "gradle build --full-stacktrace",
+        "Displays full stack traces for build exceptions.",
+        "Build exceptions kosam full stack traces chupistundi.",
+      ],
+      [
+        "gradle build --info",
+        "Displays additional information to help diagnose build problems.",
+        "Build problems diagnose cheyadaniki additional information chupistundi.",
+      ],
+      [
+        "gradle build --debug",
+        "Enables detailed debug logging for build diagnosis.",
+        "Build diagnosis kosam detailed debug logging enable chestundi.",
+      ],
+      [
+        "gradle build --offline",
+        "Runs the build without accessing network resources.",
+        "Network resources access cheyakunda build run chestundi.",
+      ],
+      [
+        "gradle build --refresh-dependencies",
+        "Refreshes dependency resolution state and checks repositories for updated dependencies.",
+        "Dependency resolution state refresh chesi repositories lo updates check chestundi.",
+      ],
+      [
+        "gradle --status",
+        "Displays running and recently stopped Gradle daemons of the same version.",
+        "Same version ki sambandhinchina running mariyu recently stopped Gradle daemons chupistundi.",
+      ],
+      [
+        "gradle --stop",
+        "Stops Gradle daemons of the same version.",
+        "Same version Gradle daemons ni stop chestundi.",
+      ],
+      [
+        "gradle --no-daemon build",
+        "Runs the build without using a persistent Gradle daemon.",
+        "Persistent Gradle daemon use cheyakunda build run chestundi.",
+      ],
+      [
+        "gradle dependencyInsight --dependency guava --configuration runtimeClasspath",
+        "Investigates why a particular dependency was selected in a configuration.",
+        "Configuration lo particular dependency enduku select ayindo investigate chestundi.",
+      ],
+    ]),
+  ],
+};
