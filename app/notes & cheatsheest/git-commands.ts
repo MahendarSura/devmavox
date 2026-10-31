@@ -1,0 +1,127 @@
+import type { DevOpsTool } from "./command-types";
+
+export const gitTool: DevOpsTool = {
+    name: "Git",
+    category: "Core",
+    commands: [
+      { command: "git status", level: "Basic", english: "to check working tree changes", telugu: "Git files లో చేసిన changes చూడటానికి." },
+      { command: "git log --oneline -10", level: "Intermediate", english: "to view the latest ten commits", telugu: "చివరి పది commits చూడటానికి." },
+      { command: "git reflog", level: "Advanced", english: "to inspect recent HEAD movements", telugu: "ఇటీవల చేసిన Git HEAD మార్పులు తెలుసుకోవటానికి." },
+      { command: "git diff --check", level: "Troubleshooting", english: "to find whitespace errors in changes", telugu: "Changes లో whitespace errors ఉన్నాయో చూడటానికి." },
+      { command: "git fetch origin", level: "Troubleshooting", english: "to retrieve remote updates without merging", telugu: "Remote updates ను merge చేయకుండా తెచ్చుకోవటానికి." },
+      {
+        command: "git status --short",
+        level: "Basic",
+        english: "Show a concise working-tree status.",
+        telugu: "Changed files status short format lo chudataniki.",
+      },
+      {
+        command: "git diff --staged",
+        level: "Basic",
+        english: "Review staged changes before committing.",
+        telugu: "Commit mundu staged changes review cheyyataniki.",
+      },
+      {
+        command: "git log --oneline --graph --decorate -15",
+        level: "Intermediate",
+        english: "View recent commits as a compact branch graph.",
+        telugu: "Recent commits branch graph tho chudataniki.",
+      },
+      {
+        command: "git show --stat HEAD",
+        level: "Basic",
+        english: "Show the latest commit summary and changed-file statistics.",
+        telugu: "Latest commit lo changes summary chudataniki.",
+      },
+      {
+        command: "git branch --merged",
+        level: "Intermediate",
+        english: "List branches already merged into the current branch.",
+        telugu: "Current branch lo merge ayina branches identify cheyyataniki.",
+      },
+      {
+        command: "git fetch --all --prune",
+        level: "Intermediate",
+        english: "Fetch remote updates and remove stale remote-tracking references.",
+        telugu: "Remote updates fetch chesi stale references clean cheyyataniki.",
+      },
+      {
+        command: "git switch -c feature/my-change",
+        level: "Basic",
+        english: "Create and switch to a new branch.",
+        telugu: "Kotha feature branch create chesi switch avvataniki.",
+      },
+      {
+        command: "git restore --staged <file>",
+        level: "Intermediate",
+        english: "Unstage a file without discarding its working-tree changes.",
+        telugu: "File changes discard cheyyakunda staging nunchi remove cheyyataniki.",
+      },
+      {
+        command: "git diff main...HEAD",
+        level: "Intermediate",
+        english: "Compare the current branch with its merge base against main.",
+        telugu: "Current branch changes ni main tho compare cheyyataniki.",
+      },
+      {
+        command: "git stash push -m 'work in progress'",
+        level: "Intermediate",
+        english: "Temporarily save uncommitted changes.",
+        telugu: "Uncommitted changes ni temporary ga save cheyyataniki.",
+      },
+      {
+        command: "git stash list",
+        level: "Basic",
+        english: "List saved stashes.",
+        telugu: "Save chesina stashes list chudataniki.",
+      },
+      {
+        command: "git cherry-pick <commit>",
+        level: "Advanced",
+        english: "Apply a specific commit to the current branch.",
+        telugu: "Specific commit ni current branch ki apply cheyyataniki; conflicts ravachu.",
+      },
+      {
+        command: "git revert <commit>",
+        level: "Advanced",
+        english: "Create a new commit that reverses a previous commit.",
+        telugu: "Previous commit changes reverse cheyyataniki; shared history ki safer option.",
+      },
+      {
+        command: "git blame -L 10,30 -- app/page.tsx",
+        level: "Intermediate",
+        english: "Show who last changed lines 10 through 30.",
+        telugu: "Specific code lines evaru change chesaro telusukovadaniki.",
+      },
+      {
+        command: "git ls-files",
+        level: "Basic",
+        english: "List files tracked by Git.",
+        telugu: "Git track chestunna files list chudataniki.",
+      },
+      {
+        command: "git check-ignore -v .env",
+        level: "Troubleshooting",
+        english: "Explain which ignore rule matches a path.",
+        telugu: ".env file enduku ignore avutundo check cheyyataniki.",
+      },
+      {
+        command: "git remote -v",
+        level: "Basic",
+        english: "Display configured remote repository URLs.",
+        telugu: "GitHub remote URLs verify cheyyataniki.",
+      },
+      {
+        command: "git reflog -15",
+        level: "Advanced",
+        english: "Inspect recent local reference movements.",
+        telugu: "Recent local HEAD/branch movements inspect cheyyataniki; recovery ki useful.",
+      },
+      {
+        command: "git fsck --full",
+        level: "Troubleshooting",
+        english: "Check repository object connectivity and integrity.",
+        telugu: "Repository object integrity troubleshoot cheyyataniki.",
+      },
+    ],
+  };

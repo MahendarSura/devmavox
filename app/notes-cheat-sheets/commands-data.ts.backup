@@ -1,0 +1,4171 @@
+export type CommandLevel =
+  | "Basic"
+  | "Intermediate"
+  | "Advanced"
+  | "Troubleshooting";
+
+export interface DevOpsCommand {
+  command: string;
+  level: CommandLevel;
+  english: string;
+  telugu: string;
+}
+
+export interface DevOpsTool {
+  name: string;
+  category: string;
+  commands: DevOpsCommand[];
+}
+
+export const devOpsTools: DevOpsTool[] = [
+  {
+    name: "Linux",
+    category: "Core",
+    commands: [
+      { command: "pwd", level: "Basic", english: "to print the current directory", telugu: "ప్రస్తుత directory పేరు చూడటానికి." },
+      { command: "ls -lah", level: "Basic", english: "to list files with details", telugu: "Files వివరాలు, size, permissions చూడటానికి." },
+      { command: "cat /etc/os-release", level: "Intermediate", english: "to identify the Linux distribution", telugu: "Linux distribution వివరాలు తెలుసుకోవటానికి." },
+      { command: "find /var/log -type f", level: "Advanced", english: "to find log files under /var/log", telugu: "/var/log లో log files వెతకటానికి." },
+      { command: "df -h", level: "Troubleshooting", english: "to check filesystem disk usage", telugu: "Disk space ఎంత ఉపయోగించబడిందో చూడటానికి." },
+      { command: "free -h", level: "Troubleshooting", english: "to check memory usage", telugu: "RAM usage తెలుసుకోవటానికి." },
+      { command: "systemctl --failed", level: "Troubleshooting", english: "to list failed system services", telugu: "Fail అయిన system services చూడటానికి." },
+      {
+        command: "du -sh /var/log",
+        level: "Basic",
+        english: "Show the total size of the log directory.",
+        telugu: "Log directory total size telusukovadaniki.",
+      },
+      {
+        command: "uptime",
+        level: "Basic",
+        english: "Show system uptime and load averages.",
+        telugu: "System entha sepu run avutundo, load entho chudataniki.",
+      },
+      {
+        command: "ps aux",
+        level: "Basic",
+        english: "List running processes.",
+        telugu: "Run avutunna processes list chudataniki.",
+      },
+      {
+        command: "top",
+        level: "Basic",
+        english: "Monitor processes and resource usage interactively.",
+        telugu: "Processes mariyu CPU/RAM usage live ga monitor cheyyataniki.",
+      },
+      {
+        command: "ip addr show",
+        level: "Basic",
+        english: "Display network interfaces and IP addresses.",
+        telugu: "Network interfaces, IP addresses chudataniki.",
+      },
+      {
+        command: "ss -tulpn",
+        level: "Intermediate",
+        english: "List listening TCP/UDP sockets and associated processes.",
+        telugu: "Listening ports, services identify cheyyataniki; permissions avasaram kavachu.",
+      },
+      {
+        command: "journalctl -p err -b",
+        level: "Intermediate",
+        english: "Show system errors from the current boot.",
+        telugu: "Current boot lo system errors chudataniki.",
+      },
+      {
+        command: "systemctl status <service>",
+        level: "Basic",
+        english: "Check the status of a service.",
+        telugu: "Service status check cheyyataniki.",
+      },
+      {
+        command: "systemctl restart <service>",
+        level: "Intermediate",
+        english: "Restart a system service.",
+        telugu: "Service restart cheyyataniki; production impact mundu assess cheyyali.",
+      },
+      {
+        command: "find /var/log -type f -mtime -1",
+        level: "Intermediate",
+        english: "Find log files modified in the last day.",
+        telugu: "Last 24 hours lo modify ayina log files vetakataniki.",
+      },
+      {
+        command: "grep -Rni 'error' /var/log/myapp/",
+        level: "Intermediate",
+        english: "Search application logs for error text.",
+        telugu: "Application logs lo error messages search cheyyataniki.",
+      },
+      {
+        command: "lsof -i :8080",
+        level: "Troubleshooting",
+        english: "Identify processes using port 8080.",
+        telugu: "Port 8080 ni ye process use chestundo telusukovadaniki.",
+      },
+      {
+        command: "curl -I https://example.com",
+        level: "Basic",
+        english: "Check HTTP response headers.",
+        telugu: "Website HTTP response headers verify cheyyataniki.",
+      },
+      {
+        command: "dig example.com",
+        level: "Basic",
+        english: "Query DNS records for a domain.",
+        telugu: "Domain DNS resolution test cheyyataniki.",
+      },
+      {
+        command: "tar -czf logs.tar.gz /var/log/myapp/",
+        level: "Intermediate",
+        english: "Create a compressed archive of application logs.",
+        telugu: "Logs ni compressed archive ga backup cheyyataniki; sensitive logs permissions check cheyyali.",
+      },
+      {
+        command: "df -i",
+        level: "Troubleshooting",
+        english: "Check filesystem inode usage.",
+        telugu: "Disk space undi kuda files create avvakapothe inode usage check cheyyataniki.",
+      },
+      {
+        command: "vmstat 1 5",
+        level: "Advanced",
+        english: "Sample memory, process, and CPU statistics five times.",
+        telugu: "Performance troubleshooting kosam system statistics collect cheyyataniki.",
+      },
+    
+      {
+        command: "whoami",
+        level: "Basic",
+        english: "Show current user",
+        telugu: "Current user telusukovadaniki"
+      },
+      {
+        command: "id",
+        level: "Basic",
+        english: "Show user and group IDs",
+        telugu: "User and group IDs chudataniki"
+      },
+      {
+        command: "uname -a",
+        level: "Basic",
+        english: "Show kernel and system information",
+        telugu: "Kernel details chudataniki"
+      },
+      {
+        command: "hostname",
+        level: "Basic",
+        english: "Show system hostname",
+        telugu: "System hostname chudataniki"
+      },
+      {
+        command: "date",
+        level: "Basic",
+        english: "Show current date and time",
+        telugu: "Date time chudataniki"
+      },
+      {
+        command: "cal",
+        level: "Basic",
+        english: "Display a calendar",
+        telugu: "Calendar chudataniki"
+      },
+      {
+        command: "history",
+        level: "Basic",
+        english: "Show shell command history",
+        telugu: "Command history chudataniki"
+      },
+      {
+        command: "clear",
+        level: "Basic",
+        english: "Clear terminal screen",
+        telugu: "Terminal screen clear cheyadaniki"
+      },
+      {
+        command: "which bash",
+        level: "Basic",
+        english: "Locate the Bash executable",
+        telugu: "Bash executable path telusukovadaniki"
+      },
+      {
+        command: "type ls",
+        level: "Intermediate",
+        english: "Identify how a command is resolved",
+        telugu: "Command type telusukovadaniki"
+      },
+      {
+        command: "whereis bash",
+        level: "Intermediate",
+        english: "Find binary and manual locations",
+        telugu: "Binary, manual paths chudataniki"
+      },
+      {
+        command: "file /etc/passwd",
+        level: "Basic",
+        english: "Identify a file's type",
+        telugu: "File type telusukovadaniki"
+      },
+      {
+        command: "stat /etc/passwd",
+        level: "Intermediate",
+        english: "Show file metadata",
+        telugu: "File metadata chudataniki"
+      },
+      {
+        command: "readlink -f /bin/sh",
+        level: "Intermediate",
+        english: "Resolve a symbolic link",
+        telugu: "Symbolic link target telusukovadaniki"
+      },
+      {
+        command: "realpath .",
+        level: "Basic",
+        english: "Print an absolute path",
+        telugu: "Absolute path chudataniki"
+      },
+      {
+        command: "tree -L 2",
+        level: "Basic",
+        english: "Display directories as a tree",
+        telugu: "Directory tree chudataniki"
+      },
+      {
+        command: "find . -maxdepth 2 -type f",
+        level: "Intermediate",
+        english: "Find files two levels deep",
+        telugu: "Rendu levels lopala files vetakadaniki"
+      },
+      {
+        command: "find /tmp -type f -mtime +7",
+        level: "Intermediate",
+        english: "Find old files in temporary storage",
+        telugu: "Paatha temporary files vetakadaniki"
+      },
+      {
+        command: "find . -type f -size +100M",
+        level: "Advanced",
+        english: "Find files larger than 100 MB",
+        telugu: "100 MB kanna pedda files vetakadaniki"
+      },
+      {
+        command: "find . -type f -empty",
+        level: "Basic",
+        english: "Find empty files",
+        telugu: "Empty files vetakadaniki"
+      },
+      {
+        command: "find . -type d -empty",
+        level: "Basic",
+        english: "Find empty directories",
+        telugu: "Empty directories vetakadaniki"
+      },
+      {
+        command: "du -sh .",
+        level: "Basic",
+        english: "Show current directory size",
+        telugu: "Current directory size chudataniki"
+      },
+      {
+        command: "du -ah . | sort -h | tail -20",
+        level: "Advanced",
+        english: "Show the 20 largest paths",
+        telugu: "Pedda files/directories chudataniki"
+      },
+      {
+        command: "df -hT",
+        level: "Basic",
+        english: "Show filesystem space and type",
+        telugu: "Filesystem space, type chudataniki"
+      },
+      {
+        command: "lsblk -f",
+        level: "Intermediate",
+        english: "List block devices and filesystems",
+        telugu: "Disks, filesystems chudataniki"
+      },
+      {
+        command: "blkid",
+        level: "Advanced",
+        english: "Show block-device identifiers",
+        telugu: "Disk identifiers telusukovadaniki"
+      },
+      {
+        command: "mount | column -t",
+        level: "Intermediate",
+        english: "Display mounted filesystems",
+        telugu: "Mounted filesystems chudataniki"
+      },
+      {
+        command: "findmnt",
+        level: "Intermediate",
+        english: "Display mount hierarchy",
+        telugu: "Mount hierarchy chudataniki"
+      },
+      {
+        command: "ps aux --sort=-%mem | head",
+        level: "Intermediate",
+        english: "Show top memory-consuming processes",
+        telugu: "Ekkuva RAM vadutunna processes chudataniki"
+      },
+      {
+        command: "ps -eo pid,ppid,stat,cmd",
+        level: "Intermediate",
+        english: "List process IDs and states",
+        telugu: "Process IDs, states chudataniki"
+      },
+      {
+        command: "pgrep -a sshd",
+        level: "Basic",
+        english: "Find SSH daemon processes",
+        telugu: "SSH processes vetakadaniki"
+      },
+      {
+        command: "pstree -p",
+        level: "Intermediate",
+        english: "Show process tree with PIDs",
+        telugu: "Process tree chudataniki"
+      },
+      {
+        command: "nice -n 10 sleep 60",
+        level: "Advanced",
+        english: "Start a process with adjusted priority",
+        telugu: "Priority marchi process run cheyadaniki"
+      },
+      {
+        command: "renice 5 -p <PID>",
+        level: "Advanced",
+        english: "Change a running process priority",
+        telugu: "Running process priority marchadaniki"
+      },
+      {
+        command: "kill -TERM <PID>",
+        level: "Intermediate",
+        english: "Request graceful process termination",
+        telugu: "Process ni graceful-ga stop cheyadaniki"
+      },
+      {
+        command: "kill -KILL <PID>",
+        level: "Troubleshooting",
+        english: "Forcefully terminate a process",
+        telugu: "Respond avvani process ni force stop cheyadaniki"
+      },
+      {
+        command: "ip route show",
+        level: "Intermediate",
+        english: "Display routing table",
+        telugu: "Routing table chudataniki"
+      },
+      {
+        command: "ip neigh show",
+        level: "Intermediate",
+        english: "Display neighbor cache",
+        telugu: "Neighbor IP/MAC entries chudataniki"
+      },
+      {
+        command: "ping -c 4 127.0.0.1",
+        level: "Basic",
+        english: "Test local network stack",
+        telugu: "Local network stack test cheyadaniki"
+      },
+      {
+        command: "getent hosts example.com",
+        level: "Intermediate",
+        english: "Resolve a hostname using system databases",
+        telugu: "Hostname resolution test cheyadaniki"
+      },
+      {
+        command: "curl -sS -o /dev/null -w '%{http_code}\n' https://example.com",
+        level: "Intermediate",
+        english: "Print HTTP status code",
+        telugu: "HTTP status code telusukovadaniki"
+      },
+      {
+        command: "traceroute example.com",
+        level: "Intermediate",
+        english: "Trace network path to a host",
+        telugu: "Network route trace cheyadaniki"
+      },
+      {
+        command: "resolvectl status",
+        level: "Intermediate",
+        english: "Show system DNS configuration",
+        telugu: "DNS configuration chudataniki"
+      },
+      {
+        command: "timedatectl status",
+        level: "Basic",
+        english: "Show time and clock settings",
+        telugu: "System time settings chudataniki"
+      },
+      {
+        command: "timedatectl list-timezones",
+        level: "Basic",
+        english: "List available time zones",
+        telugu: "Time zones list chudataniki"
+      },
+      {
+        command: "journalctl -b",
+        level: "Intermediate",
+        english: "Show current boot logs",
+        telugu: "Current boot logs chudataniki"
+      },
+      {
+        command: "journalctl -u <service> --since today",
+        level: "Intermediate",
+        english: "Show today's service logs",
+        telugu: "Service today's logs chudataniki"
+      },
+      {
+        command: "dmesg -T | tail -50",
+        level: "Intermediate",
+        english: "Show recent kernel messages",
+        telugu: "Recent kernel messages chudataniki"
+      },
+      {
+        command: "systemctl is-active <service>",
+        level: "Basic",
+        english: "Check whether a service is active",
+        telugu: "Service active ga undo chudataniki"
+      },
+      {
+        command: "systemctl list-units --type=service",
+        level: "Intermediate",
+        english: "List loaded service units",
+        telugu: "Loaded services chudataniki"
+      },
+      {
+        command: "systemctl list-unit-files --state=enabled",
+        level: "Intermediate",
+        english: "List enabled service definitions",
+        telugu: "Enabled services chudataniki"
+      },
+      {
+        command: "sudo systemctl restart <service>",
+        level: "Troubleshooting",
+        english: "Restart a service",
+        telugu: "Service restart cheyadaniki"
+      },
+      {
+        command: "sudo systemctl reload <service>",
+        level: "Intermediate",
+        english: "Reload service configuration",
+        telugu: "Service configuration reload cheyadaniki"
+      },
+      {
+        command: "sudo systemctl enable <service>",
+        level: "Intermediate",
+        english: "Enable a service at boot",
+        telugu: "Boot appudu service start avvadaniki"
+      },
+      {
+        command: "sudo systemctl disable <service>",
+        level: "Intermediate",
+        english: "Disable automatic service startup",
+        telugu: "Automatic startup disable cheyadaniki"
+      },
+      {
+        command: "chmod 640 <file>",
+        level: "Basic",
+        english: "Set owner and group file permissions",
+        telugu: "File permissions set cheyadaniki"
+      },
+      {
+        command: "chmod u+x <script>",
+        level: "Basic",
+        english: "Make a script executable for its owner",
+        telugu: "Script execute permission ivvadaniki"
+      },
+      {
+        command: "chown <user>:<group> <file>",
+        level: "Intermediate",
+        english: "Change file ownership",
+        telugu: "File owner/group marchadaniki"
+      },
+      {
+        command: "umask 027",
+        level: "Advanced",
+        english: "Set default permission mask",
+        telugu: "Default permissions control cheyadaniki"
+      },
+      {
+        command: "getfacl <file>",
+        level: "Advanced",
+        english: "Display access control lists",
+        telugu: "ACL permissions chudataniki"
+      },
+      {
+        command: "setfacl -m u:<user>:r <file>",
+        level: "Advanced",
+        english: "Grant a user read access using ACL",
+        telugu: "User ki ACL read access ivvadaniki"
+      },
+      {
+        command: "id <user>",
+        level: "Basic",
+        english: "Show another user's identity and groups",
+        telugu: "User groups telusukovadaniki"
+      },
+      {
+        command: "getent passwd <user>",
+        level: "Intermediate",
+        english: "Look up a user account",
+        telugu: "User account details chudataniki"
+      },
+      {
+        command: "getent group <group>",
+        level: "Intermediate",
+        english: "Look up a group",
+        telugu: "Group details chudataniki"
+      },
+      {
+        command: "sudo useradd -m <user>",
+        level: "Intermediate",
+        english: "Create a user with a home directory",
+        telugu: "Home directory tho user create cheyadaniki"
+      },
+      {
+        command: "sudo usermod -aG <group> <user>",
+        level: "Intermediate",
+        english: "Add a user to a supplementary group",
+        telugu: "User ni group lo add cheyadaniki"
+      },
+      {
+        command: "sudo passwd -l <user>",
+        level: "Advanced",
+        english: "Lock a user password",
+        telugu: "User password lock cheyadaniki"
+      },
+      {
+        command: "getent hosts localhost",
+        level: "Basic",
+        english: "Check localhost name resolution",
+        telugu: "Localhost name resolution chudataniki"
+      },
+      {
+        command: "tar -czf archive.tar.gz <directory>",
+        level: "Basic",
+        english: "Create a gzip-compressed tar archive",
+        telugu: "Directory ni compress cheyadaniki"
+      },
+      {
+        command: "tar -tzf archive.tar.gz",
+        level: "Basic",
+        english: "List archive contents",
+        telugu: "Archive contents chudataniki"
+      },
+      {
+        command: "tar -xzf archive.tar.gz",
+        level: "Basic",
+        english: "Extract a gzip-compressed tar archive",
+        telugu: "Archive extract cheyadaniki"
+      },
+      {
+        command: "gzip -k <file>",
+        level: "Basic",
+        english: "Compress a file and keep the original",
+        telugu: "Original file unchi compress cheyadaniki"
+      },
+      {
+        command: "xz -T0 <file>",
+        level: "Advanced",
+        english: "Compress using available CPU threads",
+        telugu: "CPU threads use chesi compress cheyadaniki"
+      },
+      {
+        command: "zip -r archive.zip <directory>",
+        level: "Basic",
+        english: "Create a ZIP archive",
+        telugu: "ZIP archive create cheyadaniki"
+      },
+      {
+        command: "unzip -l archive.zip",
+        level: "Basic",
+        english: "List ZIP archive contents",
+        telugu: "ZIP contents chudataniki"
+      },
+      {
+        command: "rsync -avh <source>/ <destination>/",
+        level: "Intermediate",
+        english: "Synchronize directory contents",
+        telugu: "Directories sync cheyadaniki"
+      },
+      {
+        command: "rsync -av --dry-run <source>/ <destination>/",
+        level: "Advanced",
+        english: "Preview an rsync operation",
+        telugu: "Sync mundu changes preview cheyadaniki"
+      },
+      {
+        command: "scp <file> <user>@<host>:/tmp/",
+        level: "Intermediate",
+        english: "Copy a file to a remote host",
+        telugu: "Remote server ki file copy cheyadaniki"
+      },
+      {
+        command: "sftp <user>@<host>",
+        level: "Intermediate",
+        english: "Start an interactive SFTP session",
+        telugu: "Secure file transfer session start cheyadaniki"
+      },
+      {
+        command: "sha256sum <file>",
+        level: "Basic",
+        english: "Calculate a SHA-256 checksum",
+        telugu: "File checksum verify cheyadaniki"
+      },
+      {
+        command: "sha256sum -c checksums.txt",
+        level: "Intermediate",
+        english: "Verify checksums from a file",
+        telugu: "Checksum file verify cheyadaniki"
+      },
+      {
+        command: "md5sum <file>",
+        level: "Basic",
+        english: "Calculate an MD5 digest",
+        telugu: "MD5 digest calculate cheyadaniki"
+      },
+      {
+        command: "diff -u <old-file> <new-file>",
+        level: "Basic",
+        english: "Compare two text files",
+        telugu: "Rendu files differences chudataniki"
+      },
+      {
+        command: "cmp <file1> <file2>",
+        level: "Intermediate",
+        english: "Compare files byte by byte",
+        telugu: "Files byte-level compare cheyadaniki"
+      },
+      {
+        command: "sort <file>",
+        level: "Basic",
+        english: "Sort lines in a file",
+        telugu: "File lines sort cheyadaniki"
+      },
+      {
+        command: "sort <file> | uniq -c",
+        level: "Intermediate",
+        english: "Count repeated adjacent sorted lines",
+        telugu: "Repeated lines count cheyadaniki"
+      },
+      {
+        command: "grep -Rni 'error' /var/log",
+        level: "Intermediate",
+        english: "Search logs for error text",
+        telugu: "Logs lo errors vetakadaniki"
+      },
+      {
+        command: "grep -E 'WARN|ERROR' <file>",
+        level: "Basic",
+        english: "Match warning or error lines",
+        telugu: "Warning/error lines filter cheyadaniki"
+      },
+      {
+        command: "awk '{print $1}' <file>",
+        level: "Intermediate",
+        english: "Print the first whitespace-delimited field",
+        telugu: "First field print cheyadaniki"
+      },
+      {
+        command: "sed -n '1,20p' <file>",
+        level: "Basic",
+        english: "Print the first 20 lines",
+        telugu: "First 20 lines chudataniki"
+      },
+      {
+        command: "cut -d: -f1 /etc/passwd",
+        level: "Intermediate",
+        english: "Extract usernames from passwd file",
+        telugu: "Usernames extract cheyadaniki"
+      },
+      {
+        command: "wc -l <file>",
+        level: "Basic",
+        english: "Count lines in a file",
+        telugu: "File lines count cheyadaniki"
+      },
+      {
+        command: "head -n 20 <file>",
+        level: "Basic",
+        english: "Show the first 20 lines",
+        telugu: "First 20 lines chudataniki"
+      },
+      {
+        command: "tail -n 50 <file>",
+        level: "Basic",
+        english: "Show the last 50 lines",
+        telugu: "Last 50 lines chudataniki"
+      },
+      {
+        command: "tail -F /var/log/syslog",
+        level: "Troubleshooting",
+        english: "Follow a log file as it changes",
+        telugu: "Log live-ga monitor cheyadaniki"
+      },
+      {
+        command: "watch -n 2 df -h",
+        level: "Intermediate",
+        english: "Refresh disk usage every two seconds",
+        telugu: "Disk usage periodic-ga chudataniki"
+      },
+      {
+        command: "env",
+        level: "Basic",
+        english: "Print environment variables",
+        telugu: "Environment variables chudataniki"
+      },
+      {
+        command: "printenv PATH",
+        level: "Basic",
+        english: "Display the PATH variable",
+        telugu: "PATH value chudataniki"
+      },
+      {
+        command: "export APP_ENV=production",
+        level: "Basic",
+        english: "Set an environment variable for child processes",
+        telugu: "Environment variable set cheyadaniki"
+      },
+      {
+        command: "ulimit -a",
+        level: "Advanced",
+        english: "Show resource limits",
+        telugu: "Process resource limits chudataniki"
+      },
+      {
+        command: "sysctl -a 2>/dev/null | head",
+        level: "Advanced",
+        english: "Preview kernel parameters",
+        telugu: "Kernel parameters chudataniki"
+      },
+      {
+        command: "sysctl net.ipv4.ip_forward",
+        level: "Advanced",
+        english: "Read IPv4 forwarding setting",
+        telugu: "IP forwarding setting chudataniki"
+      },
+      {
+        command: "cat /proc/cpuinfo",
+        level: "Intermediate",
+        english: "Read CPU information",
+        telugu: "CPU details chudataniki"
+      },
+      {
+        command: "lscpu",
+        level: "Basic",
+        english: "Summarize CPU architecture",
+        telugu: "CPU architecture chudataniki"
+      },
+      {
+        command: "lsmem",
+        level: "Advanced",
+        english: "List memory ranges",
+        telugu: "Memory ranges chudataniki"
+      },
+      {
+        command: "lspci",
+        level: "Intermediate",
+        english: "List PCI devices",
+        telugu: "PCI devices chudataniki"
+      },
+      {
+        command: "lsusb",
+        level: "Basic",
+        english: "List USB devices",
+        telugu: "USB devices chudataniki"
+      },
+      {
+        command: "sensors",
+        level: "Intermediate",
+        english: "Read hardware sensor values",
+        telugu: "Hardware temperature sensors chudataniki"
+      },
+      {
+        command: "smartctl -H /dev/sda",
+        level: "Troubleshooting",
+        english: "Check disk SMART health",
+        telugu: "Disk health check cheyadaniki"
+      },
+      {
+        command: "sudo fsck -N /dev/<device>",
+        level: "Advanced",
+        english: "Preview filesystem check command",
+        telugu: "Filesystem check command preview cheyadaniki"
+      },
+      {
+        command: "mountpoint -q /mnt/data",
+        level: "Basic",
+        english: "Check whether a path is a mount point",
+        telugu: "Mount point undho check cheyadaniki"
+      },
+      {
+        command: "fuser -v <file>",
+        level: "Advanced",
+        english: "Show processes using a file",
+        telugu: "File vadutunna processes chudataniki"
+      },
+      {
+        command: "lsof <file>",
+        level: "Advanced",
+        english: "List open handles for a file",
+        telugu: "File open chesina processes chudataniki"
+      },
+      {
+        command: "flock -n /tmp/job.lock true",
+        level: "Advanced",
+        english: "Test non-blocking file lock acquisition",
+        telugu: "File lock availability test cheyadaniki"
+      },
+      {
+        command: "crontab -l",
+        level: "Basic",
+        english: "List current user's scheduled jobs",
+        telugu: "Cron jobs chudataniki"
+      },
+      {
+        command: "systemctl list-timers",
+        level: "Intermediate",
+        english: "List systemd timers",
+        telugu: "Scheduled systemd timers chudataniki"
+      },
+      {
+        command: "atq",
+        level: "Intermediate",
+        english: "List pending one-time jobs",
+        telugu: "Pending at jobs chudataniki"
+      },
+      {
+        command: "logger -t devops-test 'test message'",
+        level: "Basic",
+        english: "Write a message to the system log",
+        telugu: "System log ki test message rayadaniki"
+      },
+      {
+        command: "logger -p user.warning 'check service'",
+        level: "Intermediate",
+        english: "Write a warning-level log entry",
+        telugu: "Warning log entry create cheyadaniki"
+      },
+      {
+        command: "last -n 10",
+        level: "Intermediate",
+        english: "Show recent login sessions",
+        telugu: "Recent login sessions chudataniki"
+      },
+      {
+        command: "lastlog",
+        level: "Intermediate",
+        english: "Show last login information",
+        telugu: "Last login details chudataniki"
+      },
+      {
+        command: "who",
+        level: "Basic",
+        english: "Show logged-in users",
+        telugu: "Logged-in users chudataniki"
+      },
+      {
+        command: "w",
+        level: "Basic",
+        english: "Show logged-in users and their activity",
+        telugu: "User activity chudataniki"
+      },
+      {
+        command: "tty",
+        level: "Basic",
+        english: "Print the current terminal device",
+        telugu: "Current terminal device chudataniki"
+      },
+      {
+        command: "stty -a",
+        level: "Advanced",
+        english: "Display terminal settings",
+        telugu: "Terminal settings chudataniki"
+      },
+      {
+        command: "printf 'Linux\n'",
+        level: "Basic",
+        english: "Print formatted text",
+        telugu: "Formatted text print cheyadaniki"
+      },
+      {
+        command: "seq 1 10",
+        level: "Basic",
+        english: "Generate a sequence of numbers",
+        telugu: "Number sequence generate cheyadaniki"
+      },
+      {
+        command: "xargs -n1 echo < list.txt",
+        level: "Intermediate",
+        english: "Run a command for each input item",
+        telugu: "Input items meeda command run cheyadaniki"
+      },
+      {
+        command: "parallel echo ::: one two three",
+        level: "Advanced",
+        english: "Run independent tasks in parallel with GNU Parallel",
+        telugu: "Tasks parallel-ga run cheyadaniki"
+      },
+      {
+        command: "timeout 10s <command>",
+        level: "Advanced",
+        english: "Limit a command's runtime",
+        telugu: "Command runtime limit cheyadaniki"
+      },
+      {
+        command: "time <command>",
+        level: "Basic",
+        english: "Measure command execution time",
+        telugu: "Command execution time measure cheyadaniki"
+      },
+      {
+        command: "nohup <command> >job.log 2>&1 &",
+        level: "Intermediate",
+        english: "Run a command immune to hangup signals",
+        telugu: "Session close ayina command run avvadaniki"
+      },
+      {
+        command: "disown",
+        level: "Advanced",
+        english: "Remove a job from shell job control",
+        telugu: "Shell job control nunchi job remove cheyadaniki"
+      },
+      {
+        command: "jobs -l",
+        level: "Basic",
+        english: "List shell background jobs",
+        telugu: "Background jobs chudataniki"
+      },
+      {
+        command: "bg %1",
+        level: "Intermediate",
+        english: "Resume a stopped job in the background",
+        telugu: "Stopped job background lo resume cheyadaniki"
+      },
+      {
+        command: "fg %1",
+        level: "Intermediate",
+        english: "Bring a job to the foreground",
+        telugu: "Job foreground ki teesukuravadaniki"
+      },
+      {
+        command: "command -v python3",
+        level: "Basic",
+        english: "Find the command resolution for Python",
+        telugu: "Python command path chudataniki"
+      },
+      {
+        command: "ldd /bin/ls",
+        level: "Advanced",
+        english: "Show shared library dependencies",
+        telugu: "Binary library dependencies chudataniki"
+      },
+      {
+        command: "strings <binary> | head",
+        level: "Advanced",
+        english: "Display printable strings in a binary",
+        telugu: "Binary lo readable strings chudataniki"
+      },
+      {
+        command: "readelf -h <binary>",
+        level: "Advanced",
+        english: "Inspect ELF binary header",
+        telugu: "ELF binary header chudataniki"
+      },
+      {
+        command: "objdump -d <binary> | head",
+        level: "Advanced",
+        english: "Preview disassembled machine code",
+        telugu: "Binary disassembly preview cheyadaniki"
+      },
+      {
+        command: "nm -D <binary>",
+        level: "Advanced",
+        english: "List dynamic symbols",
+        telugu: "Dynamic symbols chudataniki"
+      },
+      {
+        command: "strace -c <command>",
+        level: "Advanced",
+        english: "Summarize system calls made by a command",
+        telugu: "System calls summary chudataniki"
+      },
+      {
+        command: "strace -f -o trace.log <command>",
+        level: "Troubleshooting",
+        english: "Trace system calls into a log file",
+        telugu: "System calls log cheyadaniki"
+      },
+      {
+        command: "ltrace <command>",
+        level: "Advanced",
+        english: "Trace dynamic library calls",
+        telugu: "Library calls trace cheyadaniki"
+      },
+      {
+        command: "perf stat <command>",
+        level: "Advanced",
+        english: "Collect performance counter statistics",
+        telugu: "Performance counters collect cheyadaniki"
+      },
+      {
+        command: "sar -u 1 5",
+        level: "Intermediate",
+        english: "Sample CPU utilization",
+        telugu: "CPU utilization observe cheyadaniki"
+      },
+      {
+        command: "sar -r 1 5",
+        level: "Intermediate",
+        english: "Sample memory utilization",
+        telugu: "Memory utilization observe cheyadaniki"
+      },
+      {
+        command: "iostat -xz 1 3",
+        level: "Advanced",
+        english: "Inspect disk I/O statistics",
+        telugu: "Disk I/O statistics chudataniki"
+      },
+      {
+        command: "iotop -o",
+        level: "Advanced",
+        english: "Show processes performing disk I/O",
+        telugu: "Disk I/O chestunna processes chudataniki"
+      },
+      {
+        command: "pidstat 1 5",
+        level: "Advanced",
+        english: "Sample per-process resource usage",
+        telugu: "Process-wise resource usage chudataniki"
+      },
+      {
+        command: "mpstat -P ALL 1 3",
+        level: "Advanced",
+        english: "Show per-CPU statistics",
+        telugu: "Prati CPU statistics chudataniki"
+      },
+      {
+        command: "numastat",
+        level: "Advanced",
+        english: "Show NUMA memory statistics",
+        telugu: "NUMA memory statistics chudataniki"
+      },
+      {
+        command: "taskset -pc <PID>",
+        level: "Advanced",
+        english: "Display CPU affinity for a process",
+        telugu: "Process CPU affinity chudataniki"
+      },
+      {
+        command: "chrt -p <PID>",
+        level: "Advanced",
+        english: "Display scheduling policy for a process",
+        telugu: "Process scheduling policy chudataniki"
+      },
+      {
+        command: "lsns",
+        level: "Advanced",
+        english: "List namespaces",
+        telugu: "Linux namespaces chudataniki"
+      },
+      {
+        command: "unshare --mount true",
+        level: "Advanced",
+        english: "Run a command in a new mount namespace",
+        telugu: "New mount namespace lo command run cheyadaniki"
+      },
+      {
+        command: "nsenter -t <PID> -m -- mount",
+        level: "Advanced",
+        english: "Inspect mounts in another process namespace",
+        telugu: "Vere process namespace mounts chudataniki"
+      },
+      {
+        command: "findmnt --verify",
+        level: "Troubleshooting",
+        english: "Verify mount table configuration",
+        telugu: "Mount configuration verify cheyadaniki"
+      },
+      {
+        command: "namei -l <path>",
+        level: "Troubleshooting",
+        english: "Show permissions along a path",
+        telugu: "Path lo prati level permissions chudataniki"
+      },
+      {
+        command: "getent ahosts example.com",
+        level: "Intermediate",
+        english: "Resolve host addresses using system databases",
+        telugu: "Host addresses resolve cheyadaniki"
+      },
+      {
+        command: "ip -s link",
+        level: "Intermediate",
+        english: "Show network interface counters",
+        telugu: "Network interface counters chudataniki"
+      },
+      {
+        command: "ethtool <interface>",
+        level: "Advanced",
+        english: "Inspect network interface settings",
+        telugu: "Network interface settings chudataniki"
+      },
+      {
+        command: "nmcli device status",
+        level: "Intermediate",
+        english: "Show NetworkManager device status",
+        telugu: "NetworkManager devices chudataniki"
+      },
+      {
+        command: "tcpdump -i any -c 20",
+        level: "Advanced",
+        english: "Capture a small sample of network packets",
+        telugu: "Konni network packets capture cheyadaniki"
+      },
+      {
+        command: "openssl s_client -connect example.com:443 -servername example.com",
+        level: "Advanced",
+        english: "Inspect a TLS connection",
+        telugu: "TLS connection inspect cheyadaniki"
+      },
+      {
+        command: "openssl x509 -in cert.pem -noout -dates",
+        level: "Troubleshooting",
+        english: "Show certificate validity dates",
+        telugu: "Certificate expiry dates chudataniki"
+      },
+      {
+        command: "ssh -v <user>@<host>",
+        level: "Troubleshooting",
+        english: "Debug SSH connection setup",
+        telugu: "SSH connection debug cheyadaniki"
+      },
+      {
+        command: "ssh-keygen -lf ~/.ssh/id_ed25519.pub",
+        level: "Intermediate",
+        english: "Show an SSH public-key fingerprint",
+        telugu: "SSH key fingerprint chudataniki"
+      },
+      {
+        command: "ssh-add -l",
+        level: "Intermediate",
+        english: "List keys loaded in the SSH agent",
+        telugu: "SSH agent keys chudataniki"
+      },
+      {
+        command: "sudo visudo -c",
+        level: "Troubleshooting",
+        english: "Validate sudoers syntax",
+        telugu: "Sudoers syntax validate cheyadaniki"
+      },
+      {
+        command: "sudo -l",
+        level: "Intermediate",
+        english: "List commands allowed through sudo",
+        telugu: "Sudo permissions chudataniki"
+      },
+      {
+        command: "getenforce",
+        level: "Advanced",
+        english: "Check SELinux enforcement mode",
+        telugu: "SELinux mode chudataniki"
+      },
+      {
+        command: "sestatus",
+        level: "Advanced",
+        english: "Show SELinux status",
+        telugu: "SELinux status chudataniki"
+      },
+      {
+        command: "aa-status",
+        level: "Advanced",
+        english: "Show AppArmor status",
+        telugu: "AppArmor status chudataniki"
+      },
+      {
+        command: "restorecon -nRv <path>",
+        level: "Advanced",
+        english: "Preview SELinux context corrections",
+        telugu: "SELinux context changes preview cheyadaniki"
+      },
+      {
+        command: "journalctl --disk-usage",
+        level: "Intermediate",
+        english: "Show journal disk usage",
+        telugu: "Journal logs disk usage chudataniki"
+      },
+      {
+        command: "sudo journalctl --vacuum-time=7d",
+        level: "Troubleshooting",
+        english: "Remove journal entries older than seven days",
+        telugu: "7 days kanna paatha journal logs clean cheyadaniki"
+      },
+      {
+        command: "coredumpctl list",
+        level: "Advanced",
+        english: "List recorded core dumps",
+        telugu: "Core dumps chudataniki"
+      },
+      {
+        command: "coredumpctl info <PID>",
+        level: "Advanced",
+        english: "Inspect a recorded core dump",
+        telugu: "Core dump details chudataniki"
+      },
+      {
+        command: "systemd-analyze blame",
+        level: "Troubleshooting",
+        english: "Show slow system startup units",
+        telugu: "Boot slow services chudataniki"
+      },
+      {
+        command: "systemd-analyze critical-chain",
+        level: "Advanced",
+        english: "Show critical startup dependency chain",
+        telugu: "Boot critical chain chudataniki"
+      },
+      {
+        command: "systemd-analyze verify <unit-file>",
+        level: "Troubleshooting",
+        english: "Verify a systemd unit file",
+        telugu: "Systemd unit file validate cheyadaniki"
+      },
+      {
+        command: "loginctl list-sessions",
+        level: "Intermediate",
+        english: "List login sessions",
+        telugu: "Login sessions chudataniki"
+      },
+      {
+        command: "loginctl session-status <session>",
+        level: "Intermediate",
+        english: "Show a login session's status",
+        telugu: "Login session status chudataniki"
+      },
+      {
+        command: "ulimit -n",
+        level: "Intermediate",
+        english: "Show the open-file descriptor limit",
+        telugu: "Open files limit chudataniki"
+      },
+      {
+        command: "prlimit --pid <PID>",
+        level: "Advanced",
+        english: "Show resource limits for a process",
+        telugu: "Process resource limits chudataniki"
+      },
+      {
+        command: "getconf PAGE_SIZE",
+        level: "Advanced",
+        english: "Show the system memory page size",
+        telugu: "Memory page size chudataniki"
+      },
+      {
+        command: "getconf LONG_BIT",
+        level: "Basic",
+        english: "Show the user-space word size",
+        telugu: "32-bit/64-bit word size chudataniki"
+      },
+      {
+        command: "locale",
+        level: "Basic",
+        english: "Show locale settings",
+        telugu: "Locale settings chudataniki"
+      },
+      {
+        command: "localectl status",
+        level: "Intermediate",
+        english: "Show system locale and keyboard settings",
+        telugu: "System locale, keyboard settings chudataniki"
+      },
+      {
+        command: "iconv -f UTF-8 -t ASCII//TRANSLIT <file>",
+        level: "Advanced",
+        english: "Convert text character encoding",
+        telugu: "Text encoding convert cheyadaniki"
+      },
+      {
+        command: "dos2unix <file>",
+        level: "Basic",
+        english: "Convert Windows line endings to Unix",
+        telugu: "Windows line endings convert cheyadaniki"
+      },
+      {
+        command: "unix2dos <file>",
+        level: "Basic",
+        english: "Convert Unix line endings to Windows",
+        telugu: "Unix line endings convert cheyadaniki"
+      },
+      {
+        command: "split -l 1000 <file> part-",
+        level: "Intermediate",
+        english: "Split a file into 1000-line chunks",
+        telugu: "File ni 1000 lines chunks ga split cheyadaniki"
+      },
+      {
+        command: "join <file1> <file2>",
+        level: "Advanced",
+        english: "Join sorted files on a common field",
+        telugu: "Common field tho files join cheyadaniki"
+      },
+    ],
+  },
+  {
+    name: "Bash",
+    category: "Core",
+    commands: [
+      { command: "echo $SHELL", level: "Basic", english: "to display the current shell", telugu: "ప్రస్తుతం ఉపయోగిస్తున్న shell తెలుసుకోవటానికి." },
+      { command: "chmod +x script.sh", level: "Intermediate", english: "to make a script executable", telugu: "Script ను execute చేయడానికి permission ఇవ్వటానికి." },
+      { command: "set -euo pipefail", level: "Advanced", english: "to make a Bash script fail on common errors", telugu: "Script లో సాధారణ errors వస్తే execution ఆపటానికి." },
+      { command: "bash -n script.sh", level: "Troubleshooting", english: "to check Bash syntax without running the script", telugu: "Script run చేయకుండా syntax errors తనిఖీ చేయటానికి." },
+      {
+        command: "set -e",
+        level: "Intermediate",
+        english: "Exit the script when a command fails.",
+        telugu: "Command fail ayithe script stop cheyyataniki.",
+      },
+      {
+        command: "set -u",
+        level: "Intermediate",
+        english: "Treat unset variables as errors.",
+        telugu: "Define cheyyani variables ni catch cheyyataniki.",
+      },
+      {
+        command: "set -o pipefail",
+        level: "Advanced",
+        english: "Return a pipeline failure if any command in it fails.",
+        telugu: "Pipeline madhyalo command fail ayina detect cheyyataniki.",
+      },
+      {
+        command: "bash -x script.sh",
+        level: "Intermediate",
+        english: "Trace commands while running a script.",
+        telugu: "Script debugging kosam commands execution trace chudataniki.",
+      },
+      {
+        command: "./script.sh",
+        level: "Basic",
+        english: "Execute a script from the current directory.",
+        telugu: "Current directory nunchi script run cheyyataniki.",
+      },
+      {
+        command: "read -r variable",
+        level: "Basic",
+        english: "Read user input without interpreting backslashes.",
+        telugu: "User input ni safely read cheyyataniki.",
+      },
+      {
+        command: "printf '%s\\n' \"$variable\"",
+        level: "Basic",
+        english: "Print a variable safely with a newline.",
+        telugu: "Variable value ni safe ga print cheyyataniki.",
+      },
+      {
+        command: "trap 'cleanup' EXIT",
+        level: "Advanced",
+        english: "Run cleanup logic when a script exits.",
+        telugu: "Script exit ayinappudu temporary resources cleanup cheyyataniki.",
+      },
+      {
+        command: "command -v kubectl",
+        level: "Basic",
+        english: "Check whether kubectl is available on PATH.",
+        telugu: "kubectl install/path availability check cheyyataniki.",
+      },
+      {
+        command: "test -f config.yaml && echo found",
+        level: "Basic",
+        english: "Check whether a regular file exists.",
+        telugu: "Config file undho ledo check cheyyataniki.",
+      },
+      {
+        command: "for f in *.log; do echo \"$f\"; done",
+        level: "Basic",
+        english: "Loop through log files in the current directory.",
+        telugu: "Directory lo log files meeda loop run cheyyataniki.",
+      },
+      {
+        command: "jobs -l",
+        level: "Intermediate",
+        english: "List background jobs with process IDs.",
+        telugu: "Background jobs mariyu process IDs chudataniki.",
+      },
+      {
+        command: "wait",
+        level: "Intermediate",
+        english: "Wait for background jobs to finish.",
+        telugu: "Background jobs complete ayye varaku wait cheyyataniki.",
+      },
+      {
+        command: "xargs -r -n 1 echo",
+        level: "Advanced",
+        english: "Pass input items to a command one at a time.",
+        telugu: "Input items ni okkokkati ga command ki pass cheyyataniki.",
+      },
+      {
+        command: "awk '{print $1}' file.txt",
+        level: "Intermediate",
+        english: "Print the first whitespace-separated field of each line.",
+        telugu: "Prathi line lo first field extract cheyyataniki.",
+      },
+      {
+        command: "sed -n '1,20p' file.txt",
+        level: "Basic",
+        english: "Print the first 20 lines of a file.",
+        telugu: "File lo first 20 lines chudataniki.",
+      },
+      {
+        command: "sort file.txt | uniq -c",
+        level: "Intermediate",
+        english: "Count repeated adjacent lines after sorting.",
+        telugu: "Repeated lines count cheyyataniki.",
+      },
+      {
+        command: "date -u +%Y-%m-%dT%H:%M:%SZ",
+        level: "Basic",
+        english: "Print a UTC timestamp in ISO-like format.",
+        telugu: "Logs kosam UTC timestamp generate cheyyataniki.",
+      },
+    
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+      { command: "printf 'one two three\\n' | tr ' ' '\\n'", level: "Intermediate", english: "", telugu: "" },
+],
+  },
+  {
+    name: "Git",
+    category: "Core",
+    commands: [
+      { command: "git status", level: "Basic", english: "to check working tree changes", telugu: "Git files లో చేసిన changes చూడటానికి." },
+      { command: "git log --oneline -10", level: "Intermediate", english: "to view the latest ten commits", telugu: "చివరి పది commits చూడటానికి." },
+      { command: "git reflog", level: "Advanced", english: "to inspect recent HEAD movements", telugu: "ఇటీవల చేసిన Git HEAD మార్పులు తెలుసుకోవటానికి." },
+      { command: "git diff --check", level: "Troubleshooting", english: "to find whitespace errors in changes", telugu: "Changes లో whitespace errors ఉన్నాయో చూడటానికి." },
+      { command: "git fetch origin", level: "Troubleshooting", english: "to retrieve remote updates without merging", telugu: "Remote updates ను merge చేయకుండా తెచ్చుకోవటానికి." },
+      {
+        command: "git status --short",
+        level: "Basic",
+        english: "Show a concise working-tree status.",
+        telugu: "Changed files status short format lo chudataniki.",
+      },
+      {
+        command: "git diff --staged",
+        level: "Basic",
+        english: "Review staged changes before committing.",
+        telugu: "Commit mundu staged changes review cheyyataniki.",
+      },
+      {
+        command: "git log --oneline --graph --decorate -15",
+        level: "Intermediate",
+        english: "View recent commits as a compact branch graph.",
+        telugu: "Recent commits branch graph tho chudataniki.",
+      },
+      {
+        command: "git show --stat HEAD",
+        level: "Basic",
+        english: "Show the latest commit summary and changed-file statistics.",
+        telugu: "Latest commit lo changes summary chudataniki.",
+      },
+      {
+        command: "git branch --merged",
+        level: "Intermediate",
+        english: "List branches already merged into the current branch.",
+        telugu: "Current branch lo merge ayina branches identify cheyyataniki.",
+      },
+      {
+        command: "git fetch --all --prune",
+        level: "Intermediate",
+        english: "Fetch remote updates and remove stale remote-tracking references.",
+        telugu: "Remote updates fetch chesi stale references clean cheyyataniki.",
+      },
+      {
+        command: "git switch -c feature/my-change",
+        level: "Basic",
+        english: "Create and switch to a new branch.",
+        telugu: "Kotha feature branch create chesi switch avvataniki.",
+      },
+      {
+        command: "git restore --staged <file>",
+        level: "Intermediate",
+        english: "Unstage a file without discarding its working-tree changes.",
+        telugu: "File changes discard cheyyakunda staging nunchi remove cheyyataniki.",
+      },
+      {
+        command: "git diff main...HEAD",
+        level: "Intermediate",
+        english: "Compare the current branch with its merge base against main.",
+        telugu: "Current branch changes ni main tho compare cheyyataniki.",
+      },
+      {
+        command: "git stash push -m 'work in progress'",
+        level: "Intermediate",
+        english: "Temporarily save uncommitted changes.",
+        telugu: "Uncommitted changes ni temporary ga save cheyyataniki.",
+      },
+      {
+        command: "git stash list",
+        level: "Basic",
+        english: "List saved stashes.",
+        telugu: "Save chesina stashes list chudataniki.",
+      },
+      {
+        command: "git cherry-pick <commit>",
+        level: "Advanced",
+        english: "Apply a specific commit to the current branch.",
+        telugu: "Specific commit ni current branch ki apply cheyyataniki; conflicts ravachu.",
+      },
+      {
+        command: "git revert <commit>",
+        level: "Advanced",
+        english: "Create a new commit that reverses a previous commit.",
+        telugu: "Previous commit changes reverse cheyyataniki; shared history ki safer option.",
+      },
+      {
+        command: "git blame -L 10,30 -- app/page.tsx",
+        level: "Intermediate",
+        english: "Show who last changed lines 10 through 30.",
+        telugu: "Specific code lines evaru change chesaro telusukovadaniki.",
+      },
+      {
+        command: "git ls-files",
+        level: "Basic",
+        english: "List files tracked by Git.",
+        telugu: "Git track chestunna files list chudataniki.",
+      },
+      {
+        command: "git check-ignore -v .env",
+        level: "Troubleshooting",
+        english: "Explain which ignore rule matches a path.",
+        telugu: ".env file enduku ignore avutundo check cheyyataniki.",
+      },
+      {
+        command: "git remote -v",
+        level: "Basic",
+        english: "Display configured remote repository URLs.",
+        telugu: "GitHub remote URLs verify cheyyataniki.",
+      },
+      {
+        command: "git reflog -15",
+        level: "Advanced",
+        english: "Inspect recent local reference movements.",
+        telugu: "Recent local HEAD/branch movements inspect cheyyataniki; recovery ki useful.",
+      },
+      {
+        command: "git fsck --full",
+        level: "Troubleshooting",
+        english: "Check repository object connectivity and integrity.",
+        telugu: "Repository object integrity troubleshoot cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "GitHub",
+    category: "Core",
+    commands: [
+      { command: "gh auth status", level: "Basic", english: "to check GitHub CLI authentication", telugu: "GitHub CLI login status చూడటానికి." },
+      { command: "gh repo view", level: "Intermediate", english: "to view the current repository details", telugu: "ప్రస్తుత repository వివరాలు చూడటానికి." },
+      { command: "gh run list", level: "Advanced", english: "to list recent GitHub Actions runs", telugu: "ఇటీవల జరిగిన GitHub Actions runs చూడటానికి." },
+      { command: "gh run view <run-id> --log-failed", level: "Troubleshooting", english: "to inspect failed workflow logs", telugu: "Fail అయిన workflow logs చూడటానికి." },
+      {
+        command: "gh repo view --web",
+        level: "Basic",
+        english: "Open the current repository page in a browser.",
+        telugu: "Current repository ni browser lo open cheyyataniki.",
+      },
+      {
+        command: "gh pr status",
+        level: "Basic",
+        english: "Show pull requests relevant to the current repository.",
+        telugu: "Current repository pull request status chudataniki.",
+      },
+      {
+        command: "gh pr list --state open",
+        level: "Basic",
+        english: "List open pull requests.",
+        telugu: "Open pull requests list chudataniki.",
+      },
+      {
+        command: "gh pr checks",
+        level: "Intermediate",
+        english: "View CI checks for the current pull request.",
+        telugu: "PR CI checks pass/fail status chudataniki.",
+      },
+      {
+        command: "gh run list --limit 10",
+        level: "Basic",
+        english: "List recent GitHub Actions workflow runs.",
+        telugu: "Recent workflow runs status chudataniki.",
+      },
+      {
+        command: "gh workflow list",
+        level: "Basic",
+        english: "List workflows in the repository.",
+        telugu: "Repository workflows list chudataniki.",
+      },
+      {
+        command: "gh issue list --state open",
+        level: "Basic",
+        english: "List open issues.",
+        telugu: "Open issues list chudataniki.",
+      },
+      {
+        command: "gh release list --limit 10",
+        level: "Intermediate",
+        english: "List recent releases.",
+        telugu: "Recent software releases chudataniki.",
+      },
+      {
+        command: "gh api rate_limit",
+        level: "Troubleshooting",
+        english: "Inspect GitHub API rate-limit status.",
+        telugu: "GitHub API rate limit check cheyyataniki.",
+      },
+      {
+        command: "gh repo fork --remote",
+        level: "Intermediate",
+        english: "Fork a repository and configure a remote.",
+        telugu: "Repository fork chesi remote configure cheyyataniki.",
+      },
+      {
+        command: "gh pr diff <number>",
+        level: "Intermediate",
+        english: "Review the changes in a pull request.",
+        telugu: "Pull request code changes inspect cheyyataniki.",
+      },
+      {
+        command: "gh pr view <number> --comments",
+        level: "Intermediate",
+        english: "View a pull request and its comments.",
+        telugu: "PR details, comments review cheyyataniki.",
+      },
+      {
+        command: "gh run rerun <run-id> --failed",
+        level: "Advanced",
+        english: "Rerun failed jobs in a workflow run.",
+        telugu: "Failed jobs ni rerun cheyyataniki; repeat failures cause investigate cheyyali.",
+      },
+      {
+        command: "gh workflow view <workflow> --yaml",
+        level: "Advanced",
+        english: "Display a workflow definition.",
+        telugu: "Workflow YAML inspect cheyyataniki.",
+      },
+      {
+        command: "gh issue view <number>",
+        level: "Basic",
+        english: "View an issue's details.",
+        telugu: "Issue details chudataniki.",
+      },
+      {
+        command: "gh api repos/{owner}/{repo}/actions/runs",
+        level: "Advanced",
+        english: "Query workflow runs through the GitHub REST API.",
+        telugu: "REST API dwara workflow runs fetch cheyyataniki; repository context/permissions avasaram.",
+      },
+      {
+        command: "gh auth refresh -s repo",
+        level: "Troubleshooting",
+        english: "Refresh authentication with repository scope.",
+        telugu: "Repo permissions scope refresh cheyyataniki; required access matrame grant cheyyali.",
+      },
+      {
+        command: "gh pr checks <number> --watch",
+        level: "Intermediate",
+        english: "Watch pull-request checks until they complete.",
+        telugu: "PR checks complete ayye varaku live status monitor cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "Docker",
+    category: "Containers",
+    commands: [
+      { command: "docker ps", level: "Basic", english: "to list running containers", telugu: "ప్రస్తుతం run అవుతున్న containers చూడటానికి." },
+      { command: "docker images", level: "Intermediate", english: "to list locally available images", telugu: "Local లో ఉన్న Docker images చూడటానికి." },
+      { command: "docker inspect <container>", level: "Advanced", english: "to inspect container configuration", telugu: "Container configuration వివరాలు తెలుసుకోవటానికి." },
+      { command: "docker logs --tail 100 <container>", level: "Troubleshooting", english: "to inspect the latest container logs", telugu: "Container యొక్క చివరి 100 log lines చూడటానికి." },
+      { command: "docker stats", level: "Troubleshooting", english: "to monitor container CPU and memory usage", telugu: "Containers CPU, memory usage చూడటానికి." },
+      {
+        command: "docker version",
+        level: "Basic",
+        english: "Display Docker client and server versions.",
+        telugu: "Docker client mariyu server versions chudataniki.",
+      },
+      {
+        command: "docker info",
+        level: "Basic",
+        english: "Display Docker daemon configuration and runtime information.",
+        telugu: "Docker daemon details, containers, storage information chudataniki.",
+      },
+      {
+        command: "docker ps -a",
+        level: "Basic",
+        english: "List running and stopped containers.",
+        telugu: "Running mariyu stopped containers list chudataniki.",
+      },
+      {
+        command: "docker logs -f <container>",
+        level: "Intermediate",
+        english: "Follow container logs continuously.",
+        telugu: "Container logs live ga monitor cheyyataniki.",
+      },
+      {
+        command: "docker stats --no-stream",
+        level: "Intermediate",
+        english: "Display a one-time resource usage snapshot.",
+        telugu: "Containers CPU, memory usage snapshot chudataniki.",
+      },
+      {
+        command: "docker top <container>",
+        level: "Intermediate",
+        english: "List processes running inside a container.",
+        telugu: "Container lopala run avutunna processes chudataniki.",
+      },
+      {
+        command: "docker port <container>",
+        level: "Basic",
+        english: "Show published container ports.",
+        telugu: "Container published ports verify cheyyataniki.",
+      },
+      {
+        command: "docker exec -it <container> sh",
+        level: "Intermediate",
+        english: "Open a shell inside a running container.",
+        telugu: "Running container lopala shell open cheyyataniki.",
+      },
+      {
+        command: "docker cp <container>:/app/log.txt ./log.txt",
+        level: "Intermediate",
+        english: "Copy a file from a container to the host.",
+        telugu: "Container nunchi host ki file copy cheyyataniki.",
+      },
+      {
+        command: "docker diff <container>",
+        level: "Advanced",
+        english: "Show filesystem changes made inside a container.",
+        telugu: "Container filesystem lo changes inspect cheyyataniki.",
+      },
+      {
+        command: "docker history <image>",
+        level: "Intermediate",
+        english: "Show image layers and build history.",
+        telugu: "Image layers mariyu build history chudataniki.",
+      },
+      {
+        command: "docker image prune",
+        level: "Advanced",
+        english: "Remove dangling images.",
+        telugu: "Unused dangling images clean cheyyataniki; delete ayye images verify cheyyali.",
+      },
+      {
+        command: "docker system df",
+        level: "Basic",
+        english: "Show Docker disk usage.",
+        telugu: "Docker disk usage identify cheyyataniki.",
+      },
+      {
+        command: "docker network ls",
+        level: "Basic",
+        english: "List Docker networks.",
+        telugu: "Docker networks list chudataniki.",
+      },
+      {
+        command: "docker network inspect <network>",
+        level: "Intermediate",
+        english: "Inspect a Docker network and its connected containers.",
+        telugu: "Network settings, connected containers inspect cheyyataniki.",
+      },
+      {
+        command: "docker volume ls",
+        level: "Basic",
+        english: "List Docker volumes.",
+        telugu: "Docker volumes list chudataniki.",
+      },
+      {
+        command: "docker events --since 10m",
+        level: "Troubleshooting",
+        english: "Show Docker events from the last ten minutes.",
+        telugu: "Recent container start/stop events troubleshoot cheyyataniki.",
+      },
+      {
+        command: "docker restart <container>",
+        level: "Intermediate",
+        english: "Restart a container.",
+        telugu: "Container restart cheyyataniki; service interruption consider cheyyali.",
+      },
+      {
+        command: "docker update --restart unless-stopped <container>",
+        level: "Advanced",
+        english: "Update a container's restart policy.",
+        telugu: "Container restart policy update cheyyataniki.",
+      },
+      {
+        command: "docker build --no-cache -t app:debug .",
+        level: "Advanced",
+        english: "Build an image without using cached layers.",
+        telugu: "Cache valla issue anipisthe fresh image build cheyyataniki.",
+      },
+      {
+        command: "docker login",
+        level: "Basic",
+        english: "Authenticate with a container registry.",
+        telugu: "Container registry ki authenticate avvataniki; credentials safe ga handle cheyyali.",
+      },
+      {
+        command: "docker manifest inspect <image:tag>",
+        level: "Advanced",
+        english: "Inspect an image manifest and platform variants.",
+        telugu: "Multi-architecture image support inspect cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "Docker Compose",
+    category: "Containers",
+    commands: [
+      { command: "docker compose ps", level: "Basic", english: "to list Compose services and their status", telugu: "Compose services status చూడటానికి." },
+      { command: "docker compose config", level: "Intermediate", english: "to validate and render the Compose configuration", telugu: "Compose configuration సరిగ్గా ఉందో తనిఖీ చేయటానికి." },
+      { command: "docker compose up -d --build", level: "Advanced", english: "to build and start services in the background", telugu: "Images build చేసి services ను background లో start చేయటానికి." },
+      { command: "docker compose logs --tail 100", level: "Troubleshooting", english: "to inspect recent logs from Compose services", telugu: "Compose services logs చూడటానికి." },
+      {
+        command: "docker compose version",
+        level: "Basic",
+        english: "Display Docker Compose version.",
+        telugu: "Docker Compose version chudataniki.",
+      },
+      {
+        command: "docker compose logs -f <service>",
+        level: "Intermediate",
+        english: "Follow logs for one service.",
+        telugu: "Specific service logs live ga chudataniki.",
+      },
+      {
+        command: "docker compose top",
+        level: "Intermediate",
+        english: "List processes for Compose services.",
+        telugu: "Compose services lo processes inspect cheyyataniki.",
+      },
+      {
+        command: "docker compose images",
+        level: "Basic",
+        english: "List images used by the Compose project.",
+        telugu: "Project use chestunna images chudataniki.",
+      },
+      {
+        command: "docker compose pull",
+        level: "Intermediate",
+        english: "Pull images declared by the Compose configuration.",
+        telugu: "Compose images registry nunchi pull cheyyataniki.",
+      },
+      {
+        command: "docker compose build --no-cache",
+        level: "Advanced",
+        english: "Rebuild service images without cache.",
+        telugu: "Service images fresh ga rebuild cheyyataniki.",
+      },
+      {
+        command: "docker compose up -d",
+        level: "Basic",
+        english: "Create and start services in the background.",
+        telugu: "Compose services background lo start cheyyataniki.",
+      },
+      {
+        command: "docker compose restart <service>",
+        level: "Intermediate",
+        english: "Restart a selected service.",
+        telugu: "Specific Compose service restart cheyyataniki.",
+      },
+      {
+        command: "docker compose exec <service> sh",
+        level: "Intermediate",
+        english: "Open a shell in a running service container.",
+        telugu: "Running service container lopala shell open cheyyataniki.",
+      },
+      {
+        command: "docker compose run --rm <service> <command>",
+        level: "Advanced",
+        english: "Run a one-off command in a new service container.",
+        telugu: "Temporary container lo one-off task execute cheyyataniki.",
+      },
+      {
+        command: "docker compose port <service> 8080",
+        level: "Troubleshooting",
+        english: "Display the host port mapped to a service port.",
+        telugu: "Service port host ki ela map ayyindo chudataniki.",
+      },
+      {
+        command: "docker compose config --services",
+        level: "Basic",
+        english: "List service names from the resolved configuration.",
+        telugu: "Compose configuration lo service names list chudataniki.",
+      },
+      {
+        command: "docker compose down",
+        level: "Advanced",
+        english: "Stop and remove project containers and networks.",
+        telugu: "Project containers/networks remove cheyyataniki; shared resources impact verify cheyyali.",
+      },
+      {
+        command: "docker compose down --volumes",
+        level: "Advanced",
+        english: "Remove project containers, networks, and declared volumes.",
+        telugu: "Volumes kuda remove avutayi; persistent data loss risk undi, careful ga use cheyyali.",
+      },
+      {
+        command: "docker compose events",
+        level: "Troubleshooting",
+        english: "Stream Compose project events.",
+        telugu: "Compose services events live ga troubleshoot cheyyataniki.",
+      },
+      {
+        command: "docker compose cp <service>:/app/log.txt ./log.txt",
+        level: "Intermediate",
+        english: "Copy files between a service container and the host.",
+        telugu: "Service container nunchi host ki logs/files copy cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "Kubernetes",
+    category: "Orchestration",
+    commands: [
+      { command: "kubectl get pods", level: "Basic", english: "to see the pod status", telugu: "ప్రస్తుత namespace లో Pods status చూడటానికి." },
+      { command: "kubectl get pods -A", level: "Basic", english: "to list pods in all namespaces", telugu: "అన్ని namespaces లో Pods చూడటానికి." },
+      { command: "kubectl get deployments,services", level: "Intermediate", english: "to list deployments and services", telugu: "Deployments, Services వివరాలు చూడటానికి." },
+      { command: "kubectl describe pod <pod-name>", level: "Intermediate", english: "to inspect pod details and events", telugu: "Pod వివరాలు, events తెలుసుకోవటానికి." },
+      { command: "kubectl rollout status deployment/<deployment-name>", level: "Advanced", english: "to check deployment rollout progress", telugu: "Deployment update స్థితి తెలుసుకోవటానికి." },
+      { command: "kubectl get events --sort-by=.metadata.creationTimestamp", level: "Advanced", english: "to view recent cluster events", telugu: "ఇటీవలి cluster events చూడటానికి." },
+      { command: "kubectl logs <pod-name> --previous", level: "Troubleshooting", english: "to inspect logs from the previous crashed container", telugu: "Crash అయిన container యొక్క ముందు logs చూడటానికి." },
+      { command: "kubectl get pods -o wide", level: "Troubleshooting", english: "to inspect pod nodes and IP addresses", telugu: "Pod ఏ node లో ఉందో, IP address ఏమిటో చూడటానికి." },
+      { command: "kubectl describe node <node-name>", level: "Troubleshooting", english: "to investigate node conditions and resource pressure", telugu: "Node conditions, resource pressure తెలుసుకోవటానికి." },
+      {
+        command: "kubectl version",
+        level: "Basic",
+        english: "Display Kubernetes client and server versions.",
+        telugu: "kubectl client mariyu cluster server versions chudataniki.",
+      },
+      {
+        command: "kubectl cluster-info",
+        level: "Basic",
+        english: "Display Kubernetes control-plane endpoints.",
+        telugu: "Cluster control-plane endpoints verify cheyyataniki.",
+      },
+      {
+        command: "kubectl get nodes -o wide",
+        level: "Basic",
+        english: "List nodes with additional details.",
+        telugu: "Nodes status, IP, runtime details chudataniki.",
+      },
+      {
+        command: "kubectl get pods -A -o wide",
+        level: "Basic",
+        english: "List pods in all namespaces with node details.",
+        telugu: "Anni namespaces lo pods status, node placement chudataniki.",
+      },
+      {
+        command: "kubectl get events -A --sort-by=.lastTimestamp",
+        level: "Troubleshooting",
+        english: "List cluster events ordered by latest timestamp.",
+        telugu: "Recent cluster events dwara failures troubleshoot cheyyataniki.",
+      },
+      {
+        command: "kubectl describe pod <pod> -n <namespace>",
+        level: "Basic",
+        english: "Show pod details and recent events.",
+        telugu: "Pod errors, events, probes, scheduling details chudataniki.",
+      },
+      {
+        command: "kubectl logs <pod> -n <namespace> --previous",
+        level: "Troubleshooting",
+        english: "Read logs from the previous crashed container instance.",
+        telugu: "Restart ayina container previous logs inspect cheyyataniki.",
+      },
+      {
+        command: "kubectl logs -f deployment/<deployment> -n <namespace>",
+        level: "Intermediate",
+        english: "Follow logs from a deployment's pods.",
+        telugu: "Deployment pods logs live ga chudataniki.",
+      },
+      {
+        command: "kubectl get deploy,rs,svc,ingress -n <namespace>",
+        level: "Basic",
+        english: "List common workload and networking resources.",
+        telugu: "Namespace lo deployments, replicasets, services, ingress chudataniki.",
+      },
+      {
+        command: "kubectl rollout status deployment/<deployment> -n <namespace>",
+        level: "Intermediate",
+        english: "Wait for a deployment rollout to complete.",
+        telugu: "Deployment rollout complete ayyindo verify cheyyataniki.",
+      },
+      {
+        command: "kubectl rollout history deployment/<deployment> -n <namespace>",
+        level: "Intermediate",
+        english: "Show deployment rollout history.",
+        telugu: "Deployment previous revisions chudataniki.",
+      },
+      {
+        command: "kubectl rollout undo deployment/<deployment> -n <namespace>",
+        level: "Advanced",
+        english: "Roll back a deployment to its previous revision.",
+        telugu: "Deployment rollback cheyyataniki; change impact verify cheyyali.",
+      },
+      {
+        command: "kubectl scale deployment/<deployment> --replicas=3 -n <namespace>",
+        level: "Intermediate",
+        english: "Set the desired replica count for a deployment.",
+        telugu: "Deployment replicas 3 ki set cheyyataniki.",
+      },
+      {
+        command: "kubectl top nodes",
+        level: "Intermediate",
+        english: "Display node CPU and memory usage.",
+        telugu: "Node CPU/RAM usage chudataniki; metrics-server required.",
+      },
+      {
+        command: "kubectl top pods -A",
+        level: "Intermediate",
+        english: "Display pod CPU and memory usage across namespaces.",
+        telugu: "Anni namespaces lo pod resource usage chudataniki.",
+      },
+      {
+        command: "kubectl auth can-i create deployments -n <namespace>",
+        level: "Troubleshooting",
+        english: "Check whether the current identity can create deployments.",
+        telugu: "Current identity ki deployment create permission undho check cheyyataniki.",
+      },
+      {
+        command: "kubectl config get-contexts",
+        level: "Basic",
+        english: "List configured Kubernetes contexts.",
+        telugu: "Available Kubernetes contexts list chudataniki.",
+      },
+      {
+        command: "kubectl config current-context",
+        level: "Basic",
+        english: "Show the active Kubernetes context.",
+        telugu: "Current active cluster context verify cheyyataniki.",
+      },
+      {
+        command: "kubectl get pvc -A",
+        level: "Troubleshooting",
+        english: "List persistent volume claims across namespaces.",
+        telugu: "PVC Pending/bound status troubleshoot cheyyataniki.",
+      },
+      {
+        command: "kubectl get endpointslices -A",
+        level: "Advanced",
+        english: "Inspect EndpointSlice resources for service backends.",
+        telugu: "Service backend endpoints inspect cheyyataniki.",
+      },
+      {
+        command: "kubectl port-forward svc/<service> 8080:80 -n <namespace>",
+        level: "Intermediate",
+        english: "Forward a local port to a Kubernetes service.",
+        telugu: "Local machine nunchi service test cheyyataniki.",
+      },
+      {
+        command: "kubectl exec -it <pod> -n <namespace> -- sh",
+        level: "Intermediate",
+        english: "Open a shell inside a pod container.",
+        telugu: "Pod container lopala troubleshoot shell open cheyyataniki.",
+      },
+      {
+        command: "kubectl diff -f deployment.yaml",
+        level: "Advanced",
+        english: "Preview changes before applying a manifest.",
+        telugu: "Apply mundu Kubernetes manifest changes preview cheyyataniki.",
+      },
+      {
+        command: "kubectl apply --dry-run=server -f deployment.yaml",
+        level: "Advanced",
+        english: "Validate a manifest against the API server without persisting it.",
+        telugu: "API server validation cheyyataniki; resource persist avvadu.",
+      },
+      {
+        command: "kubectl delete pod <pod> -n <namespace>",
+        level: "Advanced",
+        english: "Delete a pod so its controller may recreate it.",
+        telugu: "Pod delete cheyyataniki; workload interruption impact assess cheyyali.",
+      },
+    ],
+  },
+  {
+    name: "Helm",
+    category: "Orchestration",
+    commands: [
+      { command: "helm list -A", level: "Basic", english: "to list Helm releases across namespaces", telugu: "అన్ని namespaces లో Helm releases చూడటానికి." },
+      { command: "helm show values <chart>", level: "Intermediate", english: "to inspect a chart's default values", telugu: "Chart default values చూడటానికి." },
+      { command: "helm template <release> <chart>", level: "Advanced", english: "to render Kubernetes manifests locally", telugu: "Kubernetes manifests ను local లో generate చేయటానికి." },
+      { command: "helm status <release> -n <namespace>", level: "Troubleshooting", english: "to inspect a release status", telugu: "Helm release status తెలుసుకోవటానికి." },
+      {
+        command: "helm version",
+        level: "Basic",
+        english: "Display the Helm version.",
+        telugu: "Helm version chudataniki.",
+      },
+      {
+        command: "helm history <release> -n <namespace>",
+        level: "Intermediate",
+        english: "Show revision history for a release.",
+        telugu: "Release revisions history chudataniki.",
+      },
+      {
+        command: "helm get values <release> -n <namespace>",
+        level: "Intermediate",
+        english: "Display values applied to a release.",
+        telugu: "Release ki apply ayina values chudataniki.",
+      },
+      {
+        command: "helm get manifest <release> -n <namespace>",
+        level: "Advanced",
+        english: "Display Kubernetes manifests generated for a release.",
+        telugu: "Release generate chesina manifests inspect cheyyataniki.",
+      },
+      {
+        command: "helm lint ./chart",
+        level: "Basic",
+        english: "Check a chart for common issues.",
+        telugu: "Chart structure, templates common issues validate cheyyataniki.",
+      },
+      {
+        command: "helm template <release> ./chart",
+        level: "Intermediate",
+        english: "Render chart templates locally without installing.",
+        telugu: "Install cheyyakunda rendered YAML preview cheyyataniki.",
+      },
+      {
+        command: "helm upgrade --install <release> ./chart -n <namespace> --create-namespace",
+        level: "Intermediate",
+        english: "Install a release or upgrade it if it already exists.",
+        telugu: "Release install/upgrade cheyyataniki; production values verify cheyyali.",
+      },
+      {
+        command: "helm rollback <release> <revision> -n <namespace>",
+        level: "Advanced",
+        english: "Roll back a release to a selected revision.",
+        telugu: "Helm release previous revision ki rollback cheyyataniki.",
+      },
+      {
+        command: "helm repo list",
+        level: "Basic",
+        english: "List configured chart repositories.",
+        telugu: "Configured Helm repositories chudataniki.",
+      },
+      {
+        command: "helm repo update",
+        level: "Basic",
+        english: "Refresh chart repository metadata.",
+        telugu: "Repository chart metadata update cheyyataniki.",
+      },
+      {
+        command: "helm dependency list ./chart",
+        level: "Intermediate",
+        english: "List chart dependencies and their status.",
+        telugu: "Chart dependencies status inspect cheyyataniki.",
+      },
+      {
+        command: "helm dependency update ./chart",
+        level: "Intermediate",
+        english: "Resolve and download chart dependencies.",
+        telugu: "Chart dependencies download/update cheyyataniki.",
+      },
+      {
+        command: "helm test <release> -n <namespace>",
+        level: "Advanced",
+        english: "Run chart-defined tests for a release.",
+        telugu: "Release chart tests execute cheyyataniki.",
+      },
+      {
+        command: "helm uninstall <release> -n <namespace>",
+        level: "Advanced",
+        english: "Uninstall a Helm release.",
+        telugu: "Release resources remove cheyyataniki; production workload impact verify cheyyali.",
+      },
+      {
+        command: "helm get notes <release> -n <namespace>",
+        level: "Basic",
+        english: "Show notes printed by a chart after installation.",
+        telugu: "Chart installation notes chudataniki.",
+      },
+      {
+        command: "helm pull <chart> --untar",
+        level: "Intermediate",
+        english: "Download and unpack a chart.",
+        telugu: "Chart download chesi inspect cheyyataniki.",
+      },
+      {
+        command: "helm upgrade <release> ./chart --dry-run --debug -n <namespace>",
+        level: "Troubleshooting",
+        english: "Simulate an upgrade and show debugging output.",
+        telugu: "Upgrade apply cheyyakunda rendered changes debug cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "EKS",
+    category: "Orchestration",
+    commands: [
+      { command: "aws eks list-clusters", level: "Basic", english: "to list EKS clusters in the configured region", telugu: "Configured region లో EKS clusters చూడటానికి." },
+      { command: "aws eks describe-cluster --name <cluster-name>", level: "Intermediate", english: "to inspect EKS cluster details", telugu: "EKS cluster వివరాలు తెలుసుకోవటానికి." },
+      { command: "aws eks update-kubeconfig --name <cluster-name> --region <region>", level: "Advanced", english: "to configure kubectl access to an EKS cluster", telugu: "EKS cluster కి kubectl access configure చేయటానికి." },
+      { command: "kubectl get nodes -o wide", level: "Troubleshooting", english: "to inspect EKS worker node status", telugu: "EKS worker nodes status చూడటానికి." },
+      {
+        command: "aws eks list-clusters --region <region>",
+        level: "Basic",
+        english: "List EKS clusters in a region.",
+        telugu: "Region lo EKS clusters list chudataniki.",
+      },
+      {
+        command: "aws eks describe-cluster --name <cluster> --region <region>",
+        level: "Basic",
+        english: "Show cluster configuration and status.",
+        telugu: "EKS cluster status, endpoint, version details chudataniki.",
+      },
+      {
+        command: "aws eks update-kubeconfig --name <cluster> --region <region>",
+        level: "Intermediate",
+        english: "Configure kubectl credentials and context for an EKS cluster.",
+        telugu: "EKS cluster ki kubectl context configure cheyyataniki.",
+      },
+      {
+        command: "aws eks list-nodegroups --cluster-name <cluster> --region <region>",
+        level: "Basic",
+        english: "List managed node groups for a cluster.",
+        telugu: "Cluster managed node groups list chudataniki.",
+      },
+      {
+        command: "aws eks describe-nodegroup --cluster-name <cluster> --nodegroup-name <nodegroup> --region <region>",
+        level: "Intermediate",
+        english: "Inspect managed node group status and configuration.",
+        telugu: "Node group health, scaling, version inspect cheyyataniki.",
+      },
+      {
+        command: "aws eks list-addons --cluster-name <cluster> --region <region>",
+        level: "Basic",
+        english: "List installed EKS add-ons.",
+        telugu: "EKS installed add-ons list chudataniki.",
+      },
+      {
+        command: "aws eks describe-addon --cluster-name <cluster> --addon-name <addon> --region <region>",
+        level: "Intermediate",
+        english: "Inspect an EKS add-on version and health.",
+        telugu: "Add-on version mariyu health chudataniki.",
+      },
+      {
+        command: "aws eks list-updates --name <cluster> --region <region>",
+        level: "Intermediate",
+        english: "List cluster update IDs.",
+        telugu: "EKS cluster updates list chudataniki.",
+      },
+      {
+        command: "aws eks describe-update --name <cluster> --update-id <update-id> --region <region>",
+        level: "Troubleshooting",
+        english: "Inspect the status and errors of a cluster update.",
+        telugu: "Cluster update status/errors troubleshoot cheyyataniki.",
+      },
+      {
+        command: "aws eks list-fargate-profiles --cluster-name <cluster> --region <region>",
+        level: "Basic",
+        english: "List Fargate profiles for an EKS cluster.",
+        telugu: "EKS Fargate profiles list chudataniki.",
+      },
+      {
+        command: "aws eks describe-fargate-profile --cluster-name <cluster> --fargate-profile-name <profile> --region <region>",
+        level: "Intermediate",
+        english: "Inspect a Fargate profile configuration.",
+        telugu: "Fargate profile configuration inspect cheyyataniki.",
+      },
+      {
+        command: "aws eks list-access-entries --cluster-name <cluster> --region <region>",
+        level: "Advanced",
+        english: "List EKS access entries.",
+        telugu: "Cluster access entries inspect cheyyataniki.",
+      },
+      {
+        command: "aws eks describe-access-entry --cluster-name <cluster> --principal-arn <arn> --region <region>",
+        level: "Advanced",
+        english: "Inspect an EKS access entry for an IAM principal.",
+        telugu: "IAM principal cluster access details chudataniki.",
+      },
+      {
+        command: "aws eks list-insights --cluster-name <cluster> --region <region>",
+        level: "Advanced",
+        english: "List EKS cluster insights.",
+        telugu: "Cluster insights list chesi potential issues identify cheyyataniki.",
+      },
+      {
+        command: "aws eks describe-insight --cluster-name <cluster> --id <insight-id> --region <region>",
+        level: "Troubleshooting",
+        english: "Inspect a specific EKS insight.",
+        telugu: "Specific cluster insight details troubleshoot cheyyataniki.",
+      },
+      {
+        command: "aws eks list-tags-for-resource --resource-arn <cluster-arn> --region <region>",
+        level: "Basic",
+        english: "List tags attached to an EKS resource.",
+        telugu: "EKS resource tags chudataniki.",
+      },
+      {
+        command: "aws eks get-token --cluster-name <cluster> --region <region>",
+        level: "Advanced",
+        english: "Generate a temporary authentication token for EKS.",
+        telugu: "EKS authentication token generate cheyyataniki; token ni share cheyyakudadhu.",
+      },
+      {
+        command: "aws eks describe-cluster --name <cluster> --query 'cluster.status' --output text --region <region>",
+        level: "Troubleshooting",
+        english: "Return only the cluster status.",
+        telugu: "Cluster status quick ga check cheyyataniki.",
+      },
+      {
+        command: "aws eks describe-nodegroup --cluster-name <cluster> --nodegroup-name <nodegroup> --query 'nodegroup.health.issues' --output json --region <region>",
+        level: "Troubleshooting",
+        english: "Show health issues reported for a node group.",
+        telugu: "Node group health problems identify cheyyataniki.",
+      },
+      {
+        command: "aws eks list-clusters --region <region> --output table",
+        level: "Basic",
+        english: "Display EKS cluster names in a table.",
+        telugu: "EKS clusters table format lo chudataniki.",
+      },
+    ],
+  },
+  {
+    name: "AWS CLI",
+    category: "Cloud & IaC",
+    commands: [
+      { command: "aws sts get-caller-identity", level: "Basic", english: "to identify the active AWS account and identity", telugu: "ప్రస్తుతం ఉపయోగిస్తున్న AWS account, identity తెలుసుకోవటానికి." },
+      { command: "aws configure list", level: "Intermediate", english: "to inspect AWS CLI configuration sources", telugu: "AWS CLI configuration వివరాలు చూడటానికి." },
+      { command: "aws ec2 describe-instances --region <region>", level: "Advanced", english: "to list EC2 instance details in a region", telugu: "ఒక region లో EC2 instances వివరాలు చూడటానికి." },
+      { command: "aws cloudformation describe-stacks --region <region>", level: "Troubleshooting", english: "to inspect CloudFormation stack status", telugu: "CloudFormation stacks status చూడటానికి." },
+      {
+        command: "aws --version",
+        level: "Basic",
+        english: "Display AWS CLI version.",
+        telugu: "AWS CLI version chudataniki.",
+      },
+      {
+        command: "aws configure get region",
+        level: "Basic",
+        english: "Display the configured default region.",
+        telugu: "Default AWS region check cheyyataniki.",
+      },
+      {
+        command: "aws ec2 describe-instance-status --include-all-instances --region <region>",
+        level: "Troubleshooting",
+        english: "Inspect EC2 instance and system status checks.",
+        telugu: "EC2 status checks failures troubleshoot cheyyataniki.",
+      },
+      {
+        command: "aws s3 ls",
+        level: "Basic",
+        english: "List S3 buckets accessible to the current identity.",
+        telugu: "Access unna S3 buckets list chudataniki.",
+      },
+      {
+        command: "aws s3 ls s3://<bucket>/ --recursive",
+        level: "Intermediate",
+        english: "List objects recursively in an S3 bucket.",
+        telugu: "Bucket objects recursive ga list cheyyataniki; large buckets lo output ekkuva undachu.",
+      },
+      {
+        command: "aws s3 cp <file> s3://<bucket>/<key>",
+        level: "Intermediate",
+        english: "Upload a local file to S3.",
+        telugu: "Local file ni S3 ki upload cheyyataniki.",
+      },
+      {
+        command: "aws s3 cp s3://<bucket>/<key> <file>",
+        level: "Intermediate",
+        english: "Download an S3 object to the local machine.",
+        telugu: "S3 object ni local machine ki download cheyyataniki.",
+      },
+      {
+        command: "aws iam get-user",
+        level: "Intermediate",
+        english: "Show details for the current IAM user when applicable.",
+        telugu: "Current identity IAM user ayithe details chudataniki.",
+      },
+      {
+        command: "aws iam list-attached-user-policies --user-name <user>",
+        level: "Advanced",
+        english: "List managed policies attached to an IAM user.",
+        telugu: "IAM user ki attached policies inspect cheyyataniki.",
+      },
+      {
+        command: "aws logs describe-log-groups --region <region>",
+        level: "Intermediate",
+        english: "List CloudWatch Logs groups.",
+        telugu: "CloudWatch log groups list chudataniki.",
+      },
+      {
+        command: "aws logs tail <log-group> --since 1h --follow --region <region>",
+        level: "Troubleshooting",
+        english: "Follow recent CloudWatch logs for a log group.",
+        telugu: "Last hour logs live ga troubleshoot cheyyataniki.",
+      },
+      {
+        command: "aws cloudwatch describe-alarms --state-value ALARM --region <region>",
+        level: "Troubleshooting",
+        english: "List CloudWatch alarms currently in ALARM state.",
+        telugu: "ALARM state lo unna CloudWatch alarms identify cheyyataniki.",
+      },
+      {
+        command: "aws elbv2 describe-load-balancers --region <region>",
+        level: "Intermediate",
+        english: "List Elastic Load Balancing v2 load balancers.",
+        telugu: "ALB/NLB resources list chudataniki.",
+      },
+      {
+        command: "aws elbv2 describe-target-health --target-group-arn <target-group-arn> --region <region>",
+        level: "Troubleshooting",
+        english: "Inspect load balancer target health.",
+        telugu: "Target group unhealthy targets troubleshoot cheyyataniki.",
+      },
+      {
+        command: "aws eks list-clusters --region <region>",
+        level: "Basic",
+        english: "List EKS clusters in the selected region.",
+        telugu: "Selected region lo EKS clusters chudataniki.",
+      },
+      {
+        command: "aws ssm describe-instance-information --region <region>",
+        level: "Intermediate",
+        english: "List managed instances registered with Systems Manager.",
+        telugu: "SSM managed instances status chudataniki.",
+      },
+      {
+        command: "aws resourcegroupstaggingapi get-resources --region <region>",
+        level: "Advanced",
+        english: "Find resources using tag filters.",
+        telugu: "Tags base chesi AWS resources search cheyyataniki.",
+      },
+      {
+        command: "aws service-quotas list-service-quotas --service-code ec2 --region <region>",
+        level: "Advanced",
+        english: "List EC2 service quotas.",
+        telugu: "EC2 service quotas inspect cheyyataniki.",
+      },
+      {
+        command: "aws cloudtrail lookup-events --max-results 20 --region <region>",
+        level: "Troubleshooting",
+        english: "Inspect recent CloudTrail management events.",
+        telugu: "Recent AWS API activity audit cheyyataniki.",
+      },
+      {
+        command: "aws s3api head-bucket --bucket <bucket> --region <region>",
+        level: "Troubleshooting",
+        english: "Check access/existence behavior for an S3 bucket.",
+        telugu: "S3 bucket access troubleshoot cheyyataniki; errors permissions or region valla kuda ravachu.",
+      },
+      {
+        command: "aws ec2 describe-security-groups --region <region>",
+        level: "Advanced",
+        english: "List EC2 security groups and their rules.",
+        telugu: "Security group rules audit cheyyataniki; public exposure carefully review cheyyali.",
+      },
+    ],
+  },
+  {
+    name: "Terraform",
+    category: "Cloud & IaC",
+    commands: [
+      { command: "terraform version", level: "Basic", english: "to display the Terraform version", telugu: "Terraform version తెలుసుకోవటానికి." },
+      { command: "terraform validate", level: "Intermediate", english: "to validate Terraform configuration syntax", telugu: "Terraform configuration syntax తనిఖీ చేయటానికి." },
+      { command: "terraform plan", level: "Advanced", english: "to preview proposed infrastructure changes", telugu: "Infrastructure లో జరగబోయే changes ముందుగా చూడటానికి." },
+      { command: "terraform state list", level: "Troubleshooting", english: "to list resources tracked in Terraform state", telugu: "Terraform state లో ఉన్న resources చూడటానికి." },
+      { command: "terraform providers", level: "Troubleshooting", english: "to inspect required providers", telugu: "Project లో అవసరమైన providers తెలుసుకోవటానికి." },
+      {
+        command: "terraform fmt -check -recursive",
+        level: "Basic",
+        english: "Check whether Terraform files follow standard formatting.",
+        telugu: "Terraform files formatting correct ga undho verify cheyyataniki.",
+      },
+      {
+        command: "terraform providers lock",
+        level: "Advanced",
+        english: "Update provider dependency lock selections and checksums.",
+        telugu: "Provider lock file update cheyyataniki; dependency changes review cheyyali.",
+      },
+      {
+        command: "terraform state show <resource-address>",
+        level: "Intermediate",
+        english: "Show attributes for a resource in state.",
+        telugu: "Specific resource state attributes inspect cheyyataniki.",
+      },
+      {
+        command: "terraform plan -out=tfplan",
+        level: "Intermediate",
+        english: "Create a saved execution plan.",
+        telugu: "Infrastructure changes preview plan file ga save cheyyataniki.",
+      },
+      {
+        command: "terraform show tfplan",
+        level: "Intermediate",
+        english: "Display a saved execution plan.",
+        telugu: "Saved plan lo changes review cheyyataniki.",
+      },
+      {
+        command: "terraform apply tfplan",
+        level: "Advanced",
+        english: "Apply a previously saved plan.",
+        telugu: "Reviewed plan apply cheyyataniki; correct workspace/account confirm cheyyali.",
+      },
+      {
+        command: "terraform output",
+        level: "Basic",
+        english: "Display root module outputs.",
+        telugu: "Terraform outputs chudataniki; secrets output avvachu, careful.",
+      },
+      {
+        command: "terraform output -json",
+        level: "Advanced",
+        english: "Display outputs in JSON format.",
+        telugu: "Automation kosam outputs JSON format lo pondataniki; sensitive values leak kakunda chusukovali.",
+      },
+      {
+        command: "terraform workspace list",
+        level: "Basic",
+        english: "List Terraform workspaces.",
+        telugu: "Terraform workspaces list chudataniki.",
+      },
+      {
+        command: "terraform workspace show",
+        level: "Basic",
+        english: "Show the current workspace.",
+        telugu: "Current workspace identify cheyyataniki.",
+      },
+      {
+        command: "terraform workspace select <workspace>",
+        level: "Intermediate",
+        english: "Switch to an existing workspace.",
+        telugu: "Existing workspace ki switch avvataniki; environment correct ga undho verify cheyyali.",
+      },
+      {
+        command: "terraform graph",
+        level: "Advanced",
+        english: "Generate a dependency graph in DOT format.",
+        telugu: "Resource dependencies graph generate cheyyataniki.",
+      },
+      {
+        command: "terraform state pull",
+        level: "Advanced",
+        english: "Read the current remote state snapshot.",
+        telugu: "Remote state snapshot inspect cheyyataniki; output sensitive data contain cheyyachu.",
+      },
+      {
+        command: "terraform force-unlock <lock-id>",
+        level: "Troubleshooting",
+        english: "Remove a state lock after confirming it is stale.",
+        telugu: "Stale lock ni matrame remove cheyyataniki; active operation lock ni unlock cheyyakudadhu.",
+      },
+      {
+        command: "terraform import <resource-address> <provider-id>",
+        level: "Advanced",
+        english: "Import an existing resource into Terraform state.",
+        telugu: "Existing infrastructure resource ni Terraform state lo import cheyyataniki.",
+      },
+      {
+        command: "terraform test",
+        level: "Advanced",
+        english: "Run Terraform tests defined in the configuration.",
+        telugu: "Terraform test files execute cheyyataniki.",
+      },
+      {
+        command: "terraform console",
+        level: "Advanced",
+        english: "Evaluate Terraform expressions interactively.",
+        telugu: "Terraform expressions locally test cheyyataniki.",
+      },
+      {
+        command: "terraform plan -refresh-only",
+        level: "Troubleshooting",
+        english: "Preview state updates from remote infrastructure changes.",
+        telugu: "Remote infrastructure drift ni state refresh plan lo inspect cheyyataniki.",
+      },
+      {
+        command: "terraform apply -refresh-only",
+        level: "Advanced",
+        english: "Update state to reflect current remote infrastructure without planned resource changes.",
+        telugu: "State refresh cheyyataniki; mundu plan review cheyyali.",
+      },
+      {
+        command: "terraform state mv <source> <destination>",
+        level: "Advanced",
+        english: "Move a resource address in Terraform state.",
+        telugu: "State resource address move cheyyataniki; state backup teesukoni carefully use cheyyali.",
+      },
+      {
+        command: "terraform state rm <resource-address>",
+        level: "Advanced",
+        english: "Remove a resource binding from Terraform state without deleting the real resource.",
+        telugu: "State nunchi binding remove chestundi, actual resource delete kaadu; accidental drift risk undi.",
+      },
+    ],
+  },
+  {
+    name: "Jenkins",
+    category: "CI/CD",
+    commands: [
+      { command: "java -version", level: "Basic", english: "to check the installed Java version", telugu: "Install అయిన Java version చూడటానికి." },
+      { command: "systemctl status jenkins", level: "Intermediate", english: "to check the Jenkins service status on Linux", telugu: "Linux లో Jenkins service status చూడటానికి." },
+      { command: "jenkins-cli -s <jenkins-url> list-jobs", level: "Advanced", english: "to list Jenkins jobs using the CLI", telugu: "CLI ద్వారా Jenkins jobs చూడటానికి." },
+      { command: "journalctl -u jenkins -n 100 --no-pager", level: "Troubleshooting", english: "to inspect recent Jenkins service logs", telugu: "Jenkins service యొక్క చివరి logs చూడటానికి." },
+      {
+        command: "journalctl -u jenkins -f",
+        level: "Troubleshooting",
+        english: "Follow Jenkins service logs live.",
+        telugu: "Jenkins service logs live ga monitor cheyyataniki.",
+      },
+      {
+        command: "curl -I http://localhost:8080/login",
+        level: "Troubleshooting",
+        english: "Check whether the Jenkins login endpoint responds.",
+        telugu: "Jenkins local login endpoint respond avutundo test cheyyataniki.",
+      },
+      {
+        command: "curl -s http://localhost:8080/api/json",
+        level: "Intermediate",
+        english: "Query the Jenkins JSON API endpoint.",
+        telugu: "Jenkins API response verify cheyyataniki; authentication/security settings consider cheyyali.",
+      },
+      {
+        command: "jenkins-plugin-cli --list",
+        level: "Intermediate",
+        english: "List installed Jenkins plugins when the CLI is available.",
+        telugu: "Jenkins plugins list inspect cheyyataniki.",
+      },
+      {
+        command: "find /var/lib/jenkins/jobs -name config.xml",
+        level: "Advanced",
+        english: "Locate job configuration files on a standard Jenkins installation.",
+        telugu: "Jenkins jobs configuration files locate cheyyataniki.",
+      },
+      {
+        command: "df -h /var/lib/jenkins",
+        level: "Basic",
+        english: "Check disk space for the Jenkins home filesystem.",
+        telugu: "Jenkins home filesystem disk space check cheyyataniki.",
+      },
+      {
+        command: "du -sh /var/lib/jenkins/workspace/*",
+        level: "Intermediate",
+        english: "Inspect workspace directory sizes.",
+        telugu: "Jenkins workspaces lo disk ekkuva use chesedi identify cheyyataniki.",
+      },
+      {
+        command: "grep -Rni 'ERROR' /var/log/jenkins/",
+        level: "Troubleshooting",
+        english: "Search Jenkins logs for error messages.",
+        telugu: "Jenkins logs lo errors search cheyyataniki.",
+      },
+      {
+        command: "curl -s -u '<user>:<api-token>' 'http://localhost:8080/api/json?tree=jobs[name,color]'",
+        level: "Advanced",
+        english: "Query Jenkins job names and status colors through the API.",
+        telugu: "Jenkins jobs status API dwara chudataniki; API token ni expose cheyyakudadhu.",
+      },
+      {
+        command: "curl -s -u '<user>:<api-token>' 'http://localhost:8080/job/<job>/lastBuild/api/json'",
+        level: "Intermediate",
+        english: "Fetch details for the latest build of a job.",
+        telugu: "Job latest build details API nunchi pondataniki; token safe ga handle cheyyali.",
+      },
+      {
+        command: "curl -s -u '<user>:<api-token>' 'http://localhost:8080/job/<job>/lastBuild/consoleText",
+        level: "Troubleshooting",
+        english: "Fetch console output for the latest build.",
+        telugu: "Latest build console log chudataniki; authentication required avvachu.",
+      },
+      {
+        command: "sudo systemctl restart jenkins",
+        level: "Advanced",
+        english: "Restart the Jenkins service.",
+        telugu: "Jenkins restart cheyyataniki; running jobs impact assess chesi maintenance window plan cheyyali.",
+      },
+      {
+        command: "sudo systemctl reload jenkins",
+        level: "Advanced",
+        english: "Request a service reload where supported.",
+        telugu: "Service reload request cheyyataniki; Jenkins/systemd setup support chestundo verify cheyyali.",
+      },
+      {
+        command: "curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:8080/login",
+        level: "Troubleshooting",
+        english: "Print only the HTTP status code for the login endpoint.",
+        telugu: "Jenkins endpoint HTTP status code quick ga verify cheyyataniki.",
+      },
+      {
+        command: "find /var/lib/jenkins -type f -name '*.log' -mtime -1",
+        level: "Intermediate",
+        english: "Find Jenkins log files changed in the last day.",
+        telugu: "Last 24 hours lo modify ayina Jenkins log files vetakataniki.",
+      },
+      {
+        command: "grep -n 'executor' /var/lib/jenkins/config.xml",
+        level: "Advanced",
+        english: "Locate executor configuration entries in Jenkins configuration.",
+        telugu: "Jenkins executor configuration inspect cheyyataniki; config format version batti vary avvachu.",
+      },
+      {
+        command: "curl -s -u '<user>:<api-token>' 'http://localhost:8080/queue/api/json'",
+        level: "Troubleshooting",
+        english: "Inspect queued Jenkins builds through the API.",
+        telugu: "Build queue lo jobs enduku wait avutunnayo inspect cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "GitHub Actions",
+    category: "CI/CD",
+    commands: [
+      { command: "gh workflow list", level: "Basic", english: "to list repository workflows", telugu: "Repository workflows చూడటానికి." },
+      { command: "gh run list --limit 10", level: "Intermediate", english: "to list recent workflow runs", telugu: "ఇటీవలి workflow runs చూడటానికి." },
+      { command: "gh workflow view <workflow-name>", level: "Advanced", english: "to inspect a workflow definition", telugu: "Workflow definition వివరాలు చూడటానికి." },
+      { command: "gh run view <run-id> --log-failed", level: "Troubleshooting", english: "to inspect failed workflow step logs", telugu: "Fail అయిన workflow steps logs చూడటానికి." },
+      {
+        command: "gh workflow view <workflow> --yaml",
+        level: "Basic",
+        english: "Display a workflow definition.",
+        telugu: "Workflow YAML inspect cheyyataniki.",
+      },
+      {
+        command: "gh run list --workflow <workflow> --limit 20",
+        level: "Basic",
+        english: "List recent runs for one workflow.",
+        telugu: "Specific workflow recent runs chudataniki.",
+      },
+      {
+        command: "gh run view <run-id>",
+        level: "Basic",
+        english: "Display workflow run details.",
+        telugu: "Workflow run status, jobs details chudataniki.",
+      },
+      {
+        command: "gh run view <run-id> --log",
+        level: "Intermediate",
+        english: "Display logs for a workflow run.",
+        telugu: "Workflow run logs inspect cheyyataniki.",
+      },
+      {
+        command: "gh run view <run-id> --job <job-id> --log",
+        level: "Intermediate",
+        english: "Display logs for a specific job.",
+        telugu: "Specific failed job logs chudataniki.",
+      },
+      {
+        command: "gh run rerun <run-id>",
+        level: "Advanced",
+        english: "Rerun all jobs in a workflow run.",
+        telugu: "Workflow run rerun cheyyataniki; root cause fix chesaka use cheyyali.",
+      },
+      {
+        command: "gh run rerun <run-id> --failed",
+        level: "Advanced",
+        english: "Rerun only failed jobs.",
+        telugu: "Failed jobs matrame rerun cheyyataniki.",
+      },
+      {
+        command: "gh run cancel <run-id>",
+        level: "Advanced",
+        english: "Cancel a workflow run.",
+        telugu: "Unnecessary or stuck workflow cancel cheyyataniki; impact verify cheyyali.",
+      },
+      {
+        command: "gh run watch <run-id>",
+        level: "Intermediate",
+        english: "Watch a workflow run until it completes.",
+        telugu: "Workflow completion varaku live status chudataniki.",
+      },
+      {
+        command: "gh secret list",
+        level: "Intermediate",
+        english: "List repository Actions secret names.",
+        telugu: "Repository Actions secret names chudataniki; values display avvavu.",
+      },
+      {
+        command: "gh variable list",
+        level: "Intermediate",
+        english: "List repository Actions variable names and values where permitted.",
+        telugu: "Actions variables inspect cheyyataniki; sensitive values store cheyyakudadhu.",
+      },
+      {
+        command: "gh api repos/{owner}/{repo}/actions/permissions",
+        level: "Advanced",
+        english: "Inspect repository Actions permissions.",
+        telugu: "GitHub Actions repository permissions inspect cheyyataniki.",
+      },
+      {
+        command: "gh api repos/{owner}/{repo}/actions/runners",
+        level: "Advanced",
+        english: "List self-hosted runners registered to a repository.",
+        telugu: "Self-hosted runners list chudataniki.",
+      },
+      {
+        command: "gh api repos/{owner}/{repo}/actions/caches",
+        level: "Advanced",
+        english: "Inspect Actions cache entries.",
+        telugu: "Workflow caches inspect cheyyataniki.",
+      },
+      {
+        command: "gh run list --status failure --limit 20",
+        level: "Troubleshooting",
+        english: "List recent failed workflow runs.",
+        telugu: "Recent failed workflow runs identify cheyyataniki.",
+      },
+      {
+        command: "gh run list --status in_progress --limit 20",
+        level: "Troubleshooting",
+        english: "List workflows currently in progress.",
+        telugu: "Currently running workflows monitor cheyyataniki.",
+      },
+      {
+        command: "gh workflow disable <workflow>",
+        level: "Advanced",
+        english: "Disable a repository workflow.",
+        telugu: "Workflow disable cheyyataniki; automation impact confirm chesaka matrame.",
+      },
+      {
+        command: "gh workflow enable <workflow>",
+        level: "Intermediate",
+        english: "Enable a disabled repository workflow.",
+        telugu: "Disabled workflow malli enable cheyyataniki.",
+      },
+      {
+        command: "gh run download <run-id>",
+        level: "Intermediate",
+        english: "Download artifacts from a workflow run.",
+        telugu: "Workflow artifacts local ki download cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "Argo CD",
+    category: "CI/CD",
+    commands: [
+      { command: "argocd app list", level: "Basic", english: "to list Argo CD applications", telugu: "Argo CD applications చూడటానికి." },
+      { command: "argocd app get <app-name>", level: "Intermediate", english: "to inspect application health and sync status", telugu: "Application health, sync status చూడటానికి." },
+      { command: "argocd app diff <app-name>", level: "Advanced", english: "to compare desired and live application state", telugu: "Git లో ఉన్న configuration, live state మధ్య తేడాలు చూడటానికి." },
+      { command: "argocd app history <app-name>", level: "Troubleshooting", english: "to inspect application deployment history", telugu: "Application deployment history చూడటానికి." },
+      {
+        command: "argocd version",
+        level: "Basic",
+        english: "Display Argo CD client and server versions.",
+        telugu: "Argo CD client/server versions chudataniki.",
+      },
+      {
+        command: "argocd app get <app>",
+        level: "Basic",
+        english: "Display application health and sync status.",
+        telugu: "App health, sync status chudataniki.",
+      },
+      {
+        command: "argocd app diff <app>",
+        level: "Intermediate",
+        english: "Compare the desired manifests with live cluster resources.",
+        telugu: "Git desired state mariyu live cluster changes compare cheyyataniki.",
+      },
+      {
+        command: "argocd app history <app>",
+        level: "Intermediate",
+        english: "Show application deployment history.",
+        telugu: "Application deployment history chudataniki.",
+      },
+      {
+        command: "argocd app manifests <app>",
+        level: "Advanced",
+        english: "Display the manifests generated for an application.",
+        telugu: "Application rendered manifests inspect cheyyataniki.",
+      },
+      {
+        command: "argocd app resources <app>",
+        level: "Intermediate",
+        english: "List resources managed by an application.",
+        telugu: "App manage chestunna Kubernetes resources chudataniki.",
+      },
+      {
+        command: "argocd app logs <app>",
+        level: "Troubleshooting",
+        english: "Fetch application pod logs through Argo CD.",
+        telugu: "Application pod logs troubleshoot cheyyataniki.",
+      },
+      {
+        command: "argocd app wait <app> --health --sync",
+        level: "Intermediate",
+        english: "Wait for an application to become healthy and synced.",
+        telugu: "App healthy, synced ayye varaku wait cheyyataniki.",
+      },
+      {
+        command: "argocd app sync <app>",
+        level: "Advanced",
+        english: "Synchronize an application with its desired state.",
+        telugu: "Git desired state ni cluster ki sync cheyyataniki; diff review chesaka use cheyyali.",
+      },
+      {
+        command: "argocd app terminate-op <app>",
+        level: "Advanced",
+        english: "Terminate a running application operation.",
+        telugu: "Stuck Argo CD operation stop cheyyataniki; deployment operation impact verify cheyyali.",
+      },
+      {
+        command: "argocd app history <app> --output wide",
+        level: "Intermediate",
+        english: "Display application history with expanded details.",
+        telugu: "Application revision history details chudataniki.",
+      },
+      {
+        command: "argocd app rollback <app> <history-id>",
+        level: "Advanced",
+        english: "Roll back an application to a previous history entry where supported.",
+        telugu: "Previous deployment revision ki rollback cheyyataniki; GitOps source and permissions verify cheyyali.",
+      },
+      {
+        command: "argocd cluster list",
+        level: "Basic",
+        english: "List clusters registered with Argo CD.",
+        telugu: "Argo CD registered clusters list chudataniki.",
+      },
+      {
+        command: "argocd proj list",
+        level: "Basic",
+        english: "List Argo CD projects.",
+        telugu: "Argo CD projects list chudataniki.",
+      },
+      {
+        command: "argocd app set <app> --sync-policy automated",
+        level: "Advanced",
+        english: "Configure an application's sync policy.",
+        telugu: "Automated sync policy set cheyyataniki; production policy review cheyyali.",
+      },
+      {
+        command: "argocd app set <app> --sync-policy none",
+        level: "Advanced",
+        english: "Disable automated synchronization for an application.",
+        telugu: "Automated sync disable cheyyataniki; intended behavior verify cheyyali.",
+      },
+      {
+        command: "argocd app manifests <app> --source git",
+        level: "Troubleshooting",
+        english: "Inspect manifests rendered from the Git source.",
+        telugu: "Git source nunchi rendered manifests inspect cheyyataniki.",
+      },
+      {
+        command: "argocd account get-user-info",
+        level: "Troubleshooting",
+        english: "Display the current Argo CD account information.",
+        telugu: "Current Argo CD account identity verify cheyyataniki.",
+      },
+      {
+        command: "argocd app get <app> --refresh",
+        level: "Troubleshooting",
+        english: "Refresh application information from its sources.",
+        telugu: "Stale app status refresh chesi troubleshoot cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "Ansible",
+    category: "Automation & Build",
+    commands: [
+      { command: "ansible --version", level: "Basic", english: "to display the Ansible version", telugu: "Ansible version తెలుసుకోవటానికి." },
+      { command: "ansible-inventory --list -i inventory", level: "Intermediate", english: "to inspect parsed inventory hosts", telugu: "Inventory లో ఉన్న hosts వివరాలు చూడటానికి." },
+      { command: "ansible-playbook site.yml --syntax-check", level: "Advanced", english: "to validate playbook syntax", telugu: "Playbook syntax తనిఖీ చేయటానికి." },
+      { command: "ansible all -i inventory -m ping", level: "Troubleshooting", english: "to test Ansible connectivity to inventory hosts", telugu: "Ansible ద్వారా hosts కి connectivity ఉందో చూడటానికి." },
+      {
+        command: "ansible-inventory -i inventory.ini --list",
+        level: "Basic",
+        english: "Display inventory in JSON format.",
+        telugu: "Inventory hosts/group structure inspect cheyyataniki.",
+      },
+      {
+        command: "ansible-inventory -i inventory.ini --graph",
+        level: "Basic",
+        english: "Display inventory groups as a tree.",
+        telugu: "Inventory group hierarchy chudataniki.",
+      },
+      {
+        command: "ansible all -i inventory.ini --list-hosts",
+        level: "Basic",
+        english: "List hosts matched by the pattern.",
+        telugu: "Pattern match ayina hosts chudataniki.",
+      },
+      {
+        command: "ansible all -i inventory.ini -m ping",
+        level: "Basic",
+        english: "Test Ansible connectivity to inventory hosts.",
+        telugu: "Inventory hosts ki Ansible connectivity verify cheyyataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --list-tasks",
+        level: "Intermediate",
+        english: "List tasks without executing the playbook.",
+        telugu: "Playbook tasks execution mundu review cheyyataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --list-hosts",
+        level: "Intermediate",
+        english: "Show which hosts a playbook would target.",
+        telugu: "Playbook target hosts confirm cheyyataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --check --diff",
+        level: "Intermediate",
+        english: "Perform a check-mode run and show proposed changes.",
+        telugu: "Actual changes apply cheyyakunda proposed changes chudataniki; anni modules check mode support cheyyavu.",
+      },
+      {
+        command: "ansible-playbook site.yml --limit webservers",
+        level: "Intermediate",
+        english: "Restrict execution to a selected host group or pattern.",
+        telugu: "Selected webservers group meeda matrame run cheyyataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --start-at-task='Install packages'",
+        level: "Advanced",
+        english: "Start execution at a named task.",
+        telugu: "Specific task nunchi playbook start cheyyataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --step",
+        level: "Advanced",
+        english: "Prompt before each task during playbook execution.",
+        telugu: "Prathi task mundu confirmation teesukoni run cheyyataniki.",
+      },
+      {
+        command: "ansible-doc -l",
+        level: "Basic",
+        english: "List available Ansible modules.",
+        telugu: "Available Ansible modules list chudataniki.",
+      },
+      {
+        command: "ansible-doc ansible.builtin.copy",
+        level: "Basic",
+        english: "Display documentation for the copy module.",
+        telugu: "Copy module usage/documentation chudataniki.",
+      },
+      {
+        command: "ansible-config dump --only-changed",
+        level: "Intermediate",
+        english: "Display Ansible settings that differ from defaults.",
+        telugu: "Default nunchi change ayina Ansible settings chudataniki.",
+      },
+      {
+        command: "ansible-galaxy collection list",
+        level: "Intermediate",
+        english: "List installed Ansible collections.",
+        telugu: "Installed Ansible collections list chudataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --vault-id prod@prompt",
+        level: "Advanced",
+        english: "Run a playbook using a prompted vault password for a vault ID.",
+        telugu: "Encrypted variables kosam password prompt use cheyyataniki.",
+      },
+      {
+        command: "ansible all -i inventory.ini -m command -a 'uptime'",
+        level: "Intermediate",
+        english: "Run uptime on all matched hosts.",
+        telugu: "Anni matched hosts uptime check cheyyataniki.",
+      },
+      {
+        command: "ansible all -i inventory.ini -m setup",
+        level: "Advanced",
+        english: "Gather system facts from managed hosts.",
+        telugu: "Managed hosts OS, hardware facts collect cheyyataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --forks 20",
+        level: "Advanced",
+        english: "Run tasks against up to twenty hosts concurrently.",
+        telugu: "Parallel hosts limit set cheyyataniki; controller and target capacity consider cheyyali.",
+      },
+    ],
+  },
+  {
+    name: "Maven",
+    category: "Automation & Build",
+    commands: [
+      { command: "mvn -version", level: "Basic", english: "to display Maven and Java versions", telugu: "Maven, Java versions చూడటానికి." },
+      { command: "mvn test", level: "Intermediate", english: "to run project tests", telugu: "Project tests run చేయటానికి." },
+      { command: "mvn package", level: "Advanced", english: "to build the distributable project artifact", telugu: "Project package లేదా artifact తయారు చేయటానికి." },
+      { command: "mvn dependency:tree", level: "Troubleshooting", english: "to inspect the dependency tree", telugu: "Project dependencies hierarchy చూడటానికి." },
+      {
+        command: "mvn validate",
+        level: "Basic",
+        english: "Validate the Maven project structure and configuration.",
+        telugu: "Maven project configuration validate cheyyataniki.",
+      },
+      {
+        command: "mvn compile",
+        level: "Basic",
+        english: "Compile main source code.",
+        telugu: "Main source code compile cheyyataniki.",
+      },
+      {
+        command: "mvn verify",
+        level: "Intermediate",
+        english: "Run verification checks through the verify lifecycle phase.",
+        telugu: "Integration/verification checks execute cheyyataniki.",
+      },
+      {
+        command: "mvn clean",
+        level: "Basic",
+        english: "Remove generated build output.",
+        telugu: "Generated target build files clean cheyyataniki.",
+      },
+      {
+        command: "mvn clean package",
+        level: "Basic",
+        english: "Clean and package the project.",
+        telugu: "Fresh build tho package create cheyyataniki.",
+      },
+      {
+        command: "mvn dependency:analyze",
+        level: "Advanced",
+        english: "Analyze declared and used dependencies.",
+        telugu: "Unused/missing dependencies identify cheyyataniki.",
+      },
+      {
+        command: "mvn help:effective-pom",
+        level: "Intermediate",
+        english: "Display the effective POM after inheritance and profiles.",
+        telugu: "Parent POM/profile merge ayina final configuration chudataniki.",
+      },
+      {
+        command: "mvn help:active-profiles",
+        level: "Basic",
+        english: "List active Maven profiles.",
+        telugu: "Active Maven profiles identify cheyyataniki.",
+      },
+      {
+        command: "mvn -DskipTests package",
+        level: "Intermediate",
+        english: "Package the project without running tests.",
+        telugu: "Tests run cheyyakunda package build cheyyataniki; CI lo tests skip cheyyadam avoid cheyyali.",
+      },
+      {
+        command: "mvn -Dmaven.test.skip=true package",
+        level: "Advanced",
+        english: "Skip test compilation and execution for the package build.",
+        telugu: "Test compile/execution skip chestundi; only intentional scenarios lo use cheyyali.",
+      },
+      {
+        command: "mvn -o package",
+        level: "Troubleshooting",
+        english: "Build in offline mode using cached dependencies.",
+        telugu: "Network unavailable appudu cached dependencies tho build try cheyyataniki.",
+      },
+      {
+        command: "mvn -U clean package",
+        level: "Troubleshooting",
+        english: "Force checks for updated snapshot dependencies.",
+        telugu: "Stale SNAPSHOT dependency issue troubleshoot cheyyataniki.",
+      },
+      {
+        command: "mvn -pl module-name -am test",
+        level: "Advanced",
+        english: "Test a selected module and required upstream modules.",
+        telugu: "Selected Maven module mariyu required upstream modules test cheyyataniki.",
+      },
+      {
+        command: "mvn -DskipTests=false test",
+        level: "Intermediate",
+        english: "Explicitly enable test execution.",
+        telugu: "Build configuration tests skip chestunte tests enable cheyyataniki.",
+      },
+      {
+        command: "mvn dependency:purge-local-repository",
+        level: "Advanced",
+        english: "Purge selected project dependencies from the local repository and resolve again.",
+        telugu: "Corrupted cached dependencies troubleshoot cheyyataniki; dependencies malli download avuthayi.",
+      },
+      {
+        command: "mvn help:describe -Dplugin=compiler -Ddetail",
+        level: "Intermediate",
+        english: "Show detailed Maven compiler plugin information.",
+        telugu: "Compiler plugin goals/options inspect cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "Gradle",
+    category: "Automation & Build",
+    commands: [
+      { command: "gradle --version", level: "Basic", english: "to display the Gradle version", telugu: "Gradle version చూడటానికి." },
+      { command: "./gradlew tasks", level: "Intermediate", english: "to list available project tasks", telugu: "Project లో available tasks చూడటానికి." },
+      { command: "./gradlew build", level: "Advanced", english: "to build and test the project", telugu: "Project build చేసి tests run చేయటానికి." },
+      { command: "./gradlew dependencies", level: "Troubleshooting", english: "to inspect project dependencies", telugu: "Project dependencies వివరాలు చూడటానికి." },
+      {
+        command: "gradle tasks",
+        level: "Basic",
+        english: "List available tasks in the project.",
+        telugu: "Project lo available Gradle tasks chudataniki.",
+      },
+      {
+        command: "gradle tasks --all",
+        level: "Intermediate",
+        english: "List all tasks, including detailed task groups.",
+        telugu: "Anni Gradle tasks inspect cheyyataniki.",
+      },
+      {
+        command: "gradle projects",
+        level: "Basic",
+        english: "List subprojects in a multi-project build.",
+        telugu: "Multi-project build lo subprojects chudataniki.",
+      },
+      {
+        command: "gradle properties",
+        level: "Intermediate",
+        english: "Display project properties.",
+        telugu: "Project properties inspect cheyyataniki.",
+      },
+      {
+        command: "gradle dependencies",
+        level: "Intermediate",
+        english: "Display dependency trees for project configurations.",
+        telugu: "Project dependencies tree chudataniki.",
+      },
+      {
+        command: "gradle dependencyInsight --dependency <name>",
+        level: "Advanced",
+        english: "Explain why a dependency version was selected.",
+        telugu: "Dependency version enduku select ayyindo investigate cheyyataniki.",
+      },
+      {
+        command: "gradle clean",
+        level: "Basic",
+        english: "Delete generated build output.",
+        telugu: "Generated build output clean cheyyataniki.",
+      },
+      {
+        command: "gradle assemble",
+        level: "Basic",
+        english: "Assemble project outputs without running all verification tasks.",
+        telugu: "Project artifacts assemble cheyyataniki.",
+      },
+      {
+        command: "gradle build",
+        level: "Basic",
+        english: "Run the standard build lifecycle tasks.",
+        telugu: "Standard build and verification tasks run cheyyataniki.",
+      },
+      {
+        command: "gradle test",
+        level: "Basic",
+        english: "Run project tests.",
+        telugu: "Project tests execute cheyyataniki.",
+      },
+      {
+        command: "gradle check",
+        level: "Intermediate",
+        english: "Run verification tasks configured for the project.",
+        telugu: "Configured verification tasks execute cheyyataniki.",
+      },
+      {
+        command: "gradle build --scan",
+        level: "Advanced",
+        english: "Publish a build scan for build diagnostics if configured and permitted.",
+        telugu: "Build performance/errors investigate cheyyataniki; scan data sharing policy verify cheyyali.",
+      },
+      {
+        command: "gradle --offline build",
+        level: "Troubleshooting",
+        english: "Build using cached dependencies only.",
+        telugu: "Network lekapothe cached dependencies tho build try cheyyataniki.",
+      },
+      {
+        command: "gradle --refresh-dependencies build",
+        level: "Troubleshooting",
+        english: "Refresh dependency cache metadata and resolve dependencies again.",
+        telugu: "Stale dependency cache issue troubleshoot cheyyataniki.",
+      },
+      {
+        command: "gradle --stop",
+        level: "Troubleshooting",
+        english: "Stop Gradle daemon processes for the current user.",
+        telugu: "Gradle daemon issues troubleshoot cheyyataniki.",
+      },
+      {
+        command: "gradle --status",
+        level: "Troubleshooting",
+        english: "Show Gradle daemons for the current Gradle version.",
+        telugu: "Current Gradle version daemons status chudataniki.",
+      },
+      {
+        command: "gradle wrapper --gradle-version <version>",
+        level: "Advanced",
+        english: "Update the Gradle Wrapper version.",
+        telugu: "Project Gradle Wrapper version update cheyyataniki; compatibility check cheyyali.",
+      },
+      {
+        command: "gradle javaToolchains",
+        level: "Advanced",
+        english: "Display detected Java toolchains.",
+        telugu: "Build use cheyagalige Java toolchains inspect cheyyataniki.",
+      },
+      {
+        command: "gradle test --tests '*TestName'",
+        level: "Intermediate",
+        english: "Run tests matching a specified test name pattern.",
+        telugu: "Specific test class/pattern matrame run cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "Nexus",
+    category: "Automation & Build",
+    commands: [
+      { command: "curl -I <nexus-url>", level: "Basic", english: "to check whether the Nexus endpoint responds", telugu: "Nexus URL response ఇస్తుందో చూడటానికి." },
+      { command: "curl -u <username> <nexus-url>/service/rest/v1/status", level: "Intermediate", english: "to check the Nexus status endpoint", telugu: "Nexus status endpoint తనిఖీ చేయటానికి." },
+      { command: "curl -I <repository-url>", level: "Advanced", english: "to inspect repository endpoint response headers", telugu: "Repository endpoint response headers చూడటానికి." },
+      { command: "curl -sS -o /dev/null -w '%{http_code}\\n' <nexus-url>", level: "Troubleshooting", english: "to inspect the HTTP response code from Nexus", telugu: "Nexus నుంచి వస్తున్న HTTP response code తెలుసుకోవటానికి." },
+      {
+        command: "curl -sS -u '<user>:<password>' http://localhost:8081/service/rest/v1/status",
+        level: "Troubleshooting",
+        english: "Check Nexus Repository Manager status.",
+        telugu: "Nexus service status verify cheyyataniki; credentials safe ga handle cheyyali.",
+      },
+      {
+        command: "curl -sS -I http://localhost:8081/",
+        level: "Basic",
+        english: "Check whether the Nexus web endpoint responds.",
+        telugu: "Nexus web endpoint response check cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/repositories'",
+        level: "Intermediate",
+        english: "List repositories through the Nexus REST API.",
+        telugu: "Nexus repositories REST API dwara list cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/repositorySettings'",
+        level: "Advanced",
+        english: "Query repository settings if supported by the installed Nexus version.",
+        telugu: "Repository settings API inspect cheyyataniki; endpoint version batti vary avvachu.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/search?repository=<repo>'",
+        level: "Intermediate",
+        english: "Search repository components through the REST API.",
+        telugu: "Specific repository components search cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/search/assets?repository=<repo>'",
+        level: "Intermediate",
+        english: "Search assets in a repository.",
+        telugu: "Repository assets search cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/tasks'",
+        level: "Advanced",
+        english: "List Nexus scheduled tasks through the REST API.",
+        telugu: "Nexus scheduled tasks inspect cheyyataniki; API permissions avasaram.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/blobstores'",
+        level: "Intermediate",
+        english: "List configured blob stores.",
+        telugu: "Configured blob stores inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/repositories/maven/hosted'",
+        level: "Intermediate",
+        english: "List hosted Maven repositories.",
+        telugu: "Hosted Maven repositories list chudataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/repositories/maven/proxy'",
+        level: "Intermediate",
+        english: "List Maven proxy repositories.",
+        telugu: "Maven proxy repositories inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/repositories/docker/hosted'",
+        level: "Intermediate",
+        english: "List hosted Docker repositories.",
+        telugu: "Hosted Docker repositories chudataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/security/users'",
+        level: "Advanced",
+        english: "List Nexus users when authorized.",
+        telugu: "Authorized user account list inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/security/roles'",
+        level: "Advanced",
+        english: "List Nexus roles when authorized.",
+        telugu: "Nexus roles and access configuration inspect cheyyataniki.",
+      },
+      {
+        command: "sudo systemctl status nexus",
+        level: "Basic",
+        english: "Check the Nexus system service on systemd hosts.",
+        telugu: "Nexus system service status chudataniki.",
+      },
+      {
+        command: "sudo journalctl -u nexus -n 100 --no-pager",
+        level: "Troubleshooting",
+        english: "Inspect recent Nexus service logs.",
+        telugu: "Nexus recent service logs troubleshoot cheyyataniki.",
+      },
+      {
+        command: "df -h",
+        level: "Basic",
+        english: "Check filesystem capacity for Nexus storage.",
+        telugu: "Nexus storage disk space check cheyyataniki.",
+      },
+      {
+        command: "du -sh /nexus-data",
+        level: "Intermediate",
+        english: "Estimate the size of the Nexus data directory.",
+        telugu: "Nexus data directory size inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/status/check'",
+        level: "Troubleshooting",
+        english: "Check the Nexus readiness/status endpoint when available.",
+        telugu: "Nexus readiness/status endpoint check cheyyataniki; version support verify cheyyali.",
+      },
+      {
+        command: "curl -sS -o /dev/null -w '%{http_code}\\n' http://localhost:8081/",
+        level: "Troubleshooting",
+        english: "Print only the HTTP status code returned by Nexus.",
+        telugu: "Nexus HTTP status code quick ga verify cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/components?repository=<repo>'",
+        level: "Advanced",
+        english: "List repository components through the REST API where supported.",
+        telugu: "Repository components API dwara inspect cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "Prometheus",
+    category: "Monitoring",
+    commands: [
+      { command: "curl -s http://localhost:9090/-/healthy", level: "Basic", english: "to check Prometheus health", telugu: "Prometheus health status చూడటానికి." },
+      { command: "curl -s http://localhost:9090/api/v1/targets", level: "Intermediate", english: "to inspect monitored scrape targets", telugu: "Prometheus monitor చేస్తున్న targets చూడటానికి." },
+      { command: "curl -G http://localhost:9090/api/v1/query --data-urlencode 'query=up'", level: "Advanced", english: "to query whether monitored targets are up", telugu: "Targets up లో ఉన్నాయో PromQL ద్వారా తెలుసుకోవటానికి." },
+      { command: "curl -s http://localhost:9090/api/v1/alerts", level: "Troubleshooting", english: "to inspect active Prometheus alerts", telugu: "ప్రస్తుతం active లో ఉన్న alerts చూడటానికి." },
+      {
+        command: "prometheus --version",
+        level: "Basic",
+        english: "Display the Prometheus binary version.",
+        telugu: "Prometheus version chudataniki.",
+      },
+      {
+        command: "promtool check config prometheus.yml",
+        level: "Basic",
+        english: "Validate the Prometheus configuration file.",
+        telugu: "Prometheus YAML configuration validate cheyyataniki.",
+      },
+      {
+        command: "promtool check rules rules.yml",
+        level: "Intermediate",
+        english: "Validate Prometheus rule files.",
+        telugu: "Alerting/recording rules validate cheyyataniki.",
+      },
+      {
+        command: "promtool test rules test.yml",
+        level: "Advanced",
+        english: "Run unit tests for Prometheus rules.",
+        telugu: "Prometheus rules test cases execute cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/-/healthy",
+        level: "Basic",
+        english: "Check Prometheus process health endpoint.",
+        telugu: "Prometheus health endpoint verify cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/-/ready",
+        level: "Troubleshooting",
+        english: "Check whether Prometheus is ready to serve traffic.",
+        telugu: "Prometheus ready state check cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/targets",
+        level: "Intermediate",
+        english: "Inspect scrape target health and scrape errors.",
+        telugu: "Targets UP/DOWN status, scrape errors inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/rules",
+        level: "Intermediate",
+        english: "Inspect loaded alerting and recording rules.",
+        telugu: "Loaded Prometheus rules chudataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/alerts",
+        level: "Basic",
+        english: "List active alerts known to Prometheus.",
+        telugu: "Prometheus active alerts chudataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/status/config",
+        level: "Advanced",
+        english: "Inspect the loaded Prometheus configuration.",
+        telugu: "Loaded configuration troubleshoot cheyyataniki; endpoint access restrict cheyyali.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/status/runtimeinfo",
+        level: "Advanced",
+        english: "Inspect Prometheus runtime information.",
+        telugu: "Prometheus runtime details inspect cheyyataniki.",
+      },
+      {
+        command: "curl -G -sS http://localhost:9090/api/v1/query --data-urlencode 'query=up'",
+        level: "Basic",
+        english: "Query the up metric for monitored targets.",
+        telugu: "Monitored targets up/down status query cheyyataniki.",
+      },
+      {
+        command: "curl -G -sS http://localhost:9090/api/v1/query --data-urlencode 'query=rate(http_requests_total[5m])'",
+        level: "Intermediate",
+        english: "Query the five-minute request rate.",
+        telugu: "HTTP request rate calculate cheyyataniki; metric name environment batti vary avvachu.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/label/__name__/values",
+        level: "Advanced",
+        english: "List metric names available in Prometheus.",
+        telugu: "Available metric names inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/targets?state=active",
+        level: "Intermediate",
+        english: "List active scrape targets.",
+        telugu: "Active scrape targets inspect cheyyataniki.",
+      },
+      {
+        command: "promtool query instant http://localhost:9090 'up'",
+        level: "Intermediate",
+        english: "Run an instant PromQL query using promtool.",
+        telugu: "promtool dwara instant PromQL query test cheyyataniki.",
+      },
+      {
+        command: "promtool query range http://localhost:9090 'up' --start=<RFC3339> --end=<RFC3339> --step=30s",
+        level: "Advanced",
+        english: "Run a range query across a time interval.",
+        telugu: "Specified time range lo metric values inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/metrics",
+        level: "Intermediate",
+        english: "Inspect Prometheus self-monitoring metrics.",
+        telugu: "Prometheus internal metrics inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/status/flags",
+        level: "Troubleshooting",
+        english: "Inspect active Prometheus command-line flags.",
+        telugu: "Prometheus active flags verify cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/metadata",
+        level: "Advanced",
+        english: "Inspect metric metadata exposed by Prometheus.",
+        telugu: "Metric metadata inspect cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "Grafana",
+    category: "Monitoring",
+    commands: [
+      { command: "curl -I http://localhost:3000/api/health", level: "Basic", english: "to check Grafana health endpoint", telugu: "Grafana health endpoint response చూడటానికి." },
+      { command: "curl -s http://localhost:3000/api/health", level: "Intermediate", english: "to inspect Grafana service health details", telugu: "Grafana service health వివరాలు చూడటానికి." },
+      { command: "grafana cli plugins ls", level: "Advanced", english: "to list installed Grafana plugins", telugu: "Install చేసిన Grafana plugins చూడటానికి." },
+      { command: "journalctl -u grafana-server -n 100 --no-pager", level: "Troubleshooting", english: "to inspect recent Grafana service logs", telugu: "Grafana service logs చూడటానికి." },
+      {
+        command: "curl -sS http://localhost:3000/api/health",
+        level: "Basic",
+        english: "Check Grafana health and database status.",
+        telugu: "Grafana health/database status verify cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<password>' http://localhost:3000/api/org",
+        level: "Intermediate",
+        english: "Inspect the current Grafana organization.",
+        telugu: "Grafana organization details chudataniki; credentials expose cheyyakudadhu.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/datasources",
+        level: "Intermediate",
+        english: "List configured Grafana data sources.",
+        telugu: "Configured data sources list chudataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/search",
+        level: "Basic",
+        english: "Search Grafana dashboards and folders.",
+        telugu: "Grafana dashboards/folders search cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/folders",
+        level: "Intermediate",
+        english: "List dashboard folders.",
+        telugu: "Dashboard folders list chudataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/alerts",
+        level: "Advanced",
+        english: "Query alert resources on versions exposing this endpoint.",
+        telugu: "Grafana alert resources inspect cheyyataniki; endpoint version batti vary avvachu.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/admin/stats",
+        level: "Advanced",
+        english: "Inspect Grafana server statistics when admin access is available.",
+        telugu: "Grafana server stats inspect cheyyataniki; admin permission avasaram.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/health",
+        level: "Basic",
+        english: "Check health using authenticated API access.",
+        telugu: "Authenticated health endpoint verify cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:3000/api/search?query=production'",
+        level: "Intermediate",
+        english: "Search dashboards using a query.",
+        telugu: "Production keyword tho dashboards search cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/dashboards/uid/<uid>",
+        level: "Intermediate",
+        english: "Retrieve a dashboard by its UID.",
+        telugu: "UID base chesi dashboard details pondataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/datasources/uid/<uid>",
+        level: "Advanced",
+        english: "Retrieve data source details by UID.",
+        telugu: "Data source UID details inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/user",
+        level: "Basic",
+        english: "Inspect the currently authenticated Grafana user.",
+        telugu: "Current authenticated Grafana user details chudataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/org/users",
+        level: "Advanced",
+        english: "List organization users when authorized.",
+        telugu: "Organization users inspect cheyyataniki; permission required.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/annotations",
+        level: "Intermediate",
+        english: "Query dashboard annotations.",
+        telugu: "Dashboard annotations query cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/teams/search",
+        level: "Advanced",
+        english: "Search Grafana teams when the API is enabled.",
+        telugu: "Grafana teams search cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/plugins",
+        level: "Intermediate",
+        english: "List installed Grafana plugins.",
+        telugu: "Installed Grafana plugins chudataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/live/ws",
+        level: "Troubleshooting",
+        english: "Check the Grafana Live WebSocket endpoint behavior.",
+        telugu: "Grafana Live WebSocket connection troubleshoot cheyyataniki.",
+      },
+      {
+        command: "sudo journalctl -u grafana-server -n 100 --no-pager",
+        level: "Troubleshooting",
+        english: "Inspect recent Grafana service logs.",
+        telugu: "Grafana recent logs troubleshoot cheyyataniki.",
+      },
+      {
+        command: "sudo systemctl status grafana-server",
+        level: "Basic",
+        english: "Check Grafana service status.",
+        telugu: "Grafana service status chudataniki.",
+      },
+      {
+        command: "curl -sS -o /dev/null -w '%{http_code}\\n' http://localhost:3000/login",
+        level: "Troubleshooting",
+        english: "Check the HTTP status of the Grafana login page.",
+        telugu: "Grafana login page HTTP status check cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "Alertmanager",
+    category: "Monitoring",
+    commands: [
+      { command: "curl -s http://localhost:9093/-/healthy", level: "Basic", english: "to check Alertmanager health", telugu: "Alertmanager health status చూడటానికి." },
+      { command: "curl -s http://localhost:9093/api/v2/alerts", level: "Intermediate", english: "to list active alerts", telugu: "ప్రస్తుతం ఉన్న alerts చూడటానికి." },
+      { command: "curl -s http://localhost:9093/api/v2/status", level: "Advanced", english: "to inspect Alertmanager runtime status", telugu: "Alertmanager runtime status తెలుసుకోవటానికి." },
+      { command: "journalctl -u alertmanager -n 100 --no-pager", level: "Troubleshooting", english: "to inspect recent Alertmanager logs", telugu: "Alertmanager logs చూడటానికి." },
+      {
+        command: "amtool --version",
+        level: "Basic",
+        english: "Display the Alertmanager tool version.",
+        telugu: "amtool version chudataniki.",
+      },
+      {
+        command: "amtool check-config alertmanager.yml",
+        level: "Basic",
+        english: "Validate Alertmanager configuration.",
+        telugu: "Alertmanager configuration validate cheyyataniki.",
+      },
+      {
+        command: "amtool alert query",
+        level: "Basic",
+        english: "List active alerts known to Alertmanager.",
+        telugu: "Alertmanager lo active alerts chudataniki.",
+      },
+      {
+        command: "amtool alert query --alertmanager.url=http://localhost:9093",
+        level: "Intermediate",
+        english: "Query alerts from a specified Alertmanager endpoint.",
+        telugu: "Specific Alertmanager endpoint nunchi alerts pondataniki.",
+      },
+      {
+        command: "amtool silence query",
+        level: "Basic",
+        english: "List active silences.",
+        telugu: "Active alert silences list chudataniki.",
+      },
+      {
+        command: "amtool silence expire <silence-id>",
+        level: "Advanced",
+        english: "Expire a silence early.",
+        telugu: "Silence early ga expire cheyyataniki; alert noise malli start avvachu.",
+      },
+      {
+        command: "amtool silence add alertname=HighCPU",
+        level: "Advanced",
+        english: "Create a silence matching the specified alert label.",
+        telugu: "HighCPU alert ki silence create cheyyataniki; duration/labels review cheyyali.",
+      },
+      {
+        command: "amtool config routes test --config.file=alertmanager.yml alertname=HighCPU",
+        level: "Troubleshooting",
+        english: "Test routing behavior for an alert label set.",
+        telugu: "Alert route correct receiver ki velthundo test cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/-/healthy",
+        level: "Basic",
+        english: "Check Alertmanager health.",
+        telugu: "Alertmanager health endpoint check cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/-/ready",
+        level: "Troubleshooting",
+        english: "Check Alertmanager readiness.",
+        telugu: "Alertmanager traffic accept cheyyadaniki ready ga undho chudataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/api/v2/alerts",
+        level: "Intermediate",
+        english: "Retrieve alerts through the v2 API.",
+        telugu: "API dwara alerts fetch cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/api/v2/silences",
+        level: "Intermediate",
+        english: "Retrieve silences through the v2 API.",
+        telugu: "API dwara silences inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/api/v2/status",
+        level: "Advanced",
+        english: "Inspect Alertmanager status information.",
+        telugu: "Alertmanager status details chudataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/metrics",
+        level: "Intermediate",
+        english: "Inspect Alertmanager self-monitoring metrics.",
+        telugu: "Alertmanager internal metrics chudataniki.",
+      },
+      {
+        command: "amtool config routes show --config.file=alertmanager.yml",
+        level: "Intermediate",
+        english: "Display configured notification routes.",
+        telugu: "Configured notification routing tree chudataniki.",
+      },
+      {
+        command: "amtool config routes test --config.file=alertmanager.yml --tree alertname=DiskFull",
+        level: "Advanced",
+        english: "Show route tree matches for a test label set.",
+        telugu: "DiskFull label ki route tree matches test cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/api/v2/receivers",
+        level: "Intermediate",
+        english: "List configured notification receivers.",
+        telugu: "Configured notification receivers chudataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/api/v2/alerts/groups",
+        level: "Advanced",
+        english: "List grouped alerts.",
+        telugu: "Grouped alerts inspect cheyyataniki.",
+      },
+      {
+        command: "amtool silence query --within=1h",
+        level: "Troubleshooting",
+        english: "Query silences created within a recent time window where supported.",
+        telugu: "Recent silences investigate cheyyataniki; amtool version support verify cheyyali.",
+      },
+      {
+        command: "curl -sS -o /dev/null -w '%{http_code}\\n' http://localhost:9093/",
+        level: "Troubleshooting",
+        english: "Check Alertmanager HTTP response status.",
+        telugu: "Alertmanager HTTP response code quick ga verify cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "NGINX",
+    category: "Web & Servers",
+    commands: [
+      { command: "nginx -v", level: "Basic", english: "to display the NGINX version", telugu: "NGINX version చూడటానికి." },
+      { command: "nginx -t", level: "Intermediate", english: "to test NGINX configuration syntax", telugu: "NGINX configuration syntax తనిఖీ చేయటానికి." },
+      { command: "nginx -T", level: "Advanced", english: "to print the loaded NGINX configuration", telugu: "Load అయిన NGINX configuration చూడటానికి." },
+      { command: "journalctl -u nginx -n 100 --no-pager", level: "Troubleshooting", english: "to inspect recent NGINX service logs", telugu: "NGINX service logs చూడటానికి." },
+      {
+        command: "sudo nginx -t",
+        level: "Basic",
+        english: "Test NGINX configuration syntax.",
+        telugu: "NGINX configuration syntax validate cheyyataniki.",
+      },
+      {
+        command: "sudo systemctl status nginx",
+        level: "Basic",
+        english: "Check the NGINX service status.",
+        telugu: "NGINX service status chudataniki.",
+      },
+      {
+        command: "sudo journalctl -u nginx -n 100 --no-pager",
+        level: "Troubleshooting",
+        english: "Inspect recent NGINX service logs.",
+        telugu: "NGINX service logs troubleshoot cheyyataniki.",
+      },
+      {
+        command: "sudo tail -n 100 /var/log/nginx/error.log",
+        level: "Troubleshooting",
+        english: "Inspect the latest NGINX error log lines.",
+        telugu: "Recent NGINX errors chudataniki.",
+      },
+      {
+        command: "sudo tail -n 100 /var/log/nginx/access.log",
+        level: "Intermediate",
+        english: "Inspect recent NGINX access requests.",
+        telugu: "Recent HTTP requests inspect cheyyataniki.",
+      },
+      {
+        command: "curl -I http://localhost/",
+        level: "Basic",
+        english: "Check response headers from the local NGINX server.",
+        telugu: "Local NGINX HTTP headers verify cheyyataniki.",
+      },
+      {
+        command: "curl -sS -o /dev/null -w '%{http_code}\\n' http://localhost/health",
+        level: "Troubleshooting",
+        english: "Check the HTTP status for a health endpoint.",
+        telugu: "Health endpoint response status check cheyyataniki.",
+      },
+      {
+        command: "sudo nginx -s reload",
+        level: "Intermediate",
+        english: "Reload NGINX configuration gracefully.",
+        telugu: "Configuration reload cheyyataniki; mundu nginx -t run cheyyali.",
+      },
+      {
+        command: "sudo nginx -s reopen",
+        level: "Advanced",
+        english: "Reopen log files after log rotation.",
+        telugu: "Log rotation tarvatha log files reopen cheyyataniki.",
+      },
+      {
+        command: "sudo nginx -s quit",
+        level: "Advanced",
+        english: "Request a graceful NGINX shutdown.",
+        telugu: "Graceful shutdown request cheyyataniki; production traffic impact consider cheyyali.",
+      },
+      {
+        command: "sudo ss -tulpn | grep nginx",
+        level: "Troubleshooting",
+        english: "Check listening sockets associated with NGINX.",
+        telugu: "NGINX listen chestunna ports identify cheyyataniki.",
+      },
+      {
+        command: "grep -Rni 'server_name' /etc/nginx/",
+        level: "Intermediate",
+        english: "Locate configured server names.",
+        telugu: "Virtual host server_name directives search cheyyataniki.",
+      },
+      {
+        command: "grep -Rni 'proxy_pass' /etc/nginx/",
+        level: "Intermediate",
+        english: "Locate reverse-proxy upstream directives.",
+        telugu: "Reverse proxy upstream configuration inspect cheyyataniki.",
+      },
+      {
+        command: "grep -Rni 'listen' /etc/nginx/",
+        level: "Basic",
+        english: "Locate configured listening ports.",
+        telugu: "NGINX listen ports search cheyyataniki.",
+      },
+      {
+        command: "sudo find /etc/nginx -type f -name '*.conf'",
+        level: "Basic",
+        english: "List NGINX configuration files.",
+        telugu: "NGINX configuration files list chudataniki.",
+      },
+      {
+        command: "curl -sS -H 'Host: example.com' http://127.0.0.1/",
+        level: "Troubleshooting",
+        english: "Test virtual-host routing using a Host header.",
+        telugu: "Host header dwara virtual host route test cheyyataniki.",
+      },
+      {
+        command: "curl -sS -o /dev/null -w '%{time_total}\\n' http://localhost/",
+        level: "Advanced",
+        english: "Measure total response time for a local request.",
+        telugu: "Local request total response time measure cheyyataniki.",
+      },
+    ],
+  },
+  {
+    name: "Apache Tomcat",
+    category: "Web & Servers",
+    commands: [
+      { command: "java -version", level: "Basic", english: "to check the Java runtime version", telugu: "Tomcat కోసం Java version చూడటానికి." },
+      { command: "curl -I http://localhost:8080", level: "Intermediate", english: "to inspect the Tomcat HTTP response", telugu: "Tomcat HTTP response చూడటానికి." },
+      { command: "tail -n 100 <tomcat-path>/logs/catalina.out", level: "Advanced", english: "to inspect recent Tomcat application logs", telugu: "Tomcat application logs చూడటానికి." },
+      { command: "ss -lntp", level: "Troubleshooting", english: "to check listening TCP ports", telugu: "Tomcat port సహా listening TCP ports చూడటానికి." },
+    ],
+  },
+  {
+    name: "Trivy",
+    category: "Security",
+    commands: [
+      { command: "trivy --version", level: "Basic", english: "to display the Trivy version", telugu: "Trivy version చూడటానికి." },
+      { command: "trivy image <image-name>", level: "Intermediate", english: "to scan an image for vulnerabilities", telugu: "Container image లో vulnerabilities scan చేయటానికి." },
+      { command: "trivy fs --scanners vuln,secret,misconfig .", level: "Advanced", english: "to scan a repository for vulnerabilities, secrets and misconfiguration", telugu: "Repository లో vulnerabilities, secrets, misconfiguration తనిఖీ చేయటానికి." },
+      { command: "trivy image --severity HIGH,CRITICAL <image-name>", level: "Troubleshooting", english: "to focus an image scan on high-severity findings", telugu: "Image లో High, Critical findings మాత్రమే చూడటానికి." },
+    ],
+  },
+  {
+    name: "SonarQube",
+    category: "Security",
+    commands: [
+      { command: "curl -I <sonarqube-url>", level: "Basic", english: "to check the SonarQube endpoint response", telugu: "SonarQube URL response ఇస్తుందో చూడటానికి." },
+      { command: "sonar-scanner --version", level: "Intermediate", english: "to check the scanner version", telugu: "SonarScanner version చూడటానికి." },
+      { command: "sonar-scanner", level: "Advanced", english: "to run analysis using the project configuration", telugu: "Project configuration ఆధారంగా code analysis చేయటానికి." },
+      { command: "curl -sS <sonarqube-url>/api/system/status", level: "Troubleshooting", english: "to inspect SonarQube system status", telugu: "SonarQube system status తెలుసుకోవటానికి." },
+    ],
+  },
+  {
+    name: "Snyk",
+    category: "Security",
+    commands: [
+      { command: "snyk --version", level: "Basic", english: "to display the Snyk CLI version", telugu: "Snyk CLI version చూడటానికి." },
+      { command: "snyk test", level: "Intermediate", english: "to scan project dependencies for vulnerabilities", telugu: "Project dependencies లో vulnerabilities scan చేయటానికి." },
+      { command: "snyk container test <image-name>", level: "Advanced", english: "to scan a container image for vulnerabilities", telugu: "Container image vulnerabilities తనిఖీ చేయటానికి." },
+      { command: "snyk auth", level: "Troubleshooting", english: "to authenticate the Snyk CLI", telugu: "Snyk CLI authentication setup చేయటానికి." },
+    ],
+  },
+  {
+    name: "OWASP Dependency-Check",
+    category: "Security",
+    commands: [
+      { command: "dependency-check.sh --version", level: "Basic", english: "to display the Dependency-Check version", telugu: "Dependency-Check version చూడటానికి." },
+      { command: "dependency-check.sh --project my-app --scan .", level: "Intermediate", english: "to scan project dependencies for known vulnerabilities", telugu: "Project dependencies లో తెలిసిన vulnerabilities scan చేయటానికి." },
+      { command: "dependency-check.sh --project my-app --scan . --format HTML", level: "Advanced", english: "to generate an HTML vulnerability report", telugu: "Vulnerability report ను HTML format లో తయారు చేయటానికి." },
+      { command: "dependency-check.sh --help", level: "Troubleshooting", english: "to inspect supported options and arguments", telugu: "Available options, arguments తెలుసుకోవటానికి." },
+    ],
+  },
+  {
+    name: "Jira",
+    category: "Collaboration",
+    commands: [
+      { command: "curl -I <jira-url>", level: "Basic", english: "to check whether the Jira endpoint responds", telugu: "Jira URL response ఇస్తుందో చూడటానికి." },
+      { command: "curl -u <email>:<api-token> <jira-url>/rest/api/3/myself", level: "Intermediate", english: "to verify Jira API authentication", telugu: "Jira API authentication తనిఖీ చేయటానికి." },
+      { command: "curl -u <email>:<api-token> <jira-url>/rest/api/3/issue/<issue-key>", level: "Advanced", english: "to retrieve issue details using the Jira API", telugu: "Jira API ద్వారా issue వివరాలు చూడటానికి." },
+      { command: "curl -I <jira-url>/rest/api/3/serverInfo", level: "Troubleshooting", english: "to check the Jira server information endpoint", telugu: "Jira server information endpoint తనిఖీ చేయటానికి." },
+    ],
+  },
+  {
+    name: "Slack",
+    category: "Collaboration",
+    commands: [
+      { command: "curl -s https://slack.com/api/api.test", level: "Basic", english: "to test Slack API connectivity", telugu: "Slack API connectivity పరీక్షించటానికి." },
+      { command: "curl -s -H 'Authorization: Bearer <token>' https://slack.com/api/auth.test", level: "Intermediate", english: "to validate a Slack token", telugu: "Slack token valid గా ఉందో చూడటానికి." },
+      { command: "curl -s -H 'Authorization: Bearer <token>' https://slack.com/api/conversations.list", level: "Advanced", english: "to list conversations accessible to the token", telugu: "Token కి access ఉన్న conversations చూడటానికి." },
+      { command: "curl -s -H 'Authorization: Bearer <token>' https://slack.com/api/auth.test", level: "Troubleshooting", english: "to troubleshoot Slack API authentication", telugu: "Slack API authentication సమస్యలను తనిఖీ చేయటానికి." },
+    ],
+  },
+];
+
+
+
+
+
+
+

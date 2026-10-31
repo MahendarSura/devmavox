@@ -1,0 +1,132 @@
+import type { DevOpsTool } from "./command-types";
+
+export const alertmanagerTool: DevOpsTool = {
+    name: "Alertmanager",
+    category: "Monitoring",
+    commands: [
+      { command: "curl -s http://localhost:9093/-/healthy", level: "Basic", english: "to check Alertmanager health", telugu: "Alertmanager health status చూడటానికి." },
+      { command: "curl -s http://localhost:9093/api/v2/alerts", level: "Intermediate", english: "to list active alerts", telugu: "ప్రస్తుతం ఉన్న alerts చూడటానికి." },
+      { command: "curl -s http://localhost:9093/api/v2/status", level: "Advanced", english: "to inspect Alertmanager runtime status", telugu: "Alertmanager runtime status తెలుసుకోవటానికి." },
+      { command: "journalctl -u alertmanager -n 100 --no-pager", level: "Troubleshooting", english: "to inspect recent Alertmanager logs", telugu: "Alertmanager logs చూడటానికి." },
+      {
+        command: "amtool --version",
+        level: "Basic",
+        english: "Display the Alertmanager tool version.",
+        telugu: "amtool version chudataniki.",
+      },
+      {
+        command: "amtool check-config alertmanager.yml",
+        level: "Basic",
+        english: "Validate Alertmanager configuration.",
+        telugu: "Alertmanager configuration validate cheyyataniki.",
+      },
+      {
+        command: "amtool alert query",
+        level: "Basic",
+        english: "List active alerts known to Alertmanager.",
+        telugu: "Alertmanager lo active alerts chudataniki.",
+      },
+      {
+        command: "amtool alert query --alertmanager.url=http://localhost:9093",
+        level: "Intermediate",
+        english: "Query alerts from a specified Alertmanager endpoint.",
+        telugu: "Specific Alertmanager endpoint nunchi alerts pondataniki.",
+      },
+      {
+        command: "amtool silence query",
+        level: "Basic",
+        english: "List active silences.",
+        telugu: "Active alert silences list chudataniki.",
+      },
+      {
+        command: "amtool silence expire <silence-id>",
+        level: "Advanced",
+        english: "Expire a silence early.",
+        telugu: "Silence early ga expire cheyyataniki; alert noise malli start avvachu.",
+      },
+      {
+        command: "amtool silence add alertname=HighCPU",
+        level: "Advanced",
+        english: "Create a silence matching the specified alert label.",
+        telugu: "HighCPU alert ki silence create cheyyataniki; duration/labels review cheyyali.",
+      },
+      {
+        command: "amtool config routes test --config.file=alertmanager.yml alertname=HighCPU",
+        level: "Troubleshooting",
+        english: "Test routing behavior for an alert label set.",
+        telugu: "Alert route correct receiver ki velthundo test cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/-/healthy",
+        level: "Basic",
+        english: "Check Alertmanager health.",
+        telugu: "Alertmanager health endpoint check cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/-/ready",
+        level: "Troubleshooting",
+        english: "Check Alertmanager readiness.",
+        telugu: "Alertmanager traffic accept cheyyadaniki ready ga undho chudataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/api/v2/alerts",
+        level: "Intermediate",
+        english: "Retrieve alerts through the v2 API.",
+        telugu: "API dwara alerts fetch cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/api/v2/silences",
+        level: "Intermediate",
+        english: "Retrieve silences through the v2 API.",
+        telugu: "API dwara silences inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/api/v2/status",
+        level: "Advanced",
+        english: "Inspect Alertmanager status information.",
+        telugu: "Alertmanager status details chudataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/metrics",
+        level: "Intermediate",
+        english: "Inspect Alertmanager self-monitoring metrics.",
+        telugu: "Alertmanager internal metrics chudataniki.",
+      },
+      {
+        command: "amtool config routes show --config.file=alertmanager.yml",
+        level: "Intermediate",
+        english: "Display configured notification routes.",
+        telugu: "Configured notification routing tree chudataniki.",
+      },
+      {
+        command: "amtool config routes test --config.file=alertmanager.yml --tree alertname=DiskFull",
+        level: "Advanced",
+        english: "Show route tree matches for a test label set.",
+        telugu: "DiskFull label ki route tree matches test cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/api/v2/receivers",
+        level: "Intermediate",
+        english: "List configured notification receivers.",
+        telugu: "Configured notification receivers chudataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9093/api/v2/alerts/groups",
+        level: "Advanced",
+        english: "List grouped alerts.",
+        telugu: "Grouped alerts inspect cheyyataniki.",
+      },
+      {
+        command: "amtool silence query --within=1h",
+        level: "Troubleshooting",
+        english: "Query silences created within a recent time window where supported.",
+        telugu: "Recent silences investigate cheyyataniki; amtool version support verify cheyyali.",
+      },
+      {
+        command: "curl -sS -o /dev/null -w '%{http_code}\\n' http://localhost:9093/",
+        level: "Troubleshooting",
+        english: "Check Alertmanager HTTP response status.",
+        telugu: "Alertmanager HTTP response code quick ga verify cheyyataniki.",
+      },
+    ],
+  };

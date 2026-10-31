@@ -1,0 +1,138 @@
+import type { DevOpsTool } from "./command-types";
+
+export const awsCliTool: DevOpsTool = {
+    name: "AWS CLI",
+    category: "Cloud & IaC",
+    commands: [
+      { command: "aws sts get-caller-identity", level: "Basic", english: "to identify the active AWS account and identity", telugu: "ప్రస్తుతం ఉపయోగిస్తున్న AWS account, identity తెలుసుకోవటానికి." },
+      { command: "aws configure list", level: "Intermediate", english: "to inspect AWS CLI configuration sources", telugu: "AWS CLI configuration వివరాలు చూడటానికి." },
+      { command: "aws ec2 describe-instances --region <region>", level: "Advanced", english: "to list EC2 instance details in a region", telugu: "ఒక region లో EC2 instances వివరాలు చూడటానికి." },
+      { command: "aws cloudformation describe-stacks --region <region>", level: "Troubleshooting", english: "to inspect CloudFormation stack status", telugu: "CloudFormation stacks status చూడటానికి." },
+      {
+        command: "aws --version",
+        level: "Basic",
+        english: "Display AWS CLI version.",
+        telugu: "AWS CLI version chudataniki.",
+      },
+      {
+        command: "aws configure get region",
+        level: "Basic",
+        english: "Display the configured default region.",
+        telugu: "Default AWS region check cheyyataniki.",
+      },
+      {
+        command: "aws ec2 describe-instance-status --include-all-instances --region <region>",
+        level: "Troubleshooting",
+        english: "Inspect EC2 instance and system status checks.",
+        telugu: "EC2 status checks failures troubleshoot cheyyataniki.",
+      },
+      {
+        command: "aws s3 ls",
+        level: "Basic",
+        english: "List S3 buckets accessible to the current identity.",
+        telugu: "Access unna S3 buckets list chudataniki.",
+      },
+      {
+        command: "aws s3 ls s3://<bucket>/ --recursive",
+        level: "Intermediate",
+        english: "List objects recursively in an S3 bucket.",
+        telugu: "Bucket objects recursive ga list cheyyataniki; large buckets lo output ekkuva undachu.",
+      },
+      {
+        command: "aws s3 cp <file> s3://<bucket>/<key>",
+        level: "Intermediate",
+        english: "Upload a local file to S3.",
+        telugu: "Local file ni S3 ki upload cheyyataniki.",
+      },
+      {
+        command: "aws s3 cp s3://<bucket>/<key> <file>",
+        level: "Intermediate",
+        english: "Download an S3 object to the local machine.",
+        telugu: "S3 object ni local machine ki download cheyyataniki.",
+      },
+      {
+        command: "aws iam get-user",
+        level: "Intermediate",
+        english: "Show details for the current IAM user when applicable.",
+        telugu: "Current identity IAM user ayithe details chudataniki.",
+      },
+      {
+        command: "aws iam list-attached-user-policies --user-name <user>",
+        level: "Advanced",
+        english: "List managed policies attached to an IAM user.",
+        telugu: "IAM user ki attached policies inspect cheyyataniki.",
+      },
+      {
+        command: "aws logs describe-log-groups --region <region>",
+        level: "Intermediate",
+        english: "List CloudWatch Logs groups.",
+        telugu: "CloudWatch log groups list chudataniki.",
+      },
+      {
+        command: "aws logs tail <log-group> --since 1h --follow --region <region>",
+        level: "Troubleshooting",
+        english: "Follow recent CloudWatch logs for a log group.",
+        telugu: "Last hour logs live ga troubleshoot cheyyataniki.",
+      },
+      {
+        command: "aws cloudwatch describe-alarms --state-value ALARM --region <region>",
+        level: "Troubleshooting",
+        english: "List CloudWatch alarms currently in ALARM state.",
+        telugu: "ALARM state lo unna CloudWatch alarms identify cheyyataniki.",
+      },
+      {
+        command: "aws elbv2 describe-load-balancers --region <region>",
+        level: "Intermediate",
+        english: "List Elastic Load Balancing v2 load balancers.",
+        telugu: "ALB/NLB resources list chudataniki.",
+      },
+      {
+        command: "aws elbv2 describe-target-health --target-group-arn <target-group-arn> --region <region>",
+        level: "Troubleshooting",
+        english: "Inspect load balancer target health.",
+        telugu: "Target group unhealthy targets troubleshoot cheyyataniki.",
+      },
+      {
+        command: "aws eks list-clusters --region <region>",
+        level: "Basic",
+        english: "List EKS clusters in the selected region.",
+        telugu: "Selected region lo EKS clusters chudataniki.",
+      },
+      {
+        command: "aws ssm describe-instance-information --region <region>",
+        level: "Intermediate",
+        english: "List managed instances registered with Systems Manager.",
+        telugu: "SSM managed instances status chudataniki.",
+      },
+      {
+        command: "aws resourcegroupstaggingapi get-resources --region <region>",
+        level: "Advanced",
+        english: "Find resources using tag filters.",
+        telugu: "Tags base chesi AWS resources search cheyyataniki.",
+      },
+      {
+        command: "aws service-quotas list-service-quotas --service-code ec2 --region <region>",
+        level: "Advanced",
+        english: "List EC2 service quotas.",
+        telugu: "EC2 service quotas inspect cheyyataniki.",
+      },
+      {
+        command: "aws cloudtrail lookup-events --max-results 20 --region <region>",
+        level: "Troubleshooting",
+        english: "Inspect recent CloudTrail management events.",
+        telugu: "Recent AWS API activity audit cheyyataniki.",
+      },
+      {
+        command: "aws s3api head-bucket --bucket <bucket> --region <region>",
+        level: "Troubleshooting",
+        english: "Check access/existence behavior for an S3 bucket.",
+        telugu: "S3 bucket access troubleshoot cheyyataniki; errors permissions or region valla kuda ravachu.",
+      },
+      {
+        command: "aws ec2 describe-security-groups --region <region>",
+        level: "Advanced",
+        english: "List EC2 security groups and their rules.",
+        telugu: "Security group rules audit cheyyataniki; public exposure carefully review cheyyali.",
+      },
+    ],
+  };

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { devOpsTools } from "./commands-data";
+import { devOpsTools } from "./devops-tools";
 
 const sections = [
   {

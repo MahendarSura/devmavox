@@ -1,0 +1,126 @@
+import type { DevOpsTool } from "./command-types";
+
+export const gradleTool: DevOpsTool = {
+    name: "Gradle",
+    category: "Automation & Build",
+    commands: [
+      { command: "gradle --version", level: "Basic", english: "to display the Gradle version", telugu: "Gradle version చూడటానికి." },
+      { command: "./gradlew tasks", level: "Intermediate", english: "to list available project tasks", telugu: "Project లో available tasks చూడటానికి." },
+      { command: "./gradlew build", level: "Advanced", english: "to build and test the project", telugu: "Project build చేసి tests run చేయటానికి." },
+      { command: "./gradlew dependencies", level: "Troubleshooting", english: "to inspect project dependencies", telugu: "Project dependencies వివరాలు చూడటానికి." },
+      {
+        command: "gradle tasks",
+        level: "Basic",
+        english: "List available tasks in the project.",
+        telugu: "Project lo available Gradle tasks chudataniki.",
+      },
+      {
+        command: "gradle tasks --all",
+        level: "Intermediate",
+        english: "List all tasks, including detailed task groups.",
+        telugu: "Anni Gradle tasks inspect cheyyataniki.",
+      },
+      {
+        command: "gradle projects",
+        level: "Basic",
+        english: "List subprojects in a multi-project build.",
+        telugu: "Multi-project build lo subprojects chudataniki.",
+      },
+      {
+        command: "gradle properties",
+        level: "Intermediate",
+        english: "Display project properties.",
+        telugu: "Project properties inspect cheyyataniki.",
+      },
+      {
+        command: "gradle dependencies",
+        level: "Intermediate",
+        english: "Display dependency trees for project configurations.",
+        telugu: "Project dependencies tree chudataniki.",
+      },
+      {
+        command: "gradle dependencyInsight --dependency <name>",
+        level: "Advanced",
+        english: "Explain why a dependency version was selected.",
+        telugu: "Dependency version enduku select ayyindo investigate cheyyataniki.",
+      },
+      {
+        command: "gradle clean",
+        level: "Basic",
+        english: "Delete generated build output.",
+        telugu: "Generated build output clean cheyyataniki.",
+      },
+      {
+        command: "gradle assemble",
+        level: "Basic",
+        english: "Assemble project outputs without running all verification tasks.",
+        telugu: "Project artifacts assemble cheyyataniki.",
+      },
+      {
+        command: "gradle build",
+        level: "Basic",
+        english: "Run the standard build lifecycle tasks.",
+        telugu: "Standard build and verification tasks run cheyyataniki.",
+      },
+      {
+        command: "gradle test",
+        level: "Basic",
+        english: "Run project tests.",
+        telugu: "Project tests execute cheyyataniki.",
+      },
+      {
+        command: "gradle check",
+        level: "Intermediate",
+        english: "Run verification tasks configured for the project.",
+        telugu: "Configured verification tasks execute cheyyataniki.",
+      },
+      {
+        command: "gradle build --scan",
+        level: "Advanced",
+        english: "Publish a build scan for build diagnostics if configured and permitted.",
+        telugu: "Build performance/errors investigate cheyyataniki; scan data sharing policy verify cheyyali.",
+      },
+      {
+        command: "gradle --offline build",
+        level: "Troubleshooting",
+        english: "Build using cached dependencies only.",
+        telugu: "Network lekapothe cached dependencies tho build try cheyyataniki.",
+      },
+      {
+        command: "gradle --refresh-dependencies build",
+        level: "Troubleshooting",
+        english: "Refresh dependency cache metadata and resolve dependencies again.",
+        telugu: "Stale dependency cache issue troubleshoot cheyyataniki.",
+      },
+      {
+        command: "gradle --stop",
+        level: "Troubleshooting",
+        english: "Stop Gradle daemon processes for the current user.",
+        telugu: "Gradle daemon issues troubleshoot cheyyataniki.",
+      },
+      {
+        command: "gradle --status",
+        level: "Troubleshooting",
+        english: "Show Gradle daemons for the current Gradle version.",
+        telugu: "Current Gradle version daemons status chudataniki.",
+      },
+      {
+        command: "gradle wrapper --gradle-version <version>",
+        level: "Advanced",
+        english: "Update the Gradle Wrapper version.",
+        telugu: "Project Gradle Wrapper version update cheyyataniki; compatibility check cheyyali.",
+      },
+      {
+        command: "gradle javaToolchains",
+        level: "Advanced",
+        english: "Display detected Java toolchains.",
+        telugu: "Build use cheyagalige Java toolchains inspect cheyyataniki.",
+      },
+      {
+        command: "gradle test --tests '*TestName'",
+        level: "Intermediate",
+        english: "Run tests matching a specified test name pattern.",
+        telugu: "Specific test class/pattern matrame run cheyyataniki.",
+      },
+    ],
+  };

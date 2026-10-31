@@ -1,0 +1,132 @@
+import type { DevOpsTool } from "./command-types";
+
+export const prometheusTool: DevOpsTool = {
+    name: "Prometheus",
+    category: "Monitoring",
+    commands: [
+      { command: "curl -s http://localhost:9090/-/healthy", level: "Basic", english: "to check Prometheus health", telugu: "Prometheus health status చూడటానికి." },
+      { command: "curl -s http://localhost:9090/api/v1/targets", level: "Intermediate", english: "to inspect monitored scrape targets", telugu: "Prometheus monitor చేస్తున్న targets చూడటానికి." },
+      { command: "curl -G http://localhost:9090/api/v1/query --data-urlencode 'query=up'", level: "Advanced", english: "to query whether monitored targets are up", telugu: "Targets up లో ఉన్నాయో PromQL ద్వారా తెలుసుకోవటానికి." },
+      { command: "curl -s http://localhost:9090/api/v1/alerts", level: "Troubleshooting", english: "to inspect active Prometheus alerts", telugu: "ప్రస్తుతం active లో ఉన్న alerts చూడటానికి." },
+      {
+        command: "prometheus --version",
+        level: "Basic",
+        english: "Display the Prometheus binary version.",
+        telugu: "Prometheus version chudataniki.",
+      },
+      {
+        command: "promtool check config prometheus.yml",
+        level: "Basic",
+        english: "Validate the Prometheus configuration file.",
+        telugu: "Prometheus YAML configuration validate cheyyataniki.",
+      },
+      {
+        command: "promtool check rules rules.yml",
+        level: "Intermediate",
+        english: "Validate Prometheus rule files.",
+        telugu: "Alerting/recording rules validate cheyyataniki.",
+      },
+      {
+        command: "promtool test rules test.yml",
+        level: "Advanced",
+        english: "Run unit tests for Prometheus rules.",
+        telugu: "Prometheus rules test cases execute cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/-/healthy",
+        level: "Basic",
+        english: "Check Prometheus process health endpoint.",
+        telugu: "Prometheus health endpoint verify cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/-/ready",
+        level: "Troubleshooting",
+        english: "Check whether Prometheus is ready to serve traffic.",
+        telugu: "Prometheus ready state check cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/targets",
+        level: "Intermediate",
+        english: "Inspect scrape target health and scrape errors.",
+        telugu: "Targets UP/DOWN status, scrape errors inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/rules",
+        level: "Intermediate",
+        english: "Inspect loaded alerting and recording rules.",
+        telugu: "Loaded Prometheus rules chudataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/alerts",
+        level: "Basic",
+        english: "List active alerts known to Prometheus.",
+        telugu: "Prometheus active alerts chudataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/status/config",
+        level: "Advanced",
+        english: "Inspect the loaded Prometheus configuration.",
+        telugu: "Loaded configuration troubleshoot cheyyataniki; endpoint access restrict cheyyali.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/status/runtimeinfo",
+        level: "Advanced",
+        english: "Inspect Prometheus runtime information.",
+        telugu: "Prometheus runtime details inspect cheyyataniki.",
+      },
+      {
+        command: "curl -G -sS http://localhost:9090/api/v1/query --data-urlencode 'query=up'",
+        level: "Basic",
+        english: "Query the up metric for monitored targets.",
+        telugu: "Monitored targets up/down status query cheyyataniki.",
+      },
+      {
+        command: "curl -G -sS http://localhost:9090/api/v1/query --data-urlencode 'query=rate(http_requests_total[5m])'",
+        level: "Intermediate",
+        english: "Query the five-minute request rate.",
+        telugu: "HTTP request rate calculate cheyyataniki; metric name environment batti vary avvachu.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/label/__name__/values",
+        level: "Advanced",
+        english: "List metric names available in Prometheus.",
+        telugu: "Available metric names inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/targets?state=active",
+        level: "Intermediate",
+        english: "List active scrape targets.",
+        telugu: "Active scrape targets inspect cheyyataniki.",
+      },
+      {
+        command: "promtool query instant http://localhost:9090 'up'",
+        level: "Intermediate",
+        english: "Run an instant PromQL query using promtool.",
+        telugu: "promtool dwara instant PromQL query test cheyyataniki.",
+      },
+      {
+        command: "promtool query range http://localhost:9090 'up' --start=<RFC3339> --end=<RFC3339> --step=30s",
+        level: "Advanced",
+        english: "Run a range query across a time interval.",
+        telugu: "Specified time range lo metric values inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/metrics",
+        level: "Intermediate",
+        english: "Inspect Prometheus self-monitoring metrics.",
+        telugu: "Prometheus internal metrics inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/status/flags",
+        level: "Troubleshooting",
+        english: "Inspect active Prometheus command-line flags.",
+        telugu: "Prometheus active flags verify cheyyataniki.",
+      },
+      {
+        command: "curl -sS http://localhost:9090/api/v1/metadata",
+        level: "Advanced",
+        english: "Inspect metric metadata exposed by Prometheus.",
+        telugu: "Metric metadata inspect cheyyataniki.",
+      },
+    ],
+  };

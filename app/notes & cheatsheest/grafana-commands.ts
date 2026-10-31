@@ -1,0 +1,132 @@
+import type { DevOpsTool } from "./command-types";
+
+export const grafanaTool: DevOpsTool = {
+    name: "Grafana",
+    category: "Monitoring",
+    commands: [
+      { command: "curl -I http://localhost:3000/api/health", level: "Basic", english: "to check Grafana health endpoint", telugu: "Grafana health endpoint response చూడటానికి." },
+      { command: "curl -s http://localhost:3000/api/health", level: "Intermediate", english: "to inspect Grafana service health details", telugu: "Grafana service health వివరాలు చూడటానికి." },
+      { command: "grafana cli plugins ls", level: "Advanced", english: "to list installed Grafana plugins", telugu: "Install చేసిన Grafana plugins చూడటానికి." },
+      { command: "journalctl -u grafana-server -n 100 --no-pager", level: "Troubleshooting", english: "to inspect recent Grafana service logs", telugu: "Grafana service logs చూడటానికి." },
+      {
+        command: "curl -sS http://localhost:3000/api/health",
+        level: "Basic",
+        english: "Check Grafana health and database status.",
+        telugu: "Grafana health/database status verify cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<password>' http://localhost:3000/api/org",
+        level: "Intermediate",
+        english: "Inspect the current Grafana organization.",
+        telugu: "Grafana organization details chudataniki; credentials expose cheyyakudadhu.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/datasources",
+        level: "Intermediate",
+        english: "List configured Grafana data sources.",
+        telugu: "Configured data sources list chudataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/search",
+        level: "Basic",
+        english: "Search Grafana dashboards and folders.",
+        telugu: "Grafana dashboards/folders search cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/folders",
+        level: "Intermediate",
+        english: "List dashboard folders.",
+        telugu: "Dashboard folders list chudataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/alerts",
+        level: "Advanced",
+        english: "Query alert resources on versions exposing this endpoint.",
+        telugu: "Grafana alert resources inspect cheyyataniki; endpoint version batti vary avvachu.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/admin/stats",
+        level: "Advanced",
+        english: "Inspect Grafana server statistics when admin access is available.",
+        telugu: "Grafana server stats inspect cheyyataniki; admin permission avasaram.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/health",
+        level: "Basic",
+        english: "Check health using authenticated API access.",
+        telugu: "Authenticated health endpoint verify cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:3000/api/search?query=production'",
+        level: "Intermediate",
+        english: "Search dashboards using a query.",
+        telugu: "Production keyword tho dashboards search cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/dashboards/uid/<uid>",
+        level: "Intermediate",
+        english: "Retrieve a dashboard by its UID.",
+        telugu: "UID base chesi dashboard details pondataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/datasources/uid/<uid>",
+        level: "Advanced",
+        english: "Retrieve data source details by UID.",
+        telugu: "Data source UID details inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/user",
+        level: "Basic",
+        english: "Inspect the currently authenticated Grafana user.",
+        telugu: "Current authenticated Grafana user details chudataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/org/users",
+        level: "Advanced",
+        english: "List organization users when authorized.",
+        telugu: "Organization users inspect cheyyataniki; permission required.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/annotations",
+        level: "Intermediate",
+        english: "Query dashboard annotations.",
+        telugu: "Dashboard annotations query cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/teams/search",
+        level: "Advanced",
+        english: "Search Grafana teams when the API is enabled.",
+        telugu: "Grafana teams search cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/plugins",
+        level: "Intermediate",
+        english: "List installed Grafana plugins.",
+        telugu: "Installed Grafana plugins chudataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' http://localhost:3000/api/live/ws",
+        level: "Troubleshooting",
+        english: "Check the Grafana Live WebSocket endpoint behavior.",
+        telugu: "Grafana Live WebSocket connection troubleshoot cheyyataniki.",
+      },
+      {
+        command: "sudo journalctl -u grafana-server -n 100 --no-pager",
+        level: "Troubleshooting",
+        english: "Inspect recent Grafana service logs.",
+        telugu: "Grafana recent logs troubleshoot cheyyataniki.",
+      },
+      {
+        command: "sudo systemctl status grafana-server",
+        level: "Basic",
+        english: "Check Grafana service status.",
+        telugu: "Grafana service status chudataniki.",
+      },
+      {
+        command: "curl -sS -o /dev/null -w '%{http_code}\\n' http://localhost:3000/login",
+        level: "Troubleshooting",
+        english: "Check the HTTP status of the Grafana login page.",
+        telugu: "Grafana login page HTTP status check cheyyataniki.",
+      },
+    ],
+  };

@@ -1,0 +1,132 @@
+import type { DevOpsTool } from "./command-types";
+
+export const eksTool: DevOpsTool = {
+    name: "EKS",
+    category: "Orchestration",
+    commands: [
+      { command: "aws eks list-clusters", level: "Basic", english: "to list EKS clusters in the configured region", telugu: "Configured region లో EKS clusters చూడటానికి." },
+      { command: "aws eks describe-cluster --name <cluster-name>", level: "Intermediate", english: "to inspect EKS cluster details", telugu: "EKS cluster వివరాలు తెలుసుకోవటానికి." },
+      { command: "aws eks update-kubeconfig --name <cluster-name> --region <region>", level: "Advanced", english: "to configure kubectl access to an EKS cluster", telugu: "EKS cluster కి kubectl access configure చేయటానికి." },
+      { command: "kubectl get nodes -o wide", level: "Troubleshooting", english: "to inspect EKS worker node status", telugu: "EKS worker nodes status చూడటానికి." },
+      {
+        command: "aws eks list-clusters --region <region>",
+        level: "Basic",
+        english: "List EKS clusters in a region.",
+        telugu: "Region lo EKS clusters list chudataniki.",
+      },
+      {
+        command: "aws eks describe-cluster --name <cluster> --region <region>",
+        level: "Basic",
+        english: "Show cluster configuration and status.",
+        telugu: "EKS cluster status, endpoint, version details chudataniki.",
+      },
+      {
+        command: "aws eks update-kubeconfig --name <cluster> --region <region>",
+        level: "Intermediate",
+        english: "Configure kubectl credentials and context for an EKS cluster.",
+        telugu: "EKS cluster ki kubectl context configure cheyyataniki.",
+      },
+      {
+        command: "aws eks list-nodegroups --cluster-name <cluster> --region <region>",
+        level: "Basic",
+        english: "List managed node groups for a cluster.",
+        telugu: "Cluster managed node groups list chudataniki.",
+      },
+      {
+        command: "aws eks describe-nodegroup --cluster-name <cluster> --nodegroup-name <nodegroup> --region <region>",
+        level: "Intermediate",
+        english: "Inspect managed node group status and configuration.",
+        telugu: "Node group health, scaling, version inspect cheyyataniki.",
+      },
+      {
+        command: "aws eks list-addons --cluster-name <cluster> --region <region>",
+        level: "Basic",
+        english: "List installed EKS add-ons.",
+        telugu: "EKS installed add-ons list chudataniki.",
+      },
+      {
+        command: "aws eks describe-addon --cluster-name <cluster> --addon-name <addon> --region <region>",
+        level: "Intermediate",
+        english: "Inspect an EKS add-on version and health.",
+        telugu: "Add-on version mariyu health chudataniki.",
+      },
+      {
+        command: "aws eks list-updates --name <cluster> --region <region>",
+        level: "Intermediate",
+        english: "List cluster update IDs.",
+        telugu: "EKS cluster updates list chudataniki.",
+      },
+      {
+        command: "aws eks describe-update --name <cluster> --update-id <update-id> --region <region>",
+        level: "Troubleshooting",
+        english: "Inspect the status and errors of a cluster update.",
+        telugu: "Cluster update status/errors troubleshoot cheyyataniki.",
+      },
+      {
+        command: "aws eks list-fargate-profiles --cluster-name <cluster> --region <region>",
+        level: "Basic",
+        english: "List Fargate profiles for an EKS cluster.",
+        telugu: "EKS Fargate profiles list chudataniki.",
+      },
+      {
+        command: "aws eks describe-fargate-profile --cluster-name <cluster> --fargate-profile-name <profile> --region <region>",
+        level: "Intermediate",
+        english: "Inspect a Fargate profile configuration.",
+        telugu: "Fargate profile configuration inspect cheyyataniki.",
+      },
+      {
+        command: "aws eks list-access-entries --cluster-name <cluster> --region <region>",
+        level: "Advanced",
+        english: "List EKS access entries.",
+        telugu: "Cluster access entries inspect cheyyataniki.",
+      },
+      {
+        command: "aws eks describe-access-entry --cluster-name <cluster> --principal-arn <arn> --region <region>",
+        level: "Advanced",
+        english: "Inspect an EKS access entry for an IAM principal.",
+        telugu: "IAM principal cluster access details chudataniki.",
+      },
+      {
+        command: "aws eks list-insights --cluster-name <cluster> --region <region>",
+        level: "Advanced",
+        english: "List EKS cluster insights.",
+        telugu: "Cluster insights list chesi potential issues identify cheyyataniki.",
+      },
+      {
+        command: "aws eks describe-insight --cluster-name <cluster> --id <insight-id> --region <region>",
+        level: "Troubleshooting",
+        english: "Inspect a specific EKS insight.",
+        telugu: "Specific cluster insight details troubleshoot cheyyataniki.",
+      },
+      {
+        command: "aws eks list-tags-for-resource --resource-arn <cluster-arn> --region <region>",
+        level: "Basic",
+        english: "List tags attached to an EKS resource.",
+        telugu: "EKS resource tags chudataniki.",
+      },
+      {
+        command: "aws eks get-token --cluster-name <cluster> --region <region>",
+        level: "Advanced",
+        english: "Generate a temporary authentication token for EKS.",
+        telugu: "EKS authentication token generate cheyyataniki; token ni share cheyyakudadhu.",
+      },
+      {
+        command: "aws eks describe-cluster --name <cluster> --query 'cluster.status' --output text --region <region>",
+        level: "Troubleshooting",
+        english: "Return only the cluster status.",
+        telugu: "Cluster status quick ga check cheyyataniki.",
+      },
+      {
+        command: "aws eks describe-nodegroup --cluster-name <cluster> --nodegroup-name <nodegroup> --query 'nodegroup.health.issues' --output json --region <region>",
+        level: "Troubleshooting",
+        english: "Show health issues reported for a node group.",
+        telugu: "Node group health problems identify cheyyataniki.",
+      },
+      {
+        command: "aws eks list-clusters --region <region> --output table",
+        level: "Basic",
+        english: "Display EKS cluster names in a table.",
+        telugu: "EKS clusters table format lo chudataniki.",
+      },
+    ],
+  };

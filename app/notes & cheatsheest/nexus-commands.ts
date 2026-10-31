@@ -1,0 +1,132 @@
+import type { DevOpsTool } from "./command-types";
+
+export const nexusTool: DevOpsTool = {
+    name: "Nexus",
+    category: "Automation & Build",
+    commands: [
+      { command: "curl -I <nexus-url>", level: "Basic", english: "to check whether the Nexus endpoint responds", telugu: "Nexus URL response ఇస్తుందో చూడటానికి." },
+      { command: "curl -u <username> <nexus-url>/service/rest/v1/status", level: "Intermediate", english: "to check the Nexus status endpoint", telugu: "Nexus status endpoint తనిఖీ చేయటానికి." },
+      { command: "curl -I <repository-url>", level: "Advanced", english: "to inspect repository endpoint response headers", telugu: "Repository endpoint response headers చూడటానికి." },
+      { command: "curl -sS -o /dev/null -w '%{http_code}\\n' <nexus-url>", level: "Troubleshooting", english: "to inspect the HTTP response code from Nexus", telugu: "Nexus నుంచి వస్తున్న HTTP response code తెలుసుకోవటానికి." },
+      {
+        command: "curl -sS -u '<user>:<password>' http://localhost:8081/service/rest/v1/status",
+        level: "Troubleshooting",
+        english: "Check Nexus Repository Manager status.",
+        telugu: "Nexus service status verify cheyyataniki; credentials safe ga handle cheyyali.",
+      },
+      {
+        command: "curl -sS -I http://localhost:8081/",
+        level: "Basic",
+        english: "Check whether the Nexus web endpoint responds.",
+        telugu: "Nexus web endpoint response check cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/repositories'",
+        level: "Intermediate",
+        english: "List repositories through the Nexus REST API.",
+        telugu: "Nexus repositories REST API dwara list cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/repositorySettings'",
+        level: "Advanced",
+        english: "Query repository settings if supported by the installed Nexus version.",
+        telugu: "Repository settings API inspect cheyyataniki; endpoint version batti vary avvachu.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/search?repository=<repo>'",
+        level: "Intermediate",
+        english: "Search repository components through the REST API.",
+        telugu: "Specific repository components search cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/search/assets?repository=<repo>'",
+        level: "Intermediate",
+        english: "Search assets in a repository.",
+        telugu: "Repository assets search cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/tasks'",
+        level: "Advanced",
+        english: "List Nexus scheduled tasks through the REST API.",
+        telugu: "Nexus scheduled tasks inspect cheyyataniki; API permissions avasaram.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/blobstores'",
+        level: "Intermediate",
+        english: "List configured blob stores.",
+        telugu: "Configured blob stores inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/repositories/maven/hosted'",
+        level: "Intermediate",
+        english: "List hosted Maven repositories.",
+        telugu: "Hosted Maven repositories list chudataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/repositories/maven/proxy'",
+        level: "Intermediate",
+        english: "List Maven proxy repositories.",
+        telugu: "Maven proxy repositories inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/repositories/docker/hosted'",
+        level: "Intermediate",
+        english: "List hosted Docker repositories.",
+        telugu: "Hosted Docker repositories chudataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/security/users'",
+        level: "Advanced",
+        english: "List Nexus users when authorized.",
+        telugu: "Authorized user account list inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/security/roles'",
+        level: "Advanced",
+        english: "List Nexus roles when authorized.",
+        telugu: "Nexus roles and access configuration inspect cheyyataniki.",
+      },
+      {
+        command: "sudo systemctl status nexus",
+        level: "Basic",
+        english: "Check the Nexus system service on systemd hosts.",
+        telugu: "Nexus system service status chudataniki.",
+      },
+      {
+        command: "sudo journalctl -u nexus -n 100 --no-pager",
+        level: "Troubleshooting",
+        english: "Inspect recent Nexus service logs.",
+        telugu: "Nexus recent service logs troubleshoot cheyyataniki.",
+      },
+      {
+        command: "df -h",
+        level: "Basic",
+        english: "Check filesystem capacity for Nexus storage.",
+        telugu: "Nexus storage disk space check cheyyataniki.",
+      },
+      {
+        command: "du -sh /nexus-data",
+        level: "Intermediate",
+        english: "Estimate the size of the Nexus data directory.",
+        telugu: "Nexus data directory size inspect cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/status/check'",
+        level: "Troubleshooting",
+        english: "Check the Nexus readiness/status endpoint when available.",
+        telugu: "Nexus readiness/status endpoint check cheyyataniki; version support verify cheyyali.",
+      },
+      {
+        command: "curl -sS -o /dev/null -w '%{http_code}\\n' http://localhost:8081/",
+        level: "Troubleshooting",
+        english: "Print only the HTTP status code returned by Nexus.",
+        telugu: "Nexus HTTP status code quick ga verify cheyyataniki.",
+      },
+      {
+        command: "curl -sS -u '<user>:<token>' 'http://localhost:8081/service/rest/v1/components?repository=<repo>'",
+        level: "Advanced",
+        english: "List repository components through the REST API where supported.",
+        telugu: "Repository components API dwara inspect cheyyataniki.",
+      },
+    ],
+  };

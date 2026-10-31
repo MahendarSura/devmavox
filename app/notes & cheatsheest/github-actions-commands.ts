@@ -1,0 +1,126 @@
+import type { DevOpsTool } from "./command-types";
+
+export const githubActionsTool: DevOpsTool = {
+    name: "GitHub Actions",
+    category: "CI/CD",
+    commands: [
+      { command: "gh workflow list", level: "Basic", english: "to list repository workflows", telugu: "Repository workflows చూడటానికి." },
+      { command: "gh run list --limit 10", level: "Intermediate", english: "to list recent workflow runs", telugu: "ఇటీవలి workflow runs చూడటానికి." },
+      { command: "gh workflow view <workflow-name>", level: "Advanced", english: "to inspect a workflow definition", telugu: "Workflow definition వివరాలు చూడటానికి." },
+      { command: "gh run view <run-id> --log-failed", level: "Troubleshooting", english: "to inspect failed workflow step logs", telugu: "Fail అయిన workflow steps logs చూడటానికి." },
+      {
+        command: "gh workflow view <workflow> --yaml",
+        level: "Basic",
+        english: "Display a workflow definition.",
+        telugu: "Workflow YAML inspect cheyyataniki.",
+      },
+      {
+        command: "gh run list --workflow <workflow> --limit 20",
+        level: "Basic",
+        english: "List recent runs for one workflow.",
+        telugu: "Specific workflow recent runs chudataniki.",
+      },
+      {
+        command: "gh run view <run-id>",
+        level: "Basic",
+        english: "Display workflow run details.",
+        telugu: "Workflow run status, jobs details chudataniki.",
+      },
+      {
+        command: "gh run view <run-id> --log",
+        level: "Intermediate",
+        english: "Display logs for a workflow run.",
+        telugu: "Workflow run logs inspect cheyyataniki.",
+      },
+      {
+        command: "gh run view <run-id> --job <job-id> --log",
+        level: "Intermediate",
+        english: "Display logs for a specific job.",
+        telugu: "Specific failed job logs chudataniki.",
+      },
+      {
+        command: "gh run rerun <run-id>",
+        level: "Advanced",
+        english: "Rerun all jobs in a workflow run.",
+        telugu: "Workflow run rerun cheyyataniki; root cause fix chesaka use cheyyali.",
+      },
+      {
+        command: "gh run rerun <run-id> --failed",
+        level: "Advanced",
+        english: "Rerun only failed jobs.",
+        telugu: "Failed jobs matrame rerun cheyyataniki.",
+      },
+      {
+        command: "gh run cancel <run-id>",
+        level: "Advanced",
+        english: "Cancel a workflow run.",
+        telugu: "Unnecessary or stuck workflow cancel cheyyataniki; impact verify cheyyali.",
+      },
+      {
+        command: "gh run watch <run-id>",
+        level: "Intermediate",
+        english: "Watch a workflow run until it completes.",
+        telugu: "Workflow completion varaku live status chudataniki.",
+      },
+      {
+        command: "gh secret list",
+        level: "Intermediate",
+        english: "List repository Actions secret names.",
+        telugu: "Repository Actions secret names chudataniki; values display avvavu.",
+      },
+      {
+        command: "gh variable list",
+        level: "Intermediate",
+        english: "List repository Actions variable names and values where permitted.",
+        telugu: "Actions variables inspect cheyyataniki; sensitive values store cheyyakudadhu.",
+      },
+      {
+        command: "gh api repos/{owner}/{repo}/actions/permissions",
+        level: "Advanced",
+        english: "Inspect repository Actions permissions.",
+        telugu: "GitHub Actions repository permissions inspect cheyyataniki.",
+      },
+      {
+        command: "gh api repos/{owner}/{repo}/actions/runners",
+        level: "Advanced",
+        english: "List self-hosted runners registered to a repository.",
+        telugu: "Self-hosted runners list chudataniki.",
+      },
+      {
+        command: "gh api repos/{owner}/{repo}/actions/caches",
+        level: "Advanced",
+        english: "Inspect Actions cache entries.",
+        telugu: "Workflow caches inspect cheyyataniki.",
+      },
+      {
+        command: "gh run list --status failure --limit 20",
+        level: "Troubleshooting",
+        english: "List recent failed workflow runs.",
+        telugu: "Recent failed workflow runs identify cheyyataniki.",
+      },
+      {
+        command: "gh run list --status in_progress --limit 20",
+        level: "Troubleshooting",
+        english: "List workflows currently in progress.",
+        telugu: "Currently running workflows monitor cheyyataniki.",
+      },
+      {
+        command: "gh workflow disable <workflow>",
+        level: "Advanced",
+        english: "Disable a repository workflow.",
+        telugu: "Workflow disable cheyyataniki; automation impact confirm chesaka matrame.",
+      },
+      {
+        command: "gh workflow enable <workflow>",
+        level: "Intermediate",
+        english: "Enable a disabled repository workflow.",
+        telugu: "Disabled workflow malli enable cheyyataniki.",
+      },
+      {
+        command: "gh run download <run-id>",
+        level: "Intermediate",
+        english: "Download artifacts from a workflow run.",
+        telugu: "Workflow artifacts local ki download cheyyataniki.",
+      },
+    ],
+  };

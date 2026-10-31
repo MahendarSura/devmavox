@@ -1,0 +1,120 @@
+import type { DevOpsTool } from "./command-types";
+
+export const githubTool: DevOpsTool = {
+    name: "GitHub",
+    category: "Core",
+    commands: [
+      { command: "gh auth status", level: "Basic", english: "to check GitHub CLI authentication", telugu: "GitHub CLI login status చూడటానికి." },
+      { command: "gh repo view", level: "Intermediate", english: "to view the current repository details", telugu: "ప్రస్తుత repository వివరాలు చూడటానికి." },
+      { command: "gh run list", level: "Advanced", english: "to list recent GitHub Actions runs", telugu: "ఇటీవల జరిగిన GitHub Actions runs చూడటానికి." },
+      { command: "gh run view <run-id> --log-failed", level: "Troubleshooting", english: "to inspect failed workflow logs", telugu: "Fail అయిన workflow logs చూడటానికి." },
+      {
+        command: "gh repo view --web",
+        level: "Basic",
+        english: "Open the current repository page in a browser.",
+        telugu: "Current repository ni browser lo open cheyyataniki.",
+      },
+      {
+        command: "gh pr status",
+        level: "Basic",
+        english: "Show pull requests relevant to the current repository.",
+        telugu: "Current repository pull request status chudataniki.",
+      },
+      {
+        command: "gh pr list --state open",
+        level: "Basic",
+        english: "List open pull requests.",
+        telugu: "Open pull requests list chudataniki.",
+      },
+      {
+        command: "gh pr checks",
+        level: "Intermediate",
+        english: "View CI checks for the current pull request.",
+        telugu: "PR CI checks pass/fail status chudataniki.",
+      },
+      {
+        command: "gh run list --limit 10",
+        level: "Basic",
+        english: "List recent GitHub Actions workflow runs.",
+        telugu: "Recent workflow runs status chudataniki.",
+      },
+      {
+        command: "gh workflow list",
+        level: "Basic",
+        english: "List workflows in the repository.",
+        telugu: "Repository workflows list chudataniki.",
+      },
+      {
+        command: "gh issue list --state open",
+        level: "Basic",
+        english: "List open issues.",
+        telugu: "Open issues list chudataniki.",
+      },
+      {
+        command: "gh release list --limit 10",
+        level: "Intermediate",
+        english: "List recent releases.",
+        telugu: "Recent software releases chudataniki.",
+      },
+      {
+        command: "gh api rate_limit",
+        level: "Troubleshooting",
+        english: "Inspect GitHub API rate-limit status.",
+        telugu: "GitHub API rate limit check cheyyataniki.",
+      },
+      {
+        command: "gh repo fork --remote",
+        level: "Intermediate",
+        english: "Fork a repository and configure a remote.",
+        telugu: "Repository fork chesi remote configure cheyyataniki.",
+      },
+      {
+        command: "gh pr diff <number>",
+        level: "Intermediate",
+        english: "Review the changes in a pull request.",
+        telugu: "Pull request code changes inspect cheyyataniki.",
+      },
+      {
+        command: "gh pr view <number> --comments",
+        level: "Intermediate",
+        english: "View a pull request and its comments.",
+        telugu: "PR details, comments review cheyyataniki.",
+      },
+      {
+        command: "gh run rerun <run-id> --failed",
+        level: "Advanced",
+        english: "Rerun failed jobs in a workflow run.",
+        telugu: "Failed jobs ni rerun cheyyataniki; repeat failures cause investigate cheyyali.",
+      },
+      {
+        command: "gh workflow view <workflow> --yaml",
+        level: "Advanced",
+        english: "Display a workflow definition.",
+        telugu: "Workflow YAML inspect cheyyataniki.",
+      },
+      {
+        command: "gh issue view <number>",
+        level: "Basic",
+        english: "View an issue's details.",
+        telugu: "Issue details chudataniki.",
+      },
+      {
+        command: "gh api repos/{owner}/{repo}/actions/runs",
+        level: "Advanced",
+        english: "Query workflow runs through the GitHub REST API.",
+        telugu: "REST API dwara workflow runs fetch cheyyataniki; repository context/permissions avasaram.",
+      },
+      {
+        command: "gh auth refresh -s repo",
+        level: "Troubleshooting",
+        english: "Refresh authentication with repository scope.",
+        telugu: "Repo permissions scope refresh cheyyataniki; required access matrame grant cheyyali.",
+      },
+      {
+        command: "gh pr checks <number> --watch",
+        level: "Intermediate",
+        english: "Watch pull-request checks until they complete.",
+        telugu: "PR checks complete ayye varaku live status monitor cheyyataniki.",
+      },
+    ],
+  };

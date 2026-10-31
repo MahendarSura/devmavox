@@ -1,0 +1,120 @@
+import type { DevOpsTool } from "./command-types";
+
+export const ansibleTool: DevOpsTool = {
+    name: "Ansible",
+    category: "Automation & Build",
+    commands: [
+      { command: "ansible --version", level: "Basic", english: "to display the Ansible version", telugu: "Ansible version తెలుసుకోవటానికి." },
+      { command: "ansible-inventory --list -i inventory", level: "Intermediate", english: "to inspect parsed inventory hosts", telugu: "Inventory లో ఉన్న hosts వివరాలు చూడటానికి." },
+      { command: "ansible-playbook site.yml --syntax-check", level: "Advanced", english: "to validate playbook syntax", telugu: "Playbook syntax తనిఖీ చేయటానికి." },
+      { command: "ansible all -i inventory -m ping", level: "Troubleshooting", english: "to test Ansible connectivity to inventory hosts", telugu: "Ansible ద్వారా hosts కి connectivity ఉందో చూడటానికి." },
+      {
+        command: "ansible-inventory -i inventory.ini --list",
+        level: "Basic",
+        english: "Display inventory in JSON format.",
+        telugu: "Inventory hosts/group structure inspect cheyyataniki.",
+      },
+      {
+        command: "ansible-inventory -i inventory.ini --graph",
+        level: "Basic",
+        english: "Display inventory groups as a tree.",
+        telugu: "Inventory group hierarchy chudataniki.",
+      },
+      {
+        command: "ansible all -i inventory.ini --list-hosts",
+        level: "Basic",
+        english: "List hosts matched by the pattern.",
+        telugu: "Pattern match ayina hosts chudataniki.",
+      },
+      {
+        command: "ansible all -i inventory.ini -m ping",
+        level: "Basic",
+        english: "Test Ansible connectivity to inventory hosts.",
+        telugu: "Inventory hosts ki Ansible connectivity verify cheyyataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --list-tasks",
+        level: "Intermediate",
+        english: "List tasks without executing the playbook.",
+        telugu: "Playbook tasks execution mundu review cheyyataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --list-hosts",
+        level: "Intermediate",
+        english: "Show which hosts a playbook would target.",
+        telugu: "Playbook target hosts confirm cheyyataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --check --diff",
+        level: "Intermediate",
+        english: "Perform a check-mode run and show proposed changes.",
+        telugu: "Actual changes apply cheyyakunda proposed changes chudataniki; anni modules check mode support cheyyavu.",
+      },
+      {
+        command: "ansible-playbook site.yml --limit webservers",
+        level: "Intermediate",
+        english: "Restrict execution to a selected host group or pattern.",
+        telugu: "Selected webservers group meeda matrame run cheyyataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --start-at-task='Install packages'",
+        level: "Advanced",
+        english: "Start execution at a named task.",
+        telugu: "Specific task nunchi playbook start cheyyataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --step",
+        level: "Advanced",
+        english: "Prompt before each task during playbook execution.",
+        telugu: "Prathi task mundu confirmation teesukoni run cheyyataniki.",
+      },
+      {
+        command: "ansible-doc -l",
+        level: "Basic",
+        english: "List available Ansible modules.",
+        telugu: "Available Ansible modules list chudataniki.",
+      },
+      {
+        command: "ansible-doc ansible.builtin.copy",
+        level: "Basic",
+        english: "Display documentation for the copy module.",
+        telugu: "Copy module usage/documentation chudataniki.",
+      },
+      {
+        command: "ansible-config dump --only-changed",
+        level: "Intermediate",
+        english: "Display Ansible settings that differ from defaults.",
+        telugu: "Default nunchi change ayina Ansible settings chudataniki.",
+      },
+      {
+        command: "ansible-galaxy collection list",
+        level: "Intermediate",
+        english: "List installed Ansible collections.",
+        telugu: "Installed Ansible collections list chudataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --vault-id prod@prompt",
+        level: "Advanced",
+        english: "Run a playbook using a prompted vault password for a vault ID.",
+        telugu: "Encrypted variables kosam password prompt use cheyyataniki.",
+      },
+      {
+        command: "ansible all -i inventory.ini -m command -a 'uptime'",
+        level: "Intermediate",
+        english: "Run uptime on all matched hosts.",
+        telugu: "Anni matched hosts uptime check cheyyataniki.",
+      },
+      {
+        command: "ansible all -i inventory.ini -m setup",
+        level: "Advanced",
+        english: "Gather system facts from managed hosts.",
+        telugu: "Managed hosts OS, hardware facts collect cheyyataniki.",
+      },
+      {
+        command: "ansible-playbook site.yml --forks 20",
+        level: "Advanced",
+        english: "Run tasks against up to twenty hosts concurrently.",
+        telugu: "Parallel hosts limit set cheyyataniki; controller and target capacity consider cheyyali.",
+      },
+    ],
+  };

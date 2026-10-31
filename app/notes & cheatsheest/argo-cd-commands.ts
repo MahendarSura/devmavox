@@ -1,0 +1,126 @@
+import type { DevOpsTool } from "./command-types";
+
+export const argoCdTool: DevOpsTool = {
+    name: "Argo CD",
+    category: "CI/CD",
+    commands: [
+      { command: "argocd app list", level: "Basic", english: "to list Argo CD applications", telugu: "Argo CD applications చూడటానికి." },
+      { command: "argocd app get <app-name>", level: "Intermediate", english: "to inspect application health and sync status", telugu: "Application health, sync status చూడటానికి." },
+      { command: "argocd app diff <app-name>", level: "Advanced", english: "to compare desired and live application state", telugu: "Git లో ఉన్న configuration, live state మధ్య తేడాలు చూడటానికి." },
+      { command: "argocd app history <app-name>", level: "Troubleshooting", english: "to inspect application deployment history", telugu: "Application deployment history చూడటానికి." },
+      {
+        command: "argocd version",
+        level: "Basic",
+        english: "Display Argo CD client and server versions.",
+        telugu: "Argo CD client/server versions chudataniki.",
+      },
+      {
+        command: "argocd app get <app>",
+        level: "Basic",
+        english: "Display application health and sync status.",
+        telugu: "App health, sync status chudataniki.",
+      },
+      {
+        command: "argocd app diff <app>",
+        level: "Intermediate",
+        english: "Compare the desired manifests with live cluster resources.",
+        telugu: "Git desired state mariyu live cluster changes compare cheyyataniki.",
+      },
+      {
+        command: "argocd app history <app>",
+        level: "Intermediate",
+        english: "Show application deployment history.",
+        telugu: "Application deployment history chudataniki.",
+      },
+      {
+        command: "argocd app manifests <app>",
+        level: "Advanced",
+        english: "Display the manifests generated for an application.",
+        telugu: "Application rendered manifests inspect cheyyataniki.",
+      },
+      {
+        command: "argocd app resources <app>",
+        level: "Intermediate",
+        english: "List resources managed by an application.",
+        telugu: "App manage chestunna Kubernetes resources chudataniki.",
+      },
+      {
+        command: "argocd app logs <app>",
+        level: "Troubleshooting",
+        english: "Fetch application pod logs through Argo CD.",
+        telugu: "Application pod logs troubleshoot cheyyataniki.",
+      },
+      {
+        command: "argocd app wait <app> --health --sync",
+        level: "Intermediate",
+        english: "Wait for an application to become healthy and synced.",
+        telugu: "App healthy, synced ayye varaku wait cheyyataniki.",
+      },
+      {
+        command: "argocd app sync <app>",
+        level: "Advanced",
+        english: "Synchronize an application with its desired state.",
+        telugu: "Git desired state ni cluster ki sync cheyyataniki; diff review chesaka use cheyyali.",
+      },
+      {
+        command: "argocd app terminate-op <app>",
+        level: "Advanced",
+        english: "Terminate a running application operation.",
+        telugu: "Stuck Argo CD operation stop cheyyataniki; deployment operation impact verify cheyyali.",
+      },
+      {
+        command: "argocd app history <app> --output wide",
+        level: "Intermediate",
+        english: "Display application history with expanded details.",
+        telugu: "Application revision history details chudataniki.",
+      },
+      {
+        command: "argocd app rollback <app> <history-id>",
+        level: "Advanced",
+        english: "Roll back an application to a previous history entry where supported.",
+        telugu: "Previous deployment revision ki rollback cheyyataniki; GitOps source and permissions verify cheyyali.",
+      },
+      {
+        command: "argocd cluster list",
+        level: "Basic",
+        english: "List clusters registered with Argo CD.",
+        telugu: "Argo CD registered clusters list chudataniki.",
+      },
+      {
+        command: "argocd proj list",
+        level: "Basic",
+        english: "List Argo CD projects.",
+        telugu: "Argo CD projects list chudataniki.",
+      },
+      {
+        command: "argocd app set <app> --sync-policy automated",
+        level: "Advanced",
+        english: "Configure an application's sync policy.",
+        telugu: "Automated sync policy set cheyyataniki; production policy review cheyyali.",
+      },
+      {
+        command: "argocd app set <app> --sync-policy none",
+        level: "Advanced",
+        english: "Disable automated synchronization for an application.",
+        telugu: "Automated sync disable cheyyataniki; intended behavior verify cheyyali.",
+      },
+      {
+        command: "argocd app manifests <app> --source git",
+        level: "Troubleshooting",
+        english: "Inspect manifests rendered from the Git source.",
+        telugu: "Git source nunchi rendered manifests inspect cheyyataniki.",
+      },
+      {
+        command: "argocd account get-user-info",
+        level: "Troubleshooting",
+        english: "Display the current Argo CD account information.",
+        telugu: "Current Argo CD account identity verify cheyyataniki.",
+      },
+      {
+        command: "argocd app get <app> --refresh",
+        level: "Troubleshooting",
+        english: "Refresh application information from its sources.",
+        telugu: "Stale app status refresh chesi troubleshoot cheyyataniki.",
+      },
+    ],
+  };
