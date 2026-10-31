@@ -20,6 +20,8 @@ export default async function YamlTopicPage({ params }: { params: Promise<{ slug
   if (!data) notFound();
   return (
     <NotesRenderer
+      backHref="/notes-cheat-sheets/yaml-configuration"
+      backLabel="YAML & Configuration Notes"
       data={{
         ...data,
         title: slug
@@ -30,4 +32,6 @@ export default async function YamlTopicPage({ params }: { params: Promise<{ slug
     />
   );
 }
+
+
 

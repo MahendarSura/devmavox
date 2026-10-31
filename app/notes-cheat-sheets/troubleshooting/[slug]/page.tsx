@@ -20,6 +20,8 @@ export default async function TroubleshootingTopicPage({ params }: { params: Pro
   if (!data) notFound();
   return (
     <NotesRenderer
+      backHref="/notes-cheat-sheets/troubleshooting"
+      backLabel="Troubleshooting Notes"
       data={{
         ...data,
         title: slug
@@ -30,4 +32,6 @@ export default async function TroubleshootingTopicPage({ params }: { params: Pro
     />
   );
 }
+
+
 

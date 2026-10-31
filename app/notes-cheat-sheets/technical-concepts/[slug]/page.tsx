@@ -20,6 +20,8 @@ export default async function TechnicalTopicPage({ params }: { params: Promise<{
   if (!data) notFound();
   return (
     <NotesRenderer
+      backHref="/notes-cheat-sheets/technical-concepts"
+      backLabel="Technical Concepts"
       data={{
         ...data,
         title: slug
@@ -30,4 +32,6 @@ export default async function TechnicalTopicPage({ params }: { params: Promise<{
     />
   );
 }
+
+
 

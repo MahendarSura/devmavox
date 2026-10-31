@@ -20,6 +20,8 @@ export default async function InterviewTopicPage({ params }: { params: Promise<{
   if (!data) notFound();
   return (
     <NotesRenderer
+      backHref="/notes-cheat-sheets/interview-revision"
+      backLabel="Interview & Quick Revision Notes"
       data={{
         ...data,
         title: slug
@@ -30,4 +32,6 @@ export default async function InterviewTopicPage({ params }: { params: Promise<{
     />
   );
 }
+
+
 

@@ -18,12 +18,22 @@ type NoteData = {
   sections: NoteSection[];
 };
 
-export default function NotesRenderer({ data }: { data: NoteData }) {
+type NotesRendererProps = {
+  data: NoteData;
+  backHref?: string;
+  backLabel?: string;
+};
+
+export default function NotesRenderer({
+  data,
+  backHref = "/notes-cheat-sheets",
+  backLabel = "All Notes & Cheat Sheets",
+}: NotesRendererProps) {
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100 sm:px-8">
       <div className="mx-auto max-w-5xl">
-        <a href="/notes-cheat-sheets" className="text-sm text-cyan-300 hover:underline">
-          ← All Notes & Cheat Sheets
+        <a href={backHref} className="text-sm text-cyan-300 hover:underline">
+          ← Back to {backLabel}
         </a>
 
         <p className="mt-8 text-sm uppercase tracking-widest text-cyan-300">
@@ -81,3 +91,4 @@ export default function NotesRenderer({ data }: { data: NoteData }) {
     </main>
   );
 }
+

@@ -20,6 +20,8 @@ export default async function ProjectTopicPage({ params }: { params: Promise<{ s
   if (!data) notFound();
   return (
     <NotesRenderer
+      backHref="/notes-cheat-sheets/real-time-projects"
+      backLabel="Real-Time Project Notes"
       data={{
         ...data,
         title: slug
@@ -30,4 +32,6 @@ export default async function ProjectTopicPage({ params }: { params: Promise<{ s
     />
   );
 }
+
+
 
