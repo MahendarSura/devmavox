@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { devOpsTools } from "../commands-data";
+import { devOpsTools } from "../../notes & cheatsheest/devops-tools";
 
 const levels = [
   "All Levels",
