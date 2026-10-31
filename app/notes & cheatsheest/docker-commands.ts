@@ -14,76 +14,204 @@ const makeCommands = (
     telugu,
   }));
 
-export const dockerTool: DevOpsTool = {
-  name: "Docker",
+export const dockerComposeTool: DevOpsTool = {
+  name: "Docker Compose",
   category: "Containers & DevOps",
   commands: [
-    // BASIC - 12
+    // BASIC - 8
     ...makeCommands("Basic", [
-      ["docker --version", "Displays the installed Docker CLI version.", "Install ayina Docker CLI version chupistundi."],
-      ["docker version", "Displays Docker client and server version information.", "Docker client mariyu server version information chupistundi."],
-      ["docker info", "Displays information about the Docker daemon and environment.", "Docker daemon mariyu environment information chupistundi."],
-      ["docker help", "Displays Docker CLI help and available commands.", "Docker CLI help mariyu available commands chupistundi."],
-      ["docker images", "Lists locally available Docker images.", "Local lo unna Docker images list chestundi."],
-      ["docker ps", "Lists currently running containers.", "Prastutam running lo unna containers list chestundi."],
-      ["docker ps -a", "Lists all containers, including stopped containers.", "Stopped containers tho saha anni containers list chestundi."],
-      ["docker pull nginx", "Downloads the Nginx image from a registry.", "Registry nundi Nginx image download chestundi."],
-      ["docker run hello-world", "Runs the Hello World container to test Docker.", "Docker test cheyadaniki Hello World container run chestundi."],
-      ["docker run -d --name web nginx", "Runs an Nginx container in detached mode.", "Nginx container ni background lo run chestundi."],
-      ["docker stop web", "Stops a running container gracefully.", "Running container ni graceful ga stop chestundi."],
-      ["docker start web", "Starts an existing stopped container.", "Already unna stopped container ni start chestundi."],
+      [
+        "docker compose version",
+        "Displays the installed Docker Compose version.",
+        "Install ayina Docker Compose version chupistundi.",
+      ],
+      [
+        "docker compose ls",
+        "Lists Docker Compose projects.",
+        "Docker Compose projects list chestundi.",
+      ],
+      [
+        "docker compose ps",
+        "Lists containers belonging to the current Compose project.",
+        "Current Compose project containers list chestundi.",
+      ],
+      [
+        "docker compose up",
+        "Creates and starts services defined in the Compose file.",
+        "Compose file lo define chesina services create chesi start chestundi.",
+      ],
+      [
+        "docker compose up -d",
+        "Starts Compose services in detached mode.",
+        "Compose services ni background lo run chestundi.",
+      ],
+      [
+        "docker compose logs",
+        "Displays logs from Compose services.",
+        "Compose services logs chupistundi.",
+      ],
+      [
+        "docker compose stop",
+        "Stops running services without removing their containers.",
+        "Running services ni containers remove cheyakunda stop chestundi.",
+      ],
+      [
+        "docker compose down",
+        "Stops and removes project containers and networks.",
+        "Project containers mariyu networks ni stop chesi remove chestundi.",
+      ],
     ]),
 
-    // INTERMEDIATE - 15
+    // INTERMEDIATE - 10
     ...makeCommands("Intermediate", [
-      ["docker build -t myapp:1.0 .", "Builds an image from the Dockerfile in the current directory.", "Current directory Dockerfile nundi image build chestundi."],
-      ["docker tag myapp:1.0 username/myapp:1.0", "Adds another tag to an existing image.", "Existing image ki another tag add chestundi."],
-      ["docker login", "Authenticates with a container registry.", "Container registry ki authenticate chestundi."],
-      ["docker push username/myapp:1.0", "Uploads an image to a container registry.", "Container image ni registry ki upload chestundi."],
-      ["docker inspect web", "Displays detailed information about a container.", "Container gurinchi detailed information chupistundi."],
-      ["docker stats", "Displays live resource usage statistics for containers.", "Containers CPU mariyu memory usage chupistundi."],
-      ["docker top web", "Displays processes running inside a container.", "Container lopala running processes chupistundi."],
-      ["docker port web", "Lists the port mappings of a container.", "Container port mappings list chestundi."],
-      ["docker cp ./config.yml web:/app/config.yml", "Copies a local file into a container.", "Local file ni container loki copy chestundi."],
-      ["docker rm web", "Removes a stopped container.", "Stopped container ni remove chestundi."],
-      ["docker rmi myapp:1.0", "Removes a local Docker image.", "Local Docker image ni remove chestundi."],
-      ["docker network ls", "Lists Docker networks.", "Docker networks anni list chestundi."],
-      ["docker network create app-net", "Creates a Docker network.", "Docker network create chestundi."],
-      ["docker volume ls", "Lists Docker volumes.", "Docker volumes anni list chestundi."],
-      ["docker volume create app-data", "Creates a named Docker volume.", "Named Docker volume create chestundi."],
+      [
+        "docker compose build",
+        "Builds or rebuilds service images.",
+        "Services images ni build leda rebuild chestundi.",
+      ],
+      [
+        "docker compose pull",
+        "Downloads service images from their configured registries.",
+        "Configured registries nundi service images download chestundi.",
+      ],
+      [
+        "docker compose push",
+        "Pushes service images to their configured registries.",
+        "Service images ni configured registries ki push chestundi.",
+      ],
+      [
+        "docker compose exec web sh",
+        "Opens a shell inside the running web service container.",
+        "Running web service container lopala shell open chestundi.",
+      ],
+      [
+        "docker compose run web npm test",
+        "Runs a one-off command using the web service configuration.",
+        "Web service configuration use chesi one-time command run chestundi.",
+      ],
+      [
+        "docker compose cp ./config.yml web:/app/config.yml",
+        "Copies files between the host and a Compose service container.",
+        "Host mariyu Compose service container madhya files copy chestundi.",
+      ],
+      [
+        "docker compose port web 80",
+        "Displays the public port mapped to port 80 of the web service.",
+        "Web service port 80 ki map ayina public port chupistundi.",
+      ],
+      [
+        "docker compose images",
+        "Lists images used by containers created by the Compose project.",
+        "Compose project containers use chestunna images list chestundi.",
+      ],
+      [
+        "docker compose restart web",
+        "Restarts the specified Compose service.",
+        "Specified Compose service ni restart chestundi.",
+      ],
+      [
+        "docker compose start web",
+        "Starts an existing stopped Compose service.",
+        "Already unna stopped Compose service ni start chestundi.",
+      ],
     ]),
 
-    // ADVANCED - 10
+    // ADVANCED - 8
     ...makeCommands("Advanced", [
-      ["docker run -d --name limited-app --memory=512m --cpus=1.5 nginx", "Runs a container with memory and CPU limits.", "Memory mariyu CPU limits tho container run chestundi."],
-      ["docker run -d --name health-app --health-cmd='curl -f http://localhost/ || exit 1' --health-interval=30s --health-retries=3 nginx", "Runs a container with a configured health check.", "Health check configure chesi container run chestundi."],
-      ["docker run -d --name readonly-app --read-only nginx", "Runs a container with a read-only root filesystem.", "Read-only root filesystem tho container run chestundi."],
-      ["docker run -d --name app-user --user 1000:1000 nginx", "Runs a container using a specified user and group ID.", "Specified user mariyu group ID tho container run chestundi."],
-      ["docker run -d --name mounted-app --mount type=bind,source=/host/data,target=/app/data nginx", "Mounts a host directory inside a container.", "Host directory ni container lopala mount chestundi."],
-      ["docker run -d --name restart-app --restart unless-stopped nginx", "Runs a container with an automatic restart policy.", "Automatic restart policy tho container run chestundi."],
-      ["docker build --no-cache -t myapp:clean .", "Builds an image without using the build cache.", "Build cache use cheyakunda image build chestundi."],
-      ["docker build --target production -t myapp:production .", "Builds a specific target stage from a multi-stage Dockerfile.", "Multi-stage Dockerfile nundi specific target stage build chestundi."],
-      ["docker buildx build --platform linux/amd64,linux/arm64 -t username/myapp:latest --push .", "Builds and pushes an image for multiple platforms.", "Multiple platforms kosam image build chesi push chestundi."],
-      ["docker run -d --name secure-app --cap-drop ALL nginx", "Runs a container after dropping all Linux capabilities.", "Linux capabilities anni drop chesi container run chestundi."],
+      [
+        "docker compose -f compose.yaml -f compose.prod.yaml up -d",
+        "Combines multiple Compose files and starts the resulting application.",
+        "Multiple Compose files combine chesi application start chestundi.",
+      ],
+      [
+        "docker compose -p myapp up -d",
+        "Starts the project using a specified project name.",
+        "Specified project name tho application start chestundi.",
+      ],
+      [
+        "docker compose --profile debug up -d",
+        "Starts services enabled by the debug profile along with default services.",
+        "Debug profile services mariyu default services start chestundi.",
+      ],
+      [
+        "docker compose up -d --scale web=3",
+        "Starts the application with three replicas of the web service.",
+        "Web service ni 3 replicas tho start chestundi.",
+      ],
+      [
+        "docker compose --dry-run up -d",
+        "Previews the operations Compose would perform without applying them.",
+        "Changes apply cheyakunda Compose operations preview chestundi.",
+      ],
+      [
+        "docker compose --parallel 1 pull",
+        "Pulls service images with a maximum parallelism of one.",
+        "Oka time lo oka image matrame pull chestundi.",
+      ],
+      [
+        "docker compose up -d --wait",
+        "Starts services and waits until they are running or healthy.",
+        "Services start chesi running leda healthy ayye varaku wait chestundi.",
+      ],
+      [
+        "docker compose up --watch",
+        "Starts services and watches configured files for changes.",
+        "Services start chesi configured files changes ni watch chestundi.",
+      ],
     ]),
 
-    // TROUBLESHOOTING - 15
+    // TROUBLESHOOTING - 10
     ...makeCommands("Troubleshooting", [
-      ["docker logs --tail 100 web", "Displays the last 100 lines of container logs.", "Container logs lo last 100 lines chupistundi."],
-      ["docker logs --since 10m web", "Displays logs generated during the last 10 minutes.", "Last 10 minutes lo generate ayina logs chupistundi."],
-      ["docker logs -f web", "Streams container logs continuously.", "Container logs ni continuous ga stream chestundi."],
-      ["docker inspect --format '{{.State.Status}} {{.State.ExitCode}}' web", "Checks the container state and exit code.", "Container state mariyu exit code check chestundi."],
-      ["docker inspect --format '{{json .State.Health}}' web", "Displays the container health-check status.", "Container health-check status chupistundi."],
-      ["docker stats --no-stream", "Displays a one-time snapshot of container resource usage.", "Container resource usage oka sari snapshot ga chupistundi."],
-      ["docker events --since 10m --filter type=container", "Displays container events generated during the last 10 minutes.", "Last 10 minutes lo jarigina container events chupistundi."],
-      ["docker system df", "Displays Docker disk usage.", "Docker disk usage chupistundi."],
-      ["docker system df -v", "Displays detailed Docker disk usage information.", "Detailed Docker disk usage information chupistundi."],
-      ["docker network inspect app-net", "Checks network configuration and connected containers.", "Network configuration mariyu connected containers check chestundi."],
-      ["docker port web", "Checks host-to-container port mappings.", "Host mariyu container madhya port mappings check chestundi."],
-      ["docker exec -it web sh", "Opens an interactive shell inside a running container.", "Running container lopala interactive shell open chestundi."],
-      ["docker exec web cat /etc/resolv.conf", "Checks DNS resolver configuration inside a container.", "Container lopala DNS resolver configuration check chestundi."],
-      ["docker image inspect nginx:latest", "Checks image metadata and configuration.", "Image metadata mariyu configuration check chestundi."],
-      ["docker ps -a --filter status=exited", "Lists containers that have exited.", "Exit ayina containers list chestundi."],
+      [
+        "docker compose ps -a",
+        "Lists all project containers, including stopped containers.",
+        "Stopped containers tho saha project containers anni chupistundi.",
+      ],
+      [
+        "docker compose logs --tail 100",
+        "Displays the last 100 lines of service logs.",
+        "Service logs lo last 100 lines chupistundi.",
+      ],
+      [
+        "docker compose logs -f web",
+        "Continuously follows logs from the web service.",
+        "Web service logs ni continuous ga follow chestundi.",
+      ],
+      [
+        "docker compose logs --since 10m",
+        "Displays service logs generated during the last 10 minutes.",
+        "Last 10 minutes lo generate ayina service logs chupistundi.",
+      ],
+      [
+        "docker compose events",
+        "Displays real-time events from Compose project containers.",
+        "Compose project containers real-time events chupistundi.",
+      ],
+      [
+        "docker compose top",
+        "Displays processes running inside Compose service containers.",
+        "Compose service containers lopala running processes chupistundi.",
+      ],
+      [
+        "docker compose stats",
+        "Displays live resource usage statistics for Compose containers.",
+        "Compose containers live resource usage chupistundi.",
+      ],
+      [
+        "docker compose config -q",
+        "Validates the Compose configuration quietly and reports errors.",
+        "Compose configuration validate chesi errors unte report chestundi.",
+      ],
+      [
+        "docker compose config --services",
+        "Lists the services resolved from the Compose configuration.",
+        "Compose configuration nundi resolve ayina services list chestundi.",
+      ],
+      [
+        "docker compose exec -T web sh -c 'printenv'",
+        "Checks environment variables inside the running web service without allocating a TTY.",
+        "TTY allocate cheyakunda web service environment variables check chestundi.",
+      ],
     ]),
   ],
 };
