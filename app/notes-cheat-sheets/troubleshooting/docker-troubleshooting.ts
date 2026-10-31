@@ -1,9 +1,10 @@
-type Problem = {
+export type Problem = {
   issue: string;
+  rootCause: string;
   solution: string;
 };
 
-type NoteSection = {
+export type NoteSection = {
   heading: string;
   explanation: string;
   steps: string[];
@@ -12,1002 +13,2158 @@ type NoteSection = {
   problems: Problem[];
 };
 
-type NoteData = {
+export type NoteData = {
   title: string;
   description: string;
   sections: NoteSection[];
 };
 
 export const dockerTroubleshooting: NoteData = {
-  title: "Docker Troubleshooting – Complete Real-Time & Production Engineering Notes",
+  title: "Docker A–Z Complete Practical and Production Troubleshooting Notes",
 
   description:
-    "Complete practical Docker troubleshooting training notes covering architecture, internal working, real-time DevOps workflows, production incidents, error identification, logs, diagnostic commands, root cause analysis, practical fixes, configuration examples, verification, prevention and interview knowledge. Written in simple English for beginners.",
+    "Complete Docker learning notes covering fundamentals, architecture, installation, Dockerfiles, images, containers, networking, volumes, Compose, registries, security, resource management, logging, BuildKit, production workflows and real-world troubleshooting.",
 
   sections: [
     {
-      heading: "1. Introduction – What Is Docker and Why Do We Use It?",
+      heading: "01. Docker Fundamentals – What is Docker?",
+      explanation: `
+Docker is a containerization platform. It packages an application and its required dependencies into an image.
 
-      explanation:
-        "Docker is a containerization platform used to package and run applications in isolated environments called containers.\n\nImagine a developer creates a Java application on a laptop. The application works correctly on that laptop, but when it is deployed to a production Linux server, it fails because the server has a different Java version, missing libraries or different configuration.\n\nThis is a common problem in software development. Docker helps reduce these environment differences by packaging the application and its required dependencies into an image.\n\nA Docker image is a packaged template. A container is a running instance created from that image.\n\nImportant Docker terms:\n\nDockerfile: Contains instructions to build an image.\nDocker Image: Contains application files, dependencies and runtime requirements.\nDocker Container: An isolated running instance of an image.\nDocker Registry: Stores and distributes images.\nDocker Volume: Stores persistent data outside the container writable layer.\nDocker Network: Allows containers and external services to communicate.\nDocker Engine: Provides the functionality to build and manage Docker objects.\n\nReal-time production example:\nAn e-commerce company has a frontend application, backend API and MySQL database. The DevOps engineer packages the frontend and backend into Docker images. The database may run as a managed database service or in a separate container for suitable environments.\n\nThe team can deploy the same approved application image to testing and production while providing different environment-specific configuration.\n\nImportant: Docker does not automatically make an application secure, highly available or production-ready. Engineers must also configure networking, storage, secrets, monitoring, resource limits and deployment strategy.",
+A developer may face a common problem:
 
+The application works on the developer's laptop but fails on the testing server.
+
+Possible reasons:
+- Different Java or Node.js versions.
+- Missing operating-system packages.
+- Different library versions.
+- Incorrect environment variables.
+- Different file paths.
+- Different application configuration.
+
+Docker helps reduce these environment differences by packaging the application and its runtime dependencies into an image.
+
+IMPORTANT CONCEPTS:
+
+1. Docker Image:
+An image is a packaged template used to create containers. It contains application files, dependencies and configuration metadata.
+
+2. Docker Container:
+A container is a running or stopped instance created from an image. It runs an application process in an isolated environment.
+
+3. Dockerfile:
+A text file containing instructions to build an image.
+
+4. Docker Engine:
+The software responsible for managing Docker images, containers, networks and volumes.
+
+5. Docker Registry:
+A service used to store and distribute Docker images. Examples include Docker Hub and private registries.
+
+6. Docker Volume:
+Persistent storage used by containers.
+
+7. Docker Network:
+Allows containers to communicate with each other and with external systems.
+
+8. Docker Compose:
+A tool for defining and running applications containing multiple containers.
+
+IMAGE VS CONTAINER:
+
+Image:
+- Template.
+- Read-only layers.
+- Used to create containers.
+- Can be stored in a registry.
+
+Container:
+- Runtime instance.
+- Has a writable container layer.
+- Runs application processes.
+- Can be started, stopped and removed.
+
+DOCKER VS VIRTUAL MACHINE:
+
+A virtual machine runs its own guest operating system and kernel.
+
+A normal Linux container shares the host Linux kernel and uses kernel isolation features.
+
+Docker containers are generally lighter than full virtual machines, but they are not a replacement for every VM use case.
+
+REAL-TIME EXAMPLE:
+
+A company develops a Java application.
+
+Developer builds the application and creates a Docker image.
+
+The image is tested in the QA environment.
+
+After successful testing, the same image version is deployed to production.
+
+The application configuration can differ between QA and production without rebuilding the application image.
+      `,
       steps: [
-        "Understand the application runtime and dependencies.",
-        "Create a Dockerfile for the application.",
+        "Identify the application language and runtime version.",
+        "Identify required libraries, packages and application files.",
+        "Create a Dockerfile.",
         "Build an image using docker build.",
         "Run a container using docker run.",
-        "Configure environment variables, ports, networks and volumes.",
-        "Monitor application health and container resource usage.",
-        "Investigate failures using logs and diagnostic commands."
+        "Verify application logs and health.",
+        "Push the tested image to a registry.",
+        "Deploy the same image version in the target environment."
       ],
+      commands: `
+docker --version
+docker version
+docker info
 
-      commands:
-        "docker --version\n" +
-        "docker version\n" +
-        "docker info\n" +
-        "docker images\n" +
-        "docker ps -a",
+docker image ls
+docker ps
+docker ps -a
 
+docker pull nginx
+docker run -d --name web nginx
+
+docker logs web
+docker inspect web
+
+docker stop web
+docker rm web
+      `,
       problems: [
         {
-          issue: "Docker command is not recognized.",
+          issue: "Application works on the developer laptop but fails on the server.",
+          rootCause:
+            "Runtime versions, dependencies, operating-system packages or configuration may differ between environments.",
           solution:
-            "Install Docker CLI and the appropriate Docker Engine or Docker Desktop environment. Verify that the executable is available in the system PATH."
+            "Package the application and required runtime dependencies into an image. Test the same image that will be deployed."
         },
         {
-          issue: "Docker is installed but the daemon is not responding.",
+          issue: "Container is running but the application is not accessible.",
+          rootCause:
+            "The application may not have started correctly, may be listening on the wrong address or may not have a published port.",
           solution:
-            "Check whether Docker Engine or Docker Desktop is running. On Linux, use systemctl status docker and start the service if required."
+            "Check application logs, container port configuration, published ports, health endpoint and network connectivity."
         }
       ]
     },
 
     {
-      heading: "2. Docker Architecture – Internal Components and How They Communicate",
+      heading: "02. Docker Architecture – CLI, Daemon, containerd and runc",
+      explanation: `
+Docker uses a client-server architecture.
 
-      explanation:
-        "Docker follows a client-server architecture. Understanding this architecture helps engineers identify whether a problem belongs to the CLI, daemon, image, runtime, container, network or application.\n\nDocker Client:\nThe Docker CLI is the tool used by engineers to execute commands such as docker build, docker pull and docker run. It sends requests to the Docker API.\n\nDocker Daemon:\nThe dockerd process manages images, containers, networks and volumes. It receives API requests and coordinates Docker operations.\n\nDocker API:\nProvides communication between the Docker client and daemon.\n\ncontainerd:\nA container runtime component responsible for container lifecycle management. Docker Engine commonly uses containerd as part of its runtime architecture.\n\nrunc:\nA low-level OCI runtime commonly used to create and run containers.\n\nImage:\nAn image contains filesystem layers and metadata required to create a container.\n\nContainer:\nA container is an isolated process environment created from an image. It has a writable layer and runtime configuration.\n\nNamespaces:\nLinux namespaces provide isolation for process IDs, networking, mounts, users and other resources.\n\nControl Groups:\nLinux cgroups help control and monitor resource consumption such as CPU and memory.\n\nDocker Network:\nProvides connectivity between containers and other network endpoints.\n\nDocker Volume:\nProvides persistent storage independent of a container's writable layer.\n\nHow the components work together:\nWhen an engineer runs docker run nginx, the CLI sends a request to dockerd. The daemon checks whether the image is available locally. If it is missing, Docker pulls it from a registry. Runtime components prepare the container filesystem, networking and process configuration. The nginx process starts inside the container.\n\nIf the nginx process exits, the container stops. A configured restart policy may restart it according to its rules.",
+MAIN COMPONENTS:
 
+1. Docker CLI:
+The command-line interface used by engineers.
+
+Example:
+docker run nginx
+
+2. Docker Daemon – dockerd:
+The background service that manages Docker objects such as images, containers, networks and volumes.
+
+3. Docker Engine API:
+The API through which clients communicate with the Docker daemon.
+
+4. containerd:
+A container runtime component responsible for container lifecycle management.
+
+5. runc:
+An OCI runtime commonly used to create and run containers.
+
+6. OCI:
+Open Container Initiative. It defines standards for container images and runtimes.
+
+HOW docker run WORKS INTERNALLY:
+
+Step 1:
+Engineer executes docker run nginx.
+
+Step 2:
+Docker CLI sends a request to the Docker Engine API.
+
+Step 3:
+Docker daemon checks whether the nginx image is available locally.
+
+Step 4:
+If the image is missing, Docker attempts to pull it from a registry.
+
+Step 5:
+Docker prepares the container configuration, filesystem, networking and mounts.
+
+Step 6:
+Runtime components create the container process environment.
+
+Step 7:
+The nginx process starts.
+
+Step 8:
+Docker reports the container status.
+
+LINUX ISOLATION CONCEPTS:
+
+Namespaces:
+Provide isolation for process IDs, networking, mount points, hostnames and other system resources.
+
+Cgroups:
+Control and account for resource usage such as CPU and memory.
+
+Union or layered filesystems:
+Allow images to be composed from reusable filesystem layers.
+
+IMPORTANT:
+A container is not a complete virtual machine. It uses the host kernel in a normal Linux container environment.
+
+TROUBLESHOOTING LAYERS:
+
+- CLI problem.
+- Wrong Docker context.
+- Daemon unavailable.
+- Image download failure.
+- Runtime failure.
+- Host resource or permission issue.
+- Application startup failure.
+
+An engineer should identify which layer failed before changing the system.
+      `,
       steps: [
-        "Run docker version to inspect client and server versions.",
-        "Run docker info to inspect the Docker Engine.",
-        "Use docker ps to inspect running containers.",
-        "Use docker inspect to examine container configuration.",
-        "Use docker network ls to inspect Docker networks.",
-        "Use docker volume ls to inspect persistent volumes.",
-        "Use docker image inspect to inspect image metadata."
+        "Check Docker client and server versions.",
+        "Check the active Docker context.",
+        "Check Docker daemon status.",
+        "Check daemon logs if the engine is unavailable.",
+        "Check image availability and container creation errors.",
+        "Separate infrastructure errors from application errors."
       ],
+      commands: `
+docker version
+docker info
 
-      commands:
-        "docker version\n" +
-        "docker info\n" +
-        "docker ps -a\n" +
-        "docker inspect <container_name>\n" +
-        "docker network ls\n" +
-        "docker volume ls\n" +
-        "docker image inspect <image_name>",
+docker context ls
+docker context show
 
+# Linux
+sudo systemctl status docker
+
+sudo journalctl -u docker --since "30 minutes ago"
+
+# Show recent Docker events
+docker events --since 30m
+      `,
       problems: [
         {
-          issue: "Docker CLI cannot communicate with the daemon.",
+          issue: "Cannot connect to the Docker daemon.",
+          rootCause:
+            "The daemon may be stopped, the Docker context may point to the wrong endpoint or the user may lack socket access.",
           solution:
-            "Check the daemon status, Docker context, configured endpoint and permissions. On Linux, verify the Docker service. On Docker Desktop, verify that the correct engine is running."
+            "Verify the active context, check daemon status and review socket permissions. Do not make the Docker socket world-writable."
         },
         {
-          issue: "Container cannot access a required file or resource.",
+          issue: "Docker commands are affecting an unexpected server.",
+          rootCause:
+            "The active Docker context may point to a remote Docker Engine.",
           solution:
-            "Inspect mount configuration, file permissions, namespaces and resource restrictions. Confirm that the container process has the required access."
+            "Run docker context show and docker context ls. Select the intended context and verify its endpoint before running commands."
         }
       ]
     },
 
     {
-      heading: "3. How Docker Works – Internal Working from Image Build to Container Startup",
+      heading: "03. Docker Installation and Host Preparation",
+      explanation: `
+Docker installation depends on the operating system.
 
-      explanation:
-        "A DevOps engineer should understand what Docker does internally when an application is packaged and started.\n\nStep 1 – Developer writes code:\nThe developer creates a Java, Python, Node.js or another application and stores the source code in Git.\n\nStep 2 – Dockerfile creation:\nThe Dockerfile describes the base image, working directory, dependency installation, application files and startup command.\n\nStep 3 – Image build:\nThe engineer executes docker build. Docker reads the Dockerfile and executes its instructions. BuildKit can reuse previously built layers when the inputs have not changed.\n\nStep 4 – Image layers:\nDocker creates image filesystem layers. These layers help reuse common files and dependencies between images.\n\nStep 5 – Image tagging:\nThe image is assigned a name and version, such as myapp:1.0.\n\nStep 6 – Image registry:\nThe image can be pushed to Docker Hub or a private registry.\n\nStep 7 – Container creation:\nDocker creates a container from the image. It prepares the container's writable layer and runtime configuration.\n\nStep 8 – Network and volume setup:\nDocker connects the container to the selected network and mounts configured volumes.\n\nStep 9 – Main process startup:\nDocker starts the process configured by ENTRYPOINT and CMD.\n\nStep 10 – Application execution:\nThe application starts listening on its configured port and begins handling requests.\n\nStep 11 – Health monitoring:\nA configured Docker HEALTHCHECK can periodically test the container's health. Other production systems may also use separate readiness and liveness checks.\n\nStep 12 – Failure handling:\nIf the main process exits, the container stops. A restart policy may restart it. The engineer must still investigate why the application exited.\n\nImportant concept:\nA running container does not always mean the application is working correctly. For example, the container may be running while the backend cannot connect to its database.",
+Linux:
+Docker Engine normally runs as a system service.
 
+Windows:
+Docker Desktop commonly uses WSL2 or a supported virtualization backend for Linux containers.
+
+macOS:
+Docker Desktop provides a managed Linux environment for Linux containers.
+
+IMPORTANT INSTALLATION CHECKS:
+
+1. Docker CLI installed.
+2. Docker daemon installed or available.
+3. Docker daemon running.
+4. CLI can communicate with the daemon.
+5. Docker can access registries.
+6. Host has sufficient CPU, memory and disk space.
+
+Do not assume that installing the Docker CLI means the Docker Engine is running.
+
+On Linux, systemctl and journalctl are useful for service troubleshooting.
+
+On Docker Desktop, check the Desktop engine status, diagnostics, WSL integration and selected container mode.
+
+Use official installation instructions for the operating system and Docker release. Installation requirements can change between releases.
+      `,
       steps: [
-        "Write application code and dependency files.",
-        "Create a Dockerfile.",
-        "Build the image.",
-        "Tag the image with a meaningful version.",
-        "Run the container with the required configuration.",
-        "Check the main process and application startup logs.",
-        "Test the application endpoint.",
-        "Monitor health and resource usage."
+        "Install Docker using the supported instructions for the operating system.",
+        "Check the CLI version.",
+        "Check client-to-daemon communication.",
+        "Check Docker Engine information.",
+        "Run a test container.",
+        "If image pulling fails, investigate DNS, proxy, firewall and registry access."
       ],
+      commands: `
+docker --version
+docker version
+docker info
 
-      commands:
-        "docker build -t myapp:1.0 .\n" +
-        "docker images\n" +
-        "docker run -d --name myapp -p 8080:8080 myapp:1.0\n" +
-        "docker ps\n" +
-        "docker logs myapp\n" +
-        "docker inspect myapp\n" +
-        "docker stats myapp\n" +
-        "curl http://localhost:8080",
+docker run --rm hello-world
 
+# Linux service checks
+sudo systemctl status docker
+sudo systemctl start docker
+sudo journalctl -u docker -n 100
+      `,
+      problems: [
+        {
+          issue: "Docker Desktop engine does not start.",
+          rootCause:
+            "Virtualization, WSL2 integration, backend configuration or Docker Desktop startup may have failed.",
+          solution:
+            "Check Docker Desktop diagnostics, virtualization support, WSL2 status and engine configuration. Restart the Desktop engine after identifying the issue."
+        },
+        {
+          issue: "Docker CLI is installed but commands cannot connect.",
+          rootCause:
+            "The CLI exists, but the daemon may not be running or the selected context may be incorrect.",
+          solution:
+            "Check docker context show and daemon status. Start the correct engine and verify connectivity with docker info."
+        }
+      ]
+    },
+
+    {
+      heading: "04. Dockerfile – Instructions and Build Process",
+      explanation: `
+A Dockerfile contains instructions used to build a Docker image.
+
+IMPORTANT DOCKERFILE INSTRUCTIONS:
+
+FROM:
+Selects the base image.
+
+RUN:
+Executes commands during image build. Commonly used to install packages or build application files.
+
+COPY:
+Copies files from the build context into the image.
+
+ADD:
+Copies files and supports additional features such as local archive extraction. Prefer COPY for ordinary file copying.
+
+WORKDIR:
+Sets the working directory for subsequent instructions.
+
+ENV:
+Defines environment variables in the image configuration.
+
+ARG:
+Defines build-time variables.
+
+USER:
+Sets the user used by subsequent build instructions and the container's default process.
+
+EXPOSE:
+Documents the port that the application expects to use. It does not publish the port to the host.
+
+CMD:
+Provides the default command or arguments for the container.
+
+ENTRYPOINT:
+Defines the main executable for the container.
+
+HEALTHCHECK:
+Defines a command Docker can use to determine whether the container is healthy.
+
+SHELL:
+Changes the shell used for shell-form RUN instructions.
+
+STOPSIGNAL:
+Sets the signal sent when stopping the container.
+
+BUILD CONTEXT:
+The directory sent to the builder. Files excluded by .dockerignore are not sent as normal build-context files.
+
+LAYERING:
+Many Dockerfile instructions create image layers. Ordering instructions carefully helps reuse build cache.
+
+MULTI-STAGE BUILDS:
+Use one stage to compile or build an application and another stage to contain only the runtime files. This can reduce final image size and avoid shipping build tools.
+
+SECURITY:
+Do not copy passwords, private keys or production secrets into image layers. Removing a secret in a later layer does not reliably remove it from the image history.
+      `,
+      steps: [
+        "Choose a suitable and maintained base image.",
+        "Set WORKDIR.",
+        "Copy dependency manifests before frequently changing application source when that helps cache reuse.",
+        "Install dependencies with reproducible version constraints.",
+        "Copy application source.",
+        "Set a non-root USER where practical.",
+        "Define the startup command.",
+        "Build and test the image.",
+        "Scan and inspect the image before publishing."
+      ],
+      commands: `
+docker build -t myapp:v1 .
+
+# Specify Dockerfile
+docker build -f Dockerfile.prod -t myapp:prod .
+
+# Disable build cache
+docker build --no-cache -t myapp:test .
+
+# Pull base image before building
+docker build --pull -t myapp:latest .
+
+# Show image layers
+docker history myapp:v1
+
+# Inspect image configuration
+docker image inspect myapp:v1
+      `,
+      config: `
+# Example Dockerfile for a Node.js application
+
+FROM node:22-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm ci
+
+COPY . .
+
+ENV NODE_ENV=production
+
+EXPOSE 3000
+
+USER node
+
+CMD ["npm", "start"]
+      `,
+      problems: [
+        {
+          issue: "Docker build fails with COPY failed: file not found.",
+          rootCause:
+            "The file may not exist inside the build context, the path may be incorrect or .dockerignore may exclude it.",
+          solution:
+            "Check the build command's context directory, verify the source path and inspect .dockerignore."
+        },
+        {
+          issue: "Docker image becomes very large.",
+          rootCause:
+            "The image may contain build tools, package caches, unnecessary files or multiple versions of dependencies.",
+          solution:
+            "Use a suitable smaller base image, multi-stage builds, .dockerignore and cleanup in the same build layer where appropriate."
+        },
+        {
+          issue: "Docker build uses outdated dependencies or source.",
+          rootCause:
+            "The build cache may be reused because the inputs to an instruction have not changed.",
+          solution:
+            "Inspect the build output and cache inputs. Use --no-cache only when a clean rebuild is necessary; use --pull when a fresh base image is required."
+        }
+      ]
+    },
+
+    {
+      heading: "05. Docker Image Management – Layers, Tags, Digests and Cache",
+      explanation: `
+An image consists of filesystem layers and image configuration metadata.
+
+Each layer can be reused by other images. This saves storage and can speed up builds and downloads.
+
+TAG:
+A human-readable label such as myapp:v1.4.2.
+
+DIGEST:
+A content-addressed identifier for an image manifest. A digest is useful when an exact immutable image reference is required.
+
+IMPORTANT:
+A tag such as latest is not automatically the newest or safest image. It is simply a tag that can be moved to point to another image.
+
+IMAGE COMMANDS:
+
+docker image ls:
+Lists local images.
+
+docker image inspect:
+Displays image configuration and metadata.
+
+docker history:
+Shows image layer history.
+
+docker image tag:
+Creates another tag for an existing image.
+
+docker image rm:
+Removes an image reference, subject to container and image usage constraints.
+
+docker image prune:
+Removes unused images according to its options.
+
+Before deleting images on a production host, identify which containers and deployments depend on them.
+      `,
+      steps: [
+        "List local images.",
+        "Inspect the image ID, tags and architecture.",
+        "Check image history when investigating unexpected image size.",
+        "Use versioned tags for release management.",
+        "Use digest references when exact content identity is required.",
+        "Remove unused images only after checking host usage and deployment requirements."
+      ],
+      commands: `
+docker image ls
+docker image inspect myapp:v1
+docker history myapp:v1
+
+docker image tag myapp:v1 registry.example.com/team/myapp:v1
+
+docker image rm myapp:v1
+
+# Preview unused images
+docker image ls
+
+# Remove dangling images
+docker image prune
+      `,
+      problems: [
+        {
+          issue: "Image pull downloads a different image than expected.",
+          rootCause:
+            "A mutable tag may have been updated in the registry.",
+          solution:
+            "Use a versioned tag or a digest-pinned image reference. Verify the pulled image ID and digest."
+        },
+        {
+          issue: "Image deletion fails because an image is being used.",
+          rootCause:
+            "One or more containers still reference the image.",
+          solution:
+            "Inspect containers using the image. Remove only containers that are confirmed to be disposable, then remove the image."
+        }
+      ]
+    },
+
+    {
+      heading: "06. Container Lifecycle – run, create, start, stop, restart and exec",
+      explanation: `
+A container has a lifecycle.
+
+docker create:
+Creates a container without starting it.
+
+docker start:
+Starts an existing created or stopped container.
+
+docker run:
+Creates and starts a new container.
+
+docker stop:
+Sends the configured stop signal, normally SIGTERM, and then sends SIGKILL after the timeout if the process does not stop.
+
+docker kill:
+Sends a signal immediately. The default signal is SIGKILL.
+
+docker restart:
+Restarts a container.
+
+docker pause:
+Freezes container processes.
+
+docker unpause:
+Resumes paused processes.
+
+docker exec:
+Starts another process inside a running container.
+
+docker attach:
+Attaches to the container's main process streams.
+
+docker rm:
+Removes a stopped container. Use -f only when you understand the impact.
+
+IMPORTANT:
+The container's main process is PID 1 inside its process namespace. When that main process exits, the container stops.
+
+A container restart policy can restart a container after certain exits, but it does not fix the underlying application error.
+
+EXIT CODE 137:
+Often means the process was killed by SIGKILL. It does not prove that the container was killed by an out-of-memory event. Check OOMKilled and host/kernel evidence.
+      `,
+      steps: [
+        "Check whether the container exists.",
+        "Check its current state and exit code.",
+        "Read the container logs.",
+        "Inspect the container configuration.",
+        "Enter a running container with docker exec when appropriate.",
+        "Identify why the main process exited.",
+        "Fix the application or configuration before applying a restart policy."
+      ],
+      commands: `
+docker run -d --name web nginx
+
+docker create --name test nginx
+docker start test
+
+docker ps
+docker ps -a
+
+docker stop web
+docker restart web
+
+docker exec -it web sh
+
+docker inspect web
+docker logs --tail 100 web
+
+docker rm test
+      `,
       problems: [
         {
           issue: "Container exits immediately after starting.",
+          rootCause:
+            "The main process may finish, crash, receive a signal or fail because of missing configuration.",
           solution:
-            "Inspect the ENTRYPOINT and CMD instructions and read the application logs. Confirm that the main application process runs in the foreground and does not exit unexpectedly."
+            "Check docker logs and docker inspect. Fix the startup command, application configuration or dependency issue."
         },
         {
-          issue: "Container is running but the application is unavailable.",
+          issue: "Container keeps restarting.",
+          rootCause:
+            "The main process repeatedly exits and a restart policy starts it again.",
           solution:
-            "Check the application process, listening port, published port, bind address, firewall, network configuration and logs."
+            "Inspect the exit code, logs, health and dependencies. Fix the actual startup failure instead of relying only on restart."
+        },
+        {
+          issue: "Container exits with code 137.",
+          rootCause:
+            "The process received SIGKILL. Possible causes include an OOM kill, a forced stop after timeout or an external kill signal.",
+          solution:
+            "Inspect State.OOMKilled, memory limits, host kernel logs and stop events. Identify the actual SIGKILL source before changing memory limits."
         }
       ]
     },
 
     {
-      heading: "4. Real-Time Workflow – Developer to Production Deployment",
+      heading: "07. Docker Run Options – Practical Command Flags",
+      explanation: `
+docker run supports many options. Engineers should understand what each option changes.
 
-      explanation:
-        "This is a typical Docker-based DevOps delivery workflow.\n\nA developer changes application code and pushes it to GitHub. Jenkins or another CI/CD system detects the change and starts a pipeline.\n\nComplete workflow:\n\nDeveloper → Git Repository → CI Pipeline → Build → Automated Testing → Docker Image Build → Image Registry → Deployment Server → Container Creation → Application Startup → Health Check → Traffic Routing → Monitoring.\n\nStage 1 – Developer:\nThe developer writes application code and pushes it to the Git repository.\n\nStage 2 – CI pipeline:\nJenkins checks out the source code and executes build and test commands.\n\nStage 3 – Docker image build:\nThe pipeline builds the Docker image using the Dockerfile. It assigns a version tag such as shopping-api:1.4.2.\n\nStage 4 – Image registry:\nThe pipeline authenticates to the private registry and pushes the image.\n\nStage 5 – Deployment:\nThe deployment system pulls the approved image and starts a container with the production configuration.\n\nStage 6 – Application startup:\nThe backend starts and attempts to connect to MySQL, Redis and other required services.\n\nStage 7 – Health check:\nThe team verifies that the application is healthy and ready to receive requests. Docker HEALTHCHECK and load-balancer health checks are separate mechanisms.\n\nStage 8 – Traffic routing:\nThe reverse proxy or load balancer routes requests to healthy application instances.\n\nStage 9 – Monitoring:\nThe team monitors logs, error rates, response times, CPU, memory and disk usage.\n\nStage 10 – Failure handling:\nIf the new version fails, the engineer checks the evidence, fixes the issue or rolls back to the previous known-good image.\n\nImportant responsibility separation:\nDocker builds and runs containers. Jenkins automates build and deployment workflows. Kubernetes or another orchestrator manages scheduling, scaling and recovery across production infrastructure.",
+-d:
+Runs the container in detached mode.
 
+-it:
+Combines interactive mode (-i) and terminal allocation (-t).
+
+--rm:
+Automatically removes the container after it exits. Useful for temporary tasks, not for containers whose stopped state must be retained for investigation.
+
+--name:
+Assigns a readable container name.
+
+-p:
+Publishes a container port to a host port.
+
+-P:
+Publishes ports declared by the image to randomly selected host ports.
+
+-e:
+Sets an environment variable.
+
+--env-file:
+Loads environment variables from a file.
+
+-v:
+Mounts a volume or bind mount using short syntax.
+
+--mount:
+Uses explicit mount syntax and is often easier to read for complex mounts.
+
+--network:
+Connects the container to a selected Docker network.
+
+--restart:
+Sets the restart policy.
+
+--memory:
+Sets a memory limit.
+
+--cpus:
+Sets a CPU quota limit.
+
+--user:
+Sets the process user.
+
+--entrypoint:
+Overrides the image ENTRYPOINT.
+
+-w:
+Sets the working directory.
+
+--read-only:
+Makes the container root filesystem read-only, except for explicitly writable mounts and other configured writable areas.
+
+--privileged:
+Grants broad additional privileges. Avoid it unless a carefully reviewed requirement demands it.
+
+--cap-add / --cap-drop:
+Adds or removes Linux capabilities.
+
+--security-opt:
+Changes supported security settings, such as seccomp profiles.
+
+Always check docker run --help for the full option list supported by the installed Engine version.
+      `,
       steps: [
-        "Developer pushes code to Git.",
-        "CI pipeline checks out the source.",
-        "Build and automated tests execute.",
-        "Docker image is created.",
-        "Image is scanned and approved according to company policy.",
-        "Image is pushed to a registry.",
-        "Deployment system pulls the approved image.",
-        "Container starts with environment-specific settings.",
-        "Health checks and application tests execute.",
-        "Traffic is routed to healthy instances.",
-        "Monitoring detects application or infrastructure problems.",
-        "Failed releases are rolled back when required."
+        "Start with the image name and required application command.",
+        "Choose a stable container name.",
+        "Publish only the required ports.",
+        "Provide configuration through environment variables or an environment file.",
+        "Attach the correct network and storage.",
+        "Set resource limits based on measured requirements.",
+        "Choose a restart policy appropriate to the workload.",
+        "Verify the effective configuration using docker inspect."
       ],
+      commands: `
+docker run -d --name web -p 8080:80 nginx
 
-      commands:
-        "git checkout main\n" +
-        "docker build -t shopping-api:1.4.2 .\n" +
-        "docker login <registry>\n" +
-        "docker tag shopping-api:1.4.2 <registry>/shopping-api:1.4.2\n" +
-        "docker push <registry>/shopping-api:1.4.2\n" +
-        "docker pull <registry>/shopping-api:1.4.2\n" +
-        "docker run -d --name shopping-api -p 8080:8080 <registry>/shopping-api:1.4.2",
+docker run -it --rm alpine sh
 
+docker run -d --name api \\
+  --restart unless-stopped \\
+  --memory 512m \\
+  --cpus 1.5 \\
+  -p 3000:3000 \\
+  my-api:v1
+
+docker run --help
+docker inspect api
+      `,
       problems: [
         {
-          issue: "CI pipeline builds the application but Docker image creation fails.",
+          issue: "Host port is already allocated.",
+          rootCause:
+            "Another process or container is already listening on the requested host port.",
           solution:
-            "Inspect the Dockerfile, build context, dependency installation, base image availability and build logs. Fix the failing build instruction and rerun the pipeline."
+            "Identify the process or container using the port. Stop or reconfigure the conflicting service, or publish the container on a different host port."
         },
         {
-          issue: "Deployment succeeds but users receive application errors.",
+          issue: "Container cannot write to a mounted directory.",
+          rootCause:
+            "The container process user may not have permission to write to the host directory or mounted volume.",
           solution:
-            "Check application logs, environment variables, database connectivity, health checks and reverse-proxy routing. Compare the new release with the previous working version."
-        },
-        {
-          issue: "Production deploys an unexpected image version.",
-          solution:
-            "Inspect the deployment image reference and tag. Use immutable version tags or image digests rather than relying only on latest."
+            "Inspect the container UID/GID and host directory ownership and permissions. Apply the minimum required permission change rather than using chmod 777."
         }
       ]
     },
 
     {
-      heading: "5. Production Scenarios – Practical Incidents Faced by Docker Engineers",
+      heading: "08. Docker Networking – Bridge, Host, None and Overlay",
+      explanation: `
+Docker networking allows containers to communicate.
 
-      explanation:
-        "Production troubleshooting means understanding the business impact, collecting evidence, identifying the failure layer, fixing the root cause and verifying recovery.\n\nScenario 1 – Container repeatedly restarts:\nA new backend release is deployed. The application starts and attempts to connect to MySQL. The database hostname is incorrect. The application exits after connection failure. A restart policy restarts the container. Users experience API failures.\n\nEngineer investigation:\nThe engineer checks docker ps -a and observes that the container keeps exiting. The engineer reads docker logs and finds a database connection error. The engineer checks environment variables and network configuration. The wrong database hostname is identified and corrected.\n\nScenario 2 – Application works inside the container but not from the browser:\nThe application listens on port 8080 inside the container. The engineer publishes the wrong host port, or the application listens only on 127.0.0.1 inside the container. The engineer checks port mapping and application bind address.\n\nScenario 3 – Uploaded files disappear after deployment:\nThe application saves uploaded documents inside the container filesystem. During deployment, the old container is removed and a new container is created. The files disappear because they were stored in the container writable layer. The engineer migrates uploads to persistent storage.\n\nScenario 4 – Application becomes slow during peak traffic:\nThe container uses more memory as traffic increases. It reaches its configured memory limit and may be killed. The engineer checks docker stats, application metrics and host memory. The team investigates memory leaks and resource requirements.\n\nScenario 5 – Backend cannot connect to database container:\nThe backend uses localhost as its database hostname. Inside a container, localhost points to that same container, not another container. The engineer places both services on a shared Docker network and uses the database service name.\n\nScenario 6 – Registry image pull fails:\nA deployment cannot pull the image because the image tag does not exist or registry credentials are incorrect. The engineer checks the image name, tag, authentication, permissions and network access.\n\nScenario 7 – Disk space is exhausted:\nApplication logs and temporary files grow continuously. The Docker host runs out of disk space. The engineer checks Docker storage usage and log configuration, then implements suitable log rotation and storage cleanup.\n\nScenario 8 – Application becomes unhealthy:\nThe container is running, but its configured health check fails because the application endpoint is unavailable. The engineer inspects health-check output and application logs instead of assuming the container itself has stopped.",
+BRIDGE:
+A common network mode for containers on a single Docker host. User-defined bridge networks provide automatic DNS resolution between containers by name.
 
+HOST:
+The container shares the host network namespace on supported Linux configurations. Port publishing is not used in the same way as bridge mode.
+
+NONE:
+Disables normal container network connectivity, apart from loopback.
+
+OVERLAY:
+Provides networking across Docker hosts when used with a suitable multi-host setup such as Swarm.
+
+MACVLAN:
+Can give containers addresses on a physical network, subject to host and network infrastructure configuration.
+
+PORT PUBLISHING:
+-p HOST_PORT:CONTAINER_PORT publishes a container port on the host.
+
+Example:
+-p 8080:80
+
+Host port 8080 forwards traffic to container port 80.
+
+EXPOSE:
+Dockerfile EXPOSE documents the intended container port. It does not publish that port.
+
+CONTAINER DNS:
+On a user-defined bridge network, containers can normally reach each other by container name or network alias.
+
+LOCALHOST WARNING:
+Inside a container, localhost means that same container's network namespace. It does not mean another container or the Docker host.
+
+Example:
+An API container connecting to a database container should normally use the database service/container name and database port, not localhost.
+      `,
       steps: [
-        "Identify the affected service and business impact.",
-        "Check container status and recent deployment history.",
-        "Collect logs, resource usage and runtime configuration.",
-        "Identify whether the failure is in the application, network, storage, image or host.",
-        "Compare the failing deployment with a known-good deployment.",
-        "Find the root cause using evidence.",
-        "Apply the smallest safe fix.",
-        "Verify service recovery.",
-        "Monitor the service after recovery.",
-        "Document the incident and preventive action."
+        "List Docker networks.",
+        "Inspect the network used by each container.",
+        "Confirm both containers are attached to the intended network.",
+        "Check the destination service name and listening port.",
+        "Check application bind address and firewall rules.",
+        "Test name resolution and TCP connectivity from the correct container.",
+        "Inspect host port publishing when traffic enters from outside."
       ],
+      commands: `
+docker network ls
+docker network inspect app-network
 
-      commands:
-        "docker ps -a\n" +
-        "docker logs --tail 200 <container_name>\n" +
-        "docker inspect <container_name>\n" +
-        "docker stats\n" +
-        "docker port <container_name>\n" +
-        "docker events --since 30m\n" +
-        "docker system df",
+docker network create app-network
 
+docker run -d --name database \\
+  --network app-network \\
+  postgres
+
+docker run -d --name api \\
+  --network app-network \\
+  my-api:v1
+
+docker port api
+docker inspect api
+
+# Test from a suitable diagnostic container
+docker run --rm --network app-network busybox nslookup database
+      `,
       problems: [
         {
-          issue: "Container runs but production users cannot access the service.",
+          issue: "API container cannot connect to database using localhost.",
+          rootCause:
+            "localhost inside the API container points to the API container itself, not the database container.",
           solution:
-            "Trace the request path from client to load balancer, host port, Docker network and application process. Check each connection and identify where requests fail."
-        },
-        {
-          issue: "Application data disappears after a container is recreated.",
-          solution:
-            "Move persistent data to Docker volumes or suitable external storage. Back up existing data and test restoration before changing production storage."
-        },
-        {
-          issue: "New release repeatedly fails.",
-          solution:
-            "Compare the new image and configuration with the previous successful release. Restore service through rollback if necessary and investigate the new release separately."
-        }
-      ]
-    },
-
-    {
-      heading: "6. Error Identification – Common Docker Errors and Their Meaning",
-
-      explanation:
-        "An engineer should identify the stage where an error occurred. Docker build errors, image pull errors, container startup errors and application runtime errors have different causes.\n\nCommon errors:\n\n1. command not found: Docker CLI is missing or unavailable in PATH.\n\n2. Cannot connect to the Docker daemon: The CLI cannot reach the configured Docker daemon endpoint.\n\n3. pull access denied: The image may not exist, the tag may be wrong or the registry credentials may be invalid.\n\n4. no space left on device: The relevant filesystem has insufficient free storage.\n\n5. port is already allocated: Another process or container is already using the requested host port.\n\n6. permission denied: The process cannot access a required file, directory, socket or resource.\n\n7. exec format error: The executable format or image architecture may be incompatible with the runtime environment.\n\n8. connection refused: The destination did not accept the connection at the requested address and port.\n\n9. OOMKilled: The container was killed due to memory exhaustion or a memory limit. Verify actual memory pressure before deciding the cause.\n\n10. unhealthy: A configured Docker health check has failed. The container may still be running.\n\n11. Exit code 1: The main process exited with a general failure status. Inspect application logs.\n\n12. Exit code 137: The process received SIGKILL. Memory pressure is one possible cause, but not the only possible cause.\n\n13. Exit code 126: The command could not be executed.\n\n14. Exit code 127: The requested command could not be found.\n\n15. Docker build failed: A Dockerfile instruction, dependency download, build context or another build step failed.\n\n16. ImagePullBackOff: This is commonly seen in Kubernetes when repeated image pulls fail. Investigate image reference and registry access.",
-
-      steps: [
-        "Capture the exact error message.",
-        "Identify whether the error occurred during build, pull, container creation or runtime.",
-        "Check container status and exit code.",
-        "Read recent application and Docker logs.",
-        "Inspect configuration and image details.",
-        "Test the suspected dependency or network connection.",
-        "Fix the actual cause and repeat the failed operation."
-      ],
-
-      commands:
-        "docker ps -a\n" +
-        "docker inspect <container_name>\n" +
-        "docker logs <container_name>\n" +
-        "docker image inspect <image_name>\n" +
-        "docker system df\n" +
-        "docker port <container_name>\n" +
-        "docker events --since 15m",
-
-      problems: [
-        {
-          issue: "Port is already allocated.",
-          solution:
-            "Identify the process or container using the host port. Stop or reconfigure the conflicting service, or publish the container on a different available host port."
-        },
-        {
-          issue: "No space left on device.",
-          solution:
-            "Inspect host filesystem capacity, Docker image and container storage, build cache and log growth. Remove only confirmed-unused resources after checking production dependencies and backups."
-        },
-        {
-          issue: "Image pull access denied.",
-          solution:
-            "Verify the registry hostname, repository name, image tag, authentication and account permissions. Confirm that the image exists."
-        }
-      ]
-    },
-
-    {
-      heading: "7. Logs Analysis – Where Docker Logs Are Stored and How Engineers Read Them",
-
-      explanation:
-        "Logs are one of the most important sources of evidence during production troubleshooting.\n\nDocker container logs usually capture the container process standard output (stdout) and standard error (stderr), depending on the configured logging driver.\n\nWhen an application starts, it may print messages such as:\n\nApplication starting...\nLoading configuration...\nConnecting to MySQL...\nDatabase connection failed: Unknown host mysql-db\nApplication startup failed.\n\nAn engineer uses these messages to identify the actual failure.\n\nImportant commands:\n\ndocker logs: Reads container logs.\n--tail: Displays the last specified number of lines.\n-f: Follows new log entries.\n--since: Shows logs from a specified time.\n--timestamps: Adds timestamps.\n\nDocker logging drivers determine how container logs are handled. The default json-file driver commonly stores log data in Docker-managed files on Linux. The exact location depends on the Docker data root and driver configuration. Engineers should use docker logs rather than manually editing Docker-managed log files.\n\nOn Linux, Docker daemon logs can commonly be inspected through systemd journal using journalctl -u docker.\n\nOn Docker Desktop, Docker Engine runs in its managed environment, so host-level log locations differ from a normal Linux Docker Engine installation.\n\nProduction logging example:\nA backend container receives a customer checkout request. The application returns HTTP 500. The engineer checks logs around the exact incident time and finds a database connection timeout. The engineer compares database health, network connectivity and application connection settings.\n\nImportant:\nDo not print passwords, access tokens, database secrets or personal data into application logs.",
-
-      steps: [
-        "Identify the affected container.",
-        "Check the incident time and recent deployment time.",
-        "Read the last 100 or 200 log lines.",
-        "Follow live logs when reproducing the issue.",
-        "Search for ERROR, Exception, timeout and connection failures.",
-        "Correlate application logs with infrastructure and database logs.",
-        "Identify the first meaningful failure, not just the final shutdown message.",
-        "Confirm whether the issue is resolved after applying the fix."
-      ],
-
-      commands:
-        "docker logs <container_name>\n" +
-        "docker logs --tail 100 <container_name>\n" +
-        "docker logs -f <container_name>\n" +
-        "docker logs --since 30m <container_name>\n" +
-        "docker logs --timestamps <container_name>\n" +
-        "docker inspect --format '{{.HostConfig.LogConfig.Type}}' <container_name>\n" +
-        "journalctl -u docker --since '30 minutes ago'",
-
-      problems: [
-        {
-          issue: "docker logs shows no useful output.",
-          solution:
-            "Check whether the application writes logs to stdout and stderr. Inspect its logging configuration and Docker logging driver. If the application writes only to internal files, inspect those files through an approved method."
-        },
-        {
-          issue: "Container logs are growing continuously.",
-          solution:
-            "Configure appropriate log rotation or use a centralized logging system. Set retention limits and monitor disk consumption."
-        },
-        {
-          issue: "Logs show only connection timeout errors.",
-          solution:
-            "Check destination service health, DNS resolution, network connectivity, firewall rules, connection limits and application timeout settings."
-        }
-      ]
-    },
-
-    {
-      heading: "8. Diagnostic Commands – Practical Commands Used by Docker Engineers",
-
-      explanation:
-        "Docker troubleshooting requires commands that inspect different layers. An engineer should not randomly execute every command. First identify the symptom and then select the relevant diagnostic command.\n\nContainer status:\nUse docker ps to inspect running containers and docker ps -a to include stopped containers.\n\nContainer logs:\nUse docker logs to understand startup failures and application errors.\n\nContainer configuration:\nUse docker inspect to inspect image, network, mount, port, environment and state details.\n\nResource usage:\nUse docker stats to inspect current CPU, memory, network and block I/O statistics.\n\nImage inspection:\nUse docker image inspect to inspect image metadata and configuration.\n\nNetwork inspection:\nUse docker network inspect to examine connected containers and network configuration.\n\nVolume inspection:\nUse docker volume inspect to inspect volume details.\n\nPort inspection:\nUse docker port to check published container ports.\n\nProcess inspection:\nUse docker top to inspect processes running inside a container.\n\nEvents:\nUse docker events to inspect recent Docker Engine events.\n\nStorage:\nUse docker system df to inspect Docker disk usage.\n\nPractical troubleshooting example:\nA backend container is restarting. The engineer first checks docker ps -a. Then the engineer reads docker logs. Next, docker inspect reveals the configured environment variables and restart policy. docker network inspect helps confirm whether the backend can reach the database network.\n\nEach command provides a different piece of evidence. The engineer combines the results to identify the root cause.",
-
-      steps: [
-        "Check the current container status.",
-        "Inspect recent logs.",
-        "Inspect the container configuration.",
-        "Check CPU and memory usage.",
-        "Inspect the relevant Docker network.",
-        "Inspect volume mounts and port mappings.",
-        "Compare the evidence with the expected configuration.",
-        "Record the findings before making production changes."
-      ],
-
-      commands:
-        "docker ps -a\n" +
-        "docker logs --tail 200 <container>\n" +
-        "docker inspect <container>\n" +
-        "docker stats\n" +
-        "docker top <container>\n" +
-        "docker port <container>\n" +
-        "docker network inspect <network>\n" +
-        "docker volume inspect <volume>\n" +
-        "docker events --since 30m\n" +
-        "docker system df",
-
-      problems: [
-        {
-          issue: "Engineer cannot identify which diagnostic command to use.",
-          solution:
-            "Start with the symptom. For a stopped container use docker ps -a and docker logs. For connectivity use network inspection and connection tests. For resource issues use docker stats and host monitoring."
-        },
-        {
-          issue: "Production troubleshooting changes the environment before evidence is collected.",
-          solution:
-            "Collect logs, status, configuration and metrics first. Avoid deleting containers, volumes or images until their purpose and data dependencies are understood."
-        }
-      ]
-    },
-
-    {
-      heading: "9. Root Cause Analysis – Why Docker Problems Actually Happen",
-
-      explanation:
-        "Root Cause Analysis (RCA) is the process of finding the actual reason behind an incident rather than only fixing its visible symptom.\n\nExample:\nSymptom: Backend container repeatedly restarts.\n\nFirst observation: docker ps -a shows repeated container exits.\n\nSecond observation: docker logs shows a database connection failure.\n\nThird observation: docker inspect shows the DB_HOST environment variable is set to localhost.\n\nFourth observation: The database is running in a separate container.\n\nActual root cause: The backend uses localhost to reach another container. In the backend container, localhost points to the backend container itself.\n\nCorrective action: Put both containers on the same user-defined network and use the database container or service name as the hostname.\n\nOther common root causes:\n\n1. Wrong environment variables.\n2. Incorrect image or application version.\n3. Missing dependency or startup command.\n4. Incorrect port mapping.\n5. Wrong bind address.\n6. DNS resolution failure.\n7. Network isolation.\n8. Insufficient memory or CPU.\n9. Missing volume mount.\n10. File permission problems.\n11. Registry authentication failure.\n12. Host disk exhaustion.\n13. Invalid health-check configuration.\n14. Application process exiting unexpectedly.\n\nProduction RCA should also include impact, timeline, detection method, contributing factors, corrective actions and prevention.",
-
-      steps: [
-        "Describe the symptom and business impact.",
-        "Create a timeline of the incident.",
-        "Collect logs, metrics and configuration.",
-        "Identify the first failure in the request or startup flow.",
-        "Test each suspected cause.",
-        "Use evidence to identify the root cause.",
-        "Apply the corrective action.",
-        "Verify the application and monitor for recurrence.",
-        "Document prevention and follow-up actions."
-      ],
-
-      commands:
-        "docker ps -a\n" +
-        "docker logs --timestamps <container>\n" +
-        "docker inspect <container>\n" +
-        "docker stats\n" +
-        "docker network inspect <network>\n" +
-        "docker events --since 1h",
-
-      problems: [
-        {
-          issue: "The team fixes the symptom but the same incident happens again.",
-          solution:
-            "Perform root cause analysis. Identify why the original failure occurred and implement a preventive change such as configuration validation, monitoring, resource planning or automated testing."
-        },
-        {
-          issue: "The root cause is unclear because multiple services failed together.",
-          solution:
-            "Build a timeline and correlate application, database, network, host and deployment events. Identify the earliest failure and distinguish cause from secondary symptoms."
-        }
-      ]
-    },
-
-    {
-      heading: "10. Step-by-Step Fixes – Container Repeatedly Restarting",
-
-      explanation:
-        "This is a common real-time Docker troubleshooting incident.\n\nProduction situation:\nA company deploys a new backend version. The container starts but stops after a few seconds. Docker uses a restart policy and starts it again. The application is unavailable.\n\nStep 1 – Check container status:\nUse docker ps -a. Look at STATUS and restart behavior.\n\nStep 2 – Read application logs:\nUse docker logs. Look for the first meaningful error before the process exits.\n\nStep 3 – Inspect exit information:\nUse docker inspect and examine State.ExitCode, State.Error, State.OOMKilled and State.Health where available.\n\nStep 4 – Check environment configuration:\nVerify database hostname, username, port and required variables. Do not expose passwords while collecting evidence.\n\nStep 5 – Check network:\nIf the database is another container, verify that both services share a suitable network and that the backend uses the database service name.\n\nStep 6 – Check database availability:\nVerify that the database is ready to accept connections. A running database container may still be initializing.\n\nStep 7 – Fix the actual cause:\nCorrect the hostname, missing configuration or dependency problem.\n\nStep 8 – Recreate or restart safely:\nApply the corrected configuration using the team's deployment process. Changing an environment variable on the host does not automatically change the environment of an already-created container.\n\nStep 9 – Verify:\nCheck logs, health, API response and database connectivity.\n\nStep 10 – Monitor:\nWatch the application after deployment and confirm that restart counts and errors remain stable.",
-
-      commands:
-        "docker ps -a\n" +
-        "docker logs --tail 200 backend\n" +
-        "docker inspect backend\n" +
-        "docker inspect --format '{{.State.ExitCode}} {{.State.OOMKilled}}' backend\n" +
-        "docker network ls\n" +
-        "docker network inspect app-network\n" +
-        "docker stats backend",
-
-      steps: [
-        "Check container status and restart behavior.",
-        "Read logs from the latest failed startup.",
-        "Inspect exit code and OOMKilled state.",
-        "Verify required environment variables.",
-        "Check database DNS and network connectivity.",
-        "Verify dependency readiness.",
-        "Correct the root cause.",
-        "Deploy using the corrected configuration.",
-        "Verify application functionality.",
-        "Monitor logs and resource usage."
-      ],
-
-      problems: [
-        {
-          issue: "Container restarts because database hostname is wrong.",
-          solution:
-            "Use the correct database service name on a shared Docker network instead of localhost when connecting to another container."
-        },
-        {
-          issue: "Container restarts because the application exits after startup.",
-          solution:
-            "Inspect the application's startup logs and process configuration. Ensure that the intended service runs as the foreground main process."
-        },
-        {
-          issue: "Container is killed due to memory pressure.",
-          solution:
-            "Check OOMKilled state, docker stats and host memory. Investigate memory usage and configure an appropriate resource limit after capacity analysis."
-        }
-      ]
-    },
-
-    {
-      heading: "11. Before vs After – Dockerfile Configuration",
-
-      explanation:
-        "A poorly written Dockerfile can create large images, unreliable deployments, slow builds and security problems.\n\nExample problem:\nThe application uses a generic base image, copies unnecessary files, installs dependencies without using a lock file and runs as root. This increases image size and can create inconsistent builds.\n\nThe improved Dockerfile uses a specific base image, dependency lock file, multi-stage build and non-root runtime user.\n\nBefore configuration:\n\nThe application build environment and runtime environment are mixed. Unnecessary development dependencies may be included in the final image.\n\nAfter configuration:\n\nA multi-stage build separates compilation from runtime. The final image contains only the runtime requirements and compiled application files.\n\nImportant:\nThe exact Dockerfile depends on the application framework, runtime and build process. The following example is for a Node.js application.",
-
-      config:
-        "BEFORE – Basic Dockerfile:\n\n" +
-        "FROM node:latest\n" +
-        "WORKDIR /app\n" +
-        "COPY . .\n" +
-        "RUN npm install\n" +
-        "EXPOSE 3000\n" +
-        "CMD [\"npm\", \"start\"]\n\n" +
-        "AFTER – Multi-stage Dockerfile:\n\n" +
-        "FROM node:22-alpine AS build\n" +
-        "WORKDIR /app\n" +
-        "COPY package*.json ./\n" +
-        "RUN npm ci\n" +
-        "COPY . .\n" +
-        "RUN npm run build\n\n" +
-        "FROM node:22-alpine AS runtime\n" +
-        "WORKDIR /app\n" +
-        "ENV NODE_ENV=production\n" +
-        "COPY --from=build /app/package*.json ./\n" +
-        "RUN npm ci --omit=dev && addgroup -S app && adduser -S app -G app\n" +
-        "COPY --from=build /app/dist ./dist\n" +
-        "USER app\n" +
-        "EXPOSE 3000\n" +
-        "CMD [\"node\", \"dist/server.js\"]\n\n" +
-        "Example .dockerignore:\n\n" +
-        "node_modules\n" +
-        ".git\n" +
-        ".env\n" +
-        "npm-debug.log\n" +
-        "coverage\n",
-
-      steps: [
-        "Identify the application runtime and build command.",
-        "Use an appropriate and supported base image.",
-        "Use dependency lock files for reproducible installation.",
-        "Separate build and runtime stages when appropriate.",
-        "Avoid copying secrets and unnecessary files.",
-        "Use a non-root runtime user where possible.",
-        "Build the image and inspect its size.",
-        "Test the image before deployment."
-      ],
-
-      commands:
-        "docker build -t my-node-app:1.0 .\n" +
-        "docker image inspect my-node-app:1.0\n" +
-        "docker history my-node-app:1.0\n" +
-        "docker run --rm -p 3000:3000 my-node-app:1.0",
-
-      problems: [
-        {
-          issue: "Docker image is unnecessarily large.",
-          solution:
-            "Use a suitable base image, multi-stage builds, .dockerignore and production-only dependencies. Do not remove files that are required at runtime."
-        },
-        {
-          issue: "Build fails because package dependencies are inconsistent.",
-          solution:
-            "Commit the dependency lock file and use npm ci for a reproducible npm installation."
-        }
-      ]
-    },
-
-    {
-      heading: "12. Before vs After – Container Networking Configuration",
-
-      explanation:
-        "Container networking is a frequent source of production incidents.\n\nProduction example:\nA backend container must connect to a MySQL container. The backend configuration uses localhost as the database host.\n\nWhy it fails:\nInside a container, localhost refers to the same container. It does not automatically refer to another container.\n\nCorrect approach:\nCreate a user-defined Docker network and attach both containers to that network. The backend can connect using the database container or service name through Docker network DNS.\n\nAlso understand the difference between container ports and host ports.\n\nExample:\n-p 8080:3000 means host port 8080 forwards to container port 3000.\n\nA published port does not mean the application is listening on that port inside the container. The application must listen on the correct container port and usually bind to 0.0.0.0 to accept external container traffic.",
-
-      config:
-        "BEFORE – Incorrect backend configuration:\n\n" +
-        "DB_HOST=localhost\n" +
-        "DB_PORT=3306\n\n" +
-        "AFTER – Correct configuration for a shared Docker network:\n\n" +
-        "DB_HOST=mysql-db\n" +
-        "DB_PORT=3306\n\n" +
-        "Create network:\n" +
-        "docker network create app-network\n\n" +
-        "Start database:\n" +
-        "docker run -d --name mysql-db --network app-network -e MYSQL_ROOT_PASSWORD=change-me mysql:8\n\n" +
-        "Start backend:\n" +
-        "docker run -d --name backend --network app-network -p 8080:8080 -e DB_HOST=mysql-db -e DB_PORT=3306 backend:1.0\n\n" +
-        "Production note:\n" +
-        "Do not use example passwords in production. Use a secret-management solution and configure database readiness, authentication and persistent storage.",
-
-      steps: [
-        "Identify the source and destination containers.",
-        "Inspect the existing Docker networks.",
-        "Create or select a suitable user-defined network.",
-        "Attach the application and dependency containers.",
-        "Use the dependency's service or container name.",
-        "Check DNS resolution and TCP connectivity.",
-        "Verify application connection logs.",
-        "Test the complete application request."
-      ],
-
-      commands:
-        "docker network create app-network\n" +
-        "docker network ls\n" +
-        "docker network inspect app-network\n" +
-        "docker inspect backend\n" +
-        "docker exec backend getent hosts mysql-db\n" +
-        "docker port backend",
-
-      problems: [
-        {
-          issue: "Backend cannot connect to another container using localhost.",
-          solution:
-            "Use a shared user-defined network and connect using the other container's network name."
-        },
-        {
-          issue: "Container is running but its service is inaccessible from the host.",
-          solution:
-            "Check the published host port, container listening port, application bind address and host firewall."
+            "Connect to the database using its Docker network name or Compose service name and the database listening port."
         },
         {
           issue: "Container name cannot be resolved.",
+          rootCause:
+            "The containers may be on different networks, or the application may be using a network without the expected DNS behavior.",
           solution:
-            "Verify that both containers are attached to the same user-defined network and that the requested network alias or service name is correct."
+            "Inspect network membership and attach both containers to the intended user-defined network."
+        },
+        {
+          issue: "Application is reachable inside the container but not from the host.",
+          rootCause:
+            "The port may not be published, the application may bind only to loopback, or host firewall rules may block traffic.",
+          solution:
+            "Check docker port, inspect published-port configuration, verify the application bind address and review host firewall rules."
         }
       ]
     },
 
     {
-      heading: "13. Before vs After – Persistent Storage and Volume Configuration",
+      heading: "09. Docker Storage – Volumes, Bind Mounts and tmpfs",
+      explanation: `
+A container's writable layer is not the right place for important data that must survive container replacement.
 
-      explanation:
-        "Containers are designed to be replaceable. Data stored only in the container writable layer may be lost when the container is removed.\n\nProduction example:\nAn application stores customer-uploaded documents inside /app/uploads. During a deployment, the old container is removed and a new one is created. The uploaded documents are missing.\n\nRoot cause:\nThe application stored persistent business data inside the container filesystem rather than a persistent storage location.\n\nSolution:\nUse a Docker volume or external storage service. Volumes can remain available even when containers are replaced.\n\nA named volume is managed by Docker. A bind mount maps a host directory into the container. Both require correct backup, permissions and operational management.",
+DOCKER VOLUME:
+A Docker-managed storage location. Volumes are commonly used for databases and persistent application data.
 
-      config:
-        "BEFORE – Data stored only in the container:\n\n" +
-        "docker run -d --name uploads-app uploads-app:1.0\n\n" +
-        "AFTER – Named volume:\n\n" +
-        "docker volume create uploads-data\n" +
-        "docker run -d --name uploads-app -v uploads-data:/app/uploads uploads-app:1.0\n\n" +
-        "Inspect volume:\n" +
-        "docker volume inspect uploads-data\n\n" +
-        "Alternative bind mount on Linux:\n\n" +
-        "docker run -d --name uploads-app -v /srv/uploads:/app/uploads uploads-app:1.0\n\n" +
-        "Production note:\n" +
-        "Verify ownership, permissions, backup, recovery and storage capacity. A Docker volume is not a substitute for a tested backup strategy.",
+BIND MOUNT:
+Maps a specific host filesystem path into a container.
 
+tmpfs:
+Stores temporary data in memory on supported Linux configurations. It is not persistent storage.
+
+WHY STORAGE MATTERS:
+
+A database container may be removed and recreated during deployment. If its database files exist only in the container writable layer, data may be lost when the container is removed.
+
+Use persistent storage for important application state.
+
+MOUNT SYNTAX:
+
+-v:
+Short syntax for volumes and bind mounts.
+
+--mount:
+Explicit syntax with fields such as type, source and target.
+
+READ-ONLY MOUNT:
+A mount can be made read-only when the application only needs to read its contents.
+
+BACKUP:
+A volume is not automatically a backup. Production data needs a tested backup and restore process.
+      `,
       steps: [
         "Identify which application paths contain persistent data.",
-        "Check whether those paths are currently mounted.",
-        "Create a named volume or choose suitable external storage.",
-        "Mount storage at the correct application path.",
-        "Verify container user permissions.",
-        "Migrate existing data safely.",
-        "Test application reads and writes.",
-        "Test data persistence after container recreation.",
-        "Configure backup and restore procedures."
+        "Choose a Docker volume or bind mount.",
+        "Check ownership and permissions for the container process.",
+        "Mount the storage at the application's expected path.",
+        "Write test data and recreate the container.",
+        "Confirm the data survives container replacement.",
+        "Test backup and restore separately."
       ],
+      commands: `
+docker volume ls
+docker volume create app-data
+docker volume inspect app-data
 
-      commands:
-        "docker volume ls\n" +
-        "docker volume create uploads-data\n" +
-        "docker volume inspect uploads-data\n" +
-        "docker inspect uploads-app\n" +
-        "docker exec uploads-app ls -la /app/uploads",
+docker run -d --name app \\
+  --mount type=volume,source=app-data,target=/var/lib/app \\
+  my-app:v1
 
+docker inspect app
+
+docker volume ls
+      `,
+      config: `
+# Compose example with persistent database storage
+
+services:
+  database:
+    image: postgres:16
+    volumes:
+      - database-data:/var/lib/postgresql/data
+
+volumes:
+  database-data:
+      `,
       problems: [
         {
-          issue: "Uploaded files disappear after container recreation.",
+          issue: "Database data disappears after container replacement.",
+          rootCause:
+            "Database files were stored in the container writable layer rather than persistent storage.",
           solution:
-            "Store uploads in a named volume, bind mount or external object storage. Migrate existing files and test persistence."
+            "Use a persistent volume, restore data from a verified backup if needed and test container replacement before production rollout."
         },
         {
-          issue: "Application receives permission denied on a mounted volume.",
+          issue: "Application receives permission denied on a mounted path.",
+          rootCause:
+            "The process UID/GID inside the container does not have the required permissions on the mounted storage.",
           solution:
-            "Check the host directory and container user IDs, ownership and permissions. Apply the minimum required permissions."
-        },
-        {
-          issue: "Volume fills up and application writes fail.",
-          solution:
-            "Inspect filesystem capacity, identify growing files, expand or migrate storage and configure monitoring and retention."
+            "Inspect process identity and storage ownership. Set appropriate ownership or group access with the minimum required permissions."
         }
       ]
     },
 
     {
-      heading: "14. Health Checks – How to Detect an Unhealthy Application",
+      heading: "10. Docker Compose – Multi-Container Applications",
+      explanation: `
+Docker Compose defines an application using a YAML configuration file.
 
-      explanation:
-        "A container being in running state does not guarantee that the application is ready to serve users.\n\nExample:\nA backend container starts successfully, but the application takes 40 seconds to initialize. During initialization, the API endpoint is not ready. A monitoring system or load balancer may send traffic too early.\n\nA Docker HEALTHCHECK can run a command inside the container to determine whether the application responds correctly.\n\nDocker health states commonly include starting, healthy and unhealthy.\n\nImportant difference:\nA Docker health check reports health status. It does not automatically restart an unhealthy container just because the health status is unhealthy. Restart policies generally respond to container process termination, not simply to an unhealthy status.\n\nIn production, load balancers and orchestrators may have their own readiness and liveness checks. They should be configured based on application behavior.",
+A typical application may contain:
+- Frontend.
+- Backend API.
+- Database.
+- Cache.
+- Reverse proxy.
 
-      config:
-        "Dockerfile example:\n\n" +
-        "FROM nginx:alpine\n" +
-        "HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD wget -q -O /dev/null http://127.0.0.1/ || exit 1\n\n" +
-        "Build and run:\n\n" +
-        "docker build -t healthy-nginx:1.0 .\n" +
-        "docker run -d --name healthy-nginx -p 8080:80 healthy-nginx:1.0\n\n" +
-        "Inspect health:\n\n" +
-        "docker inspect --format '{{json .State.Health}}' healthy-nginx",
+Compose allows an engineer to describe services, networks, volumes and related configuration in one place.
 
+IMPORTANT COMPOSE CONCEPTS:
+
+services:
+Defines application containers.
+
+image:
+Selects an existing image.
+
+build:
+Builds an image from a Dockerfile.
+
+ports:
+Publishes container ports.
+
+environment:
+Defines environment variables.
+
+env_file:
+Loads environment variables from a file.
+
+volumes:
+Defines persistent storage and mounts.
+
+networks:
+Defines network membership.
+
+depends_on:
+Controls dependency startup ordering. It does not automatically prove that a dependency is ready to serve requests. Use health checks and supported dependency conditions when readiness ordering is required.
+
+healthcheck:
+Defines a service health test.
+
+profiles:
+Enables optional groups of services.
+
+secrets:
+Provides secret data through supported Compose secret mechanisms. For production, also evaluate the deployment platform's secret-management capabilities.
+
+configs:
+Provides configuration files to services where supported.
+
+Compose is useful for local development, testing and some deployment workflows. It is not the same thing as a full production orchestration platform.
+      `,
       steps: [
-        "Identify an endpoint that accurately represents application health.",
-        "Ensure the health-check tool exists inside the image.",
-        "Configure suitable interval, timeout and retry values.",
+        "Create compose.yaml.",
+        "Define application services.",
+        "Define networks and persistent volumes.",
+        "Provide configuration without committing secrets.",
+        "Validate the file.",
+        "Start the application.",
+        "Inspect service status and logs.",
+        "Test dependency readiness and application endpoints."
+      ],
+      commands: `
+docker compose config
+docker compose up -d
+
+docker compose ps
+docker compose logs
+docker compose logs -f api
+
+docker compose exec api sh
+
+docker compose restart api
+docker compose down
+
+# Remove declared volumes too: destructive to persisted data
+docker compose down --volumes
+      `,
+      config: `
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_HOST: database
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: appdb
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: \${DB_PASSWORD}
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  database-data:
+      `,
+      problems: [
+        {
+          issue: "API starts before the database is ready.",
+          rootCause:
+            "Container startup order does not necessarily mean that the database is accepting connections.",
+          solution:
+            "Use a database health check and a supported depends_on health condition. The API should also implement retry logic for temporary database unavailability."
+        },
+        {
+          issue: "Compose application cannot resolve a service name.",
+          rootCause:
+            "The services may not share the expected Compose network or the application may use the wrong hostname.",
+          solution:
+            "Inspect Compose network configuration and use the service name as the hostname for service-to-service communication."
+        }
+      ]
+    },
+
+    {
+      heading: "11. Docker Registry – Pull, Push, Login and Private Images",
+      explanation: `
+A Docker registry stores and distributes images.
+
+Examples:
+- Docker Hub.
+- Private company registries.
+- Cloud container registries.
+
+Typical workflow:
+
+1. Build an image.
+2. Tag the image with the registry and repository name.
+3. Authenticate if required.
+4. Push the image.
+5. Pull the image from the deployment environment.
+6. Deploy the required version.
+
+A registry path commonly contains:
+registry / namespace / repository : tag
+
+Example:
+registry.example.com/team/api:v2.1
+
+Authentication failures, missing repositories, network restrictions and TLS configuration can all cause registry errors.
+
+Do not put registry passwords directly into scripts or source code. Use an approved credential store or CI/CD secret mechanism.
+      `,
+      steps: [
+        "Confirm the registry hostname and repository path.",
+        "Check DNS and network connectivity to the registry.",
+        "Authenticate using the approved credential method.",
+        "Tag the image correctly.",
+        "Push the intended version.",
+        "Verify the image exists in the registry.",
+        "Pull the image from a clean deployment environment."
+      ],
+      commands: `
+docker login registry.example.com
+
+docker build -t registry.example.com/team/api:v2.1 .
+
+docker push registry.example.com/team/api:v2.1
+
+docker pull registry.example.com/team/api:v2.1
+
+docker image inspect registry.example.com/team/api:v2.1
+      `,
+      problems: [
+        {
+          issue: "Docker push returns unauthorized.",
+          rootCause:
+            "The credentials may be invalid, expired or missing permission to push to the repository.",
+          solution:
+            "Authenticate using the approved credential method and verify repository-level push permissions."
+        },
+        {
+          issue: "Docker pull fails with manifest unknown.",
+          rootCause:
+            "The requested repository or tag may not exist, or the image may have been pushed under a different path.",
+          solution:
+            "Verify the registry hostname, namespace, repository and exact tag."
+        },
+        {
+          issue: "Image pull fails due to certificate verification.",
+          rootCause:
+            "The registry TLS certificate may be invalid, untrusted or incorrectly configured.",
+          solution:
+            "Fix the registry certificate chain and trust configuration. Do not disable TLS verification as a permanent workaround."
+        }
+      ]
+    },
+
+    {
+      heading: "12. Docker Security – Non-Root, Capabilities and Secrets",
+      explanation: `
+Container security requires protecting the image, process, host and application data.
+
+IMPORTANT PRACTICES:
+
+1. Run as a non-root user where practical.
+2. Use trusted and maintained base images.
+3. Scan images for known vulnerabilities.
+4. Avoid embedding credentials in Dockerfiles or image layers.
+5. Drop unnecessary Linux capabilities.
+6. Avoid privileged containers unless absolutely required.
+7. Use read-only root filesystems where practical.
+8. Use appropriate seccomp and security profiles.
+9. Limit access to the Docker daemon socket.
+10. Keep Docker Engine and host security updates current.
+
+ROOT USER:
+A container process running as root can increase the impact of a container compromise. A non-root user reduces privileges but does not replace other security controls.
+
+CAPABILITIES:
+Linux capabilities divide root privileges into smaller units. Add only capabilities that the application actually needs.
+
+SECRETS:
+Do not bake database passwords, API keys or private keys into an image. Build arguments and ordinary image environment settings are not a safe secret-storage solution.
+
+DOCKER SOCKET:
+Access to the Docker daemon socket is highly privileged. A user who can control the daemon may be able to gain extensive control over the host.
+      `,
+      steps: [
+        "Inspect the image source and base image.",
+        "Check which user runs the application.",
+        "Identify required Linux capabilities.",
+        "Remove unnecessary privileges.",
+        "Use approved secret-management mechanisms.",
+        "Scan images and remediate applicable vulnerabilities.",
+        "Review Docker socket access and host permissions."
+      ],
+      commands: `
+docker image inspect myapp:v1
+docker inspect myapp
+
+docker run --rm --user 10001:10001 myapp:v1
+
+docker run --rm \\
+  --read-only \\
+  --cap-drop ALL \\
+  myapp:v1
+      `,
+      problems: [
+        {
+          issue: "Security scan reports vulnerable packages.",
+          rootCause:
+            "The base image or application dependencies contain packages with known vulnerabilities.",
+          solution:
+            "Review severity and exploitability, update the affected base image or dependency, rebuild, rescan and test the new image."
+        },
+        {
+          issue: "Application fails after switching to a non-root user.",
+          rootCause:
+            "The application may need write access to directories owned by root or access to a privileged port or resource.",
+          solution:
+            "Identify the exact permission requirement and grant only the required directory ownership or capability."
+        }
+      ]
+    },
+
+    {
+      heading: "13. CPU, Memory, OOM and Resource Management",
+      explanation: `
+Containers share host resources. Without appropriate controls, one workload can consume resources needed by other workloads.
+
+CPU:
+--cpus sets a CPU quota limit.
+
+Memory:
+--memory sets a memory limit.
+
+Memory reservation:
+Can be used to express a softer memory reservation in supported configurations.
+
+PIDs:
+PID limits can restrict the number of processes or threads.
+
+OOM:
+When memory pressure becomes severe, the Linux kernel may kill processes. A container can be terminated because it exceeded its memory limit or because the host experienced memory pressure.
+
+EXIT CODE 137 IS NOT PROOF OF OOM:
+Check the container's OOMKilled state and host kernel logs.
+
+RESOURCE INVESTIGATION:
+- Check current usage.
+- Check configured limits.
+- Inspect application memory behavior.
+- Check host memory pressure.
+- Check whether usage grows over time.
+- Identify memory leaks or unexpectedly large workloads.
+
+Do not simply increase memory limits without checking host capacity and the reason for the growth.
+      `,
+      steps: [
+        "Check live container resource usage.",
+        "Inspect configured CPU and memory limits.",
+        "Check exit status and OOMKilled state.",
+        "Review host memory and kernel logs.",
+        "Compare resource usage with normal workload levels.",
+        "Identify leaks, spikes or workload changes.",
+        "Apply an appropriate limit or application fix.",
+        "Monitor after deployment."
+      ],
+      commands: `
+docker stats
+
+docker inspect --format '{{.State.OOMKilled}}' api
+
+docker inspect --format '{{.State.ExitCode}}' api
+
+docker inspect api
+
+# Linux host
+free -h
+df -h
+sudo journalctl -k --since "30 minutes ago"
+      `,
+      problems: [
+        {
+          issue: "Container is killed during high traffic.",
+          rootCause:
+            "The application may exceed its memory limit due to increased concurrency, large requests, memory leaks or inefficient processing.",
+          solution:
+            "Correlate traffic and memory metrics, inspect OOM evidence, profile the application and tune concurrency or memory allocation. Increase limits only when host capacity allows."
+        },
+        {
+          issue: "Container becomes slow under load.",
+          rootCause:
+            "CPU throttling, memory pressure, disk I/O or dependency latency may be limiting performance.",
+          solution:
+            "Use docker stats and application monitoring to identify the constrained resource. Investigate the bottleneck before changing resource limits."
+        }
+      ]
+    },
+
+    {
+      heading: "14. Docker Logs and Monitoring",
+      explanation: `
+Logs help engineers understand application behavior and diagnose incidents.
+
+docker logs:
+Reads the standard output and standard error captured for a container, subject to the configured logging driver and setup.
+
+Useful options:
+
+-f:
+Follow log output.
+
+--tail:
+Show only the last requested number of lines.
+
+--since:
+Show logs after a specified time.
+
+--timestamps:
+Include timestamps.
+
+--details:
+Show extra attributes when available.
+
+Logging drivers:
+Docker supports logging drivers such as json-file, local, journald, syslog and other configured drivers.
+
+LOG ROTATION:
+Without suitable log rotation, container logs can consume host disk space.
+
+IMPORTANT:
+Not every logging driver makes logs available through docker logs in the same way. Understand the configured driver and central logging setup.
+
+PRODUCTION LOGGING:
+
+A useful log record should include:
+- Timestamp.
+- Severity.
+- Application/service name.
+- Environment.
+- Request or correlation ID.
+- Error message.
+- Relevant context without exposing secrets.
+
+Never log passwords, access tokens or sensitive customer data.
+      `,
+      steps: [
+        "Identify the affected container and incident time window.",
+        "Read recent logs.",
+        "Filter or search for errors and correlation IDs.",
+        "Compare application logs with infrastructure events.",
+        "Check logging driver and host disk usage.",
+        "Preserve relevant evidence before cleanup.",
+        "Confirm log rotation and centralized retention."
+      ],
+      commands: `
+docker logs api
+docker logs --tail 100 api
+docker logs --since 30m api
+docker logs -f api
+docker logs --timestamps api
+
+docker inspect --format '{{.HostConfig.LogConfig.Type}}' api
+
+docker system df
+df -h
+      `,
+      problems: [
+        {
+          issue: "Container logs are missing.",
+          rootCause:
+            "The application may write to files instead of stdout/stderr, the logging driver may not support docker logs as expected or logs may be sent elsewhere.",
+          solution:
+            "Inspect the logging driver and application logging configuration. Use the configured log destination and ensure application logs are collected centrally."
+        },
+        {
+          issue: "Docker host disk becomes full because of logs.",
+          rootCause:
+            "Log files may grow without an effective rotation or retention policy.",
+          solution:
+            "Configure supported log rotation, verify the logging driver behavior and monitor host disk usage."
+        }
+      ]
+    },
+
+    {
+      heading: "15. Docker Healthcheck – Healthy and Unhealthy Containers",
+      explanation: `
+A health check runs a configured command to determine whether a container is healthy.
+
+A container can be running but unhealthy.
+
+Example:
+An API process is running, but its HTTP endpoint is returning errors because it cannot connect to its database.
+
+Health status can help distinguish process existence from application readiness.
+
+IMPORTANT:
+An unhealthy status does not automatically mean Docker will restart the container. Restart policies respond to container exit behavior; they do not automatically restart a still-running unhealthy process.
+
+Healthcheck options include:
+- --interval: time between checks.
+- --timeout: maximum duration for a check.
+- --start-period: startup grace period.
+- --start-interval: startup check interval where supported.
+- --retries: consecutive failures needed to mark unhealthy.
+
+A good health check should test the actual service condition without being unnecessarily expensive.
+      `,
+      steps: [
+        "Define a meaningful health endpoint or check command.",
+        "Configure the health check interval and timeout.",
         "Allow sufficient startup time.",
-        "Inspect health-check results.",
-        "Check application logs when health checks fail.",
-        "Verify that traffic is routed only to ready instances where the platform supports it."
+        "Inspect health status and health-check output.",
+        "Correlate failures with application logs and dependencies.",
+        "Fix the underlying issue rather than assuming Docker will restart it."
       ],
+      commands: `
+docker inspect --format '{{json .State.Health}}' api
 
-      commands:
-        "docker ps\n" +
-        "docker inspect --format '{{.State.Health.Status}}' <container>\n" +
-        "docker inspect --format '{{json .State.Health.Log}}' <container>\n" +
-        "docker logs <container>",
+docker ps
 
+docker events --since 30m
+      `,
+      config: `
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \\
+  CMD curl -fsS http://localhost:3000/health || exit 1
+      `,
       problems: [
         {
-          issue: "Container is running but health status is unhealthy.",
+          issue: "Container is running but marked unhealthy.",
+          rootCause:
+            "The health-check command may fail, the application may not be ready or a required dependency may be unavailable.",
           solution:
-            "Inspect the health-check command output and application logs. Verify the endpoint, port, timeout and required startup time."
+            "Inspect health-check output, application logs and dependency connectivity. Correct the endpoint, timing or application failure."
         },
         {
-          issue: "Health check fails because its command is missing.",
+          issue: "Health check fails because curl is missing.",
+          rootCause:
+            "The final image does not contain the executable used by the health-check command.",
           solution:
-            "Install an appropriate health-check utility in the image or use a suitable command already available in the runtime image."
+            "Use a health-check tool available in the final image or include a suitable lightweight check implementation."
         }
       ]
     },
 
     {
-      heading: "15. Docker Resource Troubleshooting – CPU and Memory Problems",
+      heading: "16. BuildKit, Buildx and Multi-Platform Builds",
+      explanation: `
+BuildKit is a modern build engine used by Docker to build images efficiently.
 
-      explanation:
-        "Containers use host resources such as CPU, memory, disk and network. In production, incorrect resource planning can cause slow responses and application failures.\n\nCPU issue:\nA container may consume high CPU because of heavy requests, inefficient code, excessive threads or background processing.\n\nMemory issue:\nA container may consume increasing memory due to large workloads, caching or memory leaks. If it reaches its memory limit, the Linux kernel may kill processes.\n\nDisk issue:\nImages, writable layers, volumes and logs consume storage. A full filesystem may prevent application writes and Docker operations.\n\nProduction example:\nDuring a sale event, the e-commerce API receives five times the normal traffic. Memory consumption increases and the container is killed. The engineer checks docker stats and inspect output, then compares application memory metrics and host memory.\n\nThe correct fix is not always to increase the memory limit. The team should first determine whether the workload increased, a leak exists or the application has inefficient memory usage.",
+Benefits can include:
+- Improved build performance.
+- Better cache handling.
+- Parallel build steps where possible.
+- Build secrets.
+- SSH forwarding.
+- Multi-platform build support through buildx.
 
+BUILDX:
+A Docker CLI plugin used for advanced builds and builder management.
+
+MULTI-STAGE BUILD:
+Separates build-time tools from the final runtime image.
+
+BUILD SECRET:
+Allows a build step to access a secret without placing the secret directly into a normal image layer.
+
+IMPORTANT:
+Do not use ARG or ENV as a substitute for BuildKit secret mounts when handling sensitive build credentials.
+
+MULTI-PLATFORM:
+An image can be built for architectures such as linux/amd64 and linux/arm64. The builder and target platform must be configured correctly.
+      `,
       steps: [
-        "Check current CPU and memory usage.",
-        "Inspect container resource limits.",
-        "Check host memory and filesystem capacity.",
-        "Compare resource usage with application traffic.",
-        "Review application metrics and logs.",
-        "Identify leaks or unusually expensive operations.",
-        "Set resource limits based on capacity testing.",
-        "Monitor after the change."
+        "Check the available builder.",
+        "Use multi-stage builds to separate build and runtime dependencies.",
+        "Use cache efficiently.",
+        "Use BuildKit secret mounts for sensitive build-time data.",
+        "Select the required target platforms.",
+        "Test the image on the target architecture or a suitable runtime."
       ],
+      commands: `
+docker buildx version
+docker buildx ls
 
-      commands:
-        "docker stats\n" +
-        "docker stats <container_name>\n" +
-        "docker inspect <container_name>\n" +
-        "docker system df\n" +
-        "docker info",
+docker buildx build --platform linux/amd64,linux/arm64 \\
+  -t registry.example.com/team/api:v1 .
 
-      config:
-        "Example resource limits:\n\n" +
-        "docker run -d --name api-service --memory=512m --cpus=1.5 api-service:1.0\n\n" +
-        "Compose example:\n\n" +
-        "services:\n" +
-        "  api:\n" +
-        "    image: api-service:1.0\n" +
-        "    mem_limit: 512m\n" +
-        "    cpus: 1.5\n\n" +
-        "Production note:\n" +
-        "Validate the resource settings against actual workload requirements and the deployment platform's supported configuration.",
-
+docker buildx build --secret id=npmrc,src=.npmrc \\
+  -t myapp:build .
+      `,
       problems: [
         {
-          issue: "Container is OOMKilled.",
+          issue: "Image fails with exec format error on another server.",
+          rootCause:
+            "The image architecture may not match the host architecture.",
           solution:
-            "Check the container's OOMKilled state, memory limit, host memory and application metrics. Investigate memory leaks and workload changes before adjusting limits."
+            "Inspect the image platform and host architecture. Build or publish an image for the required platform."
         },
         {
-          issue: "Application becomes slow due to high CPU usage.",
+          issue: "Build cannot access a private package registry.",
+          rootCause:
+            "The build process may not have the required authentication or secret mount.",
           solution:
-            "Inspect docker stats and application profiling data. Identify CPU-intensive code, excessive threads or workload spikes and optimize or scale appropriately."
-        },
+            "Configure a secure BuildKit secret or approved package credential mechanism and verify that the secret is not copied into the image."
+        }
+      ]
+    },
+
+    {
+      heading: "17. Docker Events, Inspect and System Diagnostics",
+      explanation: `
+Production troubleshooting requires evidence.
+
+docker inspect:
+Shows detailed metadata and configuration for a container, image, network or volume.
+
+docker events:
+Shows Docker Engine events such as container create, start, stop, die and destroy.
+
+docker system df:
+Shows Docker disk usage.
+
+docker stats:
+Shows live resource usage.
+
+docker top:
+Shows processes running inside a container.
+
+These commands answer different questions.
+
+Example:
+If a container unexpectedly stopped, inspect its exit code and state, check its logs, and correlate the time with Docker events and host logs.
+
+Do not immediately delete and recreate an affected container. First collect evidence when incident investigation requires it.
+      `,
+      steps: [
+        "Record the container name and incident time.",
+        "Collect docker inspect output.",
+        "Collect recent application logs.",
+        "Collect Docker events for the incident window.",
+        "Check resource usage and disk capacity.",
+        "Check daemon and host logs when the failure appears infrastructure-related.",
+        "Build a timeline from the evidence."
+      ],
+      commands: `
+docker inspect api
+
+docker stats --no-stream
+
+docker top api
+
+docker events --since 1h
+
+docker system df
+
+docker ps -a
+      `,
+      problems: [
+        {
+          issue: "Container stopped but the reason is unclear.",
+          rootCause:
+            "The engineer has checked only docker ps and has not collected exit state, logs or event history.",
+          solution:
+            "Inspect the stopped container, collect logs and correlate Docker events with host and application logs."
+        }
+      ]
+    },
+
+    {
+      heading: "18. Docker Disk Space – Images, Containers, Volumes and Build Cache",
+      explanation: `
+Docker consumes disk space through images, writable container layers, volumes, build cache and logs.
+
+Useful diagnostic command:
+docker system df
+
+It provides an overview of Docker disk usage.
+
+Cleanup commands can be destructive.
+
+docker container prune:
+Removes stopped containers.
+
+docker image prune:
+Removes unused images according to the command's options.
+
+docker volume prune:
+Removes unused volumes. This can permanently remove important data.
+
+docker builder prune:
+Removes build cache.
+
+docker system prune:
+Removes selected unused Docker objects.
+
+Never run broad prune commands blindly on a production host.
+
+Before cleanup:
+1. Identify the filesystem that is full.
+2. Check Docker disk usage.
+3. Identify important volumes.
+4. Check stopped containers that may contain evidence.
+5. Confirm backup and recovery requirements.
+6. Remove only approved unused objects.
+      `,
+      steps: [
+        "Run df -h to identify full filesystems.",
+        "Run docker system df.",
+        "Identify large images, containers, volumes and build cache.",
+        "Confirm which resources are safe to remove.",
+        "Back up important data before any volume cleanup.",
+        "Perform controlled cleanup.",
+        "Verify free disk space and application health."
+      ],
+      commands: `
+df -h
+docker system df
+docker image ls
+docker ps -a
+docker volume ls
+
+docker container prune
+docker image prune
+docker builder prune
+
+# Destructive: may remove unused volumes and persistent data
+docker volume prune
+      `,
+      problems: [
         {
           issue: "Docker host runs out of disk space.",
+          rootCause:
+            "Unused images, build cache, container logs, writable layers or volumes may have grown over time.",
           solution:
-            "Inspect Docker disk usage and host filesystem capacity. Apply approved cleanup, log rotation and storage retention policies."
+            "Identify the actual disk consumer. Apply controlled cleanup and configure image retention, log rotation and volume monitoring."
         }
       ]
     },
 
     {
-      heading: "16. Docker Image and Registry Troubleshooting",
+      heading: "19. Production Workflow – Developer to CI/CD to Deployment",
+      explanation: `
+A common production workflow looks like this:
 
-      explanation:
-        "Production teams store application images in a registry and deploy approved versions from that registry.\n\nExample workflow:\nJenkins builds an image named company-api:2.3.1, tags it with the registry path and pushes it. The deployment server pulls the image and starts the container.\n\nCommon failures:\n\nImage does not exist: The repository or tag is incorrect.\n\nAuthentication failure: The deployment environment does not have valid registry credentials.\n\nPermission denied: The registry account cannot pull the repository.\n\nArchitecture mismatch: The image platform does not match the runtime platform.\n\nOld image deployed: The pipeline uses an incorrect or mutable tag.\n\nEngineers should use versioned tags or immutable image digests, validate registry access and manage credentials securely.",
+1. Developer commits application code.
+2. Git-based CI pipeline starts.
+3. Pipeline runs tests and code checks.
+4. Docker image is built.
+5. Image is scanned and validated.
+6. Image is tagged with a release version or commit identifier.
+7. Image is pushed to a registry.
+8. Deployment system pulls the approved image.
+9. Runtime configuration and secrets are supplied.
+10. Application starts.
+11. Health checks and smoke tests run.
+12. Monitoring checks application behavior.
+13. If the release fails, the team follows its rollback procedure.
 
+IMPORTANT PRODUCTION PRINCIPLES:
+
+- Prefer immutable, traceable image versions.
+- Avoid relying on a mutable latest tag for controlled releases.
+- Keep secrets outside the image.
+- Use persistent storage for stateful workloads.
+- Set resource limits based on measured capacity.
+- Configure logs and monitoring.
+- Test rollback procedures.
+- Deploy gradually where the platform supports safe rollout strategies.
+
+Docker alone does not provide every orchestration feature required for large-scale production. Teams may use Kubernetes, Swarm or managed container platforms depending on their architecture.
+      `,
       steps: [
-        "Check the exact image repository and tag.",
-        "Verify registry DNS and network access.",
-        "Verify authentication and repository permissions.",
-        "Pull the image manually in a controlled environment.",
-        "Inspect image architecture and metadata.",
-        "Compare the deployed image digest with the approved release.",
-        "Redeploy using the correct image reference."
+        "Commit code and review the change.",
+        "Run automated tests.",
+        "Build the Docker image.",
+        "Scan and test the image.",
+        "Push the image using a unique release tag.",
+        "Deploy the exact image reference.",
+        "Verify health checks and application endpoints.",
+        "Monitor errors, latency and resource usage.",
+        "Rollback to a known-good image if the release fails."
       ],
+      commands: `
+# Example release commands
 
-      commands:
-        "docker images\n" +
-        "docker image inspect <image>\n" +
-        "docker pull <registry>/<repository>:<tag>\n" +
-        "docker login <registry>\n" +
-        "docker image ls --digests\n" +
-        "docker history <image>",
+docker build -t registry.example.com/team/api:2026.10.31 .
 
+docker push registry.example.com/team/api:2026.10.31
+
+docker pull registry.example.com/team/api:2026.10.31
+
+docker run -d --name api \\
+  --restart unless-stopped \\
+  -p 3000:3000 \\
+  registry.example.com/team/api:2026.10.31
+
+docker logs --tail 100 api
+docker inspect api
+      `,
       problems: [
         {
-          issue: "Docker cannot pull the image.",
+          issue: "New release fails after deployment.",
+          rootCause:
+            "The image may contain a regression, configuration may be incorrect or a dependency may not be compatible.",
           solution:
-            "Verify repository name, tag, registry endpoint, network connectivity, authentication and permissions."
+            "Stop further rollout, collect logs and health evidence, compare the release with the previous version and follow the approved rollback process."
         },
         {
-          issue: "Production deploys an old image.",
+          issue: "Production server runs an unexpected application version.",
+          rootCause:
+            "The deployment may use a mutable tag or the release pipeline may not have verified the exact image digest.",
           solution:
-            "Use unique release tags or digests. Verify the image reference in deployment configuration and pipeline output."
-        },
-        {
-          issue: "Image fails on the target machine due to architecture mismatch.",
-          solution:
-            "Inspect image and host platform. Build or publish an image for the required architecture using an appropriate multi-platform build process."
+            "Use traceable version tags or digest-pinned references and record the deployed image identity in the release process."
         }
       ]
     },
 
     {
-      heading: "17. Docker Compose Troubleshooting – Multi-Container Applications",
+      heading: "20. Real Production Incident – Container Keeps Restarting",
+      explanation: `
+SCENARIO:
 
-      explanation:
-        "Docker Compose is used to define and manage multi-container applications through a YAML configuration file.\n\nA typical development or suitable deployment setup may include a frontend, backend and database.\n\nInstead of manually executing many docker run commands, engineers define services, networks, volumes, environment variables and dependencies in compose.yaml.\n\nExample production-like workflow:\nThe frontend sends API requests to the backend. The backend connects to MySQL. Both containers communicate through a Compose network. The database uses a named volume for persistent data.\n\nImportant:\nThe depends_on option controls service startup ordering, but it does not by itself guarantee that a database is ready to accept connections. Use suitable health checks and application retry logic.\n\nCompose is useful for defining repeatable environments, but production teams should evaluate their deployment platform, availability, backup, security and scaling requirements.",
+An API container restarts repeatedly after a production deployment.
 
-      config:
-        "compose.yaml:\n\n" +
-        "services:\n" +
-        "  backend:\n" +
-        "    image: company-api:1.0\n" +
-        "    ports:\n" +
-        "      - \"8080:8080\"\n" +
-        "    environment:\n" +
-        "      DB_HOST: mysql\n" +
-        "      DB_PORT: \"3306\"\n" +
-        "    depends_on:\n" +
-        "      mysql:\n" +
-        "        condition: service_healthy\n\n" +
-        "  mysql:\n" +
-        "    image: mysql:8\n" +
-        "    environment:\n" +
-        "      MYSQL_DATABASE: appdb\n" +
-        "      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}\n" +
-        "    volumes:\n" +
-        "      - mysql-data:/var/lib/mysql\n" +
-        "    healthcheck:\n" +
-        "      test: [\"CMD\", \"mysqladmin\", \"ping\", \"-h\", \"127.0.0.1\"]\n" +
-        "      interval: 10s\n" +
-        "      timeout: 5s\n" +
-        "      retries: 5\n\n" +
-        "volumes:\n" +
-        "  mysql-data:\n\n" +
-        "Production note:\n" +
-        "Use a secure secret-management approach. Do not commit .env files containing real passwords to Git.",
+USER IMPACT:
+Requests fail intermittently or the API becomes unavailable.
 
+INCIDENT INVESTIGATION:
+
+Step 1 – Confirm the container state.
+Use docker ps -a and identify restart count and current status.
+
+Step 2 – Read the logs.
+Use docker logs with a limited time window. Look for startup errors, missing configuration, failed dependency connections and stack traces.
+
+Step 3 – Inspect container state.
+Check exit code, OOMKilled, restart policy and startup configuration.
+
+Step 4 – Check dependencies.
+Verify database DNS, port, credentials and service readiness.
+
+Step 5 – Compare with the previous release.
+Check changes in environment variables, image version, Dockerfile and application configuration.
+
+Step 6 – Find root cause.
+Do not assume that restart count itself explains the problem. Use the evidence to identify the failure.
+
+EXAMPLE ROOT CAUSE:
+The new API release expects DATABASE_HOST, but the deployment configuration still provides DB_HOST. The application cannot connect to the database and exits.
+
+FIX:
+Correct the runtime configuration, deploy the corrected release and verify successful startup.
+
+VERIFICATION:
+- Container remains running.
+- Health check passes.
+- API endpoint responds.
+- Database connection succeeds.
+- Restart count no longer increases.
+- Error rate returns to normal.
+
+PREVENTION:
+Validate required environment variables during startup, test deployment configuration in CI and monitor restart events.
+      `,
       steps: [
-        "Validate the Compose YAML configuration.",
-        "Check service names, ports, networks and volumes.",
-        "Check required environment variables.",
-        "Start services using Docker Compose.",
-        "Inspect service status and logs.",
-        "Verify database readiness.",
-        "Test communication between services.",
-        "Verify persistent storage and backup configuration."
+        "Confirm impact and identify affected containers.",
+        "Capture container status, restart count and exit code.",
+        "Collect application logs and inspect output.",
+        "Check OOMKilled and resource usage.",
+        "Verify dependency connectivity.",
+        "Compare the deployed configuration with the previous working release.",
+        "Apply the smallest safe fix or rollback.",
+        "Verify service health and monitor for recurrence.",
+        "Document root cause and prevention actions."
       ],
+      commands: `
+docker ps -a
 
-      commands:
-        "docker compose config\n" +
-        "docker compose up -d\n" +
-        "docker compose ps\n" +
-        "docker compose logs -f\n" +
-        "docker compose logs backend\n" +
-        "docker compose exec backend sh\n" +
-        "docker compose down",
+docker inspect api
 
+docker inspect --format '{{.State.ExitCode}}' api
+
+docker inspect --format '{{.State.OOMKilled}}' api
+
+docker logs --since 30m --tail 300 api
+
+docker stats --no-stream api
+
+docker events --since 30m
+      `,
+      config: `
+# Example: required configuration validation in Node.js
+
+const requiredVariables = [
+  "DATABASE_HOST",
+  "DATABASE_USER",
+  "DATABASE_PASSWORD"
+];
+
+for (const variable of requiredVariables) {
+  if (!process.env[variable]) {
+    throw new Error(\`Missing required environment variable: \${variable}\`);
+  }
+}
+      `,
       problems: [
         {
-          issue: "Backend starts before the database is ready.",
+          issue: "Container repeatedly restarts after a new release.",
+          rootCause:
+            "The application exits during startup because of invalid configuration, a missing dependency, a failed migration or an application regression.",
           solution:
-            "Configure a suitable database health check, use the Compose service dependency condition where supported and implement retry logic in the application."
-        },
-        {
-          issue: "Compose service cannot connect to another service.",
-          solution:
-            "Use the Compose service name as the hostname and verify that both services are attached to the expected network."
-        },
-        {
-          issue: "Database data disappears after Compose restart.",
-          solution:
-            "Use a named volume and verify that the volume is mounted at the database's actual data directory."
+            "Use logs, inspect state and compare release configuration. Correct the root cause or roll back to the last known-good image."
         }
       ]
     },
 
     {
-      heading: "18. Step-by-Step Production Incident – Backend Cannot Connect to MySQL",
+      heading: "21. Real Production Incident – Database Connection Failure",
+      explanation: `
+SCENARIO:
 
-      explanation:
-        "This is a complete practical incident designed to show how a production engineer investigates a real Docker issue.\n\nBusiness impact:\nCustomers open the shopping website and click Checkout. The frontend sends a request to the backend. The backend cannot connect to MySQL. Checkout requests fail.\n\nWhat the customer sees:\nThe checkout page displays an error or the API returns HTTP 500 or 503 depending on application behavior and the failure path.\n\nInitial investigation:\nThe engineer checks application monitoring and confirms that checkout failures increased after a deployment.\n\nContainer investigation:\nThe engineer checks docker ps and confirms that the backend container is running. Running status alone does not prove application health.\n\nLog investigation:\nThe engineer runs docker logs backend and finds a database connection error.\n\nConfiguration investigation:\nThe engineer inspects the backend configuration and finds DB_HOST=localhost.\n\nNetwork investigation:\nThe database runs in a separate container. The backend and database must share a suitable network.\n\nRoot cause:\nThe backend uses localhost, which points to itself rather than the MySQL container.\n\nFix:\nAttach the backend and database to the same user-defined network and configure DB_HOST=mysql-db.\n\nVerification:\nCheck DNS resolution, database connectivity, backend logs and a real checkout test.\n\nProduction follow-up:\nAdd configuration validation, connection retry behavior, alerting and a documented incident report.",
+The API container is running, but every database request fails.
 
-      config:
-        "BEFORE:\n\n" +
-        "DB_HOST=localhost\n" +
-        "DB_PORT=3306\n\n" +
-        "AFTER:\n\n" +
-        "DB_HOST=mysql-db\n" +
-        "DB_PORT=3306\n\n" +
-        "Network setup example:\n\n" +
-        "docker network create shopping-network\n" +
-        "docker network connect shopping-network mysql-db\n" +
-        "docker network connect shopping-network backend\n\n" +
-        "Note:\n" +
-        "The containers must exist, and their actual names must match the commands. Apply environment-variable changes by recreating the backend container through the deployment configuration.",
+COMMON SYMPTOMS:
 
+- Connection refused.
+- Name or service not known.
+- Connection timed out.
+- Authentication failed.
+- Too many connections.
+
+INVESTIGATION:
+
+1. Check the exact error message in API logs.
+2. Confirm the database container or service is running.
+3. Check whether API and database share a network.
+4. Check the database hostname.
+5. Check the database listening port.
+6. Check credentials and database name.
+7. Check database readiness and connection limits.
+
+IMPORTANT:
+Inside the API container, localhost refers to the API container itself. Use the database service name or network alias.
+
+Connection refused usually means the destination was reached but no process accepted the connection at that address and port.
+
+Connection timed out can indicate network filtering, routing problems or a service that is not responding.
+
+Authentication failed points toward credentials or database authorization, not necessarily Docker networking.
+      `,
       steps: [
-        "Confirm checkout failures using application monitoring.",
-        "Identify the backend container.",
-        "Check backend status and recent logs.",
-        "Inspect DB_HOST and DB_PORT configuration securely.",
-        "Confirm where the database is running.",
-        "Inspect Docker network membership.",
-        "Test database hostname resolution from the backend container.",
-        "Correct the hostname and network configuration.",
-        "Recreate the backend using the approved deployment process.",
-        "Test database connectivity and checkout functionality.",
-        "Monitor error rates and application health."
+        "Read the exact database error.",
+        "Inspect both API and database containers.",
+        "Inspect shared network membership.",
+        "Test database DNS resolution from the API network.",
+        "Test TCP connectivity to the database port.",
+        "Verify credentials securely.",
+        "Check database readiness and connection capacity.",
+        "Correct the relevant configuration and retest."
       ],
+      commands: `
+docker logs --tail 200 api
+docker logs --tail 200 database
 
-      commands:
-        "docker ps -a\n" +
-        "docker logs --tail 200 backend\n" +
-        "docker inspect backend\n" +
-        "docker network inspect shopping-network\n" +
-        "docker exec backend getent hosts mysql-db\n" +
-        "docker exec backend sh\n" +
-        "docker logs -f backend",
+docker inspect api
+docker inspect database
 
+docker network ls
+docker network inspect app-network
+
+# If the diagnostic utilities exist in the API image:
+getent hosts database
+nc -vz database 5432
+      `,
+      config: `
+# Incorrect application configuration
+DATABASE_HOST=localhost
+
+# Correct when the database service is named "database"
+DATABASE_HOST=database
+DATABASE_PORT=5432
+      `,
       problems: [
         {
-          issue: "Backend reports UnknownHostException or hostname resolution failure.",
+          issue: "Connection refused.",
+          rootCause:
+            "The database may not be listening on the target port, may still be starting or may be bound to a different interface.",
           solution:
-            "Verify the database hostname and shared network membership. Use the correct service or container name."
+            "Check database logs, listening address, port and readiness. Ensure the API uses the correct service name and port."
         },
         {
-          issue: "Backend reports Connection refused.",
+          issue: "Name or service not known.",
+          rootCause:
+            "The hostname may be incorrect or the containers may not share a network with the expected DNS behavior.",
           solution:
-            "Verify that MySQL is running, listening on the expected port and ready to accept connections. Check the network path and database configuration."
+            "Verify the Compose service name or Docker network alias and inspect network membership."
         },
         {
-          issue: "Backend reports Access denied for user.",
+          issue: "Password authentication failed.",
+          rootCause:
+            "The application may use an incorrect, outdated or mismatched credential.",
           solution:
-            "Verify database username, password, grants and authentication configuration using a secure process. Do not print credentials in logs."
-        },
-        {
-          issue: "Backend reports connection timeout.",
-          solution:
-            "Investigate network reachability, firewall rules, database load, connection limits and timeout settings."
+            "Verify the secret source and database user permissions. Rotate credentials through the approved secret-management process if necessary."
         }
       ]
     },
 
     {
-      heading: "19. Verification and Prevention – How to Confirm the Fix and Avoid Repeat Incidents",
+      heading: "22. Real Production Incident – ImagePullBackOff or Registry Pull Failure",
+      explanation: `
+SCENARIO:
 
-      explanation:
-        "A production fix is not complete when the error message disappears. The engineer must verify the application's actual functionality and confirm that the issue does not return.\n\nVerification process:\n\n1. Container status: Confirm the container is running.\n\n2. Application logs: Confirm that startup errors are gone.\n\n3. Health check: Confirm the configured health check reports healthy.\n\n4. Network: Verify communication with required services.\n\n5. Endpoint: Test the actual application API or web page.\n\n6. Business workflow: Test the affected business operation, such as login, checkout or file upload.\n\n7. Resource usage: Check CPU, memory and disk usage.\n\n8. Monitoring: Watch error rates and restart behavior after deployment.\n\nPrevention:\n\nUse specific image versions rather than latest.\n\nUse multi-stage builds and .dockerignore.\n\nUse persistent volumes for required data.\n\nUse suitable health checks.\n\nUse secret-management tools for credentials.\n\nConfigure log rotation and centralized logging.\n\nMonitor CPU, memory, disk and network.\n\nUse automated tests and image scanning in CI/CD.\n\nDocument deployment and rollback procedures.\n\nTest backup restoration, not just backup creation.\n\nAvoid unnecessary root privileges inside containers.",
+A deployment host cannot pull the required application image.
 
+Docker error examples can include:
+- pull access denied.
+- repository does not exist.
+- manifest unknown.
+- unauthorized.
+- certificate signed by unknown authority.
+- no matching manifest for the requested platform.
+
+INVESTIGATION:
+
+1. Verify the complete registry image path.
+2. Verify repository and tag.
+3. Check authentication.
+4. Check repository pull permissions.
+5. Check DNS and network access.
+6. Check registry TLS certificates.
+7. Check host architecture against image platform.
+
+Do not treat every pull failure as a password problem. The exact error message is important.
+      `,
       steps: [
-        "Confirm the container is running.",
-        "Read the latest application logs.",
-        "Verify container health status.",
-        "Test application and dependency connectivity.",
-        "Test the affected business workflow.",
-        "Check CPU, memory and disk usage.",
-        "Monitor error rates and restart behavior.",
-        "Document the root cause and corrective action.",
-        "Add preventive tests, alerts or configuration checks.",
-        "Review the incident after service recovery."
+        "Capture the full image-pull error.",
+        "Verify registry hostname and repository path.",
+        "Verify the tag exists.",
+        "Check authentication and pull permission.",
+        "Check DNS, proxy and TLS.",
+        "Check target architecture.",
+        "Retry the pull after correcting the identified issue."
       ],
+      commands: `
+docker pull registry.example.com/team/api:v1
 
-      commands:
-        "docker ps\n" +
-        "docker logs --tail 100 <container>\n" +
-        "docker inspect <container>\n" +
-        "docker stats\n" +
-        "docker port <container>\n" +
-        "docker system df\n" +
-        "curl -i http://localhost:8080/health",
+docker login registry.example.com
 
+docker image inspect registry.example.com/team/api:v1
+
+docker info
+      `,
       problems: [
         {
-          issue: "The container is healthy but the business function still fails.",
+          issue: "pull access denied.",
+          rootCause:
+            "The repository may be private, the user may not be authenticated or pull permission may be missing.",
           solution:
-            "Test the actual business workflow and its dependencies. A basic health endpoint may not test database writes, authentication or external API integrations."
+            "Authenticate securely and verify repository access permissions."
         },
         {
-          issue: "The same Docker incident returns after a few days.",
+          issue: "manifest unknown.",
+          rootCause:
+            "The repository or requested tag may not exist.",
           solution:
-            "Review the RCA and add preventive controls such as monitoring, resource alerts, deployment checks, configuration validation and automated tests."
+            "Verify the exact repository path and tag in the registry."
+        },
+        {
+          issue: "no matching manifest for the requested platform.",
+          rootCause:
+            "The registry image may not contain a manifest for the host's required architecture.",
+          solution:
+            "Build and publish the required platform image or configure a suitable multi-platform image."
         }
       ]
     },
 
     {
-      heading: "20. Docker Interview and Real-Time Production Engineer Knowledge",
+      heading: "23. Real Production Incident – Container Cannot Write to Volume",
+      explanation: `
+SCENARIO:
 
-      explanation:
-        "A Docker engineer should be able to explain both concepts and practical troubleshooting.\n\nImportant interview questions and practical answers:\n\n1. What is Docker?\nDocker is a containerization platform used to package and run applications in isolated environments.\n\n2. What is the difference between an image and a container?\nAn image is a packaged template. A container is an instance created from that image.\n\n3. What is a Dockerfile?\nA Dockerfile contains instructions used to build an image.\n\n4. What is the difference between CMD and ENTRYPOINT?\nENTRYPOINT defines the main executable or command. CMD provides default command arguments or a default command, depending on the ENTRYPOINT configuration.\n\n5. What is a Docker volume?\nA volume is a persistent storage mechanism managed by Docker.\n\n6. Why does a container exit immediately?\nIts main process may have completed or failed. Inspect logs, exit code, ENTRYPOINT and CMD.\n\n7. What is the difference between docker stop and docker kill?\ndocker stop requests graceful termination and later sends SIGKILL if needed. docker kill sends a signal directly, SIGKILL by default.\n\n8. Why is localhost not used to connect to another container?\nBecause localhost inside a container refers to that same container. Use a shared network and service or container name.\n\n9. What is a multi-stage build?\nIt uses multiple build stages so that the final image can contain only the required runtime artifacts.\n\n10. What is Docker Compose?\nIt is a tool for defining and managing multi-container applications.\n\n11. What is a Docker health check?\nIt periodically runs a configured command to report the container's health status.\n\n12. Does an unhealthy Docker container automatically restart?\nNot simply because its health status is unhealthy. Restart policies generally respond to the container process exiting.\n\n13. What is the difference between a bind mount and a named volume?\nA bind mount maps a host path. A named volume is managed by Docker.\n\n14. What is OOMKilled?\nIt indicates a process or container was killed due to memory exhaustion or memory-limit enforcement. Investigate actual resource conditions.\n\n15. How do you troubleshoot a container restarting continuously?\nCheck docker ps -a, docker logs, docker inspect, exit code, resource usage, environment variables, dependencies and network connectivity.\n\n16. How do you troubleshoot a container that is running but inaccessible?\nCheck the application process, listening address, port mapping, network, firewall, reverse proxy and health endpoint.\n\n17. How do you reduce Docker image size?\nUse suitable base images, multi-stage builds, dependency lock files, .dockerignore and production-only dependencies.\n\n18. How do you protect secrets?\nUse a suitable secrets-management mechanism and avoid embedding credentials in Dockerfiles or image layers.\n\n19. What happens when a container is removed?\nThe container's writable layer is removed. Named volumes normally remain unless explicitly removed.\n\n20. What is the difference between Docker and Kubernetes?\nDocker provides container image building and container runtime management. Kubernetes orchestrates containerized workloads across a cluster.\n\nReal-time engineer responsibilities:\n- Build and maintain Docker images.\n- Troubleshoot image build and registry failures.\n- Deploy and inspect containers.\n- Manage networks and persistent storage.\n- Investigate logs and resource problems.\n- Support CI/CD pipelines.\n- Apply security and configuration best practices.\n- Perform production incident analysis.\n- Verify fixes and document preventive actions.\n\nFinal production troubleshooting mindset:\nDo not restart or delete everything immediately. First collect evidence. Understand the request flow. Identify the failing component. Find the root cause. Apply a safe fix. Verify the business workflow. Monitor the service and document the incident.",
+An application starts but fails when it tries to write uploaded files or database data.
 
+Possible error:
+Permission denied.
+
+INVESTIGATION:
+
+1. Identify the exact path from the application log.
+2. Inspect the container's configured user.
+3. Inspect the mounted volume or bind mount.
+4. Check ownership and permissions on the host path.
+5. Confirm whether the mount is read-only.
+6. Check whether the application expects a different directory.
+7. Apply the smallest permission correction.
+
+Avoid chmod 777 as a default fix. It grants broad access and hides the actual ownership problem.
+      `,
       steps: [
-        "Practice building images from real application Dockerfiles.",
-        "Run frontend, backend and database containers on a shared network.",
-        "Practice diagnosing restart loops.",
-        "Practice port mapping and DNS troubleshooting.",
-        "Practice persistent volume configuration.",
-        "Practice resource monitoring and log analysis.",
-        "Build a CI/CD pipeline that pushes versioned images.",
-        "Practice rollback and production incident documentation."
+        "Capture the exact path and permission error.",
+        "Check the container process UID and GID.",
+        "Inspect the mount configuration.",
+        "Check host directory ownership and permissions.",
+        "Check read-only mount settings.",
+        "Correct ownership or group access.",
+        "Restart or redeploy if required.",
+        "Verify that the application can write and read the expected data."
       ],
+      commands: `
+docker inspect api
 
-      commands:
-        "docker build -t practice-app:1.0 .\n" +
-        "docker run -d --name practice-app -p 8080:8080 practice-app:1.0\n" +
-        "docker ps -a\n" +
-        "docker logs practice-app\n" +
-        "docker inspect practice-app\n" +
-        "docker stats practice-app\n" +
-        "docker network ls\n" +
-        "docker volume ls\n" +
-        "docker system df",
+docker exec api id
 
+docker exec api sh -c 'ls -ld /app/uploads'
+
+docker exec api sh -c 'touch /app/uploads/write-test'
+      `,
       problems: [
         {
-          issue: "An engineer knows Docker commands but cannot troubleshoot a real production incident.",
+          issue: "Permission denied when writing to a bind mount.",
+          rootCause:
+            "The host directory ownership or permissions do not allow the container process user to write.",
           solution:
-            "Practice complete incidents from symptom to root cause. Understand architecture, logs, networking, storage, resources, deployment workflow and verification rather than memorizing commands alone."
+            "Match the required UID/GID or group permissions and grant only the access the application needs."
+        }
+      ]
+    },
+
+    {
+      heading: "24. Real Production Incident – Docker Host Disk Full",
+      explanation: `
+SCENARIO:
+
+The Docker host reports no free disk space. New containers fail to start or applications cannot write files.
+
+POSSIBLE CONSUMERS:
+
+- Container logs.
+- Image layers.
+- Build cache.
+- Container writable layers.
+- Volumes.
+- Application data.
+
+INVESTIGATION:
+
+1. Run df -h to identify the full filesystem.
+2. Run docker system df.
+3. Inspect large log files and configured logging drivers.
+4. Check volumes before cleanup.
+5. Check build cache and unused images.
+6. Confirm whether the filesystem is shared with application data.
+
+RECOVERY:
+Remove only approved unused objects. Do not remove volumes without verifying their contents and backup status.
+
+PREVENTION:
+Configure log rotation, monitor disk usage, define image retention and maintain volume backup policies.
+      `,
+      steps: [
+        "Identify the full filesystem.",
+        "Inspect Docker storage usage.",
+        "Identify large logs, images, cache or volumes.",
+        "Confirm which data is safe to remove.",
+        "Back up important data.",
+        "Perform controlled cleanup.",
+        "Verify disk capacity and application health."
+      ],
+      commands: `
+df -h
+docker system df
+docker image ls
+docker ps -a
+docker volume ls
+
+docker builder prune
+docker image prune
+      `,
+      problems: [
+        {
+          issue: "Disk is still full after removing containers.",
+          rootCause:
+            "The actual space consumer may be logs, volumes, images, build cache or application files.",
+          solution:
+            "Identify the filesystem and its largest consumers before selecting a cleanup operation."
+        }
+      ]
+    },
+
+    {
+      heading: "25. Docker Troubleshooting Method – Production Engineer RCA Checklist",
+      explanation: `
+A production engineer should follow a repeatable investigation method.
+
+1. UNDERSTAND IMPACT:
+Which service is affected? How many users? Is the issue total or partial?
+
+2. RECORD TIME:
+Record when the incident started and when symptoms were observed.
+
+3. COLLECT EVIDENCE:
+Capture container state, logs, events, resource usage and relevant host information.
+
+4. FORM A HYPOTHESIS:
+Use the evidence to identify likely causes.
+
+5. TEST SAFELY:
+Run targeted checks. Avoid destructive commands during investigation.
+
+6. IDENTIFY ROOT CAUSE:
+Find the condition that caused the failure, not just the visible symptom.
+
+7. RECOVER:
+Apply a safe fix or rollback according to the incident procedure.
+
+8. VERIFY:
+Confirm application health, user-facing behavior, dependency connectivity and resource stability.
+
+9. PREVENT:
+Add validation, monitoring, alerts, automated tests or configuration controls.
+
+10. DOCUMENT:
+Record impact, timeline, evidence, root cause, recovery and follow-up actions.
+
+A restart is an action, not a root-cause analysis.
+      `,
+      steps: [
+        "Confirm impact and severity.",
+        "Record the incident timeline.",
+        "Collect logs and diagnostic output.",
+        "Inspect container, image, network, storage and resource configuration as relevant.",
+        "Compare current state with the last known-good state.",
+        "Test the suspected root cause.",
+        "Apply the approved fix or rollback.",
+        "Verify service recovery.",
+        "Create preventive actions and document the incident."
+      ],
+      commands: `
+docker ps -a
+docker logs --since 30m --tail 300 <container>
+docker inspect <container>
+docker stats --no-stream
+docker events --since 30m
+docker system df
+docker network ls
+docker volume ls
+
+# Linux host diagnostics
+df -h
+free -h
+sudo journalctl -u docker --since "30 minutes ago"
+      `,
+      problems: [
+        {
+          issue: "Engineer restarts the container repeatedly but the issue returns.",
+          rootCause:
+            "The restart treats the symptom but leaves the actual failure condition unchanged.",
+          solution:
+            "Collect evidence, identify the failure condition and fix the application, configuration, dependency or infrastructure problem."
         },
         {
-          issue: "The engineer fixes a container but cannot explain why the failure occurred.",
+          issue: "Troubleshooting removes useful incident evidence.",
+          rootCause:
+            "The engineer deletes or recreates the affected container before recording its state and logs.",
           solution:
-            "Document the timeline, evidence, root cause, corrective action and preventive action. Explain how the application and Docker components interacted during the incident."
+            "Capture relevant logs, inspect output, events and configuration before performing destructive cleanup."
         }
       ]
     }
