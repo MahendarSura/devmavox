@@ -1,0 +1,19 @@
+
+> devmavox@0.1.0 build
+> next build
+
+Γû▓ Next.js 16.4.0 (Turbopack)
+ΓÜá Warning: Next.js ignored package-lock.json in C:\Users\mahen because it is outside the current Git repository (C:\Users\mahen\OneDrive\devmavox).
+ To use this directory, set `turbopack.root` in your Next.js config.
+
+Γ£ô Running next.config.ts took 90ms
+- Experiments (use with caution):
+  ┬╖ cpus: 2
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 6.2s
+  Running TypeScript ...
+app/notes-cheat-sheets/technical-concepts/[slug]/page.tsx(21,25): error TS2322: Type '{ description: string; sections: { heading: string; explanation: string; steps: string[]; commands: string; config: string; problems: { issue: string; solution: string; }[]; }[]; } | { description: string; sections: { ...; }[]; } | { ...; }' is not assignable to type 'NoteData'.
+  Property 'title' is missing in type '{ description: string; sections: { heading: string; explanation: string; steps: string[]; commands: string; config: string; problems: { issue: string; solution: string; }[]; }[]; }' but required in type 'NoteData'.
+Failed to type check.
+
