@@ -32,9 +32,14 @@ export default function NotesRenderer({
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100 sm:px-8">
       <div className="mx-auto max-w-5xl">
-        <a href={backHref} className="text-sm text-cyan-300 hover:underline">
-          ← Back to {backLabel}
-        </a>
+        <div className="flex flex-wrap items-center gap-5">
+          <a href={backHref} className="text-sm text-cyan-300 hover:underline">
+            ← Back to {backLabel}
+          </a>
+          <a href="/notes-cheat-sheets" className="text-sm text-cyan-300 hover:underline">
+            ← All Notes & Cheat Sheets
+          </a>
+        </div>
 
         <p className="mt-8 text-sm uppercase tracking-widest text-cyan-300">
           Learning Notes
@@ -91,4 +96,5 @@ export default function NotesRenderer({
     </main>
   );
 }
+
 
