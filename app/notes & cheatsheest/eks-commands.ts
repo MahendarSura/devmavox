@@ -1,132 +1,142 @@
+
 import type { DevOpsTool } from "./command-types";
 
+type CommandLevel = DevOpsTool["commands"][number]["level"];
+
+const makeCommands = (
+  level: CommandLevel,
+  rows: [string, string, string][]
+) =>
+  rows.map(([command, english, telugu]) => ({
+    command,
+    level,
+    english,
+    telugu,
+  }));
+
 export const eksTool: DevOpsTool = {
-    name: "EKS",
-    category: "Orchestration",
-    commands: [
-      { command: "aws eks list-clusters", level: "Basic", english: "to list EKS clusters in the configured region", telugu: "Configured region లో EKS clusters చూడటానికి." },
-      { command: "aws eks describe-cluster --name <cluster-name>", level: "Intermediate", english: "to inspect EKS cluster details", telugu: "EKS cluster వివరాలు తెలుసుకోవటానికి." },
-      { command: "aws eks update-kubeconfig --name <cluster-name> --region <region>", level: "Advanced", english: "to configure kubectl access to an EKS cluster", telugu: "EKS cluster కి kubectl access configure చేయటానికి." },
-      { command: "kubectl get nodes -o wide", level: "Troubleshooting", english: "to inspect EKS worker node status", telugu: "EKS worker nodes status చూడటానికి." },
-      {
-        command: "aws eks list-clusters --region <region>",
-        level: "Basic",
-        english: "List EKS clusters in a region.",
-        telugu: "Region lo EKS clusters list chudataniki.",
-      },
-      {
-        command: "aws eks describe-cluster --name <cluster> --region <region>",
-        level: "Basic",
-        english: "Show cluster configuration and status.",
-        telugu: "EKS cluster status, endpoint, version details chudataniki.",
-      },
-      {
-        command: "aws eks update-kubeconfig --name <cluster> --region <region>",
-        level: "Intermediate",
-        english: "Configure kubectl credentials and context for an EKS cluster.",
-        telugu: "EKS cluster ki kubectl context configure cheyyataniki.",
-      },
-      {
-        command: "aws eks list-nodegroups --cluster-name <cluster> --region <region>",
-        level: "Basic",
-        english: "List managed node groups for a cluster.",
-        telugu: "Cluster managed node groups list chudataniki.",
-      },
-      {
-        command: "aws eks describe-nodegroup --cluster-name <cluster> --nodegroup-name <nodegroup> --region <region>",
-        level: "Intermediate",
-        english: "Inspect managed node group status and configuration.",
-        telugu: "Node group health, scaling, version inspect cheyyataniki.",
-      },
-      {
-        command: "aws eks list-addons --cluster-name <cluster> --region <region>",
-        level: "Basic",
-        english: "List installed EKS add-ons.",
-        telugu: "EKS installed add-ons list chudataniki.",
-      },
-      {
-        command: "aws eks describe-addon --cluster-name <cluster> --addon-name <addon> --region <region>",
-        level: "Intermediate",
-        english: "Inspect an EKS add-on version and health.",
-        telugu: "Add-on version mariyu health chudataniki.",
-      },
-      {
-        command: "aws eks list-updates --name <cluster> --region <region>",
-        level: "Intermediate",
-        english: "List cluster update IDs.",
-        telugu: "EKS cluster updates list chudataniki.",
-      },
-      {
-        command: "aws eks describe-update --name <cluster> --update-id <update-id> --region <region>",
-        level: "Troubleshooting",
-        english: "Inspect the status and errors of a cluster update.",
-        telugu: "Cluster update status/errors troubleshoot cheyyataniki.",
-      },
-      {
-        command: "aws eks list-fargate-profiles --cluster-name <cluster> --region <region>",
-        level: "Basic",
-        english: "List Fargate profiles for an EKS cluster.",
-        telugu: "EKS Fargate profiles list chudataniki.",
-      },
-      {
-        command: "aws eks describe-fargate-profile --cluster-name <cluster> --fargate-profile-name <profile> --region <region>",
-        level: "Intermediate",
-        english: "Inspect a Fargate profile configuration.",
-        telugu: "Fargate profile configuration inspect cheyyataniki.",
-      },
-      {
-        command: "aws eks list-access-entries --cluster-name <cluster> --region <region>",
-        level: "Advanced",
-        english: "List EKS access entries.",
-        telugu: "Cluster access entries inspect cheyyataniki.",
-      },
-      {
-        command: "aws eks describe-access-entry --cluster-name <cluster> --principal-arn <arn> --region <region>",
-        level: "Advanced",
-        english: "Inspect an EKS access entry for an IAM principal.",
-        telugu: "IAM principal cluster access details chudataniki.",
-      },
-      {
-        command: "aws eks list-insights --cluster-name <cluster> --region <region>",
-        level: "Advanced",
-        english: "List EKS cluster insights.",
-        telugu: "Cluster insights list chesi potential issues identify cheyyataniki.",
-      },
-      {
-        command: "aws eks describe-insight --cluster-name <cluster> --id <insight-id> --region <region>",
-        level: "Troubleshooting",
-        english: "Inspect a specific EKS insight.",
-        telugu: "Specific cluster insight details troubleshoot cheyyataniki.",
-      },
-      {
-        command: "aws eks list-tags-for-resource --resource-arn <cluster-arn> --region <region>",
-        level: "Basic",
-        english: "List tags attached to an EKS resource.",
-        telugu: "EKS resource tags chudataniki.",
-      },
-      {
-        command: "aws eks get-token --cluster-name <cluster> --region <region>",
-        level: "Advanced",
-        english: "Generate a temporary authentication token for EKS.",
-        telugu: "EKS authentication token generate cheyyataniki; token ni share cheyyakudadhu.",
-      },
-      {
-        command: "aws eks describe-cluster --name <cluster> --query 'cluster.status' --output text --region <region>",
-        level: "Troubleshooting",
-        english: "Return only the cluster status.",
-        telugu: "Cluster status quick ga check cheyyataniki.",
-      },
-      {
-        command: "aws eks describe-nodegroup --cluster-name <cluster> --nodegroup-name <nodegroup> --query 'nodegroup.health.issues' --output json --region <region>",
-        level: "Troubleshooting",
-        english: "Show health issues reported for a node group.",
-        telugu: "Node group health problems identify cheyyataniki.",
-      },
-      {
-        command: "aws eks list-clusters --region <region> --output table",
-        level: "Basic",
-        english: "Display EKS cluster names in a table.",
-        telugu: "EKS clusters table format lo chudataniki.",
-      },
-    ],
-  };
+  name: "Amazon EKS (eksctl)",
+  category: "Cloud & Kubernetes",
+  commands: [
+    // BASIC - 5
+    ...makeCommands("Basic", [
+      [
+        "eksctl version",
+        "Displays the installed eksctl version.",
+        "Install ayina eksctl version chupistundi.",
+      ],
+      [
+        "eksctl get cluster",
+        "Lists EKS clusters in the configured AWS region.",
+        "Configured AWS region lo EKS clusters list chestundi.",
+      ],
+      [
+        "eksctl get cluster --name=my-cluster",
+        "Displays information about a specific EKS cluster.",
+        "Specific EKS cluster information chupistundi.",
+      ],
+      [
+        "eksctl get nodegroup --cluster=my-cluster",
+        "Lists nodegroups belonging to an EKS cluster.",
+        "EKS cluster ki sambandhinchina nodegroups list chestundi.",
+      ],
+      [
+        "eksctl get nodegroup --cluster=my-cluster --output=yaml",
+        "Displays nodegroup information in YAML format.",
+        "Nodegroup information YAML format lo chupistundi.",
+      ],
+    ]),
+
+    // INTERMEDIATE - 6
+    ...makeCommands("Intermediate", [
+      [
+        "eksctl create cluster --name=my-cluster --region=ap-south-1",
+        "Creates an EKS cluster with a managed nodegroup using the specified name and region.",
+        "Specified name mariyu region tho EKS cluster create chestundi.",
+      ],
+      [
+        "eksctl create cluster --config-file=cluster.yaml",
+        "Creates an EKS cluster using a configuration file.",
+        "Configuration file use chesi EKS cluster create chestundi.",
+      ],
+      [
+        "eksctl create nodegroup --cluster=my-cluster --name=my-nodegroup",
+        "Creates an additional nodegroup in an existing EKS cluster.",
+        "Existing EKS cluster lo additional nodegroup create chestundi.",
+      ],
+      [
+        "eksctl scale nodegroup --cluster=my-cluster --name=my-nodegroup --nodes=3 --nodes-min=1 --nodes-max=5 --wait",
+        "Scales a nodegroup to the requested capacity and waits for completion.",
+        "Nodegroup ni requested capacity ki scale chesi completion kosam wait chestundi.",
+      ],
+      [
+        "eksctl drain nodegroup --cluster=my-cluster --name=my-nodegroup",
+        "Drains nodes in a nodegroup by evicting their workloads.",
+        "Nodegroup nodes nundi workloads ni evict chesi drain chestundi.",
+      ],
+      [
+        "eksctl drain nodegroup --cluster=my-cluster --name=my-nodegroup --undo",
+        "Reverses the nodegroup drain operation by uncordoning its nodes.",
+        "Nodegroup drain operation reverse chesi nodes ni uncordon chestundi.",
+      ],
+    ]),
+
+    // ADVANCED - 5
+    ...makeCommands("Advanced", [
+      [
+        "eksctl upgrade cluster --name=my-cluster",
+        "Checks and plans an available EKS control plane upgrade.",
+        "Available EKS control plane upgrade ni check chesi plan chestundi.",
+      ],
+      [
+        "eksctl upgrade cluster --name=my-cluster --approve",
+        "Applies the planned EKS control plane upgrade.",
+        "Plan chesina EKS control plane upgrade apply chestundi.",
+      ],
+      [
+        "eksctl upgrade nodegroup --cluster=my-cluster --name=my-nodegroup",
+        "Upgrades the specified nodegroup.",
+        "Specified nodegroup ni upgrade chestundi.",
+      ],
+      [
+        "eksctl create iamserviceaccount --cluster=my-cluster --namespace=default --name=my-service-account --attach-policy-arn=arn:aws:iam::123456789012:policy/MyPolicy --approve",
+        "Creates an IAM service account associated with the EKS cluster.",
+        "EKS cluster ki associate ayina IAM service account create chestundi.",
+      ],
+      [
+        "eksctl utils associate-iam-oidc-provider --cluster=my-cluster --approve",
+        "Associates an IAM OIDC identity provider with the EKS cluster.",
+        "EKS cluster ki IAM OIDC identity provider associate chestundi.",
+      ],
+    ]),
+
+    // TROUBLESHOOTING - 5
+    ...makeCommands("Troubleshooting", [
+      [
+        "eksctl get cluster --name=my-cluster --region=ap-south-1",
+        "Checks whether the specified EKS cluster is discoverable in the selected region.",
+        "Selected region lo specified EKS cluster available ga undo check chestundi.",
+      ],
+      [
+        "eksctl get nodegroup --cluster=my-cluster --output=json",
+        "Displays detailed nodegroup information in JSON format for diagnosis.",
+        "Diagnosis kosam detailed nodegroup information JSON format lo chupistundi.",
+      ],
+      [
+        "eksctl utils describe-stacks --cluster=my-cluster --region=ap-south-1",
+        "Displays CloudFormation stacks associated with the EKS cluster.",
+        "EKS cluster ki sambandhinchina CloudFormation stacks chupistundi.",
+      ],
+      [
+        "eksctl drain nodegroup --cluster=my-cluster --name=my-nodegroup --disable-eviction",
+        "Drains a nodegroup without respecting PodDisruptionBudget eviction restrictions.",
+        "PodDisruptionBudget eviction restrictions lekunda nodegroup drain chestundi.",
+      ],
+      [
+        "eksctl drain nodegroup --cluster=my-cluster --name=my-nodegroup --undo",
+        "Restores scheduling on nodes after a drain operation.",
+        "Drain operation tarvata nodes meeda scheduling restore chestundi.",
+      ],
+    ]),
+  ],
+};
