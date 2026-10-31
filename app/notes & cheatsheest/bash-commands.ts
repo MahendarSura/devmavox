@@ -1,243 +1,1294 @@
 import type { DevOpsTool } from "./command-types";
 
-export const bashTool: DevOpsTool = {
-  name: "Bash",
-  category: "Core",
-  commands: [
-
-    // ========== BASIC: 50 COMMANDS ==========
-
-    { command: "pwd", level: "Basic", english: "Print current working directory.", telugu: "ప్రస్తుత directoryని చూపిస్తుంది." },
-    { command: "ls", level: "Basic", english: "List files and directories.", telugu: "Files మరియు directoriesని చూపిస్తుంది." },
-    { command: "ls -l", level: "Basic", english: "List files in detailed format.", telugu: "Files వివరాలను చూపిస్తుంది." },
-    { command: "ls -a", level: "Basic", english: "Show hidden files.", telugu: "Hidden filesని కూడా చూపిస్తుంది." },
-    { command: "ls -lh", level: "Basic", english: "Show file sizes in readable format.", telugu: "File sizesని KB, MBలో చూపిస్తుంది." },
-    { command: "cd", level: "Basic", english: "Change to home directory.", telugu: "Home directoryకి వెళ్తుంది." },
-    { command: "cd ..", level: "Basic", english: "Move to parent directory.", telugu: "Parent directoryకి వెళ్తుంది." },
-    { command: "cd ~", level: "Basic", english: "Navigate to home directory.", telugu: "User home directoryకి వెళ్తుంది." },
-    { command: "cd /", level: "Basic", english: "Navigate to root directory.", telugu: "Root directoryకి వెళ్తుంది." },
-    { command: "mkdir demo", level: "Basic", english: "Create a directory.", telugu: "కొత్త directoryని create చేస్తుంది." },
-    { command: "mkdir -p app/logs", level: "Basic", english: "Create nested directories.", telugu: "Nested directoriesని create చేస్తుంది." },
-    { command: "touch file.txt", level: "Basic", english: "Create an empty file.", telugu: "Empty fileని create చేస్తుంది." },
-    { command: "cat file.txt", level: "Basic", english: "Display file contents.", telugu: "File contentని చూపిస్తుంది." },
-    { command: "less file.txt", level: "Basic", english: "View file page by page.", telugu: "Fileని page by page చూపిస్తుంది." },
-    { command: "more file.txt", level: "Basic", english: "View file one screen at a time.", telugu: "Fileని ఒక్క screen చొప్పున చూపిస్తుంది." },
-    { command: "head file.txt", level: "Basic", english: "Display first ten lines.", telugu: "మొదటి 10 linesని చూపిస్తుంది." },
-    { command: "tail file.txt", level: "Basic", english: "Display last ten lines.", telugu: "చివరి 10 linesని చూపిస్తుంది." },
-    { command: "tail -f app.log", level: "Basic", english: "Follow log updates continuously.", telugu: "Log updatesని liveగా చూపిస్తుంది." },
-    { command: "echo Hello", level: "Basic", english: "Print text to terminal.", telugu: "Terminalలో textని print చేస్తుంది." },
-    { command: "printf 'Hello\\n'", level: "Basic", english: "Print formatted text.", telugu: "Formatted textని print చేస్తుంది." },
-    { command: "clear", level: "Basic", english: "Clear terminal screen.", telugu: "Terminal screenని clear చేస్తుంది." },
-    { command: "history", level: "Basic", english: "Display command history.", telugu: "గతంలో run చేసిన commandsని చూపిస్తుంది." },
-    { command: "whoami", level: "Basic", english: "Display current username.", telugu: "Current usernameని చూపిస్తుంది." },
-    { command: "date", level: "Basic", english: "Display current date and time.", telugu: "ప్రస్తుత date మరియు timeని చూపిస్తుంది." },
-    { command: "cal", level: "Basic", english: "Display calendar.", telugu: "Calendarని చూపిస్తుంది." },
-    { command: "hostname", level: "Basic", english: "Display system hostname.", telugu: "System hostnameని చూపిస్తుంది." },
-    { command: "uname", level: "Basic", english: "Display system information.", telugu: "System informationని చూపిస్తుంది." },
-    { command: "uname -a", level: "Basic", english: "Display complete system information.", telugu: "System మరియు kernel వివరాలను చూపిస్తుంది." },
-    { command: "env", level: "Basic", english: "Display environment variables.", telugu: "Environment variablesని చూపిస్తుంది." },
-    { command: "printenv", level: "Basic", english: "Print environment variable values.", telugu: "Environment variable valuesని చూపిస్తుంది." },
-    { command: "export APP_ENV=production", level: "Basic", english: "Set an environment variable.", telugu: "Environment variableని set చేస్తుంది." },
-    { command: "unset APP_ENV", level: "Basic", english: "Remove an environment variable.", telugu: "Environment variableని తొలగిస్తుంది." },
-    { command: "type ls", level: "Basic", english: "Identify command type.", telugu: "Command typeని గుర్తిస్తుంది." },
-    { command: "which bash", level: "Basic", english: "Find executable location.", telugu: "Executable file pathని చూపిస్తుంది." },
-    { command: "help", level: "Basic", english: "Display Bash built-in help.", telugu: "Bash built-in commands helpని చూపిస్తుంది." },
-    { command: "man bash", level: "Basic", english: "Open Bash manual.", telugu: "Bash manualని తెరుస్తుంది." },
-    { command: "command -v git", level: "Basic", english: "Check command availability.", telugu: "Command అందుబాటులో ఉందో చెక్ చేస్తుంది." },
-    { command: "alias ll='ls -lah'", level: "Basic", english: "Create a command shortcut.", telugu: "Commandకి shortcut create చేస్తుంది." },
-    { command: "unalias ll", level: "Basic", english: "Remove an alias.", telugu: "Aliasని తొలగిస్తుంది." },
-    { command: "read username", level: "Basic", english: "Read user input into a variable.", telugu: "User inputని variableలో store చేస్తుంది." },
-    { command: "let count=10", level: "Basic", english: "Assign an arithmetic value.", telugu: "Arithmetic valueని assign చేస్తుంది." },
-    { command: "expr 5 + 3", level: "Basic", english: "Evaluate a mathematical expression.", telugu: "Mathematical expressionని calculate చేస్తుంది." },
-    { command: "true", level: "Basic", english: "Return successful exit status.", telugu: "Success statusని return చేస్తుంది." },
-    { command: "false", level: "Basic", english: "Return unsuccessful exit status.", telugu: "Failure statusని return చేస్తుంది." },
-    { command: "exit", level: "Basic", english: "Exit current shell.", telugu: "Current shell నుంచి బయటకు వస్తుంది." },
-    { command: "exit 0", level: "Basic", english: "Exit with success status.", telugu: "Success codeతో exit అవుతుంది." },
-    { command: "source ~/.bashrc", level: "Basic", english: "Reload Bash configuration.", telugu: "Bash configurationని reload చేస్తుంది." },
-    { command: ". ~/.bashrc", level: "Basic", english: "Execute configuration in current shell.", telugu: "Current shellలో configurationని execute చేస్తుంది." },
-    { command: "bash --version", level: "Basic", english: "Display Bash version.", telugu: "Bash versionని చూపిస్తుంది." },
-    { command: "dirs", level: "Basic", english: "Display directory stack.", telugu: "Directory stackని చూపిస్తుంది." },
-
-    // ========== INTERMEDIATE: 60 COMMANDS ==========
-
-    { command: "grep 'error' app.log", level: "Intermediate", english: "Search matching text in a file.", telugu: "Fileలో error textని వెతుకుతుంది." },
-    { command: "grep -i 'error' app.log", level: "Intermediate", english: "Search without case sensitivity.", telugu: "Uppercase lowercase తేడా లేకుండా search చేస్తుంది." },
-    { command: "grep -n 'error' app.log", level: "Intermediate", english: "Show matching line numbers.", telugu: "Matching lines line numbersతో చూపిస్తుంది." },
-    { command: "grep -r 'TODO' ./src", level: "Intermediate", english: "Search recursively in directories.", telugu: "Directoriesలో recursiveగా search చేస్తుంది." },
-    { command: "grep -v 'debug' app.log", level: "Intermediate", english: "Show lines not matching a pattern.", telugu: "Pattern match కాని linesని చూపిస్తుంది." },
-    { command: "grep -E 'error|warning' app.log", level: "Intermediate", english: "Search using extended regular expressions.", telugu: "Regex ఉపయోగించి multiple patterns search చేస్తుంది." },
-    { command: "find . -name '*.log'", level: "Intermediate", english: "Find files by filename.", telugu: "Log filesని వెతుకుతుంది." },
-    { command: "find . -type f", level: "Intermediate", english: "Find regular files.", telugu: "Regular filesని వెతుకుతుంది." },
-    { command: "find . -type d", level: "Intermediate", english: "Find directories.", telugu: "Directoriesని వెతుకుతుంది." },
-    { command: "find . -mtime -1", level: "Intermediate", english: "Find recently modified files.", telugu: "గత 24 గంటల్లో modify అయిన filesని వెతుకుతుంది." },
-    { command: "find . -size +100M", level: "Intermediate", english: "Find files larger than 100 MB.", telugu: "100 MB కంటే పెద్ద filesని వెతుకుతుంది." },
-    { command: "find . -empty", level: "Intermediate", english: "Find empty files and directories.", telugu: "Empty files మరియు directoriesని వెతుకుతుంది." },
-    { command: "sort names.txt", level: "Intermediate", english: "Sort lines alphabetically.", telugu: "Linesని alphabetical orderలో sort చేస్తుంది." },
-    { command: "sort -n numbers.txt", level: "Intermediate", english: "Sort lines numerically.", telugu: "Numbersని numerical orderలో sort చేస్తుంది." },
-    { command: "uniq names.txt", level: "Intermediate", english: "Remove adjacent duplicate lines.", telugu: "పక్కపక్కన ఉన్న duplicate linesని తొలగిస్తుంది." },
-    { command: "sort names.txt | uniq", level: "Intermediate", english: "Sort and remove duplicate lines.", telugu: "Linesని sort చేసి duplicates తొలగిస్తుంది." },
-    { command: "wc -l app.log", level: "Intermediate", english: "Count file lines.", telugu: "Fileలో lines సంఖ్యను లెక్కిస్తుంది." },
-    { command: "wc -w file.txt", level: "Intermediate", english: "Count words in a file.", telugu: "Fileలో words సంఖ్యను లెక్కిస్తుంది." },
-    { command: "cut -d',' -f1 data.csv", level: "Intermediate", english: "Extract a CSV field.", telugu: "CSVలో మొదటి fieldని తీసుకుంటుంది." },
-    { command: "awk '{print $1}' file.txt", level: "Intermediate", english: "Print the first column.", telugu: "మొదటి columnని చూపిస్తుంది." },
-    { command: "sed 's/old/new/g' file.txt", level: "Intermediate", english: "Replace text in output.", telugu: "Textని replace చేస్తుంది." },
-    { command: "tr 'a-z' 'A-Z' < file.txt", level: "Intermediate", english: "Convert lowercase to uppercase.", telugu: "Lowercaseని uppercaseగా మారుస్తుంది." },
-    { command: "tee output.txt", level: "Intermediate", english: "Write input to a file and standard output.", telugu: "Outputని fileలో మరియు terminalలో చూపిస్తుంది." },
-    { command: "diff file1.txt file2.txt", level: "Intermediate", english: "Compare two text files.", telugu: "రెండు files మధ్య తేడాలను చూపిస్తుంది." },
-    { command: "cmp file1.bin file2.bin", level: "Intermediate", english: "Compare files byte by byte.", telugu: "Filesని byte by byte compare చేస్తుంది." },
-    { command: "comm file1.txt file2.txt", level: "Intermediate", english: "Compare sorted files.", telugu: "Sorted filesలో common, unique linesని చూపిస్తుంది." },
-    { command: "basename /var/log/app.log", level: "Intermediate", english: "Extract filename from a path.", telugu: "Path నుంచి filenameని తీసుకుంటుంది." },
-    { command: "dirname /var/log/app.log", level: "Intermediate", english: "Extract directory from a path.", telugu: "Path నుంచి directoryని తీసుకుంటుంది." },
-    { command: "realpath file.txt", level: "Intermediate", english: "Display absolute file path.", telugu: "File యొక్క absolute pathని చూపిస్తుంది." },
-    { command: "readlink -f file.txt", level: "Intermediate", english: "Resolve a symbolic link path.", telugu: "Symbolic link యొక్క actual pathని చూపిస్తుంది." },
-    { command: "xargs -n 1 echo", level: "Intermediate", english: "Build arguments from standard input.", telugu: "Input valuesతో command arguments తయారు చేస్తుంది." },
-    { command: "printf '%s\\n' *.log", level: "Intermediate", english: "Print matching filenames line by line.", telugu: "Log filenamesని ఒక్కో lineలో చూపిస్తుంది." },
-    { command: "seq 1 10", level: "Intermediate", english: "Generate a number sequence.", telugu: "Numbers sequenceని generate చేస్తుంది." },
-    { command: "sleep 5", level: "Intermediate", english: "Pause execution for five seconds.", telugu: "Executionని ఐదు seconds pause చేస్తుంది." },
-    { command: "timeout 10s command", level: "Intermediate", english: "Run a command with a time limit.", telugu: "Commandకి time limit పెడుతుంది." },
-    { command: "time ./script.sh", level: "Intermediate", english: "Measure script execution time.", telugu: "Script execution timeని చూపిస్తుంది." },
-    { command: "jobs", level: "Intermediate", english: "List current shell jobs.", telugu: "Current shell jobsని చూపిస్తుంది." },
-    { command: "bg", level: "Intermediate", english: "Resume a stopped job in background.", telugu: "Stopped jobని backgroundలో resume చేస్తుంది." },
-    { command: "fg", level: "Intermediate", english: "Bring a job to foreground.", telugu: "Jobని foregroundకి తీసుకువస్తుంది." },
-    { command: "wait", level: "Intermediate", english: "Wait for background processes.", telugu: "Background processes పూర్తయ్యే వరకు వేచి ఉంటుంది." },
-    { command: "kill -l", level: "Intermediate", english: "List available process signals.", telugu: "Process signals జాబితాను చూపిస్తుంది." },
-    { command: "ps", level: "Intermediate", english: "Display process information.", telugu: "Process వివరాలను చూపిస్తుంది." },
-    { command: "ps aux", level: "Intermediate", english: "Display detailed running processes.", telugu: "Running processes వివరాలను చూపిస్తుంది." },
-    { command: "pgrep nginx", level: "Intermediate", english: "Find process IDs by name.", telugu: "Process name ఆధారంగా PIDని వెతుకుతుంది." },
-    { command: "pkill -x nginx", level: "Intermediate", english: "Send a signal to exact-name processes.", telugu: "Exact name match అయిన processesకి signal పంపిస్తుంది." },
-    { command: "set", level: "Intermediate", english: "Display shell variables and functions.", telugu: "Shell variables మరియు functionsని చూపిస్తుంది." },
-    { command: "set -e", level: "Intermediate", english: "Exit when a command fails.", telugu: "Command fail అయితే script exit అవుతుంది." },
-    { command: "set -u", level: "Intermediate", english: "Treat unset variables as errors.", telugu: "Unset variablesని errorsగా పరిగణిస్తుంది." },
-    { command: "set -x", level: "Intermediate", english: "Trace commands during execution.", telugu: "Execute అవుతున్న commandsని చూపిస్తుంది." },
-    { command: "set +x", level: "Intermediate", english: "Disable command tracing.", telugu: "Command tracingని disable చేస్తుంది." },
-    { command: "set -o pipefail", level: "Intermediate", english: "Detect failures in a pipeline.", telugu: "Pipelineలో command failureని గుర్తిస్తుంది." },
-    { command: "trap 'echo Exiting' EXIT", level: "Intermediate", english: "Run a command when the shell exits.", telugu: "Shell exit అయినప్పుడు commandని run చేస్తుంది." },
-    { command: "getopts 'f:v:' opt", level: "Intermediate", english: "Parse command-line options.", telugu: "Command-line optionsని parse చేస్తుంది." },
-    { command: "shift", level: "Intermediate", english: "Shift positional parameters.", telugu: "Positional parametersని ఒక స్థానం జరుపుతుంది." },
-    { command: "eval 'echo Hello'", level: "Intermediate", english: "Evaluate a command string.", telugu: "Command stringని execute చేస్తుంది." },
-    { command: "exec command", level: "Intermediate", english: "Replace the current shell process.", telugu: "Current shell process స్థానంలో command run చేస్తుంది." },
-    { command: "declare -p", level: "Intermediate", english: "Display variable declarations.", telugu: "Variable declarationsని చూపిస్తుంది." },
-    { command: "readonly APP_NAME=DevMavox", level: "Intermediate", english: "Create a read-only variable.", telugu: "Read-only variableని create చేస్తుంది." },
-    { command: "local name=value", level: "Intermediate", english: "Declare a function-local variable.", telugu: "Functionలో మాత్రమే పనిచేసే variableని create చేస్తుంది." },
-    { command: "wait $!", level: "Intermediate", english: "Wait for the latest background process.", telugu: "చివరి background process పూర్తయ్యే వరకు వేచి ఉంటుంది." },
-
-    // ========== ADVANCED: 50 COMMANDS ==========
-
-    { command: "bash -n script.sh", level: "Advanced", english: "Check script syntax without execution.", telugu: "Script run చేయకుండా syntax errorsని చెక్ చేస్తుంది." },
-    { command: "bash -x script.sh", level: "Advanced", english: "Execute script with debugging output.", telugu: "Debug outputతో scriptని run చేస్తుంది." },
-    { command: "bash -e script.sh", level: "Advanced", english: "Exit on an unhandled command failure.", telugu: "Command failure వచ్చినప్పుడు script exit అవుతుంది." },
-    { command: "bash -u script.sh", level: "Advanced", english: "Treat unset variables as errors.", telugu: "Unset variablesని errorsగా పరిగణిస్తుంది." },
-    { command: "bash -o pipefail script.sh", level: "Advanced", english: "Enable pipeline failure detection.", telugu: "Pipeline failure detectionని enable చేస్తుంది." },
-    { command: "bash -c 'echo Hello'", level: "Advanced", english: "Execute a command string.", telugu: "Command stringని execute చేస్తుంది." },
-    { command: "bash -s < script.sh", level: "Advanced", english: "Execute a script from standard input.", telugu: "Standard input నుంచి scriptని execute చేస్తుంది." },
-    { command: "shopt", level: "Advanced", english: "Display Bash shell options.", telugu: "Bash shell optionsని చూపిస్తుంది." },
-    { command: "shopt -s nullglob", level: "Advanced", english: "Make unmatched globs expand to nothing.", telugu: "Match కాని glob patternsని emptyగా మారుస్తుంది." },
-    { command: "shopt -s globstar", level: "Advanced", english: "Enable recursive glob patterns.", telugu: "Recursive glob patternsని enable చేస్తుంది." },
-    { command: "shopt -s extglob", level: "Advanced", english: "Enable extended pattern matching.", telugu: "Extended pattern matchingని enable చేస్తుంది." },
-    { command: "shopt -u extglob", level: "Advanced", english: "Disable extended pattern matching.", telugu: "Extended pattern matchingని disable చేస్తుంది." },
-    { command: "declare -A config", level: "Advanced", english: "Create an associative array.", telugu: "Key-value associative arrayని create చేస్తుంది." },
-    { command: "declare -a servers", level: "Advanced", english: "Create an indexed array.", telugu: "Indexed arrayని create చేస్తుంది." },
-    { command: "declare -i count=10", level: "Advanced", english: "Declare an integer variable.", telugu: "Integer variableని declare చేస్తుంది." },
-    { command: "mapfile -t lines < file.txt", level: "Advanced", english: "Read file lines into an array.", telugu: "File linesని arrayలో store చేస్తుంది." },
-    { command: "readarray -t items < list.txt", level: "Advanced", english: "Load file lines into an array.", telugu: "File linesని arrayలో load చేస్తుంది." },
-    { command: "coproc worker { sleep 5; }", level: "Advanced", english: "Start a coprocess with connected pipes.", telugu: "Connected pipesతో coprocessని start చేస్తుంది." },
-    { command: "BASH_SUBSHELL", level: "Advanced", english: "Inspect the current subshell nesting level.", telugu: "Subshell nesting levelని చూపిస్తుంది." },
-    { command: "BASHPID", level: "Advanced", english: "Display the current Bash process ID.", telugu: "Current Bash process PIDని చూపిస్తుంది." },
-    { command: "BASH_SOURCE", level: "Advanced", english: "Identify the executing source file.", telugu: "Execute అవుతున్న source fileని గుర్తిస్తుంది." },
-    { command: "FUNCNAME", level: "Advanced", english: "Inspect the function call stack.", telugu: "Function call stackని చూపిస్తుంది." },
-    { command: "LINENO", level: "Advanced", english: "Display the current script line number.", telugu: "ప్రస్తుత script line numberని చూపిస్తుంది." },
-    { command: "PIPESTATUS", level: "Advanced", english: "Inspect pipeline command exit statuses.", telugu: "Pipeline commands exit statusesని చూపిస్తుంది." },
-    { command: "SECONDS", level: "Advanced", english: "Track elapsed shell runtime in seconds.", telugu: "Shell start అయినప్పటి నుంచి గడిచిన secondsని చూపిస్తుంది." },
-    { command: "RANDOM", level: "Advanced", english: "Generate a pseudo-random integer.", telugu: "Random integerని generate చేస్తుంది." },
-    { command: "BASH_REMATCH", level: "Advanced", english: "Access regular expression match groups.", telugu: "Regex match groupsని access చేస్తుంది." },
-    { command: "shopt -s lastpipe", level: "Advanced", english: "Run the last pipeline command in the current shell.", telugu: "Pipeline చివరి commandని current shellలో run చేస్తుంది." },
-    { command: "enable -n echo", level: "Advanced", english: "Disable a Bash built-in command.", telugu: "Bash builtin commandని disable చేస్తుంది." },
-    { command: "enable echo", level: "Advanced", english: "Enable a Bash built-in command.", telugu: "Bash builtin commandని enable చేస్తుంది." },
-    { command: "bind -P", level: "Advanced", english: "Display Readline key bindings.", telugu: "Readline keyboard shortcutsని చూపిస్తుంది." },
-    { command: "bind -x '\"\\C-g\":date'", level: "Advanced", english: "Bind a command to a keyboard shortcut.", telugu: "Keyboard shortcutకి commandని bind చేస్తుంది." },
-    { command: "complete -W 'start stop restart' service", level: "Advanced", english: "Configure command word completion.", telugu: "Commandకి word completionని configure చేస్తుంది." },
-    { command: "compgen -c", level: "Advanced", english: "Generate available command names.", telugu: "Available command namesని చూపిస్తుంది." },
-    { command: "compgen -f", level: "Advanced", english: "Generate matching filenames.", telugu: "Matching filenamesని చూపిస్తుంది." },
-    { command: "compgen -v", level: "Advanced", english: "List shell variable names.", telugu: "Shell variable namesని చూపిస్తుంది." },
-    { command: "declare -f", level: "Advanced", english: "Display defined shell functions.", telugu: "Defined shell functionsని చూపిస్తుంది." },
-    { command: "type -a python", level: "Advanced", english: "Display all command definitions and paths.", telugu: "Commandకి సంబంధించిన definitions మరియు pathsని చూపిస్తుంది." },
-    { command: "hash -r", level: "Advanced", english: "Clear the shell command path cache.", telugu: "Shell command path cacheని clear చేస్తుంది." },
-    { command: "hash -t python", level: "Advanced", english: "Display a cached executable path.", telugu: "Cached executable pathని చూపిస్తుంది." },
-    { command: "ulimit -a", level: "Advanced", english: "Display shell resource limits.", telugu: "Shell resource limitsని చూపిస్తుంది." },
-    { command: "ulimit -n", level: "Advanced", english: "Display the open file descriptor limit.", telugu: "Open file descriptor limitని చూపిస్తుంది." },
-    { command: "umask", level: "Advanced", english: "Display the default permission mask.", telugu: "Default permission maskని చూపిస్తుంది." },
-    { command: "umask 027", level: "Advanced", english: "Set the default permission mask.", telugu: "Default file permissions maskని set చేస్తుంది." },
-    { command: "disown", level: "Advanced", english: "Remove a job from the shell job table.", telugu: "Shell job table నుంచి jobని తొలగిస్తుంది." },
-    { command: "disown -h", level: "Advanced", english: "Protect a job from SIGHUP on shell exit.", telugu: "Shell exit సమయంలో jobకి SIGHUP వెళ్లకుండా చేస్తుంది." },
-    { command: "suspend", level: "Advanced", english: "Suspend the current shell.", telugu: "Current shellని suspend చేస్తుంది." },
-    { command: "logout", level: "Advanced", english: "Exit a login shell.", telugu: "Login shell నుంచి logout అవుతుంది." },
-    { command: "caller", level: "Advanced", english: "Display subroutine call context.", telugu: "Subroutine call contextని చూపిస్తుంది." },
-    { command: "printf -v result '%s' 'hello'", level: "Advanced", english: "Store formatted output in a variable.", telugu: "Formatted outputని variableలో store చేస్తుంది." },
-    { command: "exec {fd}>output.log", level: "Advanced", english: "Open a file with a dynamic file descriptor.", telugu: "Dynamic file descriptorతో fileని open చేస్తుంది." },
-
-    // ========== TROUBLESHOOTING: 60 COMMANDS ==========
-
-    { command: "echo $?", level: "Troubleshooting", english: "Check the previous command exit status.", telugu: "చివరి command success లేదా failure statusని చూపిస్తుంది." },
-    { command: "set -o", level: "Troubleshooting", english: "Inspect shell option settings.", telugu: "Shell options settingsని చూపిస్తుంది." },
-    { command: "trap -p", level: "Troubleshooting", english: "Display configured signal traps.", telugu: "Configured signal trapsని చూపిస్తుంది." },
-    { command: "printf '%s\\n' \"$PATH\"", level: "Troubleshooting", english: "Inspect the executable search path.", telugu: "Executable search PATHని చూపిస్తుంది." },
-    { command: "env | sort", level: "Troubleshooting", english: "Display sorted environment variables.", telugu: "Environment variablesని sort చేసి చూపిస్తుంది." },
-    { command: "declare -p PATH", level: "Troubleshooting", english: "Inspect PATH variable attributes.", telugu: "PATH variable attributesని చూపిస్తుంది." },
-    { command: "jobs -l", level: "Troubleshooting", english: "Show jobs with process IDs.", telugu: "Jobsని process IDsతో చూపిస్తుంది." },
-    { command: "ps -ef", level: "Troubleshooting", english: "Inspect running processes.", telugu: "Running processesని చూపిస్తుంది." },
-    { command: "ps -p $BASHPID -o pid,ppid,stat,cmd", level: "Troubleshooting", english: "Inspect current Bash process details.", telugu: "Current Bash process వివరాలను చూపిస్తుంది." },
-    { command: "kill -0 $PID", level: "Troubleshooting", english: "Check whether a process exists.", telugu: "Process ఉందో లేదో signal పంపకుండా చెక్ చేస్తుంది." },
-    { command: "wait $PID; echo $?", level: "Troubleshooting", english: "Wait for a process and inspect its status.", telugu: "Process పూర్తయ్యాక exit statusని చెక్ చేస్తుంది." },
-    { command: "file script.sh", level: "Troubleshooting", english: "Identify the script file type.", telugu: "Script file typeని గుర్తిస్తుంది." },
-    { command: "head -n 1 script.sh", level: "Troubleshooting", english: "Inspect the script shebang.", telugu: "Script మొదటి line మరియు shebangని చూపిస్తుంది." },
-    { command: "od -c script.sh", level: "Troubleshooting", english: "Inspect file characters and control characters.", telugu: "Fileలోని hidden charactersని చూపిస్తుంది." },
-    { command: "cat -A script.sh", level: "Troubleshooting", english: "Reveal line endings and non-printing characters.", telugu: "Line endings మరియు hidden charactersని చూపిస్తుంది." },
-    { command: "bash -v script.sh", level: "Troubleshooting", english: "Print script lines while reading them.", telugu: "Script చదివేటప్పుడు linesని చూపిస్తుంది." },
-    { command: "set +e", level: "Troubleshooting", english: "Disable automatic exit on command failure.", telugu: "Command failure వచ్చినప్పుడు automatic exitని disable చేస్తుంది." },
-    { command: "set +u", level: "Troubleshooting", english: "Disable unset variable error handling.", telugu: "Unset variable error handlingని disable చేస్తుంది." },
-    { command: "set +o pipefail", level: "Troubleshooting", english: "Disable pipeline failure propagation.", telugu: "Pipeline failure propagationని disable చేస్తుంది." },
-    { command: "shopt -p", level: "Troubleshooting", english: "Inspect Bash option states.", telugu: "Bash options ప్రస్తుత statesని చూపిస్తుంది." },
-    { command: "shopt -u nullglob", level: "Troubleshooting", english: "Restore default unmatched glob behavior.", telugu: "Unmatched glob default behaviorని restore చేస్తుంది." },
-    { command: "hash -l", level: "Troubleshooting", english: "List commands in the hash table.", telugu: "Hash tableలో ఉన్న commandsని చూపిస్తుంది." },
-    { command: "type -a command_name", level: "Troubleshooting", english: "Find aliases, functions, built-ins and executables.", telugu: "Alias, function, builtin మరియు executableని గుర్తిస్తుంది." },
-    { command: "declare -p variable_name", level: "Troubleshooting", english: "Inspect a variable value and attributes.", telugu: "Variable value మరియు attributesని చూపిస్తుంది." },
-    { command: "printf '<%s>\\n' \"$variable\"", level: "Troubleshooting", english: "Inspect variable content and whitespace.", telugu: "Variableలోని spacesతో సహా contentని చూపిస్తుంది." },
-    { command: "test -f config.txt", level: "Troubleshooting", english: "Check whether a regular file exists.", telugu: "Regular file ఉందో లేదో చెక్ చేస్తుంది." },
-    { command: "test -d /var/log", level: "Troubleshooting", english: "Check whether a directory exists.", telugu: "Directory ఉందో లేదో చెక్ చేస్తుంది." },
-    { command: "test -r config.txt", level: "Troubleshooting", english: "Check file read permission.", telugu: "Fileకి read permission ఉందో లేదో చెక్ చేస్తుంది." },
-    { command: "test -w config.txt", level: "Troubleshooting", english: "Check file write permission.", telugu: "Fileకి write permission ఉందో లేదో చెక్ చేస్తుంది." },
-    { command: "test -x script.sh", level: "Troubleshooting", english: "Check file execute permission.", telugu: "Scriptకి execute permission ఉందో లేదో చెక్ చేస్తుంది." },
-    { command: "test -s app.log", level: "Troubleshooting", english: "Check whether a file is non-empty.", telugu: "Fileలో content ఉందో లేదో చెక్ చేస్తుంది." },
-    { command: "[[ -v APP_ENV ]]", level: "Troubleshooting", english: "Check whether a variable is set.", telugu: "Variable set అయిందో లేదో చెక్ చేస్తుంది." },
-    { command: "[[ \"$value\" =~ ^[0-9]+$ ]]", level: "Troubleshooting", english: "Validate a numeric value.", telugu: "Valueలో numbers మాత్రమే ఉన్నాయో చెక్ చేస్తుంది." },
-    { command: "[[ \"$file\" -nt \"$backup\" ]]", level: "Troubleshooting", english: "Check whether a file is newer.", telugu: "ఒక file మరొక file కంటే కొత్తదో చెక్ చేస్తుంది." },
-    { command: "[[ \"$file\" -ot \"$backup\" ]]", level: "Troubleshooting", english: "Check whether a file is older.", telugu: "ఒక file మరొక file కంటే పాతదో చెక్ చేస్తుంది." },
-    { command: "diff -u expected.txt actual.txt", level: "Troubleshooting", english: "Compare expected and actual output.", telugu: "Expected మరియు actual output మధ్య తేడాలను చూపిస్తుంది." },
-    { command: "grep -n 'ERROR' app.log", level: "Troubleshooting", english: "Locate error messages with line numbers.", telugu: "Error messagesని line numbersతో వెతుకుతుంది." },
-    { command: "grep -c 'ERROR' app.log", level: "Troubleshooting", english: "Count error messages in a log.", telugu: "Logలో errors సంఖ్యను లెక్కిస్తుంది." },
-    { command: "tail -n 100 app.log", level: "Troubleshooting", english: "Inspect the latest 100 log lines.", telugu: "చివరి 100 log linesని చూపిస్తుంది." },
-    { command: "journalctl -xe", level: "Troubleshooting", english: "Inspect recent system journal errors.", telugu: "Recent system journal errorsని చూపిస్తుంది." },
-    { command: "dmesg -T | tail -n 30", level: "Troubleshooting", english: "Inspect recent kernel messages.", telugu: "Recent kernel messagesని చూపిస్తుంది." },
-    { command: "df -h", level: "Troubleshooting", english: "Check filesystem disk usage.", telugu: "Disk space usageని చూపిస్తుంది." },
-    { command: "du -sh .", level: "Troubleshooting", english: "Check current directory size.", telugu: "Current directory sizeని చూపిస్తుంది." },
-    { command: "free -h", level: "Troubleshooting", english: "Inspect memory usage.", telugu: "Memory usageని చూపిస్తుంది." },
-    { command: "uptime", level: "Troubleshooting", english: "Inspect system uptime and load average.", telugu: "System uptime మరియు load averageని చూపిస్తుంది." },
-    { command: "who", level: "Troubleshooting", english: "Display logged-in users.", telugu: "Login అయిన usersని చూపిస్తుంది." },
-    { command: "id", level: "Troubleshooting", english: "Inspect user and group IDs.", telugu: "User మరియు group IDsని చూపిస్తుంది." },
-    { command: "groups", level: "Troubleshooting", english: "Display current user's groups.", telugu: "Current user groupsని చూపిస్తుంది." },
-    { command: "getent passwd \"$USER\"", level: "Troubleshooting", english: "Look up the current user account.", telugu: "Current user account వివరాలను వెతుకుతుంది." },
-    { command: "ulimit -a", level: "Troubleshooting", english: "Inspect current resource limits.", telugu: "Current resource limitsని చూపిస్తుంది." },
-    { command: "lsof -p $PID", level: "Troubleshooting", english: "Inspect files opened by a process.", telugu: "Process open చేసిన filesని చూపిస్తుంది." },
-    { command: "ss -tuln", level: "Troubleshooting", english: "Inspect listening network ports.", telugu: "Listening network portsని చూపిస్తుంది." },
-    { command: "ip addr show", level: "Troubleshooting", english: "Inspect network interface addresses.", telugu: "Network interface IP addressesని చూపిస్తుంది." },
-    { command: "ip route show", level: "Troubleshooting", english: "Inspect the routing table.", telugu: "Network routing tableని చూపిస్తుంది." },
-    { command: "getent hosts example.com", level: "Troubleshooting", english: "Check hostname resolution.", telugu: "Hostname DNS resolutionని చెక్ చేస్తుంది." },
-    { command: "curl -I https://example.com", level: "Troubleshooting", english: "Inspect HTTP response headers.", telugu: "HTTP response headersని చూపిస్తుంది." },
-    { command: "ping -c 4 8.8.8.8", level: "Troubleshooting", english: "Test basic network connectivity.", telugu: "Network connectivityని test చేస్తుంది." },
-    { command: "command -v curl", level: "Troubleshooting", english: "Check whether curl is installed and available.", telugu: "curl command అందుబాటులో ఉందో చెక్ చేస్తుంది." },
-    { command: "printf '%q\\n' \"$variable\"", level: "Troubleshooting", english: "Display shell-escaped variable content.", telugu: "Variable contentని shell-escaped formatలో చూపిస్తుంది." },
-    { command: "bash -O extdebug -c 'declare -F'", level: "Troubleshooting", english: "Inspect function debugging metadata.", telugu: "Function debugging metadataని చూపిస్తుంది." },
-    { command: "ulimit -c", level: "Troubleshooting", english: "Check the core dump size limit.", telugu: "Core dump size limitని చెక్ చేస్తుంది." },
-    { command: "type -P python3", level: "Troubleshooting", english: "Find the executable path for Python 3.", telugu: "Python 3 executable pathని చూపిస్తుంది." }
-  ]
-};
+export const linuxTool: DevOpsTool = {
+    name: "Linux",
+    category: "Core",
+    commands: [
+      { command: "pwd", level: "Basic", english: "to print the current directory", telugu: "ప్రస్తుత directory పేరు చూడటానికి." },
+      { command: "ls -lah", level: "Basic", english: "to list files with details", telugu: "Files వివరాలు, size, permissions చూడటానికి." },
+      { command: "cat /etc/os-release", level: "Intermediate", english: "to identify the Linux distribution", telugu: "Linux distribution వివరాలు తెలుసుకోవటానికి." },
+      { command: "find /var/log -type f", level: "Advanced", english: "to find log files under /var/log", telugu: "/var/log లో log files వెతకటానికి." },
+      { command: "df -h", level: "Troubleshooting", english: "to check filesystem disk usage", telugu: "Disk space ఎంత ఉపయోగించబడిందో చూడటానికి." },
+      { command: "free -h", level: "Troubleshooting", english: "to check memory usage", telugu: "RAM usage తెలుసుకోవటానికి." },
+      { command: "systemctl --failed", level: "Troubleshooting", english: "to list failed system services", telugu: "Fail అయిన system services చూడటానికి." },
+      {
+        command: "du -sh /var/log",
+        level: "Basic",
+        english: "Show the total size of the log directory.",
+        telugu: "Log directory total size telusukovadaniki.",
+      },
+      {
+        command: "uptime",
+        level: "Basic",
+        english: "Show system uptime and load averages.",
+        telugu: "System entha sepu run avutundo, load entho chudataniki.",
+      },
+      {
+        command: "ps aux",
+        level: "Basic",
+        english: "List running processes.",
+        telugu: "Run avutunna processes list chudataniki.",
+      },
+      {
+        command: "top",
+        level: "Basic",
+        english: "Monitor processes and resource usage interactively.",
+        telugu: "Processes mariyu CPU/RAM usage live ga monitor cheyyataniki.",
+      },
+      {
+        command: "ip addr show",
+        level: "Basic",
+        english: "Display network interfaces and IP addresses.",
+        telugu: "Network interfaces, IP addresses chudataniki.",
+      },
+      {
+        command: "ss -tulpn",
+        level: "Intermediate",
+        english: "List listening TCP/UDP sockets and associated processes.",
+        telugu: "Listening ports, services identify cheyyataniki; permissions avasaram kavachu.",
+      },
+      {
+        command: "journalctl -p err -b",
+        level: "Intermediate",
+        english: "Show system errors from the current boot.",
+        telugu: "Current boot lo system errors chudataniki.",
+      },
+      {
+        command: "systemctl status <service>",
+        level: "Basic",
+        english: "Check the status of a service.",
+        telugu: "Service status check cheyyataniki.",
+      },
+      {
+        command: "systemctl restart <service>",
+        level: "Intermediate",
+        english: "Restart a system service.",
+        telugu: "Service restart cheyyataniki; production impact mundu assess cheyyali.",
+      },
+      {
+        command: "find /var/log -type f -mtime -1",
+        level: "Intermediate",
+        english: "Find log files modified in the last day.",
+        telugu: "Last 24 hours lo modify ayina log files vetakataniki.",
+      },
+      {
+        command: "grep -Rni 'error' /var/log/myapp/",
+        level: "Intermediate",
+        english: "Search application logs for error text.",
+        telugu: "Application logs lo error messages search cheyyataniki.",
+      },
+      {
+        command: "lsof -i :8080",
+        level: "Troubleshooting",
+        english: "Identify processes using port 8080.",
+        telugu: "Port 8080 ni ye process use chestundo telusukovadaniki.",
+      },
+      {
+        command: "curl -I https://example.com",
+        level: "Basic",
+        english: "Check HTTP response headers.",
+        telugu: "Website HTTP response headers verify cheyyataniki.",
+      },
+      {
+        command: "dig example.com",
+        level: "Basic",
+        english: "Query DNS records for a domain.",
+        telugu: "Domain DNS resolution test cheyyataniki.",
+      },
+      {
+        command: "tar -czf logs.tar.gz /var/log/myapp/",
+        level: "Intermediate",
+        english: "Create a compressed archive of application logs.",
+        telugu: "Logs ni compressed archive ga backup cheyyataniki; sensitive logs permissions check cheyyali.",
+      },
+      {
+        command: "df -i",
+        level: "Troubleshooting",
+        english: "Check filesystem inode usage.",
+        telugu: "Disk space undi kuda files create avvakapothe inode usage check cheyyataniki.",
+      },
+      {
+        command: "vmstat 1 5",
+        level: "Advanced",
+        english: "Sample memory, process, and CPU statistics five times.",
+        telugu: "Performance troubleshooting kosam system statistics collect cheyyataniki.",
+      },
+    
+      {
+        command: "whoami",
+        level: "Basic",
+        english: "Show current user",
+        telugu: "Current user telusukovadaniki"
+      },
+      {
+        command: "id",
+        level: "Basic",
+        english: "Show user and group IDs",
+        telugu: "User and group IDs chudataniki"
+      },
+      {
+        command: "uname -a",
+        level: "Basic",
+        english: "Show kernel and system information",
+        telugu: "Kernel details chudataniki"
+      },
+      {
+        command: "hostname",
+        level: "Basic",
+        english: "Show system hostname",
+        telugu: "System hostname chudataniki"
+      },
+      {
+        command: "date",
+        level: "Basic",
+        english: "Show current date and time",
+        telugu: "Date time chudataniki"
+      },
+      {
+        command: "cal",
+        level: "Basic",
+        english: "Display a calendar",
+        telugu: "Calendar chudataniki"
+      },
+      {
+        command: "history",
+        level: "Basic",
+        english: "Show shell command history",
+        telugu: "Command history chudataniki"
+      },
+      {
+        command: "clear",
+        level: "Basic",
+        english: "Clear terminal screen",
+        telugu: "Terminal screen clear cheyadaniki"
+      },
+      {
+        command: "which bash",
+        level: "Basic",
+        english: "Locate the Bash executable",
+        telugu: "Bash executable path telusukovadaniki"
+      },
+      {
+        command: "type ls",
+        level: "Intermediate",
+        english: "Identify how a command is resolved",
+        telugu: "Command type telusukovadaniki"
+      },
+      {
+        command: "whereis bash",
+        level: "Intermediate",
+        english: "Find binary and manual locations",
+        telugu: "Binary, manual paths chudataniki"
+      },
+      {
+        command: "file /etc/passwd",
+        level: "Basic",
+        english: "Identify a file's type",
+        telugu: "File type telusukovadaniki"
+      },
+      {
+        command: "stat /etc/passwd",
+        level: "Intermediate",
+        english: "Show file metadata",
+        telugu: "File metadata chudataniki"
+      },
+      {
+        command: "readlink -f /bin/sh",
+        level: "Intermediate",
+        english: "Resolve a symbolic link",
+        telugu: "Symbolic link target telusukovadaniki"
+      },
+      {
+        command: "realpath .",
+        level: "Basic",
+        english: "Print an absolute path",
+        telugu: "Absolute path chudataniki"
+      },
+      {
+        command: "tree -L 2",
+        level: "Basic",
+        english: "Display directories as a tree",
+        telugu: "Directory tree chudataniki"
+      },
+      {
+        command: "find . -maxdepth 2 -type f",
+        level: "Intermediate",
+        english: "Find files two levels deep",
+        telugu: "Rendu levels lopala files vetakadaniki"
+      },
+      {
+        command: "find /tmp -type f -mtime +7",
+        level: "Intermediate",
+        english: "Find old files in temporary storage",
+        telugu: "Paatha temporary files vetakadaniki"
+      },
+      {
+        command: "find . -type f -size +100M",
+        level: "Advanced",
+        english: "Find files larger than 100 MB",
+        telugu: "100 MB kanna pedda files vetakadaniki"
+      },
+      {
+        command: "find . -type f -empty",
+        level: "Basic",
+        english: "Find empty files",
+        telugu: "Empty files vetakadaniki"
+      },
+      {
+        command: "find . -type d -empty",
+        level: "Basic",
+        english: "Find empty directories",
+        telugu: "Empty directories vetakadaniki"
+      },
+      {
+        command: "du -sh .",
+        level: "Basic",
+        english: "Show current directory size",
+        telugu: "Current directory size chudataniki"
+      },
+      {
+        command: "du -ah . | sort -h | tail -20",
+        level: "Advanced",
+        english: "Show the 20 largest paths",
+        telugu: "Pedda files/directories chudataniki"
+      },
+      {
+        command: "df -hT",
+        level: "Basic",
+        english: "Show filesystem space and type",
+        telugu: "Filesystem space, type chudataniki"
+      },
+      {
+        command: "lsblk -f",
+        level: "Intermediate",
+        english: "List block devices and filesystems",
+        telugu: "Disks, filesystems chudataniki"
+      },
+      {
+        command: "blkid",
+        level: "Advanced",
+        english: "Show block-device identifiers",
+        telugu: "Disk identifiers telusukovadaniki"
+      },
+      {
+        command: "mount | column -t",
+        level: "Intermediate",
+        english: "Display mounted filesystems",
+        telugu: "Mounted filesystems chudataniki"
+      },
+      {
+        command: "findmnt",
+        level: "Intermediate",
+        english: "Display mount hierarchy",
+        telugu: "Mount hierarchy chudataniki"
+      },
+      {
+        command: "ps aux --sort=-%mem | head",
+        level: "Intermediate",
+        english: "Show top memory-consuming processes",
+        telugu: "Ekkuva RAM vadutunna processes chudataniki"
+      },
+      {
+        command: "ps -eo pid,ppid,stat,cmd",
+        level: "Intermediate",
+        english: "List process IDs and states",
+        telugu: "Process IDs, states chudataniki"
+      },
+      {
+        command: "pgrep -a sshd",
+        level: "Basic",
+        english: "Find SSH daemon processes",
+        telugu: "SSH processes vetakadaniki"
+      },
+      {
+        command: "pstree -p",
+        level: "Intermediate",
+        english: "Show process tree with PIDs",
+        telugu: "Process tree chudataniki"
+      },
+      {
+        command: "nice -n 10 sleep 60",
+        level: "Advanced",
+        english: "Start a process with adjusted priority",
+        telugu: "Priority marchi process run cheyadaniki"
+      },
+      {
+        command: "renice 5 -p <PID>",
+        level: "Advanced",
+        english: "Change a running process priority",
+        telugu: "Running process priority marchadaniki"
+      },
+      {
+        command: "kill -TERM <PID>",
+        level: "Intermediate",
+        english: "Request graceful process termination",
+        telugu: "Process ni graceful-ga stop cheyadaniki"
+      },
+      {
+        command: "kill -KILL <PID>",
+        level: "Troubleshooting",
+        english: "Forcefully terminate a process",
+        telugu: "Respond avvani process ni force stop cheyadaniki"
+      },
+      {
+        command: "ip route show",
+        level: "Intermediate",
+        english: "Display routing table",
+        telugu: "Routing table chudataniki"
+      },
+      {
+        command: "ip neigh show",
+        level: "Intermediate",
+        english: "Display neighbor cache",
+        telugu: "Neighbor IP/MAC entries chudataniki"
+      },
+      {
+        command: "ping -c 4 127.0.0.1",
+        level: "Basic",
+        english: "Test local network stack",
+        telugu: "Local network stack test cheyadaniki"
+      },
+      {
+        command: "getent hosts example.com",
+        level: "Intermediate",
+        english: "Resolve a hostname using system databases",
+        telugu: "Hostname resolution test cheyadaniki"
+      },
+      {
+        command: "curl -sS -o /dev/null -w '%{http_code}\n' https://example.com",
+        level: "Intermediate",
+        english: "Print HTTP status code",
+        telugu: "HTTP status code telusukovadaniki"
+      },
+      {
+        command: "traceroute example.com",
+        level: "Intermediate",
+        english: "Trace network path to a host",
+        telugu: "Network route trace cheyadaniki"
+      },
+      {
+        command: "resolvectl status",
+        level: "Intermediate",
+        english: "Show system DNS configuration",
+        telugu: "DNS configuration chudataniki"
+      },
+      {
+        command: "timedatectl status",
+        level: "Basic",
+        english: "Show time and clock settings",
+        telugu: "System time settings chudataniki"
+      },
+      {
+        command: "timedatectl list-timezones",
+        level: "Basic",
+        english: "List available time zones",
+        telugu: "Time zones list chudataniki"
+      },
+      {
+        command: "journalctl -b",
+        level: "Intermediate",
+        english: "Show current boot logs",
+        telugu: "Current boot logs chudataniki"
+      },
+      {
+        command: "journalctl -u <service> --since today",
+        level: "Intermediate",
+        english: "Show today's service logs",
+        telugu: "Service today's logs chudataniki"
+      },
+      {
+        command: "dmesg -T | tail -50",
+        level: "Intermediate",
+        english: "Show recent kernel messages",
+        telugu: "Recent kernel messages chudataniki"
+      },
+      {
+        command: "systemctl is-active <service>",
+        level: "Basic",
+        english: "Check whether a service is active",
+        telugu: "Service active ga undo chudataniki"
+      },
+      {
+        command: "systemctl list-units --type=service",
+        level: "Intermediate",
+        english: "List loaded service units",
+        telugu: "Loaded services chudataniki"
+      },
+      {
+        command: "systemctl list-unit-files --state=enabled",
+        level: "Intermediate",
+        english: "List enabled service definitions",
+        telugu: "Enabled services chudataniki"
+      },
+      {
+        command: "sudo systemctl restart <service>",
+        level: "Troubleshooting",
+        english: "Restart a service",
+        telugu: "Service restart cheyadaniki"
+      },
+      {
+        command: "sudo systemctl reload <service>",
+        level: "Intermediate",
+        english: "Reload service configuration",
+        telugu: "Service configuration reload cheyadaniki"
+      },
+      {
+        command: "sudo systemctl enable <service>",
+        level: "Intermediate",
+        english: "Enable a service at boot",
+        telugu: "Boot appudu service start avvadaniki"
+      },
+      {
+        command: "sudo systemctl disable <service>",
+        level: "Intermediate",
+        english: "Disable automatic service startup",
+        telugu: "Automatic startup disable cheyadaniki"
+      },
+      {
+        command: "chmod 640 <file>",
+        level: "Basic",
+        english: "Set owner and group file permissions",
+        telugu: "File permissions set cheyadaniki"
+      },
+      {
+        command: "chmod u+x <script>",
+        level: "Basic",
+        english: "Make a script executable for its owner",
+        telugu: "Script execute permission ivvadaniki"
+      },
+      {
+        command: "chown <user>:<group> <file>",
+        level: "Intermediate",
+        english: "Change file ownership",
+        telugu: "File owner/group marchadaniki"
+      },
+      {
+        command: "umask 027",
+        level: "Advanced",
+        english: "Set default permission mask",
+        telugu: "Default permissions control cheyadaniki"
+      },
+      {
+        command: "getfacl <file>",
+        level: "Advanced",
+        english: "Display access control lists",
+        telugu: "ACL permissions chudataniki"
+      },
+      {
+        command: "setfacl -m u:<user>:r <file>",
+        level: "Advanced",
+        english: "Grant a user read access using ACL",
+        telugu: "User ki ACL read access ivvadaniki"
+      },
+      {
+        command: "id <user>",
+        level: "Basic",
+        english: "Show another user's identity and groups",
+        telugu: "User groups telusukovadaniki"
+      },
+      {
+        command: "getent passwd <user>",
+        level: "Intermediate",
+        english: "Look up a user account",
+        telugu: "User account details chudataniki"
+      },
+      {
+        command: "getent group <group>",
+        level: "Intermediate",
+        english: "Look up a group",
+        telugu: "Group details chudataniki"
+      },
+      {
+        command: "sudo useradd -m <user>",
+        level: "Intermediate",
+        english: "Create a user with a home directory",
+        telugu: "Home directory tho user create cheyadaniki"
+      },
+      {
+        command: "sudo usermod -aG <group> <user>",
+        level: "Intermediate",
+        english: "Add a user to a supplementary group",
+        telugu: "User ni group lo add cheyadaniki"
+      },
+      {
+        command: "sudo passwd -l <user>",
+        level: "Advanced",
+        english: "Lock a user password",
+        telugu: "User password lock cheyadaniki"
+      },
+      {
+        command: "getent hosts localhost",
+        level: "Basic",
+        english: "Check localhost name resolution",
+        telugu: "Localhost name resolution chudataniki"
+      },
+      {
+        command: "tar -czf archive.tar.gz <directory>",
+        level: "Basic",
+        english: "Create a gzip-compressed tar archive",
+        telugu: "Directory ni compress cheyadaniki"
+      },
+      {
+        command: "tar -tzf archive.tar.gz",
+        level: "Basic",
+        english: "List archive contents",
+        telugu: "Archive contents chudataniki"
+      },
+      {
+        command: "tar -xzf archive.tar.gz",
+        level: "Basic",
+        english: "Extract a gzip-compressed tar archive",
+        telugu: "Archive extract cheyadaniki"
+      },
+      {
+        command: "gzip -k <file>",
+        level: "Basic",
+        english: "Compress a file and keep the original",
+        telugu: "Original file unchi compress cheyadaniki"
+      },
+      {
+        command: "xz -T0 <file>",
+        level: "Advanced",
+        english: "Compress using available CPU threads",
+        telugu: "CPU threads use chesi compress cheyadaniki"
+      },
+      {
+        command: "zip -r archive.zip <directory>",
+        level: "Basic",
+        english: "Create a ZIP archive",
+        telugu: "ZIP archive create cheyadaniki"
+      },
+      {
+        command: "unzip -l archive.zip",
+        level: "Basic",
+        english: "List ZIP archive contents",
+        telugu: "ZIP contents chudataniki"
+      },
+      {
+        command: "rsync -avh <source>/ <destination>/",
+        level: "Intermediate",
+        english: "Synchronize directory contents",
+        telugu: "Directories sync cheyadaniki"
+      },
+      {
+        command: "rsync -av --dry-run <source>/ <destination>/",
+        level: "Advanced",
+        english: "Preview an rsync operation",
+        telugu: "Sync mundu changes preview cheyadaniki"
+      },
+      {
+        command: "scp <file> <user>@<host>:/tmp/",
+        level: "Intermediate",
+        english: "Copy a file to a remote host",
+        telugu: "Remote server ki file copy cheyadaniki"
+      },
+      {
+        command: "sftp <user>@<host>",
+        level: "Intermediate",
+        english: "Start an interactive SFTP session",
+        telugu: "Secure file transfer session start cheyadaniki"
+      },
+      {
+        command: "sha256sum <file>",
+        level: "Basic",
+        english: "Calculate a SHA-256 checksum",
+        telugu: "File checksum verify cheyadaniki"
+      },
+      {
+        command: "sha256sum -c checksums.txt",
+        level: "Intermediate",
+        english: "Verify checksums from a file",
+        telugu: "Checksum file verify cheyadaniki"
+      },
+      {
+        command: "md5sum <file>",
+        level: "Basic",
+        english: "Calculate an MD5 digest",
+        telugu: "MD5 digest calculate cheyadaniki"
+      },
+      {
+        command: "diff -u <old-file> <new-file>",
+        level: "Basic",
+        english: "Compare two text files",
+        telugu: "Rendu files differences chudataniki"
+      },
+      {
+        command: "cmp <file1> <file2>",
+        level: "Intermediate",
+        english: "Compare files byte by byte",
+        telugu: "Files byte-level compare cheyadaniki"
+      },
+      {
+        command: "sort <file>",
+        level: "Basic",
+        english: "Sort lines in a file",
+        telugu: "File lines sort cheyadaniki"
+      },
+      {
+        command: "sort <file> | uniq -c",
+        level: "Intermediate",
+        english: "Count repeated adjacent sorted lines",
+        telugu: "Repeated lines count cheyadaniki"
+      },
+      {
+        command: "grep -Rni 'error' /var/log",
+        level: "Intermediate",
+        english: "Search logs for error text",
+        telugu: "Logs lo errors vetakadaniki"
+      },
+      {
+        command: "grep -E 'WARN|ERROR' <file>",
+        level: "Basic",
+        english: "Match warning or error lines",
+        telugu: "Warning/error lines filter cheyadaniki"
+      },
+      {
+        command: "awk '{print $1}' <file>",
+        level: "Intermediate",
+        english: "Print the first whitespace-delimited field",
+        telugu: "First field print cheyadaniki"
+      },
+      {
+        command: "sed -n '1,20p' <file>",
+        level: "Basic",
+        english: "Print the first 20 lines",
+        telugu: "First 20 lines chudataniki"
+      },
+      {
+        command: "cut -d: -f1 /etc/passwd",
+        level: "Intermediate",
+        english: "Extract usernames from passwd file",
+        telugu: "Usernames extract cheyadaniki"
+      },
+      {
+        command: "wc -l <file>",
+        level: "Basic",
+        english: "Count lines in a file",
+        telugu: "File lines count cheyadaniki"
+      },
+      {
+        command: "head -n 20 <file>",
+        level: "Basic",
+        english: "Show the first 20 lines",
+        telugu: "First 20 lines chudataniki"
+      },
+      {
+        command: "tail -n 50 <file>",
+        level: "Basic",
+        english: "Show the last 50 lines",
+        telugu: "Last 50 lines chudataniki"
+      },
+      {
+        command: "tail -F /var/log/syslog",
+        level: "Troubleshooting",
+        english: "Follow a log file as it changes",
+        telugu: "Log live-ga monitor cheyadaniki"
+      },
+      {
+        command: "watch -n 2 df -h",
+        level: "Intermediate",
+        english: "Refresh disk usage every two seconds",
+        telugu: "Disk usage periodic-ga chudataniki"
+      },
+      {
+        command: "env",
+        level: "Basic",
+        english: "Print environment variables",
+        telugu: "Environment variables chudataniki"
+      },
+      {
+        command: "printenv PATH",
+        level: "Basic",
+        english: "Display the PATH variable",
+        telugu: "PATH value chudataniki"
+      },
+      {
+        command: "export APP_ENV=production",
+        level: "Basic",
+        english: "Set an environment variable for child processes",
+        telugu: "Environment variable set cheyadaniki"
+      },
+      {
+        command: "ulimit -a",
+        level: "Advanced",
+        english: "Show resource limits",
+        telugu: "Process resource limits chudataniki"
+      },
+      {
+        command: "sysctl -a 2>/dev/null | head",
+        level: "Advanced",
+        english: "Preview kernel parameters",
+        telugu: "Kernel parameters chudataniki"
+      },
+      {
+        command: "sysctl net.ipv4.ip_forward",
+        level: "Advanced",
+        english: "Read IPv4 forwarding setting",
+        telugu: "IP forwarding setting chudataniki"
+      },
+      {
+        command: "cat /proc/cpuinfo",
+        level: "Intermediate",
+        english: "Read CPU information",
+        telugu: "CPU details chudataniki"
+      },
+      {
+        command: "lscpu",
+        level: "Basic",
+        english: "Summarize CPU architecture",
+        telugu: "CPU architecture chudataniki"
+      },
+      {
+        command: "lsmem",
+        level: "Advanced",
+        english: "List memory ranges",
+        telugu: "Memory ranges chudataniki"
+      },
+      {
+        command: "lspci",
+        level: "Intermediate",
+        english: "List PCI devices",
+        telugu: "PCI devices chudataniki"
+      },
+      {
+        command: "lsusb",
+        level: "Basic",
+        english: "List USB devices",
+        telugu: "USB devices chudataniki"
+      },
+      {
+        command: "sensors",
+        level: "Intermediate",
+        english: "Read hardware sensor values",
+        telugu: "Hardware temperature sensors chudataniki"
+      },
+      {
+        command: "smartctl -H /dev/sda",
+        level: "Troubleshooting",
+        english: "Check disk SMART health",
+        telugu: "Disk health check cheyadaniki"
+      },
+      {
+        command: "sudo fsck -N /dev/<device>",
+        level: "Advanced",
+        english: "Preview filesystem check command",
+        telugu: "Filesystem check command preview cheyadaniki"
+      },
+      {
+        command: "mountpoint -q /mnt/data",
+        level: "Basic",
+        english: "Check whether a path is a mount point",
+        telugu: "Mount point undho check cheyadaniki"
+      },
+      {
+        command: "fuser -v <file>",
+        level: "Advanced",
+        english: "Show processes using a file",
+        telugu: "File vadutunna processes chudataniki"
+      },
+      {
+        command: "lsof <file>",
+        level: "Advanced",
+        english: "List open handles for a file",
+        telugu: "File open chesina processes chudataniki"
+      },
+      {
+        command: "flock -n /tmp/job.lock true",
+        level: "Advanced",
+        english: "Test non-blocking file lock acquisition",
+        telugu: "File lock availability test cheyadaniki"
+      },
+      {
+        command: "crontab -l",
+        level: "Basic",
+        english: "List current user's scheduled jobs",
+        telugu: "Cron jobs chudataniki"
+      },
+      {
+        command: "systemctl list-timers",
+        level: "Intermediate",
+        english: "List systemd timers",
+        telugu: "Scheduled systemd timers chudataniki"
+      },
+      {
+        command: "atq",
+        level: "Intermediate",
+        english: "List pending one-time jobs",
+        telugu: "Pending at jobs chudataniki"
+      },
+      {
+        command: "logger -t devops-test 'test message'",
+        level: "Basic",
+        english: "Write a message to the system log",
+        telugu: "System log ki test message rayadaniki"
+      },
+      {
+        command: "logger -p user.warning 'check service'",
+        level: "Intermediate",
+        english: "Write a warning-level log entry",
+        telugu: "Warning log entry create cheyadaniki"
+      },
+      {
+        command: "last -n 10",
+        level: "Intermediate",
+        english: "Show recent login sessions",
+        telugu: "Recent login sessions chudataniki"
+      },
+      {
+        command: "lastlog",
+        level: "Intermediate",
+        english: "Show last login information",
+        telugu: "Last login details chudataniki"
+      },
+      {
+        command: "who",
+        level: "Basic",
+        english: "Show logged-in users",
+        telugu: "Logged-in users chudataniki"
+      },
+      {
+        command: "w",
+        level: "Basic",
+        english: "Show logged-in users and their activity",
+        telugu: "User activity chudataniki"
+      },
+      {
+        command: "tty",
+        level: "Basic",
+        english: "Print the current terminal device",
+        telugu: "Current terminal device chudataniki"
+      },
+      {
+        command: "stty -a",
+        level: "Advanced",
+        english: "Display terminal settings",
+        telugu: "Terminal settings chudataniki"
+      },
+      {
+        command: "printf 'Linux\n'",
+        level: "Basic",
+        english: "Print formatted text",
+        telugu: "Formatted text print cheyadaniki"
+      },
+      {
+        command: "seq 1 10",
+        level: "Basic",
+        english: "Generate a sequence of numbers",
+        telugu: "Number sequence generate cheyadaniki"
+      },
+      {
+        command: "xargs -n1 echo < list.txt",
+        level: "Intermediate",
+        english: "Run a command for each input item",
+        telugu: "Input items meeda command run cheyadaniki"
+      },
+      {
+        command: "parallel echo ::: one two three",
+        level: "Advanced",
+        english: "Run independent tasks in parallel with GNU Parallel",
+        telugu: "Tasks parallel-ga run cheyadaniki"
+      },
+      {
+        command: "timeout 10s <command>",
+        level: "Advanced",
+        english: "Limit a command's runtime",
+        telugu: "Command runtime limit cheyadaniki"
+      },
+      {
+        command: "time <command>",
+        level: "Basic",
+        english: "Measure command execution time",
+        telugu: "Command execution time measure cheyadaniki"
+      },
+      {
+        command: "nohup <command> >job.log 2>&1 &",
+        level: "Intermediate",
+        english: "Run a command immune to hangup signals",
+        telugu: "Session close ayina command run avvadaniki"
+      },
+      {
+        command: "disown",
+        level: "Advanced",
+        english: "Remove a job from shell job control",
+        telugu: "Shell job control nunchi job remove cheyadaniki"
+      },
+      {
+        command: "jobs -l",
+        level: "Basic",
+        english: "List shell background jobs",
+        telugu: "Background jobs chudataniki"
+      },
+      {
+        command: "bg %1",
+        level: "Intermediate",
+        english: "Resume a stopped job in the background",
+        telugu: "Stopped job background lo resume cheyadaniki"
+      },
+      {
+        command: "fg %1",
+        level: "Intermediate",
+        english: "Bring a job to the foreground",
+        telugu: "Job foreground ki teesukuravadaniki"
+      },
+      {
+        command: "command -v python3",
+        level: "Basic",
+        english: "Find the command resolution for Python",
+        telugu: "Python command path chudataniki"
+      },
+      {
+        command: "ldd /bin/ls",
+        level: "Advanced",
+        english: "Show shared library dependencies",
+        telugu: "Binary library dependencies chudataniki"
+      },
+      {
+        command: "strings <binary> | head",
+        level: "Advanced",
+        english: "Display printable strings in a binary",
+        telugu: "Binary lo readable strings chudataniki"
+      },
+      {
+        command: "readelf -h <binary>",
+        level: "Advanced",
+        english: "Inspect ELF binary header",
+        telugu: "ELF binary header chudataniki"
+      },
+      {
+        command: "objdump -d <binary> | head",
+        level: "Advanced",
+        english: "Preview disassembled machine code",
+        telugu: "Binary disassembly preview cheyadaniki"
+      },
+      {
+        command: "nm -D <binary>",
+        level: "Advanced",
+        english: "List dynamic symbols",
+        telugu: "Dynamic symbols chudataniki"
+      },
+      {
+        command: "strace -c <command>",
+        level: "Advanced",
+        english: "Summarize system calls made by a command",
+        telugu: "System calls summary chudataniki"
+      },
+      {
+        command: "strace -f -o trace.log <command>",
+        level: "Troubleshooting",
+        english: "Trace system calls into a log file",
+        telugu: "System calls log cheyadaniki"
+      },
+      {
+        command: "ltrace <command>",
+        level: "Advanced",
+        english: "Trace dynamic library calls",
+        telugu: "Library calls trace cheyadaniki"
+      },
+      {
+        command: "perf stat <command>",
+        level: "Advanced",
+        english: "Collect performance counter statistics",
+        telugu: "Performance counters collect cheyadaniki"
+      },
+      {
+        command: "sar -u 1 5",
+        level: "Intermediate",
+        english: "Sample CPU utilization",
+        telugu: "CPU utilization observe cheyadaniki"
+      },
+      {
+        command: "sar -r 1 5",
+        level: "Intermediate",
+        english: "Sample memory utilization",
+        telugu: "Memory utilization observe cheyadaniki"
+      },
+      {
+        command: "iostat -xz 1 3",
+        level: "Advanced",
+        english: "Inspect disk I/O statistics",
+        telugu: "Disk I/O statistics chudataniki"
+      },
+      {
+        command: "iotop -o",
+        level: "Advanced",
+        english: "Show processes performing disk I/O",
+        telugu: "Disk I/O chestunna processes chudataniki"
+      },
+      {
+        command: "pidstat 1 5",
+        level: "Advanced",
+        english: "Sample per-process resource usage",
+        telugu: "Process-wise resource usage chudataniki"
+      },
+      {
+        command: "mpstat -P ALL 1 3",
+        level: "Advanced",
+        english: "Show per-CPU statistics",
+        telugu: "Prati CPU statistics chudataniki"
+      },
+      {
+        command: "numastat",
+        level: "Advanced",
+        english: "Show NUMA memory statistics",
+        telugu: "NUMA memory statistics chudataniki"
+      },
+      {
+        command: "taskset -pc <PID>",
+        level: "Advanced",
+        english: "Display CPU affinity for a process",
+        telugu: "Process CPU affinity chudataniki"
+      },
+      {
+        command: "chrt -p <PID>",
+        level: "Advanced",
+        english: "Display scheduling policy for a process",
+        telugu: "Process scheduling policy chudataniki"
+      },
+      {
+        command: "lsns",
+        level: "Advanced",
+        english: "List namespaces",
+        telugu: "Linux namespaces chudataniki"
+      },
+      {
+        command: "unshare --mount true",
+        level: "Advanced",
+        english: "Run a command in a new mount namespace",
+        telugu: "New mount namespace lo command run cheyadaniki"
+      },
+      {
+        command: "nsenter -t <PID> -m -- mount",
+        level: "Advanced",
+        english: "Inspect mounts in another process namespace",
+        telugu: "Vere process namespace mounts chudataniki"
+      },
+      {
+        command: "findmnt --verify",
+        level: "Troubleshooting",
+        english: "Verify mount table configuration",
+        telugu: "Mount configuration verify cheyadaniki"
+      },
+      {
+        command: "namei -l <path>",
+        level: "Troubleshooting",
+        english: "Show permissions along a path",
+        telugu: "Path lo prati level permissions chudataniki"
+      },
+      {
+        command: "getent ahosts example.com",
+        level: "Intermediate",
+        english: "Resolve host addresses using system databases",
+        telugu: "Host addresses resolve cheyadaniki"
+      },
+      {
+        command: "ip -s link",
+        level: "Intermediate",
+        english: "Show network interface counters",
+        telugu: "Network interface counters chudataniki"
+      },
+      {
+        command: "ethtool <interface>",
+        level: "Advanced",
+        english: "Inspect network interface settings",
+        telugu: "Network interface settings chudataniki"
+      },
+      {
+        command: "nmcli device status",
+        level: "Intermediate",
+        english: "Show NetworkManager device status",
+        telugu: "NetworkManager devices chudataniki"
+      },
+      {
+        command: "tcpdump -i any -c 20",
+        level: "Advanced",
+        english: "Capture a small sample of network packets",
+        telugu: "Konni network packets capture cheyadaniki"
+      },
+      {
+        command: "openssl s_client -connect example.com:443 -servername example.com",
+        level: "Advanced",
+        english: "Inspect a TLS connection",
+        telugu: "TLS connection inspect cheyadaniki"
+      },
+      {
+        command: "openssl x509 -in cert.pem -noout -dates",
+        level: "Troubleshooting",
+        english: "Show certificate validity dates",
+        telugu: "Certificate expiry dates chudataniki"
+      },
+      {
+        command: "ssh -v <user>@<host>",
+        level: "Troubleshooting",
+        english: "Debug SSH connection setup",
+        telugu: "SSH connection debug cheyadaniki"
+      },
+      {
+        command: "ssh-keygen -lf ~/.ssh/id_ed25519.pub",
+        level: "Intermediate",
+        english: "Show an SSH public-key fingerprint",
+        telugu: "SSH key fingerprint chudataniki"
+      },
+      {
+        command: "ssh-add -l",
+        level: "Intermediate",
+        english: "List keys loaded in the SSH agent",
+        telugu: "SSH agent keys chudataniki"
+      },
+      {
+        command: "sudo visudo -c",
+        level: "Troubleshooting",
+        english: "Validate sudoers syntax",
+        telugu: "Sudoers syntax validate cheyadaniki"
+      },
+      {
+        command: "sudo -l",
+        level: "Intermediate",
+        english: "List commands allowed through sudo",
+        telugu: "Sudo permissions chudataniki"
+      },
+      {
+        command: "getenforce",
+        level: "Advanced",
+        english: "Check SELinux enforcement mode",
+        telugu: "SELinux mode chudataniki"
+      },
+      {
+        command: "sestatus",
+        level: "Advanced",
+        english: "Show SELinux status",
+        telugu: "SELinux status chudataniki"
+      },
+      {
+        command: "aa-status",
+        level: "Advanced",
+        english: "Show AppArmor status",
+        telugu: "AppArmor status chudataniki"
+      },
+      {
+        command: "restorecon -nRv <path>",
+        level: "Advanced",
+        english: "Preview SELinux context corrections",
+        telugu: "SELinux context changes preview cheyadaniki"
+      },
+      {
+        command: "journalctl --disk-usage",
+        level: "Intermediate",
+        english: "Show journal disk usage",
+        telugu: "Journal logs disk usage chudataniki"
+      },
+      {
+        command: "sudo journalctl --vacuum-time=7d",
+        level: "Troubleshooting",
+        english: "Remove journal entries older than seven days",
+        telugu: "7 days kanna paatha journal logs clean cheyadaniki"
+      },
+      {
+        command: "coredumpctl list",
+        level: "Advanced",
+        english: "List recorded core dumps",
+        telugu: "Core dumps chudataniki"
+      },
+      {
+        command: "coredumpctl info <PID>",
+        level: "Advanced",
+        english: "Inspect a recorded core dump",
+        telugu: "Core dump details chudataniki"
+      },
+      {
+        command: "systemd-analyze blame",
+        level: "Troubleshooting",
+        english: "Show slow system startup units",
+        telugu: "Boot slow services chudataniki"
+      },
+      {
+        command: "systemd-analyze critical-chain",
+        level: "Advanced",
+        english: "Show critical startup dependency chain",
+        telugu: "Boot critical chain chudataniki"
+      },
+      {
+        command: "systemd-analyze verify <unit-file>",
+        level: "Troubleshooting",
+        english: "Verify a systemd unit file",
+        telugu: "Systemd unit file validate cheyadaniki"
+      },
+      {
+        command: "loginctl list-sessions",
+        level: "Intermediate",
+        english: "List login sessions",
+        telugu: "Login sessions chudataniki"
+      },
+      {
+        command: "loginctl session-status <session>",
+        level: "Intermediate",
+        english: "Show a login session's status",
+        telugu: "Login session status chudataniki"
+      },
+      {
+        command: "ulimit -n",
+        level: "Intermediate",
+        english: "Show the open-file descriptor limit",
+        telugu: "Open files limit chudataniki"
+      },
+      {
+        command: "prlimit --pid <PID>",
+        level: "Advanced",
+        english: "Show resource limits for a process",
+        telugu: "Process resource limits chudataniki"
+      },
+      {
+        command: "getconf PAGE_SIZE",
+        level: "Advanced",
+        english: "Show the system memory page size",
+        telugu: "Memory page size chudataniki"
+      },
+      {
+        command: "getconf LONG_BIT",
+        level: "Basic",
+        english: "Show the user-space word size",
+        telugu: "32-bit/64-bit word size chudataniki"
+      },
+      {
+        command: "locale",
+        level: "Basic",
+        english: "Show locale settings",
+        telugu: "Locale settings chudataniki"
+      },
+      {
+        command: "localectl status",
+        level: "Intermediate",
+        english: "Show system locale and keyboard settings",
+        telugu: "System locale, keyboard settings chudataniki"
+      },
+      {
+        command: "iconv -f UTF-8 -t ASCII//TRANSLIT <file>",
+        level: "Advanced",
+        english: "Convert text character encoding",
+        telugu: "Text encoding convert cheyadaniki"
+      },
+      {
+        command: "dos2unix <file>",
+        level: "Basic",
+        english: "Convert Windows line endings to Unix",
+        telugu: "Windows line endings convert cheyadaniki"
+      },
+      {
+        command: "unix2dos <file>",
+        level: "Basic",
+        english: "Convert Unix line endings to Windows",
+        telugu: "Unix line endings convert cheyadaniki"
+      },
+      {
+        command: "split -l 1000 <file> part-",
+        level: "Intermediate",
+        english: "Split a file into 1000-line chunks",
+        telugu: "File ni 1000 lines chunks ga split cheyadaniki"
+      },
+      {
+        command: "join <file1> <file2>",
+        level: "Advanced",
+        english: "Join sorted files on a common field",
+        telugu: "Common field tho files join cheyadaniki"
+      },
+    ],
+  };
