@@ -1,108 +1,397 @@
+
 import type { DevOpsTool } from "./command-types";
 
+type CommandLevel = DevOpsTool["commands"][number]["level"];
+
+const makeCommands = (
+  level: CommandLevel,
+  rows: [string, string, string][]
+) =>
+  rows.map(([command, english, telugu]) => ({
+    command,
+    level,
+    english,
+    telugu,
+  }));
+
 export const mavenTool: DevOpsTool = {
-    name: "Maven",
-    category: "Automation & Build",
-    commands: [
-      { command: "mvn -version", level: "Basic", english: "to display Maven and Java versions", telugu: "Maven, Java versions చూడటానికి." },
-      { command: "mvn test", level: "Intermediate", english: "to run project tests", telugu: "Project tests run చేయటానికి." },
-      { command: "mvn package", level: "Advanced", english: "to build the distributable project artifact", telugu: "Project package లేదా artifact తయారు చేయటానికి." },
-      { command: "mvn dependency:tree", level: "Troubleshooting", english: "to inspect the dependency tree", telugu: "Project dependencies hierarchy చూడటానికి." },
-      {
-        command: "mvn validate",
-        level: "Basic",
-        english: "Validate the Maven project structure and configuration.",
-        telugu: "Maven project configuration validate cheyyataniki.",
-      },
-      {
-        command: "mvn compile",
-        level: "Basic",
-        english: "Compile main source code.",
-        telugu: "Main source code compile cheyyataniki.",
-      },
-      {
-        command: "mvn verify",
-        level: "Intermediate",
-        english: "Run verification checks through the verify lifecycle phase.",
-        telugu: "Integration/verification checks execute cheyyataniki.",
-      },
-      {
-        command: "mvn clean",
-        level: "Basic",
-        english: "Remove generated build output.",
-        telugu: "Generated target build files clean cheyyataniki.",
-      },
-      {
-        command: "mvn clean package",
-        level: "Basic",
-        english: "Clean and package the project.",
-        telugu: "Fresh build tho package create cheyyataniki.",
-      },
-      {
-        command: "mvn dependency:analyze",
-        level: "Advanced",
-        english: "Analyze declared and used dependencies.",
-        telugu: "Unused/missing dependencies identify cheyyataniki.",
-      },
-      {
-        command: "mvn help:effective-pom",
-        level: "Intermediate",
-        english: "Display the effective POM after inheritance and profiles.",
-        telugu: "Parent POM/profile merge ayina final configuration chudataniki.",
-      },
-      {
-        command: "mvn help:active-profiles",
-        level: "Basic",
-        english: "List active Maven profiles.",
-        telugu: "Active Maven profiles identify cheyyataniki.",
-      },
-      {
-        command: "mvn -DskipTests package",
-        level: "Intermediate",
-        english: "Package the project without running tests.",
-        telugu: "Tests run cheyyakunda package build cheyyataniki; CI lo tests skip cheyyadam avoid cheyyali.",
-      },
-      {
-        command: "mvn -Dmaven.test.skip=true package",
-        level: "Advanced",
-        english: "Skip test compilation and execution for the package build.",
-        telugu: "Test compile/execution skip chestundi; only intentional scenarios lo use cheyyali.",
-      },
-      {
-        command: "mvn -o package",
-        level: "Troubleshooting",
-        english: "Build in offline mode using cached dependencies.",
-        telugu: "Network unavailable appudu cached dependencies tho build try cheyyataniki.",
-      },
-      {
-        command: "mvn -U clean package",
-        level: "Troubleshooting",
-        english: "Force checks for updated snapshot dependencies.",
-        telugu: "Stale SNAPSHOT dependency issue troubleshoot cheyyataniki.",
-      },
-      {
-        command: "mvn -pl module-name -am test",
-        level: "Advanced",
-        english: "Test a selected module and required upstream modules.",
-        telugu: "Selected Maven module mariyu required upstream modules test cheyyataniki.",
-      },
-      {
-        command: "mvn -DskipTests=false test",
-        level: "Intermediate",
-        english: "Explicitly enable test execution.",
-        telugu: "Build configuration tests skip chestunte tests enable cheyyataniki.",
-      },
-      {
-        command: "mvn dependency:purge-local-repository",
-        level: "Advanced",
-        english: "Purge selected project dependencies from the local repository and resolve again.",
-        telugu: "Corrupted cached dependencies troubleshoot cheyyataniki; dependencies malli download avuthayi.",
-      },
-      {
-        command: "mvn help:describe -Dplugin=compiler -Ddetail",
-        level: "Intermediate",
-        english: "Show detailed Maven compiler plugin information.",
-        telugu: "Compiler plugin goals/options inspect cheyyataniki.",
-      },
-    ],
-  };
+  name: "Maven",
+  category: "Build Automation",
+  commands: [
+    // BASIC - 14 COMMANDS
+    ...makeCommands("Basic", [
+      [
+        "mvn -version",
+        "Display the installed Maven and Java versions.",
+        "Maven mariyu Java versions chudataniki.",
+      ],
+      [
+        "mvn -help",
+        "Display Maven command-line help and available options.",
+        "Maven command options and help chudataniki.",
+      ],
+      [
+        "mvn validate",
+        "Validate the project structure and required information.",
+        "Project configuration correct ga undo validate cheyyataniki.",
+      ],
+      [
+        "mvn compile",
+        "Compile the main source code.",
+        "Project main source code compile cheyyataniki.",
+      ],
+      [
+        "mvn test",
+        "Compile and run unit tests.",
+        "Unit tests compile chesi run cheyyataniki.",
+      ],
+      [
+        "mvn package",
+        "Build the project artifact such as a JAR or WAR.",
+        "Project JAR or WAR package create cheyyataniki.",
+      ],
+      [
+        "mvn verify",
+        "Run the build lifecycle checks and verify the project.",
+        "Build checks run chesi project verify cheyyataniki.",
+      ],
+      [
+        "mvn install",
+        "Install the built artifact into the local Maven repository.",
+        "Build artifact ni local Maven repository lo install cheyyataniki.",
+      ],
+      [
+        "mvn clean",
+        "Remove files generated by previous builds.",
+        "Previous build generated files remove cheyyataniki.",
+      ],
+      [
+        "mvn clean package",
+        "Clean the project and create a fresh package.",
+        "Old build files remove chesi fresh package create cheyyataniki.",
+      ],
+      [
+        "mvn dependency:tree",
+        "Display the project's dependency hierarchy.",
+        "Project dependencies hierarchy chudataniki.",
+      ],
+      [
+        "mvn help:effective-pom",
+        "Display the effective POM after inheritance and profiles.",
+        "Final effective pom.xml configuration chudataniki.",
+      ],
+      [
+        "mvn help:active-profiles",
+        "List profiles active for the current build.",
+        "Current build lo active profiles chudataniki.",
+      ],
+      [
+        "mvn help:effective-settings",
+        "Display the effective Maven settings configuration.",
+        "Final Maven settings configuration chudataniki.",
+      ],
+    ]),
+
+    // INTERMEDIATE - 18 COMMANDS
+    ...makeCommands("Intermediate", [
+      [
+        "mvn -DskipTests package",
+        "Package the project without running tests.",
+        "Tests run cheyyakunda project package create cheyyataniki.",
+      ],
+      [
+        "mvn -Dmaven.test.skip=true package",
+        "Skip test compilation and test execution while packaging.",
+        "Test compilation and execution rendu skip chesi package create cheyyataniki.",
+      ],
+      [
+        "mvn -Pproduction package",
+        "Build the project using the production profile.",
+        "Production profile use chesi project build cheyyataniki.",
+      ],
+      [
+        "mvn -Denv=dev verify",
+        "Pass a custom environment property to the build.",
+        "Build ki custom environment property pass cheyyataniki.",
+      ],
+      [
+        "mvn -o verify",
+        "Run the build in offline mode using locally available dependencies.",
+        "Local dependencies use chesi offline build cheyyataniki.",
+      ],
+      [
+        "mvn -U clean verify",
+        "Force checks for updated snapshots and verify the project.",
+        "Updated snapshot dependencies check chesi project verify cheyyataniki.",
+      ],
+      [
+        "mvn -f path/to/pom.xml verify",
+        "Build a project using a specified POM file.",
+        "Specified pom.xml use chesi project build cheyyataniki.",
+      ],
+      [
+        "mvn -s path/to/settings.xml verify",
+        "Run Maven using a custom settings file.",
+        "Custom settings.xml use chesi Maven run cheyyataniki.",
+      ],
+      [
+        "mvn -pl module-name package",
+        "Build only the specified module in a multi-module project.",
+        "Multi-module project lo specified module matrame build cheyyataniki.",
+      ],
+      [
+        "mvn -pl module-name -am package",
+        "Build the selected module and its required dependent projects.",
+        "Selected module ki required dependency modules kuda build cheyyataniki.",
+      ],
+      [
+        "mvn -pl module-name -amd package",
+        "Build the selected module and projects that depend on it.",
+        "Selected module meeda depend ayye projects kuda build cheyyataniki.",
+      ],
+      [
+        "mvn -T 4 clean verify",
+        "Run a parallel Maven build using four threads.",
+        "Four threads use chesi parallel Maven build run cheyyataniki.",
+      ],
+      [
+        "mvn dependency:resolve",
+        "Resolve and download project dependencies.",
+        "Project dependencies resolve and download cheyyataniki.",
+      ],
+      [
+        "mvn dependency:go-offline",
+        "Download dependencies and plugins needed for offline builds.",
+        "Offline builds kosam dependencies and plugins download cheyyataniki.",
+      ],
+      [
+        "mvn dependency:analyze",
+        "Analyze declared and used dependencies.",
+        "Declared and used dependencies analyze cheyyataniki.",
+      ],
+      [
+        "mvn help:describe -Dplugin=compiler",
+        "Display information about the Maven Compiler Plugin.",
+        "Maven Compiler Plugin details chudataniki.",
+      ],
+      [
+        "mvn help:evaluate -Dexpression=project.version -q -DforceStdout",
+        "Print the project's resolved version property.",
+        "Project resolved version print cheyyataniki.",
+      ],
+      [
+        "mvn -N validate",
+        "Validate only the current project without recursively building modules.",
+        "Submodules build cheyyakunda current project validate cheyyataniki.",
+      ],
+    ]),
+
+    // ADVANCED - 20 COMMANDS
+    ...makeCommands("Advanced", [
+      [
+        "mvn clean install",
+        "Clean, build, test and install the artifact locally.",
+        "Clean chesi build, test and local repository lo install cheyyataniki.",
+      ],
+      [
+        "mvn clean deploy",
+        "Build and deploy the project artifact to a configured remote repository.",
+        "Project artifact ni configured remote repository ki deploy cheyyataniki.",
+      ],
+      [
+        "mvn release:prepare",
+        "Prepare a project release by checking and updating release versions.",
+        "Project release kosam versions prepare cheyyataniki.",
+      ],
+      [
+        "mvn release:perform",
+        "Perform a prepared release and deploy its artifacts.",
+        "Prepared release execute chesi artifacts deploy cheyyataniki.",
+      ],
+      [
+        "mvn versions:display-dependency-updates",
+        "Display available updates for project dependencies.",
+        "Project dependencies ki available updates chudataniki.",
+      ],
+      [
+        "mvn versions:display-plugin-updates",
+        "Display available updates for Maven plugins.",
+        "Maven plugins ki available updates chudataniki.",
+      ],
+      [
+        "mvn versions:use-latest-versions",
+        "Update dependency versions in the POM to available latest versions.",
+        "POM lo dependency versions latest versions ki update cheyyataniki.",
+      ],
+      [
+        "mvn enforcer:enforce",
+        "Enforce configured Maven project and dependency rules.",
+        "Configured Maven project and dependency rules enforce cheyyataniki.",
+      ],
+      [
+        "mvn checkstyle:check",
+        "Check source code against configured Checkstyle rules.",
+        "Checkstyle rules prakaram source code verify cheyyataniki.",
+      ],
+      [
+        "mvn pmd:check",
+        "Run PMD source-code analysis and check for violations.",
+        "PMD analysis dwara code issues identify cheyyataniki.",
+      ],
+      [
+        "mvn spotbugs:check",
+        "Run SpotBugs analysis and check for reported bugs.",
+        "SpotBugs dwara possible code bugs identify cheyyataniki.",
+      ],
+      [
+        "mvn jacoco:report",
+        "Generate a JaCoCo code coverage report.",
+        "Code coverage report generate cheyyataniki.",
+      ],
+      [
+        "mvn failsafe:integration-test failsafe:verify",
+        "Run integration tests and verify their results using Failsafe.",
+        "Failsafe use chesi integration tests run and verify cheyyataniki.",
+      ],
+      [
+        "mvn dependency:copy-dependencies",
+        "Copy project dependencies into the configured output directory.",
+        "Project dependencies ni output directory ki copy cheyyataniki.",
+      ],
+      [
+        "mvn install:install-file -Dfile=library.jar -DgroupId=com.example -DartifactId=library -Dversion=1.0 -Dpackaging=jar",
+        "Install an external JAR into the local Maven repository.",
+        "External JAR ni local Maven repository lo install cheyyataniki.",
+      ],
+      [
+        "mvn deploy:deploy-file -Dfile=library.jar -DgroupId=com.example -DartifactId=library -Dversion=1.0 -Dpackaging=jar -DrepositoryId=internal -Durl=https://repo.example.com/releases",
+        "Deploy an external artifact to a configured remote repository.",
+        "External artifact ni remote Maven repository ki deploy cheyyataniki.",
+      ],
+      [
+        "mvn archetype:generate",
+        "Generate a new Maven project from an archetype.",
+        "Archetype use chesi new Maven project create cheyyataniki.",
+      ],
+      [
+        "mvn help:effective-pom -Doutput=effective-pom.xml",
+        "Generate the effective POM and save it to a file.",
+        "Effective POM ni file lo save cheyyataniki.",
+      ],
+      [
+        "mvn site",
+        "Generate project documentation and reports.",
+        "Project documentation and reports generate cheyyataniki.",
+      ],
+      [
+        "mvn site-deploy",
+        "Deploy generated project documentation to the configured site.",
+        "Generated project documentation ni configured site ki deploy cheyyataniki.",
+      ],
+    ]),
+
+    // TROUBLESHOOTING - 20 COMMANDS
+    ...makeCommands("Troubleshooting", [
+      [
+        "mvn -e verify",
+        "Display full error stack traces when a build fails.",
+        "Build fail ayinappudu complete error stack trace chudataniki.",
+      ],
+      [
+        "mvn -X verify",
+        "Enable detailed debug output for build troubleshooting.",
+        "Build issues troubleshoot cheyyataniki detailed debug logs chudataniki.",
+      ],
+      [
+        "mvn -C verify",
+        "Fail the build when dependency checksums do not match.",
+        "Dependency checksum mismatch unte build fail cheyyataniki.",
+      ],
+      [
+        "mvn -o clean verify",
+        "Run a clean offline build to identify missing cached dependencies.",
+        "Offline build lo missing cached dependencies identify cheyyataniki.",
+      ],
+      [
+        "mvn -U -X clean verify",
+        "Force snapshot updates and enable debug logging during a clean build.",
+        "Snapshot updates force chesi debug logs tho build troubleshoot cheyyataniki.",
+      ],
+      [
+        "mvn -rf :module-artifact-id verify",
+        "Resume a multi-module build from the specified failed module.",
+        "Failed module nunchi multi-module build resume cheyyataniki.",
+      ],
+      [
+        "mvn -fae verify",
+        "Continue building other modules after a module failure and report failures at the end.",
+        "Oka module fail aina remaining modules build chesi final lo failures report cheyyataniki.",
+      ],
+      [
+        "mvn -Dtest=MyTest test",
+        "Run a specific test class using Maven Surefire.",
+        "Specific test class matrame run cheyyataniki.",
+      ],
+      [
+        "mvn -Dtest=MyTest#myTestMethod test",
+        "Run a specific test method using Maven Surefire.",
+        "Specific test method matrame run cheyyataniki.",
+      ],
+      [
+        "mvn -DskipTests=false test",
+        "Explicitly enable test execution for the build.",
+        "Build lo tests execution enable cheyyataniki.",
+      ],
+      [
+        "mvn -Dsurefire.failIfNoSpecifiedTests=false test",
+        "Avoid failing when a requested Surefire test pattern matches no tests.",
+        "Requested test pattern ki tests match kakapothe build fail avvakunda cheyyataniki.",
+      ],
+      [
+        "mvn -DtrimStackTrace=false test",
+        "Display complete stack traces for test failures.",
+        "Test failures ki complete stack traces chudataniki.",
+      ],
+      [
+        "mvn dependency:tree -Dverbose",
+        "Display detailed dependency-tree information including omitted nodes.",
+        "Omitted dependencies tho saha detailed dependency tree chudataniki.",
+      ],
+      [
+        "mvn dependency:tree -Dincludes=groupId:artifactId",
+        "Inspect a specific dependency and its paths in the dependency tree.",
+        "Specific dependency project lo ekkada use avuthundo chudataniki.",
+      ],
+      [
+        "mvn help:effective-settings -Doutput=effective-settings.xml",
+        "Save effective Maven settings to inspect configuration problems.",
+        "Maven settings issues inspect cheyyataniki effective settings save cheyyataniki.",
+      ],
+      [
+        "mvn help:describe -Dcmd=compile",
+        "Inspect the lifecycle phase and its associated plugin goal.",
+        "Compile phase ki sambandhinchina plugin goal details chudataniki.",
+      ],
+      [
+        "mvn compiler:compile",
+        "Run the compiler plugin directly to diagnose compilation problems.",
+        "Compilation issues diagnose cheyyataniki compiler plugin direct ga run cheyyataniki.",
+      ],
+      [
+        "mvn surefire:report",
+        "Generate a report from available Surefire test results.",
+        "Surefire test results nunchi report generate cheyyataniki.",
+      ],
+      [
+        "mvn -Dcheckstyle.skip=false checkstyle:check",
+        "Explicitly enable Checkstyle checks during troubleshooting.",
+        "Troubleshooting time lo Checkstyle checks enable cheyyataniki.",
+      ],
+      [
+        "mvn -Dorg.slf4j.simpleLogger.showDateTime=true verify",
+        "Include timestamps in Maven log messages for build diagnosis.",
+        "Build logs lo timestamps include chesi issue timing identify cheyyataniki.",
+      ],
+    ]),
+  ],
+};
