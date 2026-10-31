@@ -27,6 +27,8 @@ import { snykTool } from "./snyk-commands";
 import { owaspDependencyCheckTool } from "./owasp-dependency-check-commands";
 import { jiraTool } from "./jira-commands";
 import { slackTool } from "./slack-commands";
+import { pythonTool } from "./python-commands";
+import { awsTool } from "./aws-commands";
 
 export const devOpsTools: DevOpsTool[] = [
   linuxTool,
