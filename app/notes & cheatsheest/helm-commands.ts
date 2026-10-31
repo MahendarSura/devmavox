@@ -14,12 +14,12 @@ const makeCommands = (
     telugu,
   }));
 
-export const helm: DevOpsTool = {
+export const helmTool: DevOpsTool = {
   name: "Helm",
-  category: "Kubernetes Package Management",
+  category: "Orchestration",
 
   commands: [
-    // BASIC - 7
+    // BASIC - 10
     ...makeCommands("Basic", [
       [
         "helm version",
@@ -37,14 +37,19 @@ export const helm: DevOpsTool = {
         "Helm environment details choodu.",
       ],
       [
+        "helm list -A",
+        "List Helm releases across all namespaces.",
+        "Namespaces anni lo Helm releases choodu.",
+      ],
+      [
         "helm repo list",
-        "List configured Helm chart repositories.",
-        "Configure chesina Helm repositories list choodu.",
+        "List configured chart repositories.",
+        "Configured Helm repositories list choodu.",
       ],
       [
         "helm repo update",
-        "Update chart information from configured repositories.",
-        "Repositories nunchi latest chart information update cheyyi.",
+        "Refresh chart repository metadata.",
+        "Repository chart metadata update cheyyi.",
       ],
       [
         "helm search hub nginx",
@@ -52,141 +57,156 @@ export const helm: DevOpsTool = {
         "Artifact Hub lo nginx charts search cheyyi.",
       ],
       [
-        "helm list",
-        "List Helm releases in the current namespace.",
-        "Current namespace lo Helm releases list choodu.",
-      ],
-    ]),
-
-    // INTERMEDIATE - 9
-    ...makeCommands("Intermediate", [
-      [
-        "helm create mychart",
-        "Create a new Helm chart with the specified name.",
-        "Kotha Helm chart create cheyyi.",
-      ],
-      [
-        "helm repo add bitnami https://charts.bitnami.com/bitnami",
-        "Add the Bitnami chart repository.",
-        "Bitnami chart repository add cheyyi.",
-      ],
-      [
         "helm search repo nginx",
-        "Search locally configured repositories for nginx charts.",
+        "Search configured chart repositories for nginx.",
         "Configured repositories lo nginx charts search cheyyi.",
       ],
       [
-        "helm show values bitnami/nginx",
+        "helm show values <chart>",
         "Display the default values of a chart.",
         "Chart default values choodu.",
       ],
       [
-        "helm lint ./mychart",
-        "Check a chart for potential errors and issues.",
-        "Chart lo errors, issues unnayo check cheyyi.",
-      ],
-      [
-        "helm template myrelease ./mychart",
-        "Render chart templates locally without installing the release.",
-        "Install cheyakunda templates locally render cheyyi.",
-      ],
-      [
-        "helm install myrelease ./mychart",
-        "Install a chart as a named Helm release.",
-        "Chart ni release ga install cheyyi.",
-      ],
-      [
-        "helm status myrelease",
-        "Display the status of a named release.",
-        "Release status choodu.",
-      ],
-      [
-        "helm get values myrelease",
-        "Display the values used by an installed release.",
-        "Installed release values choodu.",
+        "helm get notes <release> -n <namespace>",
+        "Display notes provided by an installed release.",
+        "Installed release notes choodu.",
       ],
     ]),
 
-    // ADVANCED - 7
+    // INTERMEDIATE - 10
+    ...makeCommands("Intermediate", [
+      [
+        "helm create mychart",
+        "Create a new Helm chart directory.",
+        "Kotha Helm chart create cheyyi.",
+      ],
+      [
+        "helm repo add <repo-name> <repo-url>",
+        "Add a chart repository.",
+        "Helm chart repository add cheyyi.",
+      ],
+      [
+        "helm lint ./chart",
+        "Check a chart for common issues.",
+        "Chart structure, templates lo common issues check cheyyi.",
+      ],
+      [
+        "helm template <release> ./chart",
+        "Render Kubernetes manifests locally without installing the release.",
+        "Install cheyakunda Kubernetes manifests local ga generate cheyyi.",
+      ],
+      [
+        "helm install <release> <chart> -n <namespace>",
+        "Install a chart in the specified namespace.",
+        "Specified namespace lo chart install cheyyi.",
+      ],
+      [
+        "helm upgrade --install <release> ./chart -n <namespace> --create-namespace",
+        "Install a release or upgrade it if it already exists, creating the namespace if needed.",
+        "Release install leda upgrade cheyyi; namespace lekapothe create cheyyi.",
+      ],
+      [
+        "helm status <release> -n <namespace>",
+        "Display the status of a named release.",
+        "Helm release status choodu.",
+      ],
+      [
+        "helm get values <release> -n <namespace>",
+        "Display values applied to an installed release.",
+        "Release ki apply ayina values choodu.",
+      ],
+      [
+        "helm dependency list ./chart",
+        "List chart dependencies and their status.",
+        "Chart dependencies status choodu.",
+      ],
+      [
+        "helm dependency update ./chart",
+        "Resolve and download chart dependencies from Chart.yaml.",
+        "Chart.yaml prakaram dependencies download and update cheyyi.",
+      ],
+    ]),
+
+    // ADVANCED - 8
     ...makeCommands("Advanced", [
       [
-        "helm upgrade myrelease ./mychart",
-        "Upgrade an existing release using a chart.",
-        "Existing release ni chart tho upgrade cheyyi.",
+        "helm get manifest <release> -n <namespace>",
+        "Display Kubernetes manifests generated for a release.",
+        "Release generate chesina Kubernetes manifests choodu.",
       ],
       [
-        "helm get manifest myrelease",
-        "Display the Kubernetes manifest generated for a release.",
-        "Release generate chesina manifest choodu.",
+        "helm history <release> -n <namespace>",
+        "Display revision history for a release.",
+        "Release revision history choodu.",
       ],
       [
-        "helm dependency list ./mychart",
-        "List the dependencies declared by a chart.",
-        "Chart dependencies list choodu.",
+        "helm test <release> -n <namespace>",
+        "Run chart-defined tests for an installed release.",
+        "Installed release ki chart tests run cheyyi.",
       ],
       [
-        "helm dependency update ./mychart",
-        "Download and update chart dependencies from Chart.yaml.",
-        "Chart.yaml prakaram dependencies update cheyyi.",
+        "helm rollback <release> <revision> -n <namespace>",
+        "Roll back a release to a selected revision.",
+        "Release ni selected previous revision ki rollback cheyyi.",
       ],
       [
-        "helm package ./mychart",
+        "helm uninstall <release> -n <namespace>",
+        "Uninstall a Helm release.",
+        "Helm release uninstall cheyyi.",
+      ],
+      [
+        "helm package ./chart",
         "Package a chart directory into a chart archive.",
         "Chart directory ni archive ga package cheyyi.",
       ],
       [
-        "helm pull bitnami/nginx",
-        "Download a chart from a configured repository.",
-        "Repository nunchi chart download cheyyi.",
+        "helm pull <chart> --untar",
+        "Download and unpack a chart.",
+        "Chart download chesi unpack cheyyi.",
       ],
       [
-        "helm push mychart-0.1.0.tgz oci://registry.example.com/helm-charts",
+        "helm push <chart-archive.tgz> oci://<registry>/<repository>",
         "Push a packaged chart to an OCI registry.",
         "Packaged chart ni OCI registry ki push cheyyi.",
       ],
     ]),
 
-    // TROUBLESHOOTING - 8
+    // TROUBLESHOOTING - 7
     ...makeCommands("Troubleshooting", [
       [
-        "helm list --all-namespaces --failed",
+        "helm list -A --failed",
         "List failed Helm releases across all namespaces.",
         "Namespaces anni lo failed releases choodu.",
       ],
       [
-        "helm history myrelease",
-        "Inspect the revision history of a release.",
-        "Release revision history check cheyyi.",
+        "helm upgrade <release> ./chart --dry-run --debug -n <namespace>",
+        "Simulate an upgrade and display debugging information without applying changes.",
+        "Changes apply cheyakunda upgrade simulate chesi debug details choodu.",
       ],
       [
-        "helm get all myrelease",
-        "Inspect release notes, hooks, values, and manifest information.",
-        "Release notes, hooks, values, manifest details choodu.",
+        "helm template <release> ./chart --debug",
+        "Render chart templates with debugging information.",
+        "Chart templates debug information tho render cheyyi.",
       ],
       [
-        "helm template myrelease ./mychart --debug",
-        "Render chart templates with debug information to investigate template issues.",
-        "Template issues debug cheyyadaniki render cheyyi.",
+        "helm get all <release> -n <namespace>",
+        "Display release notes, hooks, values, and generated manifests.",
+        "Release notes, hooks, values, manifests anni inspect cheyyi.",
       ],
       [
-        "helm lint ./mychart",
-        "Validate a chart when investigating chart configuration problems.",
-        "Chart configuration problems kosam validate cheyyi.",
-      ],
-      [
-        "helm dependency build ./mychart",
+        "helm dependency build ./chart",
         "Rebuild chart dependencies using the Chart.lock file.",
-        "Chart.lock use chesi dependencies rebuild cheyyi.",
+        "Chart.lock file use chesi dependencies rebuild cheyyi.",
       ],
       [
-        "helm rollback myrelease 1",
-        "Roll back a release to revision 1.",
-        "Release ni revision 1 ki rollback cheyyi.",
+        "helm rollback <release> <revision> -n <namespace> --wait --timeout 5m",
+        "Roll back a release and wait up to five minutes for resources to become ready.",
+        "Release rollback chesi resources ready ayye varaku 5 minutes wait cheyyi.",
       ],
       [
-        "helm rollback myrelease 1 --wait --timeout 5m",
-        "Roll back to revision 1 and wait for resources to become ready, with a five-minute timeout.",
-        "Revision 1 ki rollback chesi resources ready ayye varaku wait cheyyi.",
+        "helm status <release> -n <namespace> --show-resources",
+        "Display release status along with its associated resources.",
+        "Release status tho paatu associated resources choodu.",
       ],
     ]),
   ],
