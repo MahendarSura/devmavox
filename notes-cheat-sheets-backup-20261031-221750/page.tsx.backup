@@ -1,0 +1,12 @@
+import Link from "next/link";
+
+const cases = [
+  { error: "Kubernetes: CrashLoopBackOff", cause: "The container repeatedly exits or fails its startup checks.", checks: "kubectl get pods\nkubectl logs <pod-name> --previous\nkubectl describe pod <pod-name>", fix: "Check application logs, startup command, configuration, probes and resource limits before restarting." },
+  { error: "Docker: Container exits", cause: "The main process finishes or exits with an error.", checks: "docker ps -a\ndocker logs <container>\ndocker inspect <container>", fix: "Inspect the exit code and logs. Ensure the container runs the intended foreground process and has valid configuration." },
+  { error: "CI/CD: Pipeline failed", cause: "A build, test, credential, artifact or deployment stage failed.", checks: "Review the first failing stage and its full logs. Verify variables, credentials, dependencies and permissions.", fix: "Reproduce the failed step, correct the root cause, rerun tests and confirm the deployment result." },
+  { error: "AWS: AccessDenied", cause: "The active identity may lack permission, or a resource policy may deny the request.", checks: "aws sts get-caller-identity\nReview IAM policies, resource policies and the active AWS region.", fix: "Grant only the required least-privilege permissions and verify the resource and identity policies." },
+];
+
+export default function TroubleshootingPage() {
+  return <main className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100 sm:px-8"><div className="mx-auto max-w-5xl"><Link href="/notes-cheat-sheets" className="text-sm text-cyan-300 hover:underline">← All Notes & Cheat Sheets</Link><p className="mt-8 text-sm uppercase tracking-widest text-cyan-300">Diagnostic Guide</p><h1 className="mt-2 text-3xl font-bold sm:text-4xl">Troubleshooting Notes</h1><p className="mt-3 text-slate-400">Identify symptoms, collect evidence and fix root causes methodically.</p><div className="mt-8 space-y-5">{cases.map((c) => <article key={c.error} className="rounded-2xl border border-slate-800 bg-slate-900 p-5"><h2 className="text-xl font-bold text-amber-200">{c.error}</h2><p className="mt-3 text-sm"><strong>Possible cause:</strong> {c.cause}</p><p className="mt-4 text-sm font-semibold">Diagnostic checks</p><pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded-lg bg-black/40 p-4 text-sm text-emerald-300">{c.checks}</pre><p className="mt-4 text-sm leading-6 text-slate-400"><strong>Next step:</strong> {c.fix}</p></article>)}</div></div></main>;
+}

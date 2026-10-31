@@ -1,0 +1,18 @@
+
+> devmavox@0.1.0 build
+> next build
+
+Γû▓ Next.js 16.4.0 (Turbopack)
+ΓÜá Warning: Next.js ignored package-lock.json in C:\Users\mahen because it is outside the current Git repository (C:\Users\mahen\OneDrive\devmavox).
+ To use this directory, set `turbopack.root` in your Next.js config.
+
+Γ£ô Running next.config.ts took 284ms
+
+> Build error occurred
+Error: EPERM: operation not permitted, unlink 'C:\Users\mahen\OneDrive\devmavox\.next\server\app\notes-cheat-sheets'
+    at ignore-listed frames {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'unlink',
+  path: 'C:\\Users\\mahen\\OneDrive\\devmavox\\.next\\server\\app\\notes-cheat-sheets'
+}
