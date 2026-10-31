@@ -1,126 +1,162 @@
+
 import type { DevOpsTool } from "./command-types";
 
+type CommandLevel = DevOpsTool["commands"][number]["level"];
+
+const makeCommands = (
+  level: CommandLevel,
+  rows: [string, string, string][]
+) =>
+  rows.map(([command, english, telugu]) => ({
+    command,
+    level,
+    english,
+    telugu,
+  }));
+
 export const githubActionsTool: DevOpsTool = {
-    name: "GitHub Actions",
-    category: "CI/CD",
-    commands: [
-      { command: "gh workflow list", level: "Basic", english: "to list repository workflows", telugu: "Repository workflows చూడటానికి." },
-      { command: "gh run list --limit 10", level: "Intermediate", english: "to list recent workflow runs", telugu: "ఇటీవలి workflow runs చూడటానికి." },
-      { command: "gh workflow view <workflow-name>", level: "Advanced", english: "to inspect a workflow definition", telugu: "Workflow definition వివరాలు చూడటానికి." },
-      { command: "gh run view <run-id> --log-failed", level: "Troubleshooting", english: "to inspect failed workflow step logs", telugu: "Fail అయిన workflow steps logs చూడటానికి." },
-      {
-        command: "gh workflow view <workflow> --yaml",
-        level: "Basic",
-        english: "Display a workflow definition.",
-        telugu: "Workflow YAML inspect cheyyataniki.",
-      },
-      {
-        command: "gh run list --workflow <workflow> --limit 20",
-        level: "Basic",
-        english: "List recent runs for one workflow.",
-        telugu: "Specific workflow recent runs chudataniki.",
-      },
-      {
-        command: "gh run view <run-id>",
-        level: "Basic",
-        english: "Display workflow run details.",
-        telugu: "Workflow run status, jobs details chudataniki.",
-      },
-      {
-        command: "gh run view <run-id> --log",
-        level: "Intermediate",
-        english: "Display logs for a workflow run.",
-        telugu: "Workflow run logs inspect cheyyataniki.",
-      },
-      {
-        command: "gh run view <run-id> --job <job-id> --log",
-        level: "Intermediate",
-        english: "Display logs for a specific job.",
-        telugu: "Specific failed job logs chudataniki.",
-      },
-      {
-        command: "gh run rerun <run-id>",
-        level: "Advanced",
-        english: "Rerun all jobs in a workflow run.",
-        telugu: "Workflow run rerun cheyyataniki; root cause fix chesaka use cheyyali.",
-      },
-      {
-        command: "gh run rerun <run-id> --failed",
-        level: "Advanced",
-        english: "Rerun only failed jobs.",
-        telugu: "Failed jobs matrame rerun cheyyataniki.",
-      },
-      {
-        command: "gh run cancel <run-id>",
-        level: "Advanced",
-        english: "Cancel a workflow run.",
-        telugu: "Unnecessary or stuck workflow cancel cheyyataniki; impact verify cheyyali.",
-      },
-      {
-        command: "gh run watch <run-id>",
-        level: "Intermediate",
-        english: "Watch a workflow run until it completes.",
-        telugu: "Workflow completion varaku live status chudataniki.",
-      },
-      {
-        command: "gh secret list",
-        level: "Intermediate",
-        english: "List repository Actions secret names.",
-        telugu: "Repository Actions secret names chudataniki; values display avvavu.",
-      },
-      {
-        command: "gh variable list",
-        level: "Intermediate",
-        english: "List repository Actions variable names and values where permitted.",
-        telugu: "Actions variables inspect cheyyataniki; sensitive values store cheyyakudadhu.",
-      },
-      {
-        command: "gh api repos/{owner}/{repo}/actions/permissions",
-        level: "Advanced",
-        english: "Inspect repository Actions permissions.",
-        telugu: "GitHub Actions repository permissions inspect cheyyataniki.",
-      },
-      {
-        command: "gh api repos/{owner}/{repo}/actions/runners",
-        level: "Advanced",
-        english: "List self-hosted runners registered to a repository.",
-        telugu: "Self-hosted runners list chudataniki.",
-      },
-      {
-        command: "gh api repos/{owner}/{repo}/actions/caches",
-        level: "Advanced",
-        english: "Inspect Actions cache entries.",
-        telugu: "Workflow caches inspect cheyyataniki.",
-      },
-      {
-        command: "gh run list --status failure --limit 20",
-        level: "Troubleshooting",
-        english: "List recent failed workflow runs.",
-        telugu: "Recent failed workflow runs identify cheyyataniki.",
-      },
-      {
-        command: "gh run list --status in_progress --limit 20",
-        level: "Troubleshooting",
-        english: "List workflows currently in progress.",
-        telugu: "Currently running workflows monitor cheyyataniki.",
-      },
-      {
-        command: "gh workflow disable <workflow>",
-        level: "Advanced",
-        english: "Disable a repository workflow.",
-        telugu: "Workflow disable cheyyataniki; automation impact confirm chesaka matrame.",
-      },
-      {
-        command: "gh workflow enable <workflow>",
-        level: "Intermediate",
-        english: "Enable a disabled repository workflow.",
-        telugu: "Disabled workflow malli enable cheyyataniki.",
-      },
-      {
-        command: "gh run download <run-id>",
-        level: "Intermediate",
-        english: "Download artifacts from a workflow run.",
-        telugu: "Workflow artifacts local ki download cheyyataniki.",
-      },
-    ],
-  };
+  name: "GitHub Actions",
+  category: "CI/CD & Automation",
+  commands: [
+    // BASIC - 8
+    ...makeCommands("Basic", [
+      [
+        'echo "::debug::Build process started"',
+        "Writes a debug message to the workflow log.",
+        "Workflow log lo debug message print chestundi.",
+      ],
+      [
+        'echo "::notice::Build completed"',
+        "Creates a notice annotation in the workflow log.",
+        "Workflow log lo notice annotation create chestundi.",
+      ],
+      [
+        'echo "::warning::Check the configuration"',
+        "Creates a warning annotation in the workflow log.",
+        "Workflow log lo warning annotation create chestundi.",
+      ],
+      [
+        'echo "::error::Build failed"',
+        "Creates an error annotation in the workflow log.",
+        "Workflow log lo error annotation create chestundi.",
+      ],
+      [
+        'echo "APP_ENV=production" >> "$GITHUB_ENV"',
+        "Sets an environment variable for subsequent steps in the job.",
+        "Job lo subsequent steps kosam environment variable set chestundi.",
+      ],
+      [
+        'echo "build_version=1.0.0" >> "$GITHUB_OUTPUT"',
+        "Sets an output value that subsequent steps can access.",
+        "Subsequent steps access cheyagalige output value set chestundi.",
+      ],
+      [
+        'echo "$HOME/.local/bin" >> "$GITHUB_PATH"',
+        "Adds a directory to PATH for subsequent workflow steps.",
+        "Subsequent workflow steps kosam PATH ki directory add chestundi.",
+      ],
+      [
+        'echo "## Build Summary" >> "$GITHUB_STEP_SUMMARY"',
+        "Adds a heading to the workflow job summary.",
+        "Workflow job summary lo heading add chestundi.",
+      ],
+    ]),
+
+    // INTERMEDIATE - 6
+    ...makeCommands("Intermediate", [
+      [
+        'echo "::group::Build Logs"',
+        "Starts a collapsible group in workflow logs.",
+        "Workflow logs lo collapsible group start chestundi.",
+      ],
+      [
+        'echo "::endgroup::"',
+        "Ends the current workflow log group.",
+        "Current workflow log group close chestundi.",
+      ],
+      [
+        'echo "::add-mask::$TOKEN"',
+        "Masks the specified value in workflow logs.",
+        "Specified value ni workflow logs lo mask chestundi.",
+      ],
+      [
+        'echo "::error file=src/app.ts,line=10,title=Build Error::Missing dependency"',
+        "Creates an error annotation linked to a file and line.",
+        "File mariyu line ki link ayina error annotation create chestundi.",
+      ],
+      [
+        'echo "::warning file=src/app.ts,line=10,title=Code Warning::Deprecated API used"',
+        "Creates a warning annotation linked to a source file and line.",
+        "Source file mariyu line ki link ayina warning annotation create chestundi.",
+      ],
+      [
+        '{ echo "report<<EOF"; cat report.txt; echo "EOF"; } >> "$GITHUB_OUTPUT"',
+        "Writes a multiline output value for subsequent workflow steps.",
+        "Subsequent workflow steps kosam multiline output value write chestundi.",
+      ],
+    ]),
+
+    // ADVANCED - 5
+    ...makeCommands("Advanced", [
+      [
+        'echo "::echo::on"',
+        "Enables command echoing in the workflow log.",
+        "Workflow log lo command echoing enable chestundi.",
+      ],
+      [
+        'echo "::echo::off"',
+        "Disables command echoing in the workflow log.",
+        "Workflow log lo command echoing disable chestundi.",
+      ],
+      [
+        'echo "action_state=prepared" >> "$GITHUB_STATE"',
+        "Saves state for use by the post phase of an action.",
+        "Action post phase lo use cheyadaniki state save chestundi.",
+      ],
+      [
+        'echo "### Test Results" >> "$GITHUB_STEP_SUMMARY"',
+        "Adds a Markdown section to the workflow job summary.",
+        "Workflow job summary lo Markdown section add chestundi.",
+      ],
+      [
+        'printf "BUILD_STATUS=%s\\n" "success" >> "$GITHUB_OUTPUT"',
+        "Writes a formatted output value to the workflow output file.",
+        "Workflow output file lo formatted output value write chestundi.",
+      ],
+    ]),
+
+    // TROUBLESHOOTING - 6
+    ...makeCommands("Troubleshooting", [
+      [
+        'test -f "$GITHUB_ENV" || { echo "::error::GITHUB_ENV file missing"; exit 1; }',
+        "Checks whether the environment file is available.",
+        "Environment file available ga undo check chestundi.",
+      ],
+      [
+        'test -f "$GITHUB_OUTPUT" || { echo "::error::GITHUB_OUTPUT file missing"; exit 1; }',
+        "Checks whether the step output file is available.",
+        "Step output file available ga undo check chestundi.",
+      ],
+      [
+        'test -d "$GITHUB_WORKSPACE" || { echo "::error::Workspace missing"; exit 1; }',
+        "Checks whether the GitHub Actions workspace directory exists.",
+        "GitHub Actions workspace directory undho ledo check chestundi.",
+      ],
+      [
+        'test -n "${GITHUB_REF:-}" || { echo "::error::GITHUB_REF is empty"; exit 1; }',
+        "Checks whether the workflow reference variable is populated.",
+        "Workflow reference variable value undho ledo check chestundi.",
+      ],
+      [
+        'test -n "${GITHUB_SHA:-}" || { echo "::error::GITHUB_SHA is empty"; exit 1; }',
+        "Checks whether the commit SHA variable is populated.",
+        "Commit SHA variable value undho ledo check chestundi.",
+      ],
+      [
+        'printf "Runner OS: %s\\nRunner Architecture: %s\\n" "$RUNNER_OS" "$RUNNER_ARCH"',
+        "Displays runner operating system and architecture for diagnostics.",
+        "Diagnostics kosam runner OS mariyu architecture chupistundi.",
+      ],
+    ]),
+  ],
+};
