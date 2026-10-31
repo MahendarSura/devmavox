@@ -58,7 +58,8 @@ export const devOpsTools: DevOpsTool[] = [
   snykTool,
   owaspDependencyCheckTool,
   jiraTool,
-  slackTool
+  slackTool,
+  awsTool,
+  pythonTool
 ];
-
 
