@@ -4,7 +4,6 @@ import { bashTool } from "./bash-commands";
 import { gitTool } from "./git-commands";
 import { githubTool } from "./github-commands";
 import { dockerTool } from "./docker-commands";
-import { dockerComposeTool } from "./docker-compose-commands";
 import { kubernetesTool } from "./kubernetes-commands";
 import { helmTool } from "./helm-commands";
 import { eksTool } from "./eks-commands";
@@ -12,16 +11,16 @@ import { awsCliTool } from "./aws-cli-commands";
 import { terraformTool } from "./terraform-commands";
 import { jenkinsTool } from "./jenkins-commands";
 import { githubActionsTool } from "./github-actions-commands";
-import { argoCdTool } from "./argo-cd-commands";
+import { argocdTool } from "./argo-cd-commands";
 import { ansibleTool } from "./ansible-commands";
 import { mavenTool } from "./maven-commands";
 import { gradleTool } from "./gradle-commands";
 import { nexusTool } from "./nexus-commands";
 import { prometheusTool } from "./prometheus-commands";
-import { grafanaTool } from "./grafana-commands";
+import { grafana } from "./grafana-commands";
 import { alertmanagerTool } from "./alertmanager-commands";
 import { nginxTool } from "./nginx-commands";
-import { apacheTomcatTool } from "./apache-tomcat-commands";
+import { tomcatTool } from "./apache-tomcat-commands";
 import { trivyTool } from "./trivy-commands";
 import { sonarqubeTool } from "./sonarqube-commands";
 import { snykTool } from "./snyk-commands";
@@ -35,7 +34,6 @@ export const devOpsTools: DevOpsTool[] = [
   gitTool,
   githubTool,
   dockerTool,
-  dockerComposeTool,
   kubernetesTool,
   helmTool,
   eksTool,
@@ -43,16 +41,16 @@ export const devOpsTools: DevOpsTool[] = [
   terraformTool,
   jenkinsTool,
   githubActionsTool,
-  argoCdTool,
+  argocdTool,
   ansibleTool,
   mavenTool,
   gradleTool,
   nexusTool,
   prometheusTool,
-  grafanaTool,
+  grafana,
   alertmanagerTool,
   nginxTool,
-  apacheTomcatTool,
+  tomcatTool,
   trivyTool,
   sonarqubeTool,
   snykTool,
@@ -60,3 +58,5 @@ export const devOpsTools: DevOpsTool[] = [
   jiraTool,
   slackTool
 ];
+
+

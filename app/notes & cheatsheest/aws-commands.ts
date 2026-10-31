@@ -1,4 +1,4 @@
-
+import type { CommandLevel } from "./command-types";
 import type { DevOpsTool } from "./command-types";
 
 type Entry = [string, string, string];
@@ -156,7 +156,7 @@ const advanced: Entry[] = [
   ["aws kms create-alias --alias-name alias/devmavox --target-key-id 1234abcd-12ab-34cd-56ef-1234567890ab", "Creates an alias for a KMS key.", "KMS key ki alias create chestundi."],
   ["aws secretsmanager create-secret --name app/database --secret-string file://secret.json", "Creates a Secrets Manager secret.", "Secrets Manager secret create chestundi."],
   ["aws secretsmanager rotate-secret --secret-id app/database", "Starts rotation for a configured secret.", "Configured secret rotation start chestundi."],
-  ["aws ssm send-command --instance-ids i-0123456789abcdef0 --document-name AWS-RunShellScript --parameters commands='["uptime"]'", "Runs a shell command on an EC2 instance through Systems Manager.", "Systems Manager dwara EC2 lo shell command run chestundi."],
+  ["aws ssm send-command --instance-ids i-0123456789abcdef0 --document-name AWS-RunShellScript --parameters commands='[\"uptime\"]'", "Runs a shell command on an EC2 instance through Systems Manager.", "Systems Manager dwara EC2 lo shell command run chestundi."],
   ["aws ssm start-session --target i-0123456789abcdef0", "Starts an interactive Systems Manager session.", "Interactive Systems Manager session start chestundi."],
   ["aws cloudformation create-stack --stack-name app-stack --template-body file://template.yaml --capabilities CAPABILITY_IAM", "Creates a CloudFormation stack from a template.", "Template nundi CloudFormation stack create chestundi."],
   ["aws cloudformation update-stack --stack-name app-stack --template-body file://template.yaml --capabilities CAPABILITY_IAM", "Updates an existing CloudFormation stack.", "Existing CloudFormation stack update chestundi."],
@@ -239,7 +239,7 @@ const troubleshooting: Entry[] = [
   ["aws budgets describe-budgets --account-id 123456789012", "Checks configured AWS budgets.", "Configure chesina AWS budgets check chestundi."]
 ];
 
-function mapEntries(entries: Entry[], level: string) {
+function mapEntries(entries: Entry[], level: CommandLevel) {
   return entries.map(([command, english, telugu]) => ({
     command,
     level,
@@ -258,3 +258,4 @@ export const awsTool: DevOpsTool = {
     ...mapEntries(troubleshooting, "Troubleshooting")
   ]
 };
+
