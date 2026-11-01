@@ -1,21 +1,21 @@
 import { notFound } from "next/navigation";
 import NotesRenderer from "../../../NotesRenderer";
 
-import topic_ad_hoc_commands from "../topics/ad-hoc-commands";
-import topic_collections from "../topics/collections";
-import topic_error_handling from "../topics/error-handling";
-import topic_fundamentals from "../topics/fundamentals";
-import topic_installation_configuration from "../topics/installation-configuration";
-import topic_inventory from "../topics/inventory";
-import topic_loops_conditionals from "../topics/loops-conditionals";
-import topic_playbooks from "../topics/playbooks";
-import topic_production from "../topics/production";
-import topic_roles from "../topics/roles";
-import topic_ssh_connectivity from "../topics/ssh-connectivity";
-import topic_tasks_handlers from "../topics/tasks-handlers";
-import topic_templates from "../topics/templates";
-import topic_variables_facts from "../topics/variables-facts";
-import topic_vault_secrets from "../topics/vault-secrets";
+import topic_ad_hoc_commands from "../ad-hoc-commands";
+import topic_collections from "../collections";
+import topic_error_handling from "../error-handling";
+import topic_fundamentals from "../fundamentals";
+import topic_installation_configuration from "../installation-configuration";
+import topic_inventory from "../inventory";
+import topic_loops_conditionals from "../loops-conditionals";
+import topic_playbooks from "../playbooks";
+import topic_production from "../production";
+import topic_roles from "../roles";
+import topic_ssh_connectivity from "../ssh-connectivity";
+import topic_tasks_handlers from "../tasks-handlers";
+import topic_templates from "../templates";
+import topic_variables_facts from "../variables-facts";
+import topic_vault_secrets from "../vault-secrets";
 
 const topics = {
   "ad-hoc-commands": topic_ad_hoc_commands,
