@@ -6,10 +6,14 @@ type Problem = {
 type NoteSection = {
   heading: string;
   explanation: string;
-  steps: string[];
-  commands?: string;
-  config?: string;
-  problems: Problem[];
+  steps?: string[];
+  commands?: string | string[];
+  config?: string | string[];
+  problems?: Problem[];
+  interviewQuestions?: {
+    question: string;
+    answer: string;
+  }[];
 };
 
 type NoteData = {
@@ -55,14 +59,14 @@ export default function NotesRenderer({
 
               <h3 className="mt-6 font-semibold text-white">Practical Steps</h3>
               <ol className="mt-3 list-decimal space-y-2 pl-6 leading-7 text-slate-300">
-                {section.steps.map((step) => <li key={step}>{step}</li>)}
+                {(section.steps ?? []).map((step) => <li key={step}>{step}</li>)}
               </ol>
 
               {section.commands && (
                 <>
                   <h3 className="mt-6 font-semibold text-white">Commands</h3>
                   <pre className="mt-3 overflow-x-auto rounded-xl bg-black p-4 text-sm leading-6 text-green-300">
-                    <code>{section.commands}</code>
+                    <code>{Array.isArray(section.commands) ? section.commands.join("\n") : section.commands}</code>
                   </pre>
                 </>
               )}
@@ -71,19 +75,36 @@ export default function NotesRenderer({
                 <>
                   <h3 className="mt-6 font-semibold text-white">Configuration Example</h3>
                   <pre className="mt-3 overflow-x-auto rounded-xl bg-black p-4 text-sm leading-6 text-cyan-200">
-                    <code>{section.config}</code>
+                    <code>{Array.isArray(section.config) ? section.config.join("\n") : section.config}</code>
                   </pre>
                 </>
               )}
 
-              {section.problems.length > 0 && (
+              {(section.problems ?? []).length > 0 && (
                 <>
                   <h3 className="mt-6 font-semibold text-white">Common Issues and Solutions</h3>
                   <div className="mt-3 space-y-3">
-                    {section.problems.map((problem) => (
+                    {(section.problems ?? []).map((problem) => (
                       <div key={problem.issue} className="rounded-xl border border-slate-700 bg-slate-950 p-4">
                         <p className="font-semibold text-amber-300">{problem.issue}</p>
                         <p className="mt-2 text-sm leading-6 text-slate-300">{problem.solution}</p>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+              {section.interviewQuestions && section.interviewQuestions.length > 0 && (
+                <>
+                  <h3 className="mt-6 font-semibold text-white">Interview Questions and Answers</h3>
+                  <div className="mt-3 space-y-3">
+                    {section.interviewQuestions.map((item, index) => (
+                      <div key={`${index}-${item.question}`} className="rounded-xl border border-slate-700 bg-slate-950 p-4">
+                        <p className="font-semibold text-cyan-300">
+                          Q{index + 1}. {item.question}
+                        </p>
+                        <p className="mt-2 text-sm leading-6 text-slate-300">
+                          {item.answer}
+                        </p>
                       </div>
                     ))}
                   </div>

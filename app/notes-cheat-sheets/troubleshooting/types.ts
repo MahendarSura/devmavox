@@ -8,10 +8,14 @@ export type Problem = {
 export type NoteSection = {
   heading: string;
   explanation: string;
-  steps: string[];
-  commands?: string;
-  config?: string;
-  problems: Problem[];
+  steps?: string[];
+  commands?: string | string[];
+  config?: string | string[];
+  problems?: Problem[];
+  interviewQuestions?: {
+    question: string;
+    answer: string;
+  }[];
 };
 
 export type NoteData = {

@@ -1,0 +1,1057 @@
+import type { NoteData } from "../../types";
+
+const data: NoteData = {
+  title: "Linux Filesystem – Complete Practical DevOps Engineer Notes",
+  description: "My practical notes on Linux filesystem architecture, directory structure, mounts, inodes, permissions, disk troubleshooting and production operations.",
+  sections: [
+    {
+      heading: "1. Introduction – Understanding the Linux Filesystem",
+      explanation: `Linux filesystem ante server lo files and directories ni organize chesi store chese complete structure. Windows lo C drive, D drive laga Linux lo single root directory / nunchi complete directory tree start avuthundi. Application files, logs, configuration files, user data, temporary files anni filesystem lo store avuthayi. DevOps engineer ki filesystem knowledge compulsory because application deployment, log investigation, disk troubleshooting, backup and recovery anni filesystem meeda depend avuthayi.
+
+      Example: Production lo application suddenly "No space left on device" ani fail ayithe, first filesystem usage, mount points, inode availability and large directories investigate cheyyali. Disk space free ga kanipinchina inodes full ayithe kuda files create avvavu.`,
+      steps: [
+        "Linux server ki SSH tho connect avvali.",
+        "pwd command tho current working directory identify cheyyali.",
+        "ls -la / command tho root directory structure observe cheyyali.",
+        "df -h command tho mounted filesystem disk usage check cheyyali.",
+        "df -i command tho inode availability verify cheyyali.",
+        "findmnt command tho mount points and filesystem relationships understand chesukovali."
+      ],
+      commands: `pwd
+ls -la /
+df -h
+df -i
+findmnt
+lsblk -f
+
+Sample output:
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p1   40G   18G   22G  46% /
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+
+Explanation:
+df -h  -> Human-readable disk capacity.
+df -i  -> Inode usage.
+findmnt -> Mount hierarchy.
+lsblk -f -> Block devices and filesystem types.`,
+      config: `# Important Linux filesystem paths
+
+/          Root of the complete directory tree
+/etc       System and application configuration
+/var       Variable data, logs, cache and spool
+/var/log   System and application logs
+/home      Normal users' home directories
+/root      Root user's home directory
+/tmp       Temporary files
+/usr       Installed programs and shared resources
+/opt       Optional third-party applications
+/dev       Device files
+/proc      Process and kernel information
+/sys       Kernel and device information
+/mnt       Temporary mount location
+/media     Removable media mount location
+
+Note:
+These directories have different responsibilities. Production application data should not be placed randomly under system directories.`,
+      problems: [
+        {
+          issue: "Application cannot create a file",
+          rootCause: "Filesystem may be full, inode availability may be exhausted, or directory permissions may be incorrect.",
+          solution: "Check df -h, df -i and directory permissions using ls -ld. Identify the exact failing filesystem before changing anything."
+        },
+        {
+          issue: "Expected directory is not available after reboot",
+          rootCause: "The filesystem may not be mounted automatically or its mount configuration may be incorrect.",
+          solution: "Check findmnt, lsblk -f and /etc/fstab. Validate fstab with findmnt --verify before rebooting."
+        }
+      ]
+    },
+    {
+      heading: "2. Linux Filesystem Architecture",
+      explanation: `Linux filesystem architecture lo user applications system calls use chesi VFS (Virtual Filesystem Switch) ni access chesthayi. VFS common interface provide chesthundi. Actual filesystem ext4, XFS, Btrfs laga undochu. Filesystem driver disk blocks ni manage chesthundi. Block layer storage device ki read/write requests pampisthundi.
+
+      Flow:
+      Application -> System Call -> VFS -> Filesystem Driver -> Block Layer -> Storage Device.
+
+      VFS valla application ki underlying filesystem type teliyakapoina normal file operations perform cheyyagaluguthundi. Example open(), read(), write(), close() system calls.`,
+      steps: [
+        "Application file open request issue chesthundi.",
+        "Kernel system call receive chesthundi.",
+        "VFS requested path ni resolve chesthundi.",
+        "Filesystem driver inode and directory metadata locate chesthundi.",
+        "Block layer required storage blocks access chesthundi.",
+        "Data memory cache/page cache through application ki return avuthundi."
+      ],
+      commands: `uname -r
+findmnt -no SOURCE,FSTYPE,TARGET /
+stat /etc/hostname
+file /etc/hostname
+lsblk -o NAME,TYPE,FSTYPE,SIZE,MOUNTPOINTS
+
+Explanation:
+uname -r -> Running kernel version.
+findmnt -> Root filesystem source and type.
+stat -> File metadata.
+file -> File content type identification.`,
+      config: `# Inspect filesystem type and mount options
+
+findmnt -o TARGET,SOURCE,FSTYPE,OPTIONS
+cat /proc/mounts
+
+# Example output fields:
+# TARGET   -> Mount directory
+# SOURCE   -> Device or logical volume
+# FSTYPE   -> ext4, xfs, tmpfs etc.
+# OPTIONS  -> rw, ro, relatime and other mount settings
+
+Do not change kernel or mount options blindly on production systems.`,
+      problems: [
+        {
+          issue: "Filesystem becomes read-only",
+          rootCause: "Filesystem errors, storage problems or an intentional read-only mount may cause this condition.",
+          solution: "Check findmnt and dmesg for filesystem and I/O errors. Follow the filesystem-specific repair procedure during an approved maintenance window."
+        },
+        {
+          issue: "High filesystem I/O latency",
+          rootCause: "Storage saturation, slow underlying volume, excessive synchronous writes or application workload.",
+          solution: "Use iostat -xz 1, identify the process with iotop or pidstat, and correlate storage metrics before changing workload or storage capacity."
+        }
+      ]
+    },
+    {
+      heading: "3. Linux Directory Structure and Responsibilities",
+      explanation: `Linux lo everything root directory / kinda organize avuthundi. Directory names random ga create cheyyaledu; each path ki operational purpose untundi. /etc lo configuration, /var/log lo logs, /var/lib lo application state, /usr lo installed software, /home lo user data untayi.
+
+      DevOps deployment lo application binaries ni /opt/app or /usr/local/bin lo, configuration ni /etc/app lo, persistent data ni /var/lib/app lo, logs ni /var/log/app lo maintain cheyyadam useful convention. Actual application vendor documentation follow avvali.`,
+      steps: [
+        "Root directory contents list cheyyali.",
+        "System configuration and application configuration paths distinguish cheyyali.",
+        "Logs and persistent application data locations identify cheyyali.",
+        "Disk usage per directory check cheyyali.",
+        "Application deployment standard directory structure document cheyyali."
+      ],
+      commands: `ls -lah /
+du -sh /etc /var /usr /opt /home 2>/dev/null
+du -xhd1 /var 2>/dev/null | sort -h
+find /var/log -maxdepth 1 -type f -printf '%s %p\\n' | sort -n
+
+Explanation:
+du -sh -> Directory total size.
+du -x -> Current filesystem boundary lopale scan chesthundi.
+du -d1 -> One directory level depth.
+sort -h -> Human-readable size order.`,
+      config: `# Example application directory convention
+
+/opt/payments-app/
+    releases/
+    current -> releases/release-2026-11-01
+/etc/payments-app/
+    application.yml
+/var/lib/payments-app/
+    data/
+/var/log/payments-app/
+    application.log
+
+# Ownership should be assigned to a dedicated service account.
+# Do not store passwords or API keys in publicly readable directories.`,
+      problems: [
+        {
+          issue: "Root filesystem usage increases unexpectedly",
+          rootCause: "Logs, cache, temporary files or application data may be growing under the root filesystem.",
+          solution: "Use du -xhd1 / to identify large directories, then inspect the responsible application. Apply approved retention or log rotation policies."
+        },
+        {
+          issue: "Application data disappears after deployment",
+          rootCause: "Deployment may be replacing an application directory that also contains persistent data.",
+          solution: "Separate release artifacts from persistent data. Keep state under a dedicated persistent path or managed storage."
+        }
+      ]
+    },
+    {
+      heading: "4. Files, Directories, Inodes and Metadata",
+      explanation: `Filesystem lo file content tho paatu metadata kuda maintain avuthundi. Metadata lo owner, group, permissions, size, timestamps and inode number untayi. Inode file metadata and data block references ni track chesthundi. Filename directory entry lo inode reference tho associate avuthundi.
+
+      Important point: inode number and filename same kaadu. Hard links same inode ni share chesthayi. Symbolic links separate file laga target path ni point chesthayi. Oka filesystem lo millions of small files create chesthe disk capacity available unna inode exhaustion jaragachu.`,
+      steps: [
+        "stat command tho file metadata inspect cheyyali.",
+        "ls -i tho inode number chudali.",
+        "df -i tho filesystem inode usage check cheyyali.",
+        "find command tho high file-count directories identify cheyyali.",
+        "Hard link and symbolic link behavior compare cheyyali."
+      ],
+      commands: `stat /etc/passwd
+ls -li /etc/passwd
+df -i /
+find /var/cache -xdev -type f | wc -l
+ln /tmp/source.txt /tmp/hardlink.txt
+ln -s /tmp/source.txt /tmp/softlink.txt
+ls -li /tmp/source.txt /tmp/hardlink.txt /tmp/softlink.txt
+
+Explanation:
+Hard link -> Same inode reference.
+Soft link -> Separate inode containing target path.
+wc -l -> Number of discovered files.`,
+      config: `# Inspect inode capacity
+
+df -i
+tune2fs -l /dev/DEVICE | grep -i inode
+
+# tune2fs inspection is for ext-family filesystems.
+# Replace DEVICE only after identifying the correct device.
+# Never run filesystem tuning commands on an unknown production device.`,
+      problems: [
+        {
+          issue: "No space left on device although df -h shows free space",
+          rootCause: "Filesystem inode table may be exhausted because of a very large number of small files.",
+          solution: "Run df -i and identify directories with excessive file counts. Remove only confirmed disposable files according to retention policy."
+        },
+        {
+          issue: "Symbolic link is broken",
+          rootCause: "The target path was moved, renamed or deleted.",
+          solution: "Use readlink -f and ls -l to inspect the link. Correct the target path after confirming the intended destination."
+        }
+      ]
+    },
+    {
+      heading: "5. Filesystem Types – ext4, XFS, Btrfs and tmpfs",
+      explanation: `Linux lo multiple filesystem types available. ext4 general-purpose filesystem ga widely use chestharu. XFS large files and parallel I/O workloads kosam common ga use chestharu. Btrfs snapshots, checksums and subvolumes features provide chesthundi. tmpfs RAM-backed temporary filesystem.
+
+      Production lo filesystem selection workload, cloud platform support, snapshot strategy, recovery tools and operational expertise meeda depend avuthundi. ext4 repair tool ni XFS meeda use cheyyakudadhu; filesystem-specific tools matrame use cheyyali.`,
+      steps: [
+        "Current filesystem types identify cheyyali.",
+        "Application workload size and I/O pattern understand cheyyali.",
+        "Cloud provider and OS supported filesystem options verify cheyyali.",
+        "Backup, snapshot and recovery requirements evaluate cheyyali.",
+        "Production migration mundu representative workload test cheyyali."
+      ],
+      commands: `findmnt -t ext4,xfs,btrfs,tmpfs
+lsblk -f
+blkid
+df -Th
+xfs_info /mount/path
+btrfs filesystem show
+
+Explanation:
+df -T -> Filesystem type.
+blkid -> Block device filesystem metadata.
+xfs_info -> XFS filesystem information.
+btrfs filesystem show -> Btrfs device layout.
+
+Run filesystem-specific commands only when that filesystem type is confirmed.`,
+      config: `# Example /etc/fstab entries – illustrative only
+
+UUID=REPLACE-WITH-EXT4-UUID /data ext4 defaults 0 2
+UUID=REPLACE-WITH-XFS-UUID  /backup xfs  defaults 0 0
+
+# Never paste these placeholder entries directly into production.
+# Obtain actual UUID using blkid.
+# Confirm filesystem type and mount options before editing /etc/fstab.`,
+      problems: [
+        {
+          issue: "Wrong filesystem repair command selected",
+          rootCause: "Engineer did not verify the actual filesystem type before attempting repair.",
+          solution: "Identify FSTYPE with lsblk -f or findmnt. Use the matching vendor-supported recovery procedure."
+        },
+        {
+          issue: "Filesystem feature unavailable",
+          rootCause: "The selected filesystem or installed tools do not support the expected feature.",
+          solution: "Check filesystem version, kernel support and installed utilities. Validate the design in a test environment."
+        }
+      ]
+    },
+    {
+      heading: "6. Mounting and Unmounting Filesystems",
+      explanation: `Mounting ante storage device filesystem ni Linux directory tree lo attach cheyyadam. Device mount ayyaka mount point path dwara files access cheyyachu. Example separate EBS volume ni /data ki mount cheyyadam. Unmount chese mundu application writes stop cheyyali and open file handles close cheyyali.
+
+      Production lo active application data volume ni force ga unmount cheyyadam data corruption risk create chesthundi. Mount source, mount point, filesystem type and options verify chesi change cheyyali.`,
+      steps: [
+        "lsblk -f tho intended disk and partition identify cheyyali.",
+        "Device correct aa kaada cloud console or storage mapping tho verify cheyyali.",
+        "Mount point directory create cheyyali.",
+        "Filesystem already unda check cheyyali; required data unte format cheyyakudadhu.",
+        "Approved procedure prakaram mount cheyyali.",
+        "findmnt and df -h tho verify cheyyali.",
+        "Unmount mundu users and processes access stop cheyyali."
+      ],
+      commands: `lsblk -f
+findmnt
+sudo mkdir -p /data
+sudo mount /dev/DEVICE /data
+findmnt /data
+df -hT /data
+sudo fuser -vm /data
+sudo umount /data
+
+Important:
+ /dev/DEVICE is a placeholder.
+Do not run mkfs on an existing volume unless data destruction is explicitly intended and approved.`,
+      config: `# Persistent mount example
+
+UUID=ACTUAL-UUID /data ext4 defaults,nofail 0 2
+
+# UUID obtain:
+sudo blkid
+
+# Validate fstab without reboot:
+sudo findmnt --verify --verbose
+
+# Mount configured entries:
+sudo mount -a
+
+Use the real UUID and correct filesystem type.
+nofail behavior should be selected according to application boot dependency.`,
+      problems: [
+        {
+          issue: "mount: wrong fs type, bad option, bad superblock",
+          rootCause: "Wrong filesystem type, missing driver, damaged filesystem or incorrect device selection.",
+          solution: "Check lsblk -f, blkid and dmesg. Do not run repair until the correct device and filesystem are confirmed."
+        },
+        {
+          issue: "umount reports target is busy",
+          rootCause: "A process has open files or its current working directory is inside the mount.",
+          solution: "Use fuser -vm or lsof +f -- /data to identify processes. Stop the responsible service gracefully before unmounting."
+        }
+      ]
+    },
+    {
+      heading: "7. /etc/fstab and Persistent Mount Configuration",
+      explanation: ` /etc/fstab boot time lo filesystems mount cheyyadaniki configuration provide chesthundi. Entry lo filesystem source, mount point, filesystem type, options, dump flag and fsck order untayi. Device name /dev/sdb1 reboot tarvatha change avvachu kabatti UUID use cheyyadam generally safer.
+
+      Wrong fstab entry valla server boot emergency mode lo vellachu. Anduke production lo edit chesaka findmnt --verify and mount -a validation compulsory.`,
+      steps: [
+        "Current fstab backup create cheyyali.",
+        "blkid tho actual UUID identify cheyyali.",
+        "Filesystem type and intended mount point confirm cheyyali.",
+        "fstab entry carefully add cheyyali.",
+        "findmnt --verify run cheyyali.",
+        "mount -a run chesi errors inspect cheyyali.",
+        "findmnt and df -h tho mount success verify cheyyali."
+      ],
+      commands: `sudo cp -a /etc/fstab /etc/fstab.backup
+sudo blkid
+sudo findmnt --verify --verbose
+sudo mount -a
+findmnt --target /data
+df -hT /data
+
+Explanation:
+cp -a -> Metadata preserve chesthu backup.
+blkid -> UUID and filesystem type.
+findmnt --verify -> fstab configuration validation.
+mount -a -> fstab entries mount attempt.`,
+      config: `# /etc/fstab – six fields
+
+UUID=ACTUAL-UUID /data ext4 defaults,nofail 0 2
+
+Field 1: Filesystem source, preferably UUID.
+Field 2: Mount point.
+Field 3: Filesystem type.
+Field 4: Mount options.
+Field 5: dump backup flag.
+Field 6: fsck order.
+
+Do not use an example UUID in a real server.
+For network filesystems, use suitable network mount options and boot dependencies.`,
+      problems: [
+        {
+          issue: "Server enters emergency mode after reboot",
+          rootCause: "Invalid fstab entry or unavailable required storage device.",
+          solution: "Use recovery console, inspect boot logs and fstab, correct the specific entry and validate before reboot."
+        },
+        {
+          issue: "mount -a fails",
+          rootCause: "Incorrect UUID, unsupported filesystem type, missing mount point or invalid options.",
+          solution: "Check blkid, install required filesystem utilities, create the intended mount point and validate every field."
+        }
+      ]
+    },
+    {
+      heading: "8. Disk Space, Blocks and Capacity Investigation",
+      explanation: `Disk capacity investigation lo df and du rendu important. df filesystem-level usage chupisthundi. du directory-level file usage estimate chesthundi. Rendu values difference undochu because deleted files process open ga hold cheyyadam, reserved blocks, filesystem metadata or mount boundaries.
+
+      Production server lo disk 90% cross ayithe alert investigate cheyyali. 100% ayye varaku wait cheyyakudadhu. Log growth, temporary files, container layers and application data separate ga inspect cheyyali.`,
+      steps: [
+        "df -hT tho full filesystem identify cheyyali.",
+        "df -i tho inode exhaustion exclude cheyyali.",
+        "du -xhd1 tho large directories identify cheyyali.",
+        "Deleted-but-open files lsof +L1 tho investigate cheyyali.",
+        "Application owner and retention policy identify cheyyali.",
+        "Approved cleanup or capacity expansion perform cheyyali.",
+        "Disk metrics and alerts verify cheyyali."
+      ],
+      commands: `df -hT
+df -i
+sudo du -xhd1 /var 2>/dev/null | sort -h
+sudo du -xhd1 / 2>/dev/null | sort -h
+sudo lsof +L1
+lsblk
+
+Explanation:
+df -> Filesystem capacity.
+du -> Directory usage.
+lsof +L1 -> Deleted files still open.
+lsblk -> Storage device topology.`,
+      config: `# Example capacity alert policy
+
+Filesystem usage:
+70% -> Review trend
+80% -> Warning
+90% -> Critical investigation
+95% -> Escalation / capacity action
+
+# Thresholds are examples only.
+# Set production thresholds based on growth rate,
+# workload, expansion time and operational SLA.`,
+      problems: [
+        {
+          issue: "df shows high usage but du cannot find the files",
+          rootCause: "Deleted files may still be held open by processes, or usage may be filesystem metadata/reserved space.",
+          solution: "Check lsof +L1, filesystem reserved blocks and mount boundaries. Restart only the responsible service through an approved process."
+        },
+        {
+          issue: "Disk fills again after cleanup",
+          rootCause: "Underlying log or data growth process was not fixed.",
+          solution: "Identify writer process, configure log rotation or retention, correct application behavior and monitor growth rate."
+        }
+      ]
+    },
+    {
+      heading: "9. Filesystem Permissions, Ownership and ACL",
+      explanation: `Linux filesystem access permissions owner, group and others model meeda work avuthayi. Read, write, execute permissions files and directories ki different behavior kaligi untayi. Directory meeda execute permission lekapothe path traverse cheyyaleru. ACLs additional user/group-specific permissions allow chesthayi.
+
+      Application service account ki required directories meeda minimum permissions matrame ivvali. chmod -R 777 dangerous because every user ki broad access provide chesthundi.`,
+      steps: [
+        "ls -ld tho directory owner and permissions inspect cheyyali.",
+        "id command tho application user groups identify cheyyali.",
+        "namei -l tho full path permissions inspect cheyyali.",
+        "Required ownership and permission model decide cheyyali.",
+        "chmod, chown or ACL use chesi minimum access grant cheyyali.",
+        "Service account tho access test cheyyali."
+      ],
+      commands: `ls -ld /var/lib/myapp
+namei -l /var/lib/myapp/data
+id myapp
+sudo chown -R myapp:myapp /var/lib/myapp
+sudo chmod 750 /var/lib/myapp
+getfacl /var/lib/myapp
+sudo setfacl -m u:deploy:rwx /var/lib/myapp
+
+Explanation:
+750 -> Owner rwx, group r-x, others no access.
+chown -> Ownership.
+getfacl -> ACL display.
+setfacl -> ACL update.
+
+Use recursive ownership changes only after confirming the exact target path.`,
+      config: `# Example service directory access
+
+Owner: myapp
+Group: myapp
+Directory mode: 750
+Secret configuration: 640 or stricter
+Public static assets: read-only for service users where practical
+
+# Verify:
+stat /var/lib/myapp
+getfacl /var/lib/myapp
+
+Do not apply one permission mode blindly to every file type.`,
+      problems: [
+        {
+          issue: "Permission denied even though file is readable",
+          rootCause: "A parent directory may not allow execute/traverse permission, or ACL/security policy blocks access.",
+          solution: "Use namei -l, getfacl and service logs. Correct the narrowest permission boundary."
+        },
+        {
+          issue: "Application works only after chmod 777",
+          rootCause: "Incorrect ownership, group membership or service account configuration.",
+          solution: "Identify the actual runtime user and assign dedicated ownership/group permissions instead of world-writable access."
+        }
+      ]
+    },
+    {
+      heading: "10. Filesystem Logs and Kernel-Level Diagnosis",
+      explanation: `Filesystem errors kernel messages lo visible avuthayi. I/O errors, ext4 errors, XFS metadata issues, device resets and read-only remount events dmesg or journal lo kanipinchachu. Application log lo file write failure symptom kanipinchina root cause storage layer lo undochu.
+
+      Investigation lo timestamp correlate cheyyali: application error, systemd journal, kernel messages, cloud disk metrics. Evidence collect cheyyakunda filesystem repair start cheyyakudadhu.`,
+      steps: [
+        "Application error timestamp note cheyyali.",
+        "journalctl lo relevant service logs inspect cheyyali.",
+        "dmesg lo block device and filesystem errors search cheyyali.",
+        "Kernel log and cloud storage metrics correlate cheyyali.",
+        "Repeated I/O errors unte incident escalate cheyyali.",
+        "Approved recovery plan follow cheyyali."
+      ],
+      commands: `sudo journalctl -k --since "1 hour ago"
+sudo dmesg -T | tail -100
+sudo dmesg -T | grep -Ei 'I/O error|EXT4-fs error|XFS|nvme|blk_update'
+sudo journalctl -u myapp --since "30 minutes ago"
+sudo systemctl status myapp
+
+Explanation:
+journalctl -k -> Kernel journal.
+dmesg -T -> Human-readable kernel timestamps.
+grep -Ei -> Case-insensitive error pattern search.`,
+      config: `# Persistent journal configuration example
+
+# /etc/systemd/journald.conf
+[Journal]
+Storage=persistent
+SystemMaxUse=1G
+MaxRetentionSec=14day
+
+# Values are illustrative.
+# Confirm disk capacity and organizational log-retention requirements.
+# Apply changes through approved configuration management.`,
+      problems: [
+        {
+          issue: "EXT4-fs error or XFS metadata error appears",
+          rootCause: "Filesystem metadata corruption, device failure or underlying storage I/O issue.",
+          solution: "Capture logs, protect data, check storage health and schedule filesystem-specific offline repair with a verified backup."
+        },
+        {
+          issue: "Buffer I/O error on device",
+          rootCause: "Underlying block device or storage path may be failing.",
+          solution: "Check cloud volume health, kernel logs and device metrics. Escalate to storage/platform team and protect application data."
+        }
+      ]
+    },
+    {
+      heading: "11. Filesystem Backup, Snapshot and Recovery",
+      explanation: `Backup and snapshot same kaadu. File-level backup selected files/directories ni another storage location ki copy chesthundi. Block-level snapshot point-in-time storage state capture chesthundi. Snapshot same storage failure domain lo unte complete backup replacement kaadu.
+
+      Production recovery strategy lo RPO (maximum acceptable data loss) and RTO (maximum acceptable recovery time) define cheyyali. Restore test cheyyani backup reliable ani assume cheyyakudadhu.`,
+      steps: [
+        "Application-consistent backup requirement identify cheyyali.",
+        "RPO and RTO define cheyyali.",
+        "Backup destination production disk ki independent ga undali.",
+        "Snapshot mundu application consistency requirements follow cheyyali.",
+        "Backup job status and integrity verify cheyyali.",
+        "Isolated environment lo restore test cheyyali.",
+        "Recovery result and timings document cheyyali."
+      ],
+      commands: `sudo tar -czf /backup/etc-backup.tar.gz /etc
+tar -tzf /backup/etc-backup.tar.gz | head
+rsync -aHAX --numeric-ids /source/ /backup/source/
+sha256sum /backup/etc-backup.tar.gz
+
+Explanation:
+tar -> Archive creation.
+rsync -aHAX -> Preserve permissions, ownership, ACLs and extended attributes where supported.
+sha256sum -> Integrity checksum.
+
+Replace example paths with approved backup locations.
+Avoid copying actively changing databases without application-consistent backup procedure.`,
+      config: `# Example backup policy
+
+Frequency: Daily incremental / weekly full (illustrative)
+Retention: According to compliance and recovery requirements
+Destination: Separate storage account or backup platform
+Encryption: At rest and in transit
+Access: Restricted backup operator role
+Validation: Automated integrity check
+Restore test: Scheduled and documented
+
+# A snapshot alone is not a complete disaster recovery plan.`,
+      problems: [
+        {
+          issue: "Backup archive exists but restore fails",
+          rootCause: "Backup may be incomplete, corrupted, missing metadata or created while application data was inconsistent.",
+          solution: "Verify checksums, inspect backup logs and use application-aware backup procedures. Maintain tested restore points."
+        },
+        {
+          issue: "Snapshot deletion causes unexpected data loss",
+          rootCause: "Snapshot dependency chain or retention policy was misunderstood.",
+          solution: "Understand platform snapshot semantics, protect critical recovery points and test restore before cleanup."
+        }
+      ]
+    },
+    {
+      heading: "12. Filesystem Performance and I/O Optimization",
+      explanation: `Filesystem performance storage latency, IOPS, throughput, queue depth, cache behavior and workload pattern meeda depend avuthundi. Application slow ga undi ante CPU issue ani assume cheyyakudadhu. Disk await high ga unte storage bottleneck undochu. Many small random writes and large sequential writes different I/O characteristics kaligi untayi.
+
+      Optimization mundu baseline collect cheyyali. Storage size increase cheyyadam, filesystem tuning or mount option changes workload evidence base meeda matrame cheyyali.`,
+      steps: [
+        "iostat tho device utilization and latency inspect cheyyali.",
+        "pidstat or iotop tho heavy I/O process identify cheyyali.",
+        "Application request latency tho disk metrics correlate cheyyali.",
+        "Cloud volume IOPS and throughput limits verify cheyyali.",
+        "Safe workload-specific optimization test cheyyali.",
+        "Before and after metrics compare cheyyali."
+      ],
+      commands: `iostat -xz 1 5
+vmstat 1 5
+pidstat -d 1 5
+sudo iotop -o
+lsblk -o NAME,SIZE,ROTA,TYPE,MOUNTPOINTS
+
+Explanation:
+iostat await -> Average I/O request wait time.
+%util -> Device busy percentage; interpretation depends on device type.
+pidstat -d -> Per-process disk I/O.
+iotop -> Active I/O consumers.
+
+Install sysstat or iotop package if commands are unavailable.`,
+      config: `# Performance review checklist
+
+- Verify cloud disk IOPS and throughput limits.
+- Identify sequential vs random I/O pattern.
+- Review application write frequency.
+- Check filesystem and kernel compatibility.
+- Avoid unsafe cache or barrier changes.
+- Benchmark with representative workload.
+- Keep rollback plan for mount or storage changes.`,
+      problems: [
+        {
+          issue: "Application latency increases during heavy writes",
+          rootCause: "Storage throughput or IOPS capacity may be saturated.",
+          solution: "Correlate iostat and cloud volume metrics, identify write-heavy process and right-size storage or optimize write pattern."
+        },
+        {
+          issue: "Disk utilization appears high but throughput is low",
+          rootCause: "Small random I/O, high latency or queue contention may limit throughput.",
+          solution: "Inspect await, request size, queue depth and application behavior before selecting a storage upgrade."
+        }
+      ]
+    },
+    {
+      heading: "13. Production Real-Time Workflow – Application Storage Setup",
+      explanation: `Company scenario: Payments application ki separate persistent data volume attach chestharu. Application release files /opt/payments-app lo, configuration /etc/payments-app lo, persistent files /var/lib/payments-app lo untayi. Separate volume mount ayyaka service account ki restricted permissions istaru.
+
+      Workflow:
+      Cloud volume provision -> Linux device identify -> filesystem validate -> mount point create -> persistent mount configure -> ownership set -> application deploy -> write test -> monitoring enable.
+
+      Important: Existing volume lo data unte mkfs run cheyyakudadhu. New blank disk ani platform team confirm chesina tarvatha matrame filesystem create cheyyali.`,
+      steps: [
+        "Change ticket and volume attachment details verify cheyyali.",
+        "lsblk and cloud console mapping tho device identify cheyyali.",
+        "Existing filesystem and data presence inspect cheyyali.",
+        "Approved new-volume procedure unte filesystem create cheyyali.",
+        "UUID-based mount configuration add cheyyali.",
+        "Application directory ownership and permissions set cheyyali.",
+        "Service account tho read/write test cheyyali.",
+        "Application health check and monitoring verify cheyyali."
+      ],
+      commands: `lsblk -f
+sudo blkid
+sudo mkdir -p /var/lib/payments-app
+sudo mount /dev/CONFIRMED-DEVICE /var/lib/payments-app
+sudo chown payments:payments /var/lib/payments-app
+sudo chmod 750 /var/lib/payments-app
+sudo -u payments test -w /var/lib/payments-app && echo "Write access OK"
+findmnt /var/lib/payments-app
+df -hT /var/lib/payments-app
+
+Note:
+The device is a placeholder. Do not execute filesystem creation or formatting commands until the device is confirmed blank and approved.`,
+      config: `# Example application storage configuration
+
+PAYMENTS_DATA_DIR=/var/lib/payments-app
+PAYMENTS_LOG_DIR=/var/log/payments-app
+
+# Service ownership:
+payments:payments
+
+# Directory access:
+750
+
+# Mount configuration:
+UUID=CONFIRMED-UUID /var/lib/payments-app ext4 defaults,nofail 0 2
+
+Use actual values from the deployment environment.`,
+      problems: [
+        {
+          issue: "Application starts but cannot write to data directory",
+          rootCause: "Mount ownership or directory permissions do not match service runtime user.",
+          solution: "Verify systemd User/Group, inspect namei -l and set only the required ownership and access."
+        },
+        {
+          issue: "Application starts before data volume is mounted",
+          rootCause: "Service startup does not depend on the mount unit.",
+          solution: "Configure systemd RequiresMountsFor=/var/lib/payments-app and validate service ordering."
+        }
+      ]
+    },
+    {
+      heading: "14. Real-Time Workflow – Disk Full Production Incident",
+      explanation: `Scenario: Production API 500 errors return chesthundi. Application logs lo write failure and temporary file creation errors kanipisthayi. Alert filesystem usage 95% ani indicate chesthundi.
+
+      Engineer first symptom confirm chesthadu, impacted mount identify chesthadu, inode usage check chesthadu, largest directory trace chesthadu. Tarvatha log file growth or deleted-open file issue identify chesi approved remediation chesthadu. Random ga rm -rf use cheyyadu.`,
+      steps: [
+        "Monitoring alert and incident start time record cheyyali.",
+        "df -hT and df -i tho capacity and inode state inspect cheyyali.",
+        "du -xhd1 tho large directories trace cheyyali.",
+        "lsof +L1 tho deleted-but-open files check cheyyali.",
+        "Responsible application and service owner identify cheyyali.",
+        "Retention policy follow chesi safe cleanup or volume expansion cheyyali.",
+        "Application write test and health checks verify cheyyali.",
+        "Root cause and preventive alert action document cheyyali."
+      ],
+      commands: `df -hT
+df -i
+sudo du -xhd1 /var/log 2>/dev/null | sort -h
+sudo find /var/log -type f -size +500M -printf '%s %p\\n'
+sudo lsof +L1
+sudo journalctl -u payments-app --since "1 hour ago"
+
+# After approved remediation:
+df -hT
+sudo systemctl status payments-app
+curl -fsS http://127.0.0.1:8080/health
+
+Use the actual service and health-check endpoint.`,
+      config: `# Example logrotate configuration
+
+/var/log/payments-app/*.log {
+    daily
+    rotate 14
+    compress
+    missingok
+    notifempty
+    create 0640 payments payments
+    sharedscripts
+    postrotate
+        systemctl kill -s HUP payments-app.service 2>/dev/null || true
+    endscript
+}
+
+# Validate logrotate configuration before applying.
+# Application-specific reopen behavior must be confirmed.`,
+      problems: [
+        {
+          issue: "No space left on device",
+          rootCause: "Application logs or data consumed the available filesystem capacity.",
+          solution: "Identify the writer, preserve required audit logs, apply approved retention or expand storage, then verify application recovery."
+        },
+        {
+          issue: "Disk cleanup does not release expected space",
+          rootCause: "Deleted files remain open in a running process.",
+          solution: "Find the owning process using lsof +L1 and perform a controlled service restart or supported log reopen."
+        }
+      ]
+    },
+    {
+      heading: "15. Security – Filesystem Protection",
+      explanation: `Filesystem security lo unauthorized users sensitive data access cheyyakunda protect cheyyadam important. SSH private keys, database files, application secrets and backup archives restricted permissions lo undali. Shared writable directories lo sticky bit use case undochu. Mount options noexec, nodev, nosuid specific mount purpose ki suitable ga apply cheyyachu.
+
+      Security control apply chese mundu application compatibility test cheyyali. noexec mount lo scripts execute avvakapovachu. nosuid and nodev behavior application requirements ni affect cheyyachu.`,
+      steps: [
+        "Sensitive directory inventory prepare cheyyali.",
+        "File ownership and permissions audit cheyyali.",
+        "Service accounts ki least privilege access ivvali.",
+        "Secrets and private keys access restrict cheyyali.",
+        "Backup encryption and access control enable cheyyali.",
+        "Audit and security monitoring configure cheyyali."
+      ],
+      commands: `find /etc -type f -perm -0002 -ls 2>/dev/null
+find /home -type f -name "*.pem" -o -name "id_rsa"
+stat ~/.ssh
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_rsa
+find /var/lib/myapp -type f -perm -0002 -ls
+
+Explanation:
+World-writable files audit cheyyadaniki find.
+SSH private key permissions strict ga maintain cheyyali.
+Search output ni manually review cheyyali; automatic chmod cheyyakudadhu.`,
+      config: `# Example sensitive file permissions
+
+SSH directory: 700
+SSH private key: 600
+Application secret file: 600 or approved restrictive mode
+Application data directory: 750
+Backup archive: restricted service/operator access
+
+# Example dedicated mount options – evaluate compatibility first
+# nodev,nosuid,noexec
+
+Never expose secrets in shell history, process arguments or logs.`,
+      problems: [
+        {
+          issue: "Sensitive application file readable by all users",
+          rootCause: "Incorrect default umask or deployment permission configuration.",
+          solution: "Set restrictive ownership and permissions, review deployment automation and audit similar files."
+        },
+        {
+          issue: "Application fails after noexec mount option",
+          rootCause: "Application attempts to execute a script or binary from that mount.",
+          solution: "Review execution requirement and move executable artifacts to an approved executable filesystem or revise the mount policy through security review."
+        }
+      ]
+    },
+    {
+      heading: "16. Monitoring and Alerting for Filesystems",
+      explanation: `Production filesystem monitoring lo usage percentage okkate kaadu. Free bytes, inode usage, read/write latency, IOPS, throughput, disk errors and mount availability monitor cheyyali. Prometheus node_exporter filesystem collector metrics expose chesthundi. Alertmanager warning and critical alerts route chesthundi.
+
+      Example: /var usage 80% cross ayithe warning; 90% cross ayithe critical. But rapidly growing disk 70% daggara kuda alert avvali. Threshold plus growth-rate monitoring better.`,
+      steps: [
+        "node_exporter or approved monitoring agent install cheyyali.",
+        "Filesystem metrics scrape avuthunnaya verify cheyyali.",
+        "Temporary and pseudo filesystems unwanted alerts create cheyyakunda filters configure cheyyali.",
+        "Usage and inode alerts create cheyyali.",
+        "Disk I/O latency and device errors monitor cheyyali.",
+        "Alert delivery and runbook test cheyyali."
+      ],
+      commands: `df -hT
+df -i
+iostat -xz 1 3
+systemctl status node_exporter
+curl -s http://localhost:9100/metrics | grep node_filesystem
+
+Explanation:
+node_filesystem_size_bytes -> Filesystem total size.
+node_filesystem_avail_bytes -> Available bytes.
+node_filesystem_files_free -> Free inodes.
+node_filesystem_readonly -> Read-only mount state.`,
+      config: `# Prometheus alert example
+
+groups:
+- name: filesystem-alerts
+  rules:
+  - alert: FilesystemUsageHigh
+    expr: |
+      100 * (
+        1 - node_filesystem_avail_bytes{mountpoint="/data"}
+        / node_filesystem_size_bytes{mountpoint="/data"}
+      ) > 85
+    for: 10m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Filesystem usage is above 85 percent"
+      description: "Investigate disk growth on {{ $labels.instance }}"
+
+# Validate metric labels and exclude pseudo filesystems.
+# Threshold is an example; adapt to workload and SLA.`,
+      problems: [
+        {
+          issue: "Filesystem alert never fires",
+          rootCause: "Metric labels do not match, exporter is unavailable or alert rule is not loaded.",
+          solution: "Query the exact metric in Prometheus, inspect rule evaluation and validate exporter target health."
+        },
+        {
+          issue: "Too many false disk alerts",
+          rootCause: "Temporary filesystems and short-lived usage spikes are included.",
+          solution: "Filter irrelevant mount types, add a suitable for duration and tune thresholds using production history."
+        }
+      ]
+    },
+    {
+      heading: "17. Filesystem Failure Scenarios and Recovery Decisions",
+      explanation: `Filesystem incident severity batti recovery approach decide cheyyali. Simple capacity issue ki cleanup or expansion sufficient avvachu. Device I/O error unte storage platform escalation required. Metadata corruption unte offline repair and verified backup important.
+
+      Running mounted filesystem meeda repair tool execute cheyyadam dangerous. Repair procedure filesystem type and vendor guidance meeda depend avuthundi. First data protection and device health, next repair.`,
+      steps: [
+        "Incident impact and affected mount identify cheyyali.",
+        "Kernel and storage logs capture cheyyali.",
+        "Application writes stop cheyyala decide cheyyali.",
+        "Backup and snapshot availability verify cheyyali.",
+        "Storage/platform owner tho device health confirm cheyyali.",
+        "Filesystem-specific maintenance recovery plan approve cheyyali.",
+        "Repair or restore complete ayyaka integrity and application health verify cheyyali."
+      ],
+      commands: `findmnt
+lsblk -f
+sudo dmesg -T | tail -200
+sudo journalctl -k --since "2 hours ago"
+sudo smartctl -a /dev/DEVICE
+
+# smartctl availability and device support vary.
+# Cloud virtual disks may not expose physical SMART information.
+# Never run fsck against a mounted read-write filesystem.`,
+      config: `# Recovery decision guide
+
+Capacity issue:
+Identify growth -> approved cleanup or expand -> verify.
+
+Inode exhaustion:
+Identify file count -> application-specific cleanup -> verify.
+
+Read-only remount:
+Collect kernel errors -> protect data -> storage/filesystem diagnosis.
+
+Metadata corruption:
+Stop writes -> backup/snapshot assessment -> offline filesystem-specific repair.
+
+Device failure:
+Protect data -> replace/recover storage -> restore and validate.`,
+      problems: [
+        {
+          issue: "Filesystem repair reports unrecoverable errors",
+          rootCause: "Severe metadata corruption or underlying storage failure.",
+          solution: "Stop repeated repair attempts, preserve device image or snapshot where possible, involve storage specialists and restore from verified backup."
+        },
+        {
+          issue: "Disk disappears after server reboot",
+          rootCause: "Cloud attachment, device mapping, storage path or boot-time dependency issue.",
+          solution: "Verify cloud attachment, lsblk output, UUID mapping and system logs. Correct persistent mount configuration only after device identity is confirmed."
+        }
+      ]
+    },
+    {
+      heading: "18. Prevention, Maintenance and Best Practices",
+      explanation: `Filesystem problems ni incident ayyaka solve cheyyadam kanna prevent cheyyadam better. Capacity forecasting, log rotation, inode monitoring, backup testing, mount validation and permission audits regular ga run cheyyali. Application teams persistent data and temporary data separate ga store cheyyali.
+
+      Production engineer disk growth trend observe chesi expansion lead time mundhe action plan prepare chesthadu. Every cleanup ki ownership and retention policy undali.`,
+      steps: [
+        "Daily filesystem and inode monitoring maintain cheyyali.",
+        "Application logs ki rotation and retention define cheyyali.",
+        "Temporary files ki cleanup policy implement cheyyali.",
+        "Persistent application data separate storage lo maintain cheyyali.",
+        "fstab changes peer review and validation tho deploy cheyyali.",
+        "Backup restore tests schedule cheyyali.",
+        "Filesystem capacity forecast and growth reports review cheyyali.",
+        "Permissions and mount security periodic audit cheyyali."
+      ],
+      commands: `df -hT
+df -i
+findmnt --verify
+sudo logrotate -d /etc/logrotate.conf
+sudo journalctl --disk-usage
+sudo du -xhd1 /var 2>/dev/null | sort -h
+
+Explanation:
+logrotate -d -> Debug mode; actual rotation perform cheyyadu.
+journalctl --disk-usage -> Journal storage usage.
+findmnt --verify -> Mount configuration validation.`,
+      config: `# Operational maintenance checklist
+
+[ ] Disk usage warning and critical alerts
+[ ] Inode usage alerts
+[ ] Log rotation and retention
+[ ] Persistent data separation
+[ ] fstab validation
+[ ] Backup encryption
+[ ] Restore testing
+[ ] Storage performance baseline
+[ ] Permission audit
+[ ] Incident runbook
+
+Document filesystem owner and escalation contact.`,
+      problems: [
+        {
+          issue: "Repeated filesystem capacity incidents",
+          rootCause: "No growth forecasting, retention policy or accountable application ownership.",
+          solution: "Assign filesystem ownership, configure trend-based alerts and automate approved retention controls."
+        },
+        {
+          issue: "Backup restore is not completed within RTO",
+          rootCause: "Restore process was not tested at realistic data volume.",
+          solution: "Run timed recovery exercises, measure transfer and validation time, and update recovery capacity."
+        }
+      ]
+    },
+    {
+      heading: "19. Real-World Project – Persistent Storage for a DevOps Application",
+      explanation: `Project scenario: Docker-based internal application ki persistent storage setup chestham. Container recreate ayina data survive avvali. Host lo /srv/internal-app/data directory persistent volume source ga use chestham. Container user and host directory permissions match avvali.
+
+      Production lo local disk persistence single-node failure nunchi protection ivvadu. High availability requirement unte managed database, network storage or platform-specific persistent volumes evaluate cheyyali.`,
+      steps: [
+        "Application persistent data requirement document cheyyali.",
+        "Host storage capacity and filesystem type verify cheyyali.",
+        "Dedicated data directory create cheyyali.",
+        "Container runtime UID/GID identify cheyyali.",
+        "Least-privilege ownership and permissions configure cheyyali.",
+        "Docker volume mount configure cheyyali.",
+        "Container recreate chesi data persistence test cheyyali.",
+        "Backup, monitoring and restore procedure validate cheyyali."
+      ],
+      commands: `sudo mkdir -p /srv/internal-app/data
+sudo chown 10001:10001 /srv/internal-app/data
+sudo chmod 750 /srv/internal-app/data
+docker run -d --name internal-app \
+  --mount type=bind,src=/srv/internal-app/data,dst=/app/data \
+  internal-app:stable
+
+docker inspect internal-app
+docker exec internal-app sh -c 'id && ls -ld /app/data'
+
+# Validate persistence using the application's supported test procedure.`,
+      config: `# compose.yaml – illustrative example
+
+services:
+  app:
+    image: internal-app:stable
+    user: "10001:10001"
+    volumes:
+      - type: bind
+        source: /srv/internal-app/data
+        target: /app/data
+    restart: unless-stopped
+
+# Production requirements:
+# - Pin image version.
+# - Use secrets management.
+# - Configure health checks.
+# - Back up persistent data.
+# - Do not assume local disk provides high availability.`,
+      problems: [
+        {
+          issue: "Container receives permission denied on mounted directory",
+          rootCause: "Container UID/GID does not match host directory ownership or security policy blocks access.",
+          solution: "Inspect container identity and host path permissions. Assign the minimum required ownership and validate SELinux/AppArmor policy."
+        },
+        {
+          issue: "Data disappears after container replacement",
+          rootCause: "Data was stored in the container writable layer instead of persistent storage.",
+          solution: "Use a named volume or approved persistent bind mount and verify data survives container recreation."
+        }
+      ]
+    },
+    {
+      heading: "20. Interview Questions and Senior Engineer Decisions",
+      explanation: `Interview lo filesystem definition matrame cheppakudadhu. Production issue vachinappudu investigation order, risk, recovery and verification explain cheyyali. Senior engineer immediate command run cheyyadam kanna data safety and blast radius first evaluate chesthadu.`,
+      steps: [
+        "Filesystem and directory difference explain cheyyali.",
+        "VFS architecture and inode role explain cheyyali.",
+        "df and du output difference discuss cheyyali.",
+        "Disk full and inode full scenarios diagnose cheyyali.",
+        "Mount and fstab recovery explain cheyyali.",
+        "ext4 and XFS repair differences understand cheyyali.",
+        "Backup, snapshot, RPO and RTO compare cheyyali.",
+        "Production recovery decision and rollback explain cheyyali."
+      ],
+      commands: `# Interview practical command set
+df -hT
+df -i
+du -xhd1 /var
+findmnt
+lsblk -f
+blkid
+stat /path/to/file
+namei -l /path/to/file
+lsof +L1
+iostat -xz 1 5
+journalctl -k
+findmnt --verify
+
+Explain what each command proves, not just its syntax.`,
+      config: `# Senior engineer decision checklist
+
+1. What is the affected mount point?
+2. Is the issue capacity, inode, permission, mount or device I/O?
+3. Is application data at risk?
+4. Is the filesystem mounted read-write or read-only?
+5. Are verified backups available?
+6. Can remediation be performed online safely?
+7. Is a maintenance window required?
+8. What is the rollback plan?
+9. How will recovery be verified?
+10. What monitoring prevents recurrence?`,
+      problems: [
+        {
+          issue: "Interviewer asks: df shows 100%, but du shows much less. What will you do?",
+          rootCause: "Possible deleted-open files, reserved blocks, filesystem metadata or mount boundary differences.",
+          solution: "Check lsof +L1, df -i, filesystem reserved space and du -x. Explain evidence before selecting cleanup or restart."
+        },
+        {
+          issue: "Interviewer asks: Can you run fsck on a production mounted filesystem?",
+          rootCause: "Repair tools can modify filesystem metadata and cause data corruption when used on an active mounted filesystem.",
+          solution: "No. Confirm filesystem type, protect data, schedule appropriate maintenance and use the filesystem-specific offline recovery procedure."
+        }
+      ]
+    }
+  ]
+};
+
+export default data;

@@ -1,0 +1,1263 @@
+import type { NoteData } from "../../types";
+
+const data: NoteData = {
+  title: "Linux Disk Storage – Complete Practical DevOps Engineer Own Notes",
+  description: "Detailed Linux disk and storage notes in simple English covering disk architecture, partitions, filesystems, LVM, mounts, commands, production workflows, capacity monitoring, troubleshooting, RCA, recovery and interview preparation.",
+
+  sections: [
+    {
+      heading: "1. Introduction – What Is Linux Disk Storage and Why Do We Need It?",
+      explanation: "Disk storage is the part of a Linux system where operating-system files, application files, databases, logs, backups and user data are stored permanently. RAM is temporary working memory, but disk storage keeps information even after a reboot. In production, storage is critical because applications need space for files, database writes, temporary data and logs. When storage becomes full, applications may fail to write data, databases can stop accepting requests and operating-system services may become unstable. A DevOps engineer must understand both disk capacity and disk performance.",
+      steps: [
+        "Understand the difference between RAM and persistent disk storage.",
+        "Identify the disks attached to a Linux server.",
+        "Understand partitions, filesystems and mount points.",
+        "Learn how applications consume storage.",
+        "Monitor free space before it becomes critical.",
+        "Understand why database and log storage need separate planning."
+      ],
+      commands: `lsblk
+# Displays block devices and their partition relationships.
+
+df -h
+# Displays mounted filesystem capacity in human-readable units.
+
+du -sh /var/log
+# Displays the total size of the log directory.
+
+free -h
+# Displays RAM and swap usage, not disk capacity.
+
+findmnt
+# Displays mounted filesystems and their mount relationships.`,
+      config: `# Common storage directories
+
+/          # Root filesystem.
+/boot      # Boot files on systems using a separate boot partition.
+/home      # User home directories.
+/var       # Logs, caches, spool and variable application data.
+/tmp       # Temporary files.
+/opt       # Optional application software.
+/data      # Example application or database data mount.
+
+# Actual layout depends on the Linux distribution and server design.`,
+      problems: [
+        {
+          issue: "Application cannot save files.",
+          rootCause: "The filesystem may be full or the application may lack write permission.",
+          solution: "Check df -h, df -i, directory ownership and application logs before changing storage."
+        },
+        {
+          issue: "Database performance becomes slow during heavy writes.",
+          rootCause: "Disk latency, queue depth, storage saturation or insufficient capacity may affect database I/O.",
+          solution: "Inspect disk I/O metrics and application workload, then plan storage capacity or performance changes."
+        }
+      ]
+    },
+    {
+      heading: "2. Storage Architecture – Disk, Partition, Filesystem and Mount Point",
+      explanation: "Linux storage is organized in layers. A physical or virtual disk is detected as a block device. A disk may contain partitions, or it may be used directly by a volume manager. A filesystem such as ext4 or XFS organizes files and directories. Linux makes the filesystem available through a mount point inside its single directory tree. For example, a separate disk can be formatted and mounted at /data. Applications then access it using normal file paths. Understanding these layers is essential before resizing or repairing storage.",
+      steps: [
+        "Identify the disk device, such as /dev/sdb.",
+        "Inspect whether the disk contains partitions.",
+        "Identify the filesystem type on each partition.",
+        "Understand the mount point where the filesystem is attached.",
+        "Check the relationship between device, UUID and mount configuration.",
+        "Never assume a device name remains unchanged after every reboot."
+      ],
+      commands: `lsblk -f
+# Displays devices, filesystems, labels, UUIDs and mount points.
+
+blkid
+# Displays filesystem identification information.
+
+findmnt /
+# Displays the device and filesystem mounted at root.
+
+ls -l /dev/disk/by-uuid/
+# Displays stable UUID-based device links.
+
+cat /proc/mounts
+# Displays the kernel's current mount table.`,
+      config: `# Example storage relationship
+
+/dev/sdb1
+    |
+    +-- ext4 filesystem
+            |
+            +-- mounted at /data
+                    |
+                    +-- /data/application
+                    +-- /data/backups
+
+# A mount point connects a filesystem to the Linux directory tree.
+# Do not format a device until its ownership and existing data are confirmed.`,
+      problems: [
+        {
+          issue: "Expected disk is not visible.",
+          rootCause: "The virtual disk may not be attached, the kernel may not have rescanned it or the storage controller may have a problem.",
+          solution: "Check cloud or hypervisor attachment state, lsblk, kernel logs and the approved device-rescan procedure."
+        },
+        {
+          issue: "A filesystem is mounted at an unexpected path.",
+          rootCause: "An incorrect mount configuration or duplicate mount entry may exist.",
+          solution: "Inspect findmnt, /etc/fstab and systemd mount units before changing the mount."
+        }
+      ]
+    },
+    {
+      heading: "3. Internal Working – How Linux Reads and Writes Disk Data",
+      explanation: "When an application writes a file, it makes system calls that reach the kernel's filesystem layer. The filesystem manages file metadata and maps file data to storage blocks. The kernel uses page cache and I/O scheduling to manage access to block devices. The storage driver sends requests to the underlying device. Reads may be served from cache or from storage. Writes may be buffered before being committed to the device. This is why an application reporting a successful write does not always mean every byte has already reached physical media. Filesystem and device behavior must be considered during recovery and performance investigations.",
+      steps: [
+        "An application requests a file write.",
+        "The kernel validates access permissions.",
+        "The filesystem allocates or updates metadata and data blocks.",
+        "The kernel may buffer writes in memory.",
+        "I/O requests are sent through the block layer and device driver.",
+        "The storage device processes the request.",
+        "The application receives the result according to the operation's semantics.",
+        "Use filesystem-aware backup and recovery tools for consistent data protection."
+      ],
+      commands: `cat /proc/mounts
+# Displays mounted filesystems.
+
+cat /proc/diskstats
+# Displays kernel block-device I/O counters.
+
+iostat -xz 1 5
+# Displays extended I/O statistics when sysstat is installed.
+
+vmstat 1 5
+# Displays memory, swap, process and I/O-related activity.
+
+sync
+# Requests synchronization of filesystem buffers.
+
+dmesg -T | tail -50
+# Displays recent kernel messages.`,
+      config: `# Example filesystem mount options
+
+UUID=example-uuid /data ext4 defaults 0 2
+
+# UUID identifies the filesystem.
+# /data is the mount point.
+# ext4 is the filesystem type.
+# defaults uses the filesystem's standard default mount options.
+# The final fields control dump and filesystem-check ordering.
+# This is an example only; obtain the real UUID using blkid.`,
+      problems: [
+        {
+          issue: "A write operation becomes slow.",
+          rootCause: "The filesystem may be waiting on slow storage, high I/O queue depth or saturated device throughput.",
+          solution: "Correlate iostat, application latency, storage metrics and kernel messages."
+        },
+        {
+          issue: "A file appears to exist but recent data is missing after an unexpected shutdown.",
+          rootCause: "Buffered writes may not have been committed before the failure, or the application may not have used the required durability mechanism.",
+          solution: "Follow the application's consistency and recovery procedure and inspect filesystem and application logs."
+        }
+      ]
+    },
+    {
+      heading: "4. Features and Options – Linux Storage Capabilities",
+      explanation: "Linux supports multiple storage technologies. Basic partitions divide a disk into logical regions. Filesystems such as ext4 and XFS organize files. LVM provides flexible logical volumes that can be extended or reorganized. RAID combines devices for performance or redundancy depending on its level. Network storage can expose remote data. Cloud block volumes can be attached to virtual machines and expanded according to provider capabilities. The correct design depends on performance, availability, cost and recovery requirements.",
+      steps: [
+        "Learn MBR and GPT partitioning concepts.",
+        "Understand ext4 and XFS filesystem characteristics.",
+        "Understand physical volumes, volume groups and logical volumes in LVM.",
+        "Learn RAID redundancy and failure trade-offs.",
+        "Understand local disks versus network-attached storage.",
+        "Learn snapshots and their consistency limitations.",
+        "Understand filesystem quotas and capacity limits.",
+        "Select storage based on measured workload requirements."
+      ],
+      commands: `lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT
+# Displays selected storage fields.
+
+parted -l
+# Lists partition tables when parted is installed.
+
+pvs
+# Displays LVM physical volumes.
+
+vgs
+# Displays LVM volume groups.
+
+lvs
+# Displays LVM logical volumes.
+
+findmnt -t ext4,xfs
+# Displays mounts using the selected filesystem types.`,
+      config: `# Common storage technology examples
+
+GPT       # Modern partition table format.
+ext4      # General-purpose Linux filesystem.
+XFS       # High-performance journaling filesystem.
+LVM       # Logical volume management.
+RAID 1    # Mirroring for redundancy.
+RAID 10   # Mirroring and striping combination.
+
+# RAID is not a backup.
+# Snapshots are not a replacement for tested independent backups.`,
+      problems: [
+        {
+          issue: "Storage cannot be expanded as expected.",
+          rootCause: "The disk, partition, volume group or filesystem layer may not have enough expandable capacity.",
+          solution: "Inspect every storage layer before planning an expansion."
+        },
+        {
+          issue: "A team assumes RAID protects against accidental deletion.",
+          rootCause: "RAID maintains device redundancy but generally mirrors unwanted logical changes too.",
+          solution: "Maintain independent backups and test restoration procedures."
+        }
+      ]
+    },
+    {
+      heading: "5. Real-Time Workflow – Adding Storage to a Linux Production Server",
+      explanation: "A common company task is adding storage to an application server when application data grows. The cloud or infrastructure team attaches a new block volume. The Linux engineer verifies the device, confirms that it is unused, creates the approved partition or logical volume, creates a filesystem, mounts it and configures persistent mounting. The application team then validates write access. This operation must include data-protection checks because formatting the wrong disk can destroy production data.",
+      steps: [
+        "Raise and approve the storage expansion request.",
+        "Confirm required capacity, performance and availability.",
+        "Attach the approved volume through the cloud or virtualization platform.",
+        "Identify the new device using lsblk and cloud metadata.",
+        "Confirm that the device contains no required existing data.",
+        "Create a partition or LVM layout according to the storage design.",
+        "Create the approved filesystem.",
+        "Mount it at the intended path.",
+        "Configure persistent mounting using UUID.",
+        "Set application ownership and permissions.",
+        "Verify write access, monitoring and backup coverage."
+      ],
+      commands: `lsblk -f
+# Identify the newly attached disk.
+
+sudo blkid
+# Check filesystem identifiers.
+
+sudo mkdir -p /data
+# Creates the intended mount directory.
+
+sudo mount /dev/sdb1 /data
+# Example temporary mount; replace with the verified device.
+
+findmnt /data
+# Confirms the mounted filesystem.
+
+df -hT /data
+# Verifies filesystem capacity and type.
+
+sudo -u companyapp touch /data/write-test
+# Tests access as the application account when that account exists.`,
+      config: `# Example /etc/fstab entry
+
+UUID=replace-with-real-uuid /data ext4 defaults,nofail 0 2
+
+# Use the UUID obtained from blkid.
+# nofail can allow boot to continue if this optional device is unavailable.
+# Choose boot behavior according to the application dependency.
+# Validate fstab before rebooting.`,
+      problems: [
+        {
+          issue: "The new volume is missing after a reboot.",
+          rootCause: "The filesystem was mounted manually but no persistent mount configuration was created.",
+          solution: "Add a correct UUID-based fstab entry, validate it and test the mount safely."
+        },
+        {
+          issue: "Application cannot write to the new mount.",
+          rootCause: "The mount directory ownership or permissions do not match the service account.",
+          solution: "Inspect the mount and path permissions, then apply the minimum required ownership and access."
+        }
+      ]
+    },
+    {
+      heading: "6. Production Examples – Storage in Web, Database and CI/CD Servers",
+      explanation: "Different workloads consume storage in different ways. A web server stores application files, cache and access logs. A database uses data files, transaction logs and temporary files. A CI/CD runner stores source checkouts, build artifacts, caches and container layers. Monitoring systems store time-series data and log indexes. A production design should separate workloads where appropriate, estimate growth and define retention. A single full root filesystem can affect unrelated services, so storage isolation and monitoring are important.",
+      steps: [
+        "Web server: plan application, cache and log capacity.",
+        "Database: plan data, transaction log and backup storage separately.",
+        "CI/CD runner: monitor workspace and build cache growth.",
+        "Container host: monitor image layers and writable container data.",
+        "Monitoring platform: plan retention and index growth.",
+        "Define capacity alerts and data-retention policies.",
+        "Test recovery using actual backup restoration."
+      ],
+      commands: `df -hT
+# Shows mounted filesystems and types.
+
+du -xhd1 /var
+# Summarizes first-level directory usage on the same filesystem where supported.
+
+du -sh /var/lib/docker
+# Checks Docker data directory size when Docker uses this path.
+
+du -sh /var/log
+# Checks log directory size.
+
+find /data -type f -size +1G -print
+# Finds files larger than 1 GB; review before taking action.
+
+lsof +L1
+# Finds open deleted files when lsof is installed.`,
+      config: `# Example workload storage plan
+
+/data/database       # Database files.
+/data/database-wal   # Database write-ahead logs.
+/var/log             # System and service logs.
+/var/lib/containers  # Container storage where configured.
+/backup              # Backup destination.
+
+# Actual paths depend on product configuration.
+# Keep backup storage independent from the source failure domain.`,
+      problems: [
+        {
+          issue: "CI/CD builds fail because runner storage is full.",
+          rootCause: "Old workspaces, artifacts, caches or container images accumulate.",
+          solution: "Identify the largest consumers, implement approved retention and cleanup policies and monitor free space."
+        },
+        {
+          issue: "Database writes fail after log growth.",
+          rootCause: "Transaction or write-ahead logs consume the available filesystem capacity.",
+          solution: "Follow database-specific log retention and backup procedures; never delete active database logs manually."
+        }
+      ]
+    },
+    {
+      heading: "7. Configuration – Filesystem and Persistent Mount Configuration",
+      explanation: "Linux mount configuration controls which filesystems are attached during boot. The /etc/fstab file commonly defines persistent mounts using device identifiers, mount points, filesystem types and mount options. UUIDs are generally more stable than device names such as /dev/sdb1 because device enumeration can change. A bad fstab entry can delay or interrupt boot, so engineers must validate it before restarting a production system.",
+      steps: [
+        "Inspect current mounts using findmnt.",
+        "Identify the filesystem UUID using blkid.",
+        "Confirm that the mount directory exists.",
+        "Create a backup of /etc/fstab.",
+        "Add the correct filesystem entry.",
+        "Check syntax and mount options.",
+        "Run a controlled mount test.",
+        "Verify the filesystem is mounted at the intended path."
+      ],
+      commands: `cat /etc/fstab
+# Reads persistent filesystem mount configuration.
+
+sudo blkid
+# Displays filesystem UUIDs.
+
+findmnt --verify
+# Checks fstab entries where supported.
+
+sudo mount -a
+# Attempts to mount configured filesystems not currently mounted.
+
+findmnt /data
+# Confirms the /data mount.`,
+      config: `# Example /etc/fstab structure
+
+UUID=1111-example /data ext4 defaults,nofail 0 2
+
+# Field 1: filesystem identifier.
+# Field 2: mount point.
+# Field 3: filesystem type.
+# Field 4: mount options.
+# Field 5: dump backup field.
+# Field 6: filesystem check order.
+
+# Replace the sample UUID and filesystem type with real values.`,
+      problems: [
+        {
+          issue: "Server enters emergency mode during boot.",
+          rootCause: "A required filesystem cannot mount because of an incorrect fstab entry or unavailable device.",
+          solution: "Use approved console recovery, inspect mount errors and fstab, correct the entry and validate before rebooting."
+        },
+        {
+          issue: "Mount command reports unknown filesystem type.",
+          rootCause: "The filesystem driver or required userspace utility may be missing, or the device has a different format.",
+          solution: "Verify the actual filesystem with blkid and install only the correct supported tools."
+        }
+      ]
+    },
+    {
+      heading: "8. Commands – Disk Inspection and Capacity Management",
+      explanation: "Storage commands help identify device layout, filesystem capacity, directory consumption and mount state. df reports filesystem-level capacity, while du calculates file and directory usage. lsblk shows block-device relationships. These commands answer different questions. For example, df may show a full filesystem while du does not show the same amount because deleted files may still be open by processes. Engineers should use multiple tools to understand the actual condition.",
+      steps: [
+        "Use lsblk to identify disks and partitions.",
+        "Use df to inspect mounted filesystem capacity.",
+        "Use du to find large directories.",
+        "Use df -i to inspect inode consumption.",
+        "Use findmnt to inspect mount relationships.",
+        "Use lsof to locate deleted files held open.",
+        "Capture output before cleanup."
+      ],
+      commands: `lsblk -f
+# Block devices and filesystems.
+
+df -h
+# Human-readable filesystem usage.
+
+df -hT
+# Filesystem type and usage.
+
+df -i
+# Inode usage.
+
+du -sh /var/*
+# Directory size summary.
+
+du -xhd1 /var
+# Same-filesystem directory summary where supported.
+
+find /var -type f -size +500M -ls
+# Lists files larger than 500 MB.
+
+findmnt
+# Current mount relationships.`,
+      config: `# Example investigation record
+
+Host: linux-app-01
+Filesystem: /var
+Capacity: 100 GB
+Used: 92 GB
+Available: 8 GB
+Inode usage: 35 percent
+Largest directory: /var/log/application
+
+# Use actual command output.
+# Record timestamps because storage usage changes over time.`,
+      problems: [
+        {
+          issue: "df and du show different usage.",
+          rootCause: "Deleted files may remain open, mounted directories may hide data or permissions may prevent du from reading some paths.",
+          solution: "Check lsof +L1, inspect mount points and rerun du with appropriate permissions and filesystem boundaries."
+        },
+        {
+          issue: "Directory size command takes a long time.",
+          rootCause: "The directory contains a very large number of files or slow network-mounted storage.",
+          solution: "Narrow the path, use filesystem-aware monitoring and avoid repeated expensive scans during peak production load."
+        }
+      ]
+    },
+    {
+      heading: "9. Logs Analysis – Storage and Filesystem Errors",
+      explanation: "Storage problems often generate kernel messages, filesystem warnings and application write errors. Messages such as I/O error, read-only filesystem, buffer I/O error and filesystem corruption require careful investigation. Do not immediately run filesystem repair commands on a mounted production filesystem. Identify the affected device and follow the filesystem's documented offline or online recovery procedure.",
+      steps: [
+        "Record the first observed storage failure time.",
+        "Inspect kernel messages for device and filesystem errors.",
+        "Check cloud or storage-provider volume health.",
+        "Review filesystem mount options and read-only state.",
+        "Correlate disk errors with application write failures.",
+        "Check whether the issue affects one volume or multiple volumes.",
+        "Preserve data and follow the recovery procedure."
+      ],
+      commands: `dmesg -T | grep -iE "I/O error|filesystem|ext4|xfs|read-only"
+# Searches recent kernel messages for common storage errors.
+
+journalctl -k -b
+# Displays kernel logs from the current boot.
+
+journalctl -p err -b
+# Displays error-priority journal entries.
+
+findmnt -o TARGET,SOURCE,FSTYPE,OPTIONS
+# Displays mount sources, filesystem types and options.
+
+df -hT
+# Checks capacity and filesystem types.`,
+      config: `# Example storage alert event
+
+Alert: FilesystemReadOnly
+Host: linux-db-01
+Mount: /data
+Device: /dev/mapper/vgdata-lvdata
+Symptom: Application write failures
+Evidence: Kernel filesystem errors
+Action: Follow database storage incident runbook
+
+# Do not infer a repair action from the alert alone.
+# Confirm filesystem type and vendor-supported recovery steps.`,
+      problems: [
+        {
+          issue: "Filesystem becomes read-only unexpectedly.",
+          rootCause: "The filesystem may have encountered errors or the underlying storage may be failing.",
+          solution: "Stop unsafe write activity, collect kernel evidence and follow the approved filesystem and storage recovery procedure."
+        },
+        {
+          issue: "Kernel reports repeated I/O errors.",
+          rootCause: "The underlying device, virtual storage path, controller or storage service may be unhealthy.",
+          solution: "Check provider volume health and device diagnostics, then migrate or replace storage through the approved recovery plan."
+        }
+      ]
+    },
+    {
+      heading: "10. Error Identification – Disk Full, Inode Full and Mount Failures",
+      explanation: "Storage failures have different causes. A filesystem can be full because data blocks are consumed, or it can be unable to create files because all inodes are used. A mount can fail because the device is absent, filesystem type is wrong or configuration is invalid. A disk can also be present but suffer high latency. Correct diagnosis starts by identifying which storage layer is failing.",
+      steps: [
+        "Check df -h for block capacity.",
+        "Check df -i for inode capacity.",
+        "Check lsblk and blkid for device visibility.",
+        "Check findmnt for mount state.",
+        "Check kernel logs for I/O errors.",
+        "Check lsof +L1 for open deleted files.",
+        "Identify the application path affected by the failure."
+      ],
+      commands: `df -h
+# Checks block capacity.
+
+df -i
+# Checks inode usage.
+
+lsblk -f
+# Checks device and filesystem visibility.
+
+findmnt /data
+# Checks whether the expected path is mounted.
+
+lsof +L1
+# Checks open deleted files.
+
+mount | grep " /data "
+# Checks mount information for the example path.
+
+dmesg -T | tail -100
+# Checks recent kernel messages.`,
+      config: `# Symptom mapping
+
+No space left on device
+    -> df -h
+    -> df -i
+    -> du -xhd1
+    -> lsof +L1
+
+Mount unavailable
+    -> lsblk -f
+    -> blkid
+    -> findmnt
+    -> journalctl -k
+
+Read-only filesystem
+    -> findmnt
+    -> dmesg
+    -> storage health check
+    -> approved recovery runbook`,
+      problems: [
+        {
+          issue: "No space left on device while df shows free capacity.",
+          rootCause: "Inodes may be exhausted, a quota may be reached or the application may write to a different filesystem.",
+          solution: "Check df -i, user and project quotas, mount paths and the exact application destination."
+        },
+        {
+          issue: "Disk is visible but filesystem is unavailable.",
+          rootCause: "The device may lack a valid filesystem, have filesystem errors or be mounted incorrectly.",
+          solution: "Inspect blkid and kernel logs, confirm ownership and follow the correct filesystem recovery procedure."
+        }
+      ]
+    },
+    {
+      heading: "11. Root Cause Analysis – Why Storage Fills or Becomes Unavailable",
+      explanation: "A disk-full incident may be caused by uncontrolled application logs, database growth, temporary files, backups stored on the same filesystem, runaway container logs or a process holding deleted files open. A mount failure may result from a missing volume, changed UUID or invalid boot configuration. Root cause analysis must identify the exact consumer and the growth pattern. Deleting files without understanding ownership can cause data loss or application failure.",
+      steps: [
+        "Record filesystem usage and alert time.",
+        "Identify the affected mount and device.",
+        "Find the largest directories and files.",
+        "Check log rotation and application retention settings.",
+        "Check open deleted files.",
+        "Review recent deployments and workload changes.",
+        "Check cloud volume capacity and provider events.",
+        "Document root cause and permanent prevention."
+      ],
+      commands: `df -hT
+# Identifies full filesystems.
+
+du -xhd1 /var
+# Finds large first-level directories on the same filesystem where supported.
+
+find /var -xdev -type f -size +1G -ls
+# Finds large files without crossing filesystem boundaries.
+
+lsof +L1
+# Finds open deleted files.
+
+journalctl -k --since "2 hours ago"
+# Checks recent kernel events.
+
+systemctl status logrotate.timer
+# Checks the logrotate timer where configured.`,
+      config: `# Example RCA
+
+Incident: /var filesystem reached 100 percent
+Impact: Application logging and temporary file writes failed
+Evidence: df showed 100 percent usage
+Investigation: Application log directory grew rapidly
+Root cause: Debug logging remained enabled after deployment
+Immediate action: Followed approved log retention and capacity recovery
+Permanent fix: Corrected log level, rotation and alert thresholds
+Prevention: Added deployment validation and growth monitoring`,
+      problems: [
+        {
+          issue: "Filesystem repeatedly fills after every deployment.",
+          rootCause: "New application versions may create excessive logs, caches or temporary data.",
+          solution: "Compare growth before and after deployment, correct application retention and include storage checks in release validation."
+        },
+        {
+          issue: "A volume repeatedly disappears.",
+          rootCause: "Underlying infrastructure, attachment lifecycle or mount configuration may be unstable.",
+          solution: "Correlate operating-system logs with cloud attachment events and correct the storage lifecycle or persistent mount design."
+        }
+      ]
+    },
+    {
+      heading: "12. Step-by-Step Fixes – Safely Recover Storage Capacity",
+      explanation: "Storage recovery should begin with evidence and a safety check. Identify which filesystem is full and which application owns the data. Do not delete database files, transaction logs, container runtime data or unknown files just because they are large. Use approved cleanup procedures. If a volume needs expansion, coordinate with the infrastructure team and extend each required layer in the correct order.",
+      steps: [
+        "Identify the full filesystem and affected application.",
+        "Check inode usage and open deleted files.",
+        "Identify the largest safe-to-manage data consumers.",
+        "Confirm retention and backup requirements.",
+        "Use the application's supported cleanup or rotation procedure.",
+        "If necessary, request and attach additional approved storage.",
+        "Extend the partition or logical volume and filesystem according to its type.",
+        "Verify capacity and application write access.",
+        "Monitor for recurring growth."
+      ],
+      commands: `df -hT
+# Identify the affected filesystem.
+
+df -i
+# Check inode usage.
+
+du -xhd1 /var
+# Identify large directories on the same filesystem.
+
+lsof +L1
+# Find deleted files still held open.
+
+journalctl --disk-usage
+# Displays journal disk usage.
+
+sudo journalctl --vacuum-time=14d
+# Example journal cleanup policy; use only after retention approval.
+
+# Do not use broad rm commands or delete active database files.`,
+      config: `# Example logrotate configuration concept
+
+/var/log/company-app/*.log {
+    daily
+    rotate 14
+    compress
+    missingok
+    notifempty
+    copytruncate
+}
+
+# copytruncate has trade-offs and is not suitable for every application.
+# Prefer application-supported reopen or rotation behavior when possible.
+# Test the policy before applying it to production.`,
+      problems: [
+        {
+          issue: "Disk remains full after deleting a large log file.",
+          rootCause: "A process may still have the deleted file open.",
+          solution: "Use lsof +L1, identify the owning process and follow the application's safe log-reopen or restart procedure."
+        },
+        {
+          issue: "Storage expansion succeeds but filesystem capacity does not increase.",
+          rootCause: "The disk may have been expanded without extending the partition, LVM layer or filesystem.",
+          solution: "Inspect every storage layer and use the correct filesystem-specific expansion procedure."
+        }
+      ]
+    },
+    {
+      heading: "13. Before vs After – Incorrect and Correct Storage Practices",
+      explanation: "Storage operations can destroy data if commands are used without verifying device identity. Formatting a disk, changing partitions or running filesystem repair on a mounted filesystem can create severe incidents. A safe engineer confirms the device, filesystem type, mount state and backup before modifying storage. Capacity cleanup should follow application retention rules rather than deleting unknown data.",
+      steps: [
+        "Wrong: Format /dev/sdb without confirming its contents. Correct: inspect lsblk, blkid and mount state first.",
+        "Wrong: Delete active database logs. Correct: use database-supported retention and backup procedures.",
+        "Wrong: Use device names blindly in fstab. Correct: use verified filesystem UUIDs where appropriate.",
+        "Wrong: Run filesystem repair on a mounted production filesystem. Correct: follow filesystem-specific recovery requirements.",
+        "Wrong: Treat RAID as a backup. Correct: maintain independent tested backups.",
+        "Wrong: Expand only the cloud disk and assume the filesystem grows automatically. Correct: inspect and extend all storage layers."
+      ],
+      commands: `lsblk -f
+# Inspect before making changes.
+
+blkid
+# Verify filesystem identity.
+
+findmnt
+# Inspect current mounts.
+
+pvs
+# Inspect LVM physical volumes.
+
+vgs
+# Inspect volume groups.
+
+lvs
+# Inspect logical volumes.
+
+df -hT
+# Verify mounted filesystem capacity.`,
+      config: `# Safer storage change checklist
+
+# Confirm host and environment.
+# Confirm disk identifier and filesystem UUID.
+# Confirm data ownership and backup status.
+# Record current partition, LVM and filesystem layout.
+# Apply reviewed storage change.
+# Validate mount configuration.
+# Verify capacity and application access.
+# Update monitoring and documentation.`,
+      problems: [
+        {
+          issue: "A wrong disk is formatted.",
+          rootCause: "Device identity was not verified before a destructive operation.",
+          solution: "Stop further writes, preserve the affected device and engage the approved data recovery process. Never attempt random repair commands."
+        },
+        {
+          issue: "A storage change causes boot failure.",
+          rootCause: "Persistent mount configuration references an unavailable device or invalid filesystem.",
+          solution: "Use approved console recovery, correct the mount configuration and validate before rebooting again."
+        }
+      ]
+    },
+    {
+      heading: "14. Verification – Confirm Storage Recovery Is Successful",
+      explanation: "After a storage fix, verify more than the free-space number. Confirm the correct device is mounted, the filesystem is writable when expected, the application can access its data and monitoring reports normal health. If storage was expanded, compare the actual capacity with the requested size. Check application logs for write failures and monitor capacity trends after the recovery.",
+      steps: [
+        "Check filesystem size and available space.",
+        "Check inode availability.",
+        "Confirm device and mount relationship.",
+        "Check expected filesystem type and options.",
+        "Test controlled application-account write access.",
+        "Verify database or application health.",
+        "Review kernel and service logs.",
+        "Confirm monitoring alerts are cleared.",
+        "Observe storage growth after recovery."
+      ],
+      commands: `df -hT /data
+# Checks filesystem capacity and type.
+
+df -i /data
+# Checks inode availability.
+
+findmnt /data
+# Confirms mount source and options.
+
+lsblk -f
+# Confirms device and filesystem relationships.
+
+sudo -u companyapp touch /data/verification-test
+# Tests application-account write access when appropriate.
+
+journalctl -k --since "15 minutes ago"
+# Reviews recent kernel messages.`,
+      config: `# Example verification record
+
+Mount: /data
+Expected device: verified UUID
+Filesystem: ext4
+Expected capacity: 200 GB
+Available capacity: verified from df
+Application write test: successful
+Kernel storage errors: none observed during verification window
+Monitoring: healthy
+
+# Replace example values with measured evidence.`,
+      problems: [
+        {
+          issue: "Filesystem capacity is correct but the application still cannot write.",
+          rootCause: "Directory permissions, ACLs, quotas, read-only mount state or application path may be incorrect.",
+          solution: "Inspect findmnt, namei -l, getfacl and quota settings, then test as the actual service account."
+        },
+        {
+          issue: "The storage alert remains active after cleanup.",
+          rootCause: "The monitoring system may use a different threshold, filesystem or evaluation interval.",
+          solution: "Compare the alert's target and metric with df output and verify monitoring collection and alert evaluation."
+        }
+      ]
+    },
+    {
+      heading: "15. Prevention – Capacity Planning, Retention and Backup",
+      explanation: "Preventing storage incidents requires growth forecasting and ownership. Each production filesystem should have a clear purpose, capacity threshold, retention policy and backup requirement. Monitoring should warn before the filesystem becomes critical. Applications should rotate logs and clean temporary data safely. Teams should regularly test backups because a backup that has never been restored is not a proven recovery method.",
+      steps: [
+        "Assign an owner to each important filesystem.",
+        "Monitor capacity and inode growth.",
+        "Set warning and critical thresholds.",
+        "Configure application log rotation and retention.",
+        "Separate database data and backup failure domains where appropriate.",
+        "Review container and CI runner cleanup policies.",
+        "Forecast capacity using growth trends.",
+        "Test backup restoration regularly.",
+        "Document volume expansion and recovery procedures."
+      ],
+      commands: `df -h
+# Current filesystem capacity.
+
+df -i
+# Current inode capacity.
+
+du -xhd1 /var
+# Directory growth investigation.
+
+journalctl --disk-usage
+# Journal storage consumption.
+
+systemctl list-timers
+# Reviews scheduled maintenance timers.
+
+find /backup -type f -mtime +30 -print
+# Lists older backup files for review; it does not delete them.`,
+      config: `# Example storage alert policy
+
+Warning: filesystem usage above 75 percent for 10 minutes
+Critical: filesystem usage above 90 percent for 5 minutes
+Inode warning: above 75 percent
+Inode critical: above 90 percent
+Owner: platform operations
+Runbook: storage-capacity-recovery
+
+# Tune values to workload, capacity and business requirements.`,
+      problems: [
+        {
+          issue: "Backup storage fills unexpectedly.",
+          rootCause: "Retention, deduplication or backup lifecycle policies are not aligned with actual growth.",
+          solution: "Review backup schedules, retention, compression, capacity forecasts and restore requirements."
+        },
+        {
+          issue: "Storage monitoring gives alerts too late.",
+          rootCause: "Thresholds do not consider growth rate or time required to expand capacity.",
+          solution: "Use trend-based capacity forecasting and alerts based on operational response time."
+        }
+      ]
+    },
+    {
+      heading: "16. Security – Storage Access and Data Protection",
+      explanation: "Storage security protects data from unauthorized access, accidental changes and loss. Linux permissions and ACLs control file access. Encryption protects data at rest. Secure mount options can reduce risk for temporary or user-controlled filesystems. Backups should be protected against unauthorized modification. Database and application data should be accessible only to the accounts that need it. Security design must also consider encryption keys, recovery access and compliance requirements.",
+      steps: [
+        "Identify sensitive data and its owner.",
+        "Use dedicated service accounts and groups.",
+        "Apply minimum required directory and file permissions.",
+        "Use encryption at rest where required.",
+        "Protect backup access and encryption keys.",
+        "Review mount options for temporary and user-controlled filesystems.",
+        "Audit privileged storage operations.",
+        "Test secure recovery procedures."
+      ],
+      commands: `ls -ld /data
+# Checks directory ownership and permissions.
+
+namei -l /data/application
+# Checks permissions along the complete path.
+
+getfacl /data
+# Displays ACLs when available.
+
+findmnt -o TARGET,SOURCE,FSTYPE,OPTIONS
+# Reviews mount options.
+
+lsblk -f
+# Identifies filesystems and devices.
+
+sudo -l
+# Reviews current user's sudo permissions.`,
+      config: `# Example dedicated application directory
+
+chown companyapp:companyapp /data/application
+chmod 750 /data/application
+
+# Example fstab concept for a temporary filesystem:
+tmpfs /tmp tmpfs defaults,nosuid,nodev 0 0
+
+# Mount options must be validated against application requirements.
+# Encryption and key-management design must follow company policy.`,
+      problems: [
+        {
+          issue: "Sensitive database files are readable by unrelated users.",
+          rootCause: "Directory ownership, permissions or ACLs are too broad.",
+          solution: "Identify legitimate application access, correct ownership and permissions and review audit requirements."
+        },
+        {
+          issue: "Encrypted volume cannot be mounted after reboot.",
+          rootCause: "Key delivery, key availability or boot-time unlock configuration is incorrect.",
+          solution: "Use the approved key-management recovery procedure and verify key access without exposing secrets."
+        }
+      ]
+    },
+    {
+      heading: "17. Performance – Disk Throughput, IOPS and Latency",
+      explanation: "Disk performance is not measured only by capacity. Throughput measures how much data is transferred over time. IOPS measures the number of input/output operations. Latency measures how long an operation takes. A database with many small random writes may need different storage characteristics from a backup system that writes large sequential files. Linux tools such as iostat and application metrics help identify whether storage is the performance bottleneck.",
+      steps: [
+        "Understand IOPS, throughput and latency.",
+        "Check device utilization and queue information.",
+        "Compare read and write patterns.",
+        "Correlate storage latency with application response time.",
+        "Review cloud volume performance limits.",
+        "Avoid unnecessary scans and cleanup during peak traffic.",
+        "Test storage changes using workload-representative benchmarks."
+      ],
+      commands: `iostat -xz 1 5
+# Extended device utilization and latency statistics.
+
+vmstat 1 5
+# System and I/O-related statistics.
+
+cat /proc/diskstats
+# Kernel disk I/O counters.
+
+lsblk -o NAME,SIZE,ROTA,TYPE,MOUNTPOINT
+# Displays device size and rotational indication.
+
+iotop
+# Interactive I/O process view when installed and permitted.
+
+pidstat -d 1 5
+# Per-process disk I/O statistics when sysstat is installed.`,
+      config: `# Example performance investigation dimensions
+
+IOPS: operations per second
+Throughput: MB/s
+Latency: milliseconds
+Queue depth: pending operations
+Utilization: device busy time
+
+# Compare observed values with the storage provider's limits
+# and the application's normal baseline.
+# Do not tune scheduler or filesystem settings without measurement.`,
+      problems: [
+        {
+          issue: "Disk utilization is high and application latency increases.",
+          rootCause: "The storage device may be saturated or the workload may exceed provisioned performance.",
+          solution: "Identify the workload, compare IOPS and latency with service limits and plan workload or storage changes."
+        },
+        {
+          issue: "Adding more disk capacity does not improve performance.",
+          rootCause: "Capacity and performance are separate dimensions; IOPS or throughput limits may remain unchanged.",
+          solution: "Select a storage tier or architecture based on measured performance requirements."
+        }
+      ]
+    },
+    {
+      heading: "18. Monitoring – Storage Metrics, Alerts and Dashboards",
+      explanation: "Storage monitoring should cover both capacity and performance. Capacity metrics include used bytes, free bytes and inode usage. Performance metrics include IOPS, throughput, latency and queue depth. Device health and kernel errors provide additional warning signs. Dashboards should show trends per host and mount point. Alerts should identify the affected filesystem and provide the next diagnostic steps.",
+      steps: [
+        "Collect filesystem capacity for every important mount.",
+        "Collect inode utilization.",
+        "Collect device I/O metrics.",
+        "Collect provider-level volume health metrics.",
+        "Create warning and critical alerts.",
+        "Add host, mount and owner labels.",
+        "Link alerts to recovery runbooks.",
+        "Test alert delivery and dashboard accuracy."
+      ],
+      commands: `df -hT
+# Filesystem capacity and type.
+
+df -i
+# Inode capacity.
+
+iostat -xz 1 5
+# Device performance.
+
+lsblk -f
+# Device and mount inventory.
+
+journalctl -k -p warning
+# Kernel warnings where available.
+
+systemctl status node_exporter
+# Example exporter service status if installed.`,
+      config: `# Example Prometheus alert concept
+
+groups:
+  - name: linux-storage
+    rules:
+      - alert: FilesystemSpaceWarning
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.20
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Linux filesystem space is low"
+
+# Example only. Production expressions should exclude pseudo,
+# read-only and irrelevant filesystems and handle zero-size metrics.`,
+      problems: [
+        {
+          issue: "Storage metrics are missing for a mounted filesystem.",
+          rootCause: "The exporter may exclude the mount, lack permission or fail to scrape.",
+          solution: "Inspect exporter configuration, scrape targets, mount labels and monitoring logs."
+        },
+        {
+          issue: "Alerts trigger for temporary filesystem mounts.",
+          rootCause: "Alert expressions include pseudo or short-lived filesystems.",
+          solution: "Filter irrelevant filesystem types and define alerts around business-critical mounts."
+        }
+      ]
+    },
+    {
+      heading: "19. Real-World Project – Create and Monitor a Separate Linux Data Volume",
+      explanation: "In this lab, attach a spare virtual disk to a test Linux machine and prepare it as a data volume. The exercise covers device identification, filesystem creation, mounting, persistent configuration and monitoring. Use a disposable lab disk only. Never run partitioning or formatting commands against a production device or a disk containing important data without an approved change and verified backup.",
+      steps: [
+        "Create a disposable Linux lab virtual machine.",
+        "Attach a spare virtual disk through the hypervisor or cloud platform.",
+        "Identify the new disk using lsblk.",
+        "Confirm that it is the correct unused device.",
+        "Create a partition using the approved partitioning utility.",
+        "Create an ext4 filesystem on the verified partition.",
+        "Create the /data mount directory.",
+        "Mount the filesystem and verify it.",
+        "Add its UUID to fstab.",
+        "Validate persistent mount configuration.",
+        "Create a test directory with controlled permissions.",
+        "Check capacity and monitor usage."
+      ],
+      commands: `lsblk -f
+# Identify the spare disk.
+
+sudo fdisk -l
+# Inspect disk and partition layout.
+
+# The following commands are destructive.
+# Run only in a disposable lab after verifying the target device.
+
+sudo mkfs.ext4 /dev/sdb1
+# Creates an ext4 filesystem on the verified lab partition.
+
+sudo mkdir -p /data
+# Creates the mount point.
+
+sudo mount /dev/sdb1 /data
+# Mounts the lab filesystem.
+
+sudo blkid /dev/sdb1
+# Retrieves the filesystem UUID.
+
+findmnt /data
+# Verifies the mount.
+
+df -hT /data
+# Checks the filesystem.`,
+      config: `# Example /etc/fstab entry after retrieving the real UUID
+
+UUID=replace-with-lab-uuid /data ext4 defaults,nofail 0 2
+
+# Back up fstab before editing.
+# Validate with findmnt --verify where supported.
+# Test with mount -a before scheduling a reboot.`,
+      problems: [
+        {
+          issue: "Lab disk does not appear after attachment.",
+          rootCause: "The virtual machine may not have detected the new device.",
+          solution: "Check hypervisor attachment state, rescan according to platform guidance and inspect lsblk and kernel logs."
+        },
+        {
+          issue: "Persistent mount fails after restart.",
+          rootCause: "The UUID, mount point, filesystem type or mount options may be incorrect.",
+          solution: "Use console access, inspect fstab and blkid, correct the entry and validate before rebooting again."
+        }
+      ]
+    },
+    {
+      heading: "20. Interview Knowledge and Senior Storage Engineer Decisions",
+      explanation: "A Linux engineer should explain how disks, partitions, filesystems and mount points work together. A production engineer should also understand capacity planning, IOPS, throughput, latency, filesystem recovery, LVM, backups and cloud volume behavior. Senior engineers choose storage according to workload requirements and recovery objectives. They do not run destructive commands without confirming device identity, backups and change approvals.",
+      steps: [
+        "Explain the difference between a disk, partition and filesystem.",
+        "Explain the difference between df and du.",
+        "Explain why UUIDs are useful in persistent mount configuration.",
+        "Explain block capacity versus inode capacity.",
+        "Describe what happens when a filesystem becomes full.",
+        "Explain LVM physical volumes, volume groups and logical volumes.",
+        "Explain IOPS, throughput and latency.",
+        "Describe how to investigate open deleted files.",
+        "Explain why RAID is not a backup.",
+        "Describe safe filesystem recovery planning.",
+        "Explain how you would expand a production volume.",
+        "Discuss storage encryption, access control and monitoring."
+      ],
+      commands: `# Senior engineer storage investigation
+
+lsblk -f
+# Device and filesystem layout.
+
+df -hT
+# Filesystem capacity.
+
+df -i
+# Inode usage.
+
+du -xhd1 /var
+# Directory usage.
+
+findmnt
+# Mount relationships.
+
+pvs
+# LVM physical volumes.
+
+vgs
+# LVM volume groups.
+
+lvs
+# LVM logical volumes.
+
+iostat -xz 1 5
+# Storage performance.
+
+lsof +L1
+# Open deleted files.`,
+      config: `# Senior engineer storage decision checklist
+
+# Capacity:
+# What is current usage and expected growth?
+
+# Performance:
+# What IOPS, throughput and latency does the workload need?
+
+# Availability:
+# What happens if a disk or storage path fails?
+
+# Recovery:
+# Are backups independent and restoration tested?
+
+# Security:
+# Is data encrypted and access restricted?
+
+# Operations:
+# Are monitoring, ownership and runbooks defined?
+
+# Change safety:
+# Is device identity verified and rollback documented?`,
+      problems: [
+        {
+          issue: "An engineer expands a disk without understanding the filesystem layer.",
+          rootCause: "The storage architecture was not inspected end to end.",
+          solution: "Map the device, partition, LVM and filesystem layers before planning each expansion step."
+        },
+        {
+          issue: "A production storage change is started without a recovery plan.",
+          rootCause: "The team did not evaluate data loss, service impact or rollback requirements.",
+          solution: "Require backup verification, approved change scope, maintenance planning, recovery steps and post-change validation."
+        }
+      ]
+      interviewQuestions: [
+  {
+    "question": "How do you investigate a Linux disk showing 100% utilization?",
+    "answer": "Use lsblk, df -hT, findmnt and du to identify the affected device, mount point and largest consumers. Check inode usage, deleted-open files and filesystem reservations before removing anything."
+  },
+  {
+    "question": "What is the difference between disk capacity and disk IOPS?",
+    "answer": "Capacity measures how much data a device can store. IOPS measures the number of input/output operations completed per second. Workloads can have sufficient capacity but insufficient IOPS."
+  },
+  {
+    "question": "What is storage throughput?",
+    "answer": "Throughput is the amount of data transferred per unit of time, commonly measured in MB/s or GB/s. Large sequential workloads often depend heavily on throughput."
+  },
+  {
+    "question": "How do you identify disks and their device names?",
+    "answer": "Use lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS,MODEL,SERIAL and inspect /dev/disk/by-id for stable device identifiers."
+  },
+  {
+    "question": "Why should you avoid relying only on /dev/sdX names?",
+    "answer": "Device enumeration can change after reboot or hardware changes. Stable identifiers such as UUIDs and /dev/disk/by-id reduce the risk of modifying the wrong disk."
+  },
+  {
+    "question": "What is the difference between a partition and a filesystem?",
+    "answer": "A partition defines a region of a disk. A filesystem organizes files and directories inside a partition or another block device."
+  },
+  {
+    "question": "How do you inspect partition tables?",
+    "answer": "Use lsblk, fdisk -l and parted -l. Confirm the target device and partition layout before making changes."
+  },
+  {
+    "question": "What is LVM in Linux?",
+    "answer": "Logical Volume Manager provides an abstraction layer between physical storage and filesystems, allowing storage to be pooled and logical volumes to be resized."
+  },
+  {
+    "question": "Explain PV, VG and LV in LVM.",
+    "answer": "A Physical Volume is an initialized storage device, a Volume Group combines physical volumes into a pool, and a Logical Volume allocates capacity from that pool."
+  },
+  {
+    "question": "How do you inspect LVM configuration?",
+    "answer": "Use pvs, vgs and lvs. For detailed relationships, use pvs -o+pv_used, vgs -o+vg_free and lvs -a -o+devices."
+  },
+  {
+    "question": "How do you extend an LVM logical volume?",
+    "answer": "Check free space in the volume group, extend the logical volume with lvextend, then grow the filesystem using the filesystem-appropriate tool. Verify the final size."
+  },
+  {
+    "question": "What is the difference between lvextend and resize2fs?",
+    "answer": "lvextend increases the logical volume block device. resize2fs grows an ext2, ext3 or ext4 filesystem to use the available space."
+  },
+  {
+    "question": "How do you grow an XFS filesystem?",
+    "answer": "After extending the underlying block device, use xfs_growfs on the mounted XFS mount point. Confirm filesystem support and available capacity first."
+  },
+  {
+    "question": "Can an XFS filesystem be shrunk?",
+    "answer": "XFS does not support shrinking. Plan capacity carefully; reducing its size generally requires backup, recreation at a smaller size and restoration."
+  },
+  {
+    "question": "How do you check disk space and inode usage?",
+    "answer": "Use df -hT for filesystem capacity and df -i for inode utilization. A filesystem can run out of inodes even when free bytes remain."
+  },
+  {
+    "question": "What causes high disk I/O wait?",
+    "answer": "Possible causes include random I/O, slow storage, queue saturation, heavy swapping, backups and database workloads. Correlate iostat, vmstat and application metrics."
+  },
+  {
+    "question": "How do you investigate disk latency?",
+    "answer": "Run iostat -xz 1 and inspect await, request size, utilization and queue behavior. Correlate these measurements with application latency and workload changes."
+  },
+  {
+    "question": "What does the await metric indicate in iostat?",
+    "answer": "Await represents average time for I/O requests, including queueing and service time, in the reporting interval. Interpret it alongside workload and device characteristics."
+  },
+  {
+    "question": "How do you identify which processes are generating disk I/O?",
+    "answer": "Use iotop when installed, pidstat -d 1 and process-level metrics. Correlate process activity with application logs and the affected device."
+  },
+  {
+    "question": "What is swap and how does it affect storage?",
+    "answer": "Swap is disk-backed virtual memory used for pages not currently kept in RAM. Heavy swapping can increase storage latency and degrade application performance."
+  },
+  {
+    "question": "How do you check swap utilization?",
+    "answer": "Use swapon --show, free -h and vmstat 1. Inspect swap-in and swap-out activity to determine whether memory pressure is causing I/O."
+  },
+  {
+    "question": "What is a disk mount failure and how do you investigate it?",
+    "answer": "Inspect findmnt, lsblk, journalctl -k and system logs. Check device availability, filesystem errors, UUIDs and mount configuration before attempting repair."
+  },
+  {
+    "question": "How do you safely investigate a failed disk?",
+    "answer": "Identify the device by stable ID, inspect kernel logs and SMART data where supported, assess redundancy and backups, and follow the storage replacement procedure."
+  },
+  {
+    "question": "What is SMART monitoring?",
+    "answer": "SMART is a device health monitoring capability available on many disks. smartctl can report supported health attributes, errors and self-test results."
+  },
+  {
+    "question": "How do you check whether a disk is approaching failure?",
+    "answer": "Use supported SMART health data, device error logs, kernel messages and storage-platform alerts. Do not rely on a single attribute or health summary."
+  },
+  {
+    "question": "What precautions are required before formatting a disk?",
+    "answer": "Verify the exact device, confirm ownership and mount status, obtain approval, verify backups, check dependent services and ensure the intended data can be destroyed."
+  },
+  {
+    "question": "How do you investigate deleted files that still consume disk space?",
+    "answer": "Use lsof +L1 to identify open deleted files. Determine the owning process and use an approved application restart or file-handle recovery procedure."
+  },
+  {
+    "question": "What is RAID and why is it used?",
+    "answer": "RAID combines multiple disks to provide performance, redundancy or both depending on the level. It does not replace independent backups."
+  },
+  {
+    "question": "How do you monitor storage in production?",
+    "answer": "Track capacity, inode usage, latency, throughput, IOPS, queue depth, device health and filesystem errors. Alert on trends and service-specific thresholds."
+  },
+  {
+    "question": "What should a production disk expansion change plan contain?",
+    "answer": "Document device identity, current layout, backup verification, capacity calculation, maintenance impact, exact commands, rollback or recovery limits and post-change validation."
+  }
+]
+    }
+  ]
+};
+
+export default data;

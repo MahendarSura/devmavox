@@ -1,0 +1,1176 @@
+import type { NoteData } from "../../types";
+
+const data: NoteData = {
+  title: "Linux Fundamentals – Complete Practical DevOps Engineer Own Notes",
+  description: "Detailed beginner-to-production Linux fundamentals explained in simple English with architecture, internal working, commands, configurations, real company workflows, troubleshooting, security, performance and interview preparation.",
+
+  sections: [
+    {
+      heading: "1. Introduction – What Linux Is, Why We Use It and Where It Is Used",
+      explanation: "Linux is an operating system kernel used to manage hardware and provide services to applications. A Linux distribution combines the kernel with system utilities, libraries, package managers and administrative tools. In DevOps, Linux is important because most cloud servers, containers, Kubernetes worker nodes, CI/CD runners and production application servers use Linux. Think of Linux as the foundation on which applications and automation tools operate. When an engineer understands Linux, diagnosing application, networking, storage and permission problems becomes easier.",
+      steps: [
+        "Understand the difference between Linux kernel and a Linux distribution.",
+        "Learn why servers commonly use Linux for application hosting.",
+        "Identify common distributions such as Ubuntu, Debian, RHEL, Rocky Linux and Amazon Linux.",
+        "Understand the difference between a desktop operating system and a server operating system.",
+        "Learn how Linux supports web servers, databases, containers and automation tools.",
+        "Practice basic terminal navigation before working on production servers."
+      ],
+      commands: `uname -a
+# Displays kernel name, hostname, kernel release, architecture and other system information.
+
+cat /etc/os-release
+# Displays Linux distribution name and version.
+
+hostname
+# Displays the current system hostname.
+
+whoami
+# Displays the username of the current session.
+
+pwd
+# Displays the current working directory.
+
+date
+# Displays the server date and time.
+
+uptime
+# Displays uptime, logged-in users and load averages.`,
+      config: `# Example: /etc/os-release output
+
+NAME="Ubuntu"
+VERSION="24.04 LTS"
+ID=ubuntu
+VERSION_ID="24.04"
+
+# This file identifies the installed distribution.
+# Do not edit it manually to change the operating system version.`,
+      problems: [
+        {
+          issue: "An engineer cannot identify the Linux distribution.",
+          rootCause: "Different distributions use different package managers, service defaults and configuration paths.",
+          solution: "Run cat /etc/os-release and uname -r before selecting installation or troubleshooting commands."
+        },
+        {
+          issue: "A command works on Ubuntu but fails on another distribution.",
+          rootCause: "The command, package name or service configuration may differ between distributions.",
+          solution: "Identify the distribution first and use its supported package manager and documentation."
+        }
+      ]
+    },
+    {
+      heading: "2. Linux Architecture – Hardware, Kernel, Shell and User Space",
+      explanation: "Linux architecture can be understood in layers. Hardware provides CPU, memory, disks and network interfaces. The kernel manages these resources and exposes system calls. System libraries provide common interfaces to applications. Shells accept commands from users and launch programs. System utilities and applications run in user space. When a user enters a command, the shell interprets it and requests operating-system services through programs and system calls. Understanding these layers helps an engineer identify whether a problem belongs to hardware, kernel, service, shell or application.",
+      steps: [
+        "Identify physical or virtual hardware resources.",
+        "Understand that the kernel manages processes, memory, devices and networking.",
+        "Learn that user-space programs cannot directly control hardware without kernel interfaces.",
+        "Understand how shells start commands and receive their output.",
+        "Identify system libraries and common command-line utilities.",
+        "Trace a simple command from terminal input to program execution."
+      ],
+      commands: `uname -r
+# Displays the running kernel release.
+
+lscpu
+# Displays CPU architecture and processor information.
+
+free -h
+# Displays memory usage in human-readable units.
+
+lsblk
+# Displays block devices and disk relationships.
+
+lspci
+# Displays PCI devices when the utility is installed.
+
+ps -p 1 -o pid,comm,args
+# Identifies the process running with PID 1.`,
+      config: `# Important Linux architecture locations
+
+/proc       # Virtual filesystem exposing process and kernel information.
+/sys        # Kernel device and subsystem information.
+/dev        # Device files.
+/etc        # System-wide configuration files.
+/usr        # User-space programs, libraries and shared resources.
+/var        # Variable data such as logs and application state.
+/run        # Runtime data created after boot.`,
+      problems: [
+        {
+          issue: "A process cannot access a required device.",
+          rootCause: "The device driver, device node, kernel module or permissions may be incorrect.",
+          solution: "Inspect dmesg, ls -l /dev/device-name, lsmod and the relevant system service before changing configuration."
+        },
+        {
+          issue: "A system utility is missing.",
+          rootCause: "The utility may not be installed in the distribution.",
+          solution: "Identify the package manager and install the required package from an approved repository."
+        }
+      ]
+    },
+    {
+      heading: "3. Internal Working – How Linux Executes a Command",
+      explanation: "When an engineer types a command, the interactive shell reads the input, applies shell syntax and searches for the executable. The shell checks aliases, functions and PATH locations according to its command-resolution rules. It then starts the program, normally using process creation and execution system calls. The process receives arguments and environment variables. The kernel schedules CPU time and manages memory and input/output. The program writes standard output and standard error, and returns an exit status. This is why command output, error output and exit codes are all useful during troubleshooting.",
+      steps: [
+        "Enter a command in the terminal.",
+        "The shell parses arguments, quotes, variables and operators.",
+        "The shell resolves the command using aliases, functions, built-ins or PATH.",
+        "The operating system starts the executable as a process when required.",
+        "The kernel allocates resources and schedules execution.",
+        "The process reads input and writes output or error messages.",
+        "The shell receives the exit status and displays the next prompt."
+      ],
+      commands: `type ls
+# Identifies how the shell resolves the ls command.
+
+command -v python3
+# Displays the executable path when available.
+
+echo $PATH
+# Displays directories searched for executable commands.
+
+ls /root /path-that-does-not-exist
+# Demonstrates standard output and standard error.
+
+echo $?
+# Displays the exit status of the previous command.
+
+sleep 60 &
+# Starts a background process.
+
+jobs
+# Lists jobs started by the current shell.`,
+      config: `# Example shell environment settings
+
+export APP_ENV=production
+export PATH="/opt/company/bin:$PATH"
+
+# APP_ENV is an environment variable.
+# PATH controls executable lookup directories.
+# Add persistent settings to the appropriate shell profile only
+# after understanding which users and sessions should receive them.`,
+      problems: [
+        {
+          issue: "Command not found.",
+          rootCause: "The program is not installed, its directory is missing from PATH, or the executable name is incorrect.",
+          solution: "Use command -v command-name, inspect PATH and install the approved package if required."
+        },
+        {
+          issue: "A script runs but returns an unexpected failure status.",
+          rootCause: "A command inside the script failed or the script explicitly returned a non-zero exit code.",
+          solution: "Run the script with controlled tracing, inspect standard error and check the exit status of each critical command."
+        }
+      ]
+    },
+    {
+      heading: "4. Features and Important Linux Options",
+      explanation: "Linux provides multiple users, process isolation, file permissions, networking, package management, service management, scripting, logging and automation capabilities. These features allow the same operating system to run a small utility server or a large production platform. Command options change how a utility behaves. An engineer should understand commonly used flags instead of blindly copying commands. Always check the manual page before using unfamiliar options, especially options that delete files, terminate processes or change permissions.",
+      steps: [
+        "Learn multi-user access and user/group permissions.",
+        "Understand foreground and background processes.",
+        "Learn standard input, standard output and standard error.",
+        "Practice pipes and redirection.",
+        "Understand service management through systemd on applicable distributions.",
+        "Learn package installation and updates.",
+        "Use manual pages to understand command options.",
+        "Identify which operations require elevated privileges."
+      ],
+      commands: `ls -lah
+# Long listing, hidden files and human-readable sizes.
+
+ps aux
+# Displays running processes in a common process listing format.
+
+grep -n "error" application.log
+# Searches for error and displays matching line numbers.
+
+find /var/log -type f
+# Finds regular files under the log directory.
+
+systemctl --version
+# Displays systemd version when systemd is installed.
+
+man find
+# Opens the manual page for find.
+
+command --help
+# Displays command-specific help when supported.`,
+      config: `# Example: /etc/sudoers.d/operations-team
+# Edit sudo policy with visudo; never edit sudoers blindly.
+
+%operations-team ALL=(root) /usr/bin/systemctl status *
+# Example policy concept only.
+# Production policies should use narrowly defined commands and arguments.
+# Avoid granting unrestricted root access without approval.`,
+      problems: [
+        {
+          issue: "An engineer uses an option without understanding its effect.",
+          rootCause: "Commands copied from online examples may have destructive flags or distribution-specific behavior.",
+          solution: "Read the command manual, test in a non-production environment and review the target paths before execution."
+        },
+        {
+          issue: "A command returns permission denied.",
+          rootCause: "The current user lacks the required file, directory or administrative permission.",
+          solution: "Inspect ownership and permissions first. Request the minimum approved privilege rather than immediately using unrestricted root access."
+        }
+      ]
+    },
+    {
+      heading: "5. Real-Time Workflow – Linux Server from Provisioning to Application Runtime",
+      explanation: "In a company environment, a Linux server usually starts as a cloud virtual machine or an on-premises system. The platform team selects an approved image, configures networking and access, applies operating-system updates and installs required packages. The application team deploys application artifacts and configures services. Operations engineers monitor resource usage, logs, availability and security events. When an incident occurs, engineers inspect the operating system and application layers before applying a controlled fix. This workflow connects Linux administration with cloud, CI/CD, monitoring and incident management.",
+      steps: [
+        "Create a virtual machine from an approved Linux image.",
+        "Configure hostname, DNS, network access and security rules.",
+        "Create named administrator and application accounts.",
+        "Apply security updates using the approved change process.",
+        "Install runtime dependencies and application packages.",
+        "Configure the application service and environment variables.",
+        "Deploy the application artifact through the CI/CD pipeline.",
+        "Enable the service and configure health checks.",
+        "Send system and application logs to the central logging platform.",
+        "Monitor CPU, memory, disk, network and application health.",
+        "Document rollback and recovery procedures."
+      ],
+      commands: `hostnamectl
+# Displays hostname and operating-system information.
+
+ip address
+# Displays network interface addresses.
+
+ip route
+# Displays routing table entries.
+
+systemctl status ssh
+# Checks SSH service status on systems where the service is named ssh.
+
+systemctl status sshd
+# Checks SSH service status on systems where the service is named sshd.
+
+df -h
+# Checks mounted filesystem usage.
+
+free -h
+# Checks memory usage.
+
+journalctl -p warning -b
+# Displays warning and higher-priority messages from the current boot.`,
+      config: `# Example application service: /etc/systemd/system/company-app.service
+
+[Unit]
+Description=Company Application
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=companyapp
+Group=companyapp
+WorkingDirectory=/opt/company-app
+ExecStart=/usr/bin/java -jar /opt/company-app/application.jar
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
+# Use the actual runtime path, account and application command.
+# Validate service configuration before enabling it.`,
+      problems: [
+        {
+          issue: "Application is deployed but users cannot reach it.",
+          rootCause: "The service may be stopped, listening on the wrong address, blocked by a firewall or failing during startup.",
+          solution: "Check systemctl status, application logs, listening sockets, routing, DNS and approved firewall rules."
+        },
+        {
+          issue: "Application works manually but fails after reboot.",
+          rootCause: "The service may not be enabled, environment variables may be missing or startup dependencies may not be ready.",
+          solution: "Configure the correct service unit, dependencies and environment files, then test a controlled restart."
+        }
+      ]
+    },
+    {
+      heading: "6. Production Examples – How Companies Use Linux",
+      explanation: "Linux is used in production for web servers, API services, databases, message brokers, CI/CD agents, Kubernetes nodes, monitoring systems and security appliances. A company may run hundreds of Linux virtual machines across multiple environments. Standard images and automation help keep these systems consistent. Engineers should not treat production servers as personal testing machines. Changes must follow access controls, change approvals, backups and rollback plans.",
+      steps: [
+        "Example 1: A web application runs behind Nginx on Linux virtual machines.",
+        "Example 2: A Java service runs as a dedicated systemd-managed account.",
+        "Example 3: A database server uses Linux storage and memory monitoring.",
+        "Example 4: A CI runner builds and tests software on Linux.",
+        "Example 5: Kubernetes worker nodes use Linux kernel and container runtime features.",
+        "Example 6: A monitoring agent exports system metrics to a central platform.",
+        "Record the owner, environment, patch level and support contact for each server.",
+        "Use automation to maintain consistent configuration across server groups."
+      ],
+      commands: `systemctl list-units --type=service --state=running
+# Lists active service units.
+
+ss -lntup
+# Displays listening TCP/UDP sockets and associated processes when permitted.
+
+df -hT
+# Displays filesystem usage and filesystem types.
+
+free -h
+# Displays memory totals and usage.
+
+uptime
+# Provides uptime and load averages.
+
+journalctl -u company-app --since "1 hour ago"
+# Displays recent logs for the example application service.`,
+      config: `# Example environment separation
+
+# Development
+APP_ENV=development
+LOG_LEVEL=debug
+
+# Staging
+APP_ENV=staging
+LOG_LEVEL=info
+
+# Production
+APP_ENV=production
+LOG_LEVEL=warn
+
+# Keep credentials outside source-controlled configuration.
+# Use approved secret-management and deployment mechanisms.`,
+      problems: [
+        {
+          issue: "Production servers drift from the approved baseline.",
+          rootCause: "Manual changes, inconsistent package versions or missing configuration automation.",
+          solution: "Compare configuration against the approved baseline and use configuration management to enforce reviewed settings."
+        },
+        {
+          issue: "An unplanned change affects multiple servers.",
+          rootCause: "The change was applied broadly without canary validation or rollback planning.",
+          solution: "Use staged rollout, limited host groups, health verification and a documented rollback procedure."
+        }
+      ]
+    },
+    {
+      heading: "7. Configuration Management – Important Linux Configuration Locations",
+      explanation: "Linux configuration is distributed across files under directories such as /etc, service-specific directories and application directories. The exact path depends on the distribution and installed software. Before changing a configuration, identify which service reads it, whether the file is generated, and whether a restart or reload is required. Keep a backup of the original file and validate syntax using the service's supported validation command.",
+      steps: [
+        "Identify the service and its active configuration path.",
+        "Read the current configuration before editing.",
+        "Check whether configuration is managed by automation.",
+        "Create a timestamped backup before an approved change.",
+        "Edit using a safe editor and preserve file ownership and permissions.",
+        "Run the service-specific configuration test.",
+        "Reload or restart only when required.",
+        "Verify service health and review logs."
+      ],
+      commands: `cat /etc/hostname
+# Displays configured hostname.
+
+cat /etc/hosts
+# Displays local hostname resolution entries.
+
+cat /etc/fstab
+# Displays filesystem mount configuration.
+
+systemctl cat ssh
+# Displays the service unit and overrides when available.
+
+systemd-analyze verify /etc/systemd/system/company-app.service
+# Validates a systemd unit file where supported.
+
+cp -a /etc/example.conf /etc/example.conf.backup
+# Creates a metadata-preserving backup; replace the example path with a real file.`,
+      config: `# Example /etc/hosts entries
+
+127.0.0.1 localhost
+127.0.1.1 linux-server
+
+# Example only. Use approved DNS and host records.
+# Incorrect hostname mappings can affect applications and automation.`,
+      problems: [
+        {
+          issue: "A service ignores a configuration change.",
+          rootCause: "The wrong configuration file was edited, a later override takes precedence or the service was not reloaded.",
+          solution: "Inspect the active service command and configuration paths, validate the file and perform the required reload or restart."
+        },
+        {
+          issue: "A configuration change prevents a service from starting.",
+          rootCause: "Invalid syntax, unsupported options, wrong permissions or missing referenced files.",
+          solution: "Read service logs, restore the known-good backup if necessary, correct the configuration and validate before restarting."
+        }
+      ]
+    },
+    {
+      heading: "8. Commands – Essential Linux Commands and Their Usage",
+      explanation: "Linux administration is command-driven. Engineers use commands to inspect files, processes, disks, memory, networking, users and services. A command normally accepts options and arguments. Commands can be combined using pipes and redirection. Learn what a command reads or changes before executing it with elevated privileges. In production, capture relevant output and command history according to company policy.",
+      steps: [
+        "Practice navigation using pwd, cd and ls.",
+        "Read files using cat, less and head.",
+        "Search content using grep.",
+        "Find files using find.",
+        "Inspect processes using ps and top.",
+        "Inspect storage using df, du and lsblk.",
+        "Inspect networking using ip and ss.",
+        "Inspect services and logs using systemctl and journalctl.",
+        "Use command help and manual pages to confirm options."
+      ],
+      commands: `pwd
+# Current directory.
+
+ls -lah /var/log
+# Lists log files including hidden entries with readable sizes.
+
+grep -i "failed" /var/log/auth.log
+# Searches case-insensitively on systems using this log path.
+
+find /var/log -type f -name "*.log"
+# Finds files with a .log extension.
+
+du -sh /var/log
+# Displays total directory size.
+
+df -h
+# Displays filesystem free space.
+
+ps aux --sort=-%cpu | head
+# Displays processes using the most CPU.
+
+ss -lnt
+# Displays listening TCP sockets.
+
+id
+# Displays current user and group identity.`,
+      config: `# Shell command safety example
+
+set -o pipefail
+
+# pipefail makes a pipeline return a failure when a command in the
+# pipeline fails, instead of considering only the last command.
+# Use this deliberately in scripts and understand the shell in use.`,
+      problems: [
+        {
+          issue: "A command produces too much output.",
+          rootCause: "The command scans a large directory or displays all records.",
+          solution: "Use targeted paths, filters, grep, head, tail and time ranges to narrow the investigation."
+        },
+        {
+          issue: "A pipeline hides an earlier command failure.",
+          rootCause: "The shell normally reports the status of the last pipeline command.",
+          solution: "Use set -o pipefail in supported shells and inspect each command's output and exit status."
+        }
+      ]
+    },
+    {
+      heading: "9. Logs Analysis – Where Linux Logs Are Stored",
+      explanation: "Logs record system, authentication, kernel, service and application events. Many modern distributions use systemd-journald, while applications may also write files under /var/log or their own log directories. Log locations vary by distribution and service configuration. During an incident, identify the time window, affected host and service before searching. Correlate timestamps across application and system logs to understand the sequence of events.",
+      steps: [
+        "Identify the affected service and incident time.",
+        "Check journal logs for the service.",
+        "Check system logs and authentication logs where available.",
+        "Inspect kernel messages for hardware or driver errors.",
+        "Search for repeated failures and timestamps.",
+        "Correlate application errors with CPU, memory, disk and network metrics.",
+        "Preserve relevant logs according to retention and security policy."
+      ],
+      commands: `journalctl -b
+# Displays logs from the current boot.
+
+journalctl -p err -b
+# Displays error-priority messages from the current boot.
+
+journalctl -u ssh --since "30 minutes ago"
+# Displays recent SSH service logs where the unit is named ssh.
+
+journalctl -f
+# Follows new journal entries.
+
+dmesg -T | tail -50
+# Displays recent kernel messages with readable timestamps where supported.
+
+tail -n 100 /var/log/syslog
+# Reads recent syslog entries on distributions using this file.
+
+grep -i "failed" /var/log/auth.log
+# Searches authentication failures on systems using this log path.`,
+      config: `# Example journald configuration concepts
+# File: /etc/systemd/journald.conf
+
+[Journal]
+Storage=persistent
+SystemMaxUse=500M
+MaxRetentionSec=30day
+
+# These are example values only.
+# Confirm available disk space, company retention requirements and
+# distribution support before changing journal retention settings.`,
+      problems: [
+        {
+          issue: "Expected logs are missing after a reboot.",
+          rootCause: "The journal may be stored only in volatile storage or logs may have rotated.",
+          solution: "Check journald storage configuration, log rotation policy and central log forwarding."
+        },
+        {
+          issue: "Logs show repeated authentication failures.",
+          rootCause: "Wrong credentials, automation misconfiguration or unauthorized login attempts.",
+          solution: "Correlate source addresses and timestamps, review access policy and follow the security incident process."
+        }
+      ]
+    },
+    {
+      heading: "10. Error Identification – Recognizing Common Linux Symptoms",
+      explanation: "Linux incidents often appear as simple symptoms such as command failure, permission denied, no space left, connection refused, service failed or process killed. The message is evidence, not the final root cause. Engineers should identify the affected component, collect command output and logs, and test one hypothesis at a time. Avoid changing multiple settings together because that makes it difficult to understand which change resolved or worsened the incident.",
+      steps: [
+        "Capture the exact error message and timestamp.",
+        "Identify the host, user, command and affected service.",
+        "Check whether the issue affects one user, one host or multiple systems.",
+        "Collect service status and relevant logs.",
+        "Check disk, memory, CPU and network health.",
+        "Compare the current state with the last known-good state.",
+        "Record findings before applying a fix."
+      ],
+      commands: `systemctl --failed
+# Lists failed systemd units.
+
+df -h
+# Checks filesystem capacity.
+
+free -h
+# Checks memory availability.
+
+ps aux --sort=-%mem | head
+# Shows processes using the most memory.
+
+ss -lntup
+# Checks listening sockets.
+
+journalctl -p err --since "1 hour ago"
+# Displays recent error-priority journal entries.
+
+dmesg -T | tail -100
+# Checks recent kernel messages.`,
+      config: `# Common symptom-to-investigation mapping
+
+# Permission denied  -> id, ls -l, namei -l
+# No space left       -> df -h, df -i, du -xhd1
+# Connection refused  -> systemctl status, ss -lnt
+# Service failed      -> systemctl status, journalctl -u
+# High load           -> uptime, top, vmstat
+# DNS failure         -> getent hosts, resolvectl status
+
+# Use the commands that are installed and supported on the distribution.`,
+      problems: [
+        {
+          issue: "No space left on device appears even though disk usage looks low.",
+          rootCause: "The filesystem may have exhausted inodes, or a process may hold deleted files open.",
+          solution: "Check df -i and inspect open deleted files with lsof +L1 when lsof is available."
+        },
+        {
+          issue: "Connection refused appears when connecting to an application.",
+          rootCause: "The destination host is reachable but no service is accepting the connection on the requested address and port, or a firewall actively rejects it.",
+          solution: "Check service status, listening sockets, bind address and firewall policy."
+        }
+      ]
+    },
+    {
+      heading: "11. Root Cause Analysis – Find Why the Linux Issue Happened",
+      explanation: "Root cause analysis means identifying the underlying condition that created an incident instead of fixing only its visible symptom. For example, restarting a service may temporarily restore an application, but the actual reason could be a full filesystem, invalid configuration or exhausted memory. A useful RCA contains impact, timeline, evidence, contributing conditions, root cause, corrective action and preventive action. Avoid assumptions and support each conclusion with logs, metrics or reproducible tests.",
+      steps: [
+        "Describe the impact and affected systems.",
+        "Build a timeline using monitoring and log timestamps.",
+        "Identify the first abnormal event, not only the final failure.",
+        "Check recent deployments, configuration changes and infrastructure changes.",
+        "Compare healthy and unhealthy systems.",
+        "Test possible causes using non-destructive commands.",
+        "Identify the root cause and contributing factors.",
+        "Document corrective and preventive actions."
+      ],
+      commands: `journalctl -u company-app --since "2026-01-01 10:00:00"
+# Example time filter; replace with the real incident time.
+
+last -x
+# Displays login and reboot history where accounting data is available.
+
+uptime
+# Checks uptime and load averages.
+
+df -h
+# Checks filesystem capacity.
+
+free -h
+# Checks memory.
+
+systemctl show company-app -p ActiveState -p SubState -p ExecMainStatus
+# Displays selected service state properties.`,
+      config: `# Example RCA record
+
+Incident: Application service unavailable
+Impact: Requests failed for affected users
+Detection: Monitoring alert
+Timeline: Deployment -> disk growth -> write failure -> service error
+Evidence: Application logs and filesystem metrics
+Root cause: Application log directory exhausted filesystem capacity
+Correction: Restore capacity and configure safe log rotation
+Prevention: Disk alerts, retention policy and capacity review
+
+# Replace example findings with evidence from the real incident.`,
+      problems: [
+        {
+          issue: "The same Linux incident happens repeatedly.",
+          rootCause: "Only the immediate symptom was fixed; the underlying configuration or capacity problem remained.",
+          solution: "Perform evidence-based RCA, create permanent corrective actions and monitor whether the same failure signature returns."
+        },
+        {
+          issue: "Incident teams disagree about the cause.",
+          rootCause: "The timeline and evidence were not collected consistently.",
+          solution: "Build a shared timeline and separate confirmed facts from hypotheses."
+        }
+      ]
+    },
+    {
+      heading: "12. Step-by-Step Fixes – A Safe Linux Troubleshooting Method",
+      explanation: "A safe Linux fix starts with understanding impact and collecting evidence. Engineers should avoid random restarts, broad permission changes and destructive cleanup. First determine whether the system is production, whether a change is approved and whether a rollback exists. Apply the smallest change that addresses the confirmed cause. Validate the result using both technical checks and application-level health checks.",
+      steps: [
+        "Confirm the affected host and service.",
+        "Check whether an incident or change record is required.",
+        "Collect logs, status, resource usage and current configuration.",
+        "Create a backup before changing configuration.",
+        "Test the fix in a lower environment when possible.",
+        "Apply the smallest approved change.",
+        "Validate configuration syntax.",
+        "Reload or restart only the required service.",
+        "Verify the application from the user or monitoring perspective.",
+        "Record the change and rollback details."
+      ],
+      commands: `systemctl status company-app
+# Checks the example service before a change.
+
+cp -a /etc/company-app/app.conf /etc/company-app/app.conf.backup
+# Backs up the example configuration.
+
+systemctl cat company-app
+# Inspects the service unit.
+
+journalctl -u company-app -n 100
+# Reads recent service logs.
+
+systemctl reload company-app
+# Requests a reload only if the service supports it.
+
+systemctl restart company-app
+# Restarts the service; use only when approved and required.
+
+systemctl is-active company-app
+# Checks whether the service is active.`,
+      config: `# Safe change checklist
+
+# 1. Confirm target host and environment.
+# 2. Capture current configuration and service state.
+# 3. Create a backup.
+# 4. Apply the reviewed change.
+# 5. Run the supported validation command.
+# 6. Reload or restart according to the service requirements.
+# 7. Check service health and application requests.
+# 8. Roll back if verification fails.`,
+      problems: [
+        {
+          issue: "A fix causes a larger production outage.",
+          rootCause: "The change was applied without scope control, validation or rollback planning.",
+          solution: "Use a limited rollout, peer review, pre-change backup and measurable post-change verification."
+        },
+        {
+          issue: "A service restart does not resolve the problem.",
+          rootCause: "The underlying issue remains, such as invalid configuration, missing dependency or resource exhaustion.",
+          solution: "Inspect the first failure in service logs and address the underlying condition instead of repeatedly restarting."
+        }
+      ]
+    },
+    {
+      heading: "13. Before vs After – Incorrect and Correct Linux Administration",
+      explanation: "Comparing incorrect and correct practices helps engineers understand why a technically successful command can still be unsafe. Running everything as root, changing permissions to 777, disabling firewalls and deleting logs may hide symptoms while creating security and reliability problems. A good engineer uses least privilege, controlled changes, backups and evidence-based validation.",
+      steps: [
+        "Incorrect: Use root for every application process. Correct: Use a dedicated service account.",
+        "Incorrect: Apply chmod 777 to solve every permission issue. Correct: Set the minimum required owner, group and mode.",
+        "Incorrect: Disable the firewall to test connectivity. Correct: inspect and add a narrowly scoped approved rule.",
+        "Incorrect: Delete all logs when disk space is low. Correct: identify large files and apply approved retention or rotation.",
+        "Incorrect: Restart repeatedly without investigation. Correct: inspect service status and logs first.",
+        "Incorrect: Edit production configuration without backup. Correct: backup, validate and document the change."
+      ],
+      commands: `# Inspect permissions
+ls -l /opt/company-app
+
+# Inspect every directory component
+namei -l /opt/company-app/config/app.conf
+
+# Inspect service account
+ps -eo user,pid,comm | grep company-app
+
+# Inspect filesystem capacity
+df -h
+
+# Inspect listening ports
+ss -lntup`,
+      config: `# Less safe permission pattern
+# chmod -R 777 /opt/company-app
+
+# Better approach: example ownership and permissions
+chown -R companyapp:companyapp /opt/company-app
+find /opt/company-app -type d -exec chmod 750 {} \\;
+find /opt/company-app -type f -exec chmod 640 {} \\;
+
+# Review executable files separately before applying permissions.
+# Do not run recursive ownership or permission changes blindly in production.`,
+      problems: [
+        {
+          issue: "Application works only after chmod 777.",
+          rootCause: "The real ownership, group membership or directory traversal permission is incorrect.",
+          solution: "Inspect ownership with ls -l and namei -l, then assign a dedicated service group and minimum required permissions."
+        },
+        {
+          issue: "Security exposure increases after troubleshooting.",
+          rootCause: "Temporary insecure changes were not reverted or documented.",
+          solution: "Review changes, restore least-privilege settings and perform a security verification."
+        }
+      ]
+    },
+    {
+      heading: "14. Verification – Confirm the Linux Fix Actually Worked",
+      explanation: "A command returning success does not always prove that the application is healthy. Verification should happen at multiple levels. First confirm the operating-system resource or configuration is correct. Then confirm the service is active and listening. Finally test the application using a health endpoint or approved functional check. Observe monitoring for enough time to ensure the issue does not immediately return.",
+      steps: [
+        "Confirm the configuration file contains the intended value.",
+        "Run the service-specific syntax validation.",
+        "Check service active and sub-state.",
+        "Confirm the expected port is listening.",
+        "Run a local health check.",
+        "Run an external health check from the expected network.",
+        "Review recent logs for new errors.",
+        "Check CPU, memory, disk and network metrics.",
+        "Observe the service during the agreed verification window.",
+        "Update the incident record with evidence."
+      ],
+      commands: `systemctl is-active company-app
+# Expected output: active
+
+systemctl status company-app
+# Shows current service status.
+
+ss -lntp
+# Confirms whether the expected TCP port is listening.
+
+curl -fsS http://127.0.0.1:8080/health
+# Example local health check; use the application's real endpoint.
+
+df -h
+# Confirms storage capacity.
+
+journalctl -u company-app --since "10 minutes ago"
+# Checks recent service logs.`,
+      config: `# Example health endpoint response
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"status":"UP"}
+
+# A successful response should be interpreted according to
+# the application's documented health-check contract.
+# A basic HTTP 200 does not always mean every dependency is healthy.`,
+      problems: [
+        {
+          issue: "The service is active but users still report failures.",
+          rootCause: "The process is running but application dependencies, routing, DNS or external access may still be broken.",
+          solution: "Test the application endpoint from the user network and inspect dependency health, proxy and firewall paths."
+        },
+        {
+          issue: "The issue returns shortly after a successful restart.",
+          rootCause: "The underlying resource or application condition was not corrected.",
+          solution: "Monitor the service over time and correlate recurring failures with logs and resource metrics."
+        }
+      ]
+    },
+    {
+      heading: "15. Prevention – Avoid Repeated Linux Failures",
+      explanation: "Prevention reduces incidents by maintaining standard configurations, patching systems, monitoring capacity, controlling access and testing recovery procedures. Production Linux servers should not depend on undocumented manual knowledge. Use configuration management, approved images, scheduled maintenance and clear ownership. Preventive controls should be measurable so teams can identify whether the environment is becoming unhealthy before users are affected.",
+      steps: [
+        "Maintain an approved Linux baseline for each distribution.",
+        "Apply security updates through a controlled patch process.",
+        "Monitor filesystem capacity and inode usage.",
+        "Monitor CPU, memory, load and network errors.",
+        "Use log rotation and central log retention.",
+        "Use named accounts and least-privilege access.",
+        "Automate repeatable configuration with reviewed code.",
+        "Test backup restoration and disaster recovery.",
+        "Document service dependencies and operational ownership.",
+        "Review recurring incidents and update runbooks."
+      ],
+      commands: `systemctl list-timers
+# Displays scheduled systemd timers.
+
+df -h
+# Checks filesystem usage.
+
+df -i
+# Checks inode usage.
+
+free -h
+# Checks memory.
+
+uptime
+# Checks load averages.
+
+last
+# Displays login history where available.
+
+apt list --upgradable
+# Example Ubuntu/Debian package update inspection.`,
+      config: `# Example monitoring thresholds – illustrative only
+
+# Filesystem warning: 75 percent
+# Filesystem critical: 90 percent
+# Memory warning: sustained high utilization
+# CPU warning: sustained saturation with service impact
+# Service alert: unexpected inactive state
+
+# Production thresholds must account for workload patterns,
+# filesystem type, capacity planning and application SLOs.`,
+      problems: [
+        {
+          issue: "The same disk-full incident occurs every month.",
+          rootCause: "There is no capacity trend monitoring or effective log retention.",
+          solution: "Add filesystem and inode alerts, identify growth sources, implement approved rotation and review capacity trends."
+        },
+        {
+          issue: "Unpatched vulnerabilities remain on production servers.",
+          rootCause: "Patch ownership, maintenance windows or compliance reporting are missing.",
+          solution: "Define patch SLAs, test updates, schedule deployment windows and track exceptions with owners."
+        }
+      ]
+    },
+    {
+      heading: "16. Security – Protect Linux Servers in Production",
+      explanation: "Linux security includes identity management, authentication, authorization, patching, firewall rules, service hardening, audit logging and secure configuration. Use named accounts rather than shared administrator accounts. Grant only the permissions required for each task. Restrict SSH access to approved networks and identities. Keep secrets out of shell history, source code and world-readable files. Security changes should be tested because overly restrictive settings can also interrupt production services.",
+      steps: [
+        "Create named user accounts and approved groups.",
+        "Use SSH keys or approved identity-based access.",
+        "Restrict sudo permissions to required operations.",
+        "Disable unnecessary services after dependency review.",
+        "Apply supported security updates.",
+        "Configure host firewall rules using approved network requirements.",
+        "Protect secrets using an approved secret manager.",
+        "Review authentication and privilege-escalation logs.",
+        "Apply file permissions based on application requirements.",
+        "Perform periodic access reviews."
+      ],
+      commands: `id
+# Displays current identity and groups.
+
+sudo -l
+# Displays permitted sudo commands for the current user.
+
+getent passwd
+# Queries configured user accounts.
+
+getent group
+# Queries configured groups.
+
+ss -lntup
+# Reviews listening network sockets.
+
+systemctl --type=service --state=running
+# Lists running services.
+
+last
+# Displays login history when accounting records exist.`,
+      config: `# Example SSH hardening concepts
+# File: /etc/ssh/sshd_config
+# Validate the exact directives against the installed OpenSSH version.
+
+PermitRootLogin no
+PubkeyAuthentication yes
+PasswordAuthentication no
+AllowGroups linux-admins
+
+# Before applying:
+# 1. Confirm key-based access works in a second session.
+# 2. Confirm the approved administrator group exists.
+# 3. Validate with sshd -t.
+# 4. Reload SSH using the distribution's correct service name.
+# 5. Keep an active recovery session until access is verified.`,
+      problems: [
+        {
+          issue: "Administrators are locked out after SSH hardening.",
+          rootCause: "Authentication settings or allowed groups were changed without validating an alternate session.",
+          solution: "Use approved console or recovery access, inspect SSH configuration, validate keys and groups, then restore controlled access."
+        },
+        {
+          issue: "A secret appears in a command history or log.",
+          rootCause: "Sensitive values were passed as command-line arguments or printed by scripts.",
+          solution: "Rotate the exposed secret, remove unsafe logging paths according to policy and use a secure secret-delivery mechanism."
+        }
+      ]
+    },
+    {
+      heading: "17. Performance – CPU, Memory, Disk and Network Analysis",
+      explanation: "Linux performance depends on several resources. High CPU usage may indicate computation or inefficient code. Memory pressure may cause swapping or OOM kills. Disk latency can slow databases and applications even when capacity is available. Network congestion, packet loss or connection exhaustion can affect user requests. Engineers should correlate operating-system metrics with application response times rather than assuming that one high metric is automatically the root cause.",
+      steps: [
+        "Check system load and CPU utilization.",
+        "Identify high-CPU processes.",
+        "Check available memory and swap activity.",
+        "Inspect disk capacity and I/O latency.",
+        "Check network interfaces, errors and traffic.",
+        "Correlate resource metrics with application latency.",
+        "Compare with normal workload baselines.",
+        "Apply workload-specific optimization only after collecting evidence."
+      ],
+      commands: `top
+# Interactive CPU and memory process view.
+
+ps aux --sort=-%cpu | head
+# Shows high-CPU processes.
+
+ps aux --sort=-%mem | head
+# Shows high-memory processes.
+
+free -h
+# Displays memory and swap usage.
+
+vmstat 1 5
+# Samples process, memory, swap and CPU statistics.
+
+iostat -xz 1 5
+# Displays extended disk I/O statistics when sysstat is installed.
+
+sar -n DEV 1 5
+# Displays network device statistics when sysstat is installed.`,
+      config: `# Example sysctl configuration concepts
+# File: /etc/sysctl.d/99-company-tuning.conf
+
+# Only add workload-validated settings.
+# Example:
+fs.file-max = 2097152
+
+# Apply reviewed settings with:
+# sysctl --system
+
+# Do not copy arbitrary kernel tuning values from another server.
+# Validate workload, kernel version and rollback plan first.`,
+      problems: [
+        {
+          issue: "Application response time increases during peak traffic.",
+          rootCause: "CPU saturation, memory pressure, disk latency, connection limits or dependency slowdown.",
+          solution: "Correlate application latency with top, vmstat, iostat, network metrics and dependency monitoring before tuning."
+        },
+        {
+          issue: "Processes are killed unexpectedly.",
+          rootCause: "The kernel may invoke the OOM killer when memory pressure becomes severe.",
+          solution: "Inspect kernel logs, identify memory consumers, review workload limits and correct capacity or application leaks."
+        }
+      ]
+    },
+    {
+      heading: "18. Monitoring – Linux Health Metrics, Alerts and Operational Visibility",
+      explanation: "Monitoring gives engineers visibility into system health before and during incidents. Basic host metrics include CPU utilization, load average, memory, swap, filesystem capacity, inode usage, disk latency, network throughput and service availability. Logs explain events, while metrics show trends and alert conditions. A monitoring system should alert on user impact or actionable risk, not simply create noise for every temporary spike.",
+      steps: [
+        "Install an approved monitoring agent or exporter.",
+        "Configure secure communication with the monitoring platform.",
+        "Collect host and service metrics.",
+        "Create warning and critical thresholds based on workload baselines.",
+        "Connect alerts to the correct on-call team.",
+        "Include host, environment, service and runbook details in alerts.",
+        "Review alert quality and remove noisy conditions.",
+        "Test alert delivery and recovery notifications."
+      ],
+      commands: `uptime
+# Quick load overview.
+
+free -h
+# Memory overview.
+
+df -h
+# Filesystem capacity.
+
+df -i
+# Inode usage.
+
+ip -s link
+# Interface statistics and errors.
+
+systemctl status node_exporter
+# Example exporter service check if installed with this unit name.
+
+journalctl -u node_exporter -n 50
+# Example exporter logs.`,
+      config: `# Example Prometheus scrape configuration concept
+
+scrape_configs:
+  - job_name: "linux-servers"
+    static_configs:
+      - targets:
+          - "linux-server-01:9100"
+          - "linux-server-02:9100"
+
+# Example only. Use approved DNS names, TLS and authentication
+# according to the monitoring platform's security design.`,
+      problems: [
+        {
+          issue: "Linux metrics disappear from the monitoring dashboard.",
+          rootCause: "The exporter may be stopped, blocked by network policy or incorrectly configured in the scrape target.",
+          solution: "Check exporter service status, endpoint availability, firewall rules and monitoring target health."
+        },
+        {
+          issue: "Too many low-value alerts are generated.",
+          rootCause: "Thresholds do not reflect normal workload behavior or alerts are based on short-lived spikes.",
+          solution: "Use sustained conditions, workload baselines, severity levels and actionable runbook links."
+        }
+      ]
+    },
+    {
+      heading: "19. Real-World Project – Prepare and Operate a Linux Application Server",
+      explanation: "A practical Linux project is to prepare a server for a sample web application. The engineer creates a dedicated account, installs approved dependencies, configures the service, validates network access and enables monitoring. The project should include a documented deployment, a failure test and a recovery procedure. Use a lab virtual machine or disposable environment. Never perform learning experiments on a company production server.",
+      steps: [
+        "Create an Ubuntu or other supported Linux lab virtual machine.",
+        "Update package metadata and apply approved updates.",
+        "Create a dedicated application user and group.",
+        "Create an application directory with controlled permissions.",
+        "Install the required runtime from an approved repository.",
+        "Create a systemd service unit for the sample application.",
+        "Start the service and verify its listening port.",
+        "Check application logs and operating-system metrics.",
+        "Simulate a controlled service failure in the lab.",
+        "Investigate the failure and restore the application.",
+        "Document the commands, configuration and verification evidence."
+      ],
+      commands: `sudo apt update
+# Refreshes package metadata on Ubuntu/Debian.
+
+sudo apt install nginx
+# Installs Nginx on Ubuntu/Debian using configured repositories.
+
+sudo systemctl enable --now nginx
+# Enables Nginx at boot and starts it now.
+
+systemctl status nginx
+# Checks Nginx service status.
+
+ss -lntp
+# Checks listening ports.
+
+curl -I http://127.0.0.1
+# Sends an HTTP HEAD request to the local web server.
+
+journalctl -u nginx -n 50
+# Reads recent Nginx service logs.`,
+      config: `# Example Nginx site configuration concept
+
+server {
+    listen 80;
+    server_name example.internal;
+
+    location / {
+        root /var/www/html;
+        index index.html;
+    }
+}
+
+# Validate before reload:
+# nginx -t
+# Reload only after validation:
+# systemctl reload nginx
+
+# Use approved DNS, TLS and network access in a real deployment.`,
+      problems: [
+        {
+          issue: "Nginx installation succeeds but the web page is unavailable.",
+          rootCause: "The service may be stopped, the site configuration may be invalid or network access may be blocked.",
+          solution: "Check systemctl status nginx, nginx -t, ss -lntp, local curl and approved firewall/network rules."
+        },
+        {
+          issue: "The application cannot write to its directory.",
+          rootCause: "The service account does not own the required path or lacks directory write permission.",
+          solution: "Inspect the full path with namei -l and assign the minimum required ownership and permissions."
+        }
+      ]
+    },
+    {
+      heading: "20. Interview Knowledge and Senior Linux Engineer Decisions",
+      explanation: "A Linux engineer should be able to explain how the operating system starts, manages processes, allocates memory, stores files, handles permissions and provides network services. Production-level knowledge goes beyond memorizing commands. Senior engineers consider impact, security, reliability, observability, rollback and automation before making changes. They explain why a command is required, what evidence it provides and what risk it introduces.",
+      steps: [
+        "Explain the difference between Linux kernel and distribution.",
+        "Describe the role of the shell and PATH.",
+        "Explain process IDs, signals and foreground/background execution.",
+        "Describe standard input, output and error streams.",
+        "Explain Linux file ownership and permission bits.",
+        "Describe systemd services and journal logs.",
+        "Explain how to investigate high CPU and memory usage.",
+        "Explain how to investigate a full filesystem.",
+        "Describe how SSH authentication works at a high level.",
+        "Explain how you would safely troubleshoot a production outage.",
+        "Discuss least privilege, change approval and rollback planning.",
+        "Explain how automation and monitoring reduce operational risk."
+      ],
+      commands: `# Quick senior-engineer investigation set
+
+uname -a
+# Kernel and architecture.
+
+cat /etc/os-release
+# Distribution information.
+
+uptime
+# Load and uptime.
+
+free -h
+# Memory.
+
+df -h
+# Filesystem capacity.
+
+ps aux --sort=-%cpu | head
+# CPU consumers.
+
+systemctl --failed
+# Failed services.
+
+journalctl -p err -b
+# Boot error messages.
+
+ss -lntup
+# Listening sockets.
+
+ip route
+# Routing table.`,
+      config: `# Example senior engineer decision checklist
+
+# Impact:
+# Which users and services are affected?
+
+# Evidence:
+# Which logs, metrics and command outputs support the diagnosis?
+
+# Risk:
+# Can the proposed change affect other workloads?
+
+# Security:
+# Does the fix preserve least privilege and secret protection?
+
+# Recovery:
+# Is there a tested rollback or recovery path?
+
+# Verification:
+# Which technical and user-facing checks prove recovery?
+
+# Prevention:
+# What monitoring, automation or documentation must change?`,
+      problems: [
+        {
+          issue: "An engineer knows commands but cannot solve production incidents.",
+          rootCause: "The engineer focuses on command execution instead of understanding system behavior, evidence and dependencies.",
+          solution: "Practice structured diagnosis, resource analysis, log correlation, controlled changes and post-fix verification."
+        },
+        {
+          issue: "A senior engineer proposes a risky change without a rollback plan.",
+          rootCause: "Operational impact and recovery requirements were not considered.",
+          solution: "Require impact analysis, peer review, pre-change evidence, rollback steps and measurable success criteria."
+        }
+      ]
+    }
+  ]
+};
+
+export default data;
