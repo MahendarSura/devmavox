@@ -10,9 +10,6 @@ export default function ContactPage() {
         <div>
           <h1 className="text-xl font-bold tracking-wider text-cyan-400">Devmavox Support</h1>
         </div>
-        <Link href="/" className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-200 px-4 py-2 rounded-xl transition border border-gray-700">
-          ← Back to Home
-        </Link>
       </div>
 
       {/* Main Content */}

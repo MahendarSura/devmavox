@@ -34,9 +34,6 @@ export default function TroubleshootingToolPage() {
   return (
     <main className="min-h-screen bg-slate-50 px-5 py-10 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <div className="mx-auto max-w-5xl">
-        <Link href="/troubleshooting-center" className="text-cyan-600 hover:underline">
-          ← Back to Troubleshooting Center
-        </Link>
         <h1 className="mt-6 text-3xl font-bold">Linux Troubleshooting</h1>
         <p className="mt-3 text-slate-600 dark:text-slate-300">
           Select a topic to open its troubleshooting file.

@@ -246,12 +246,6 @@ export default function HandsOnLabsPage() {
     <main className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       {/* BACK TO HOME */}
       <div className="mx-auto max-w-7xl px-5 pt-5 sm:px-8">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 rounded-xl bg-cyan-600 px-5 py-3 font-bold text-white transition hover:bg-cyan-700"
-        >
-          ← Back to Home
-        </Link>
       </div>
 
       <section className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
@@ -547,16 +541,8 @@ export default function HandsOnLabsPage() {
             This page provides guided examples, not a live terminal or cloud sandbox.
             Protect credentials, review cloud costs, use authorized environments, and clean up resources after exercises.
           </p>
-          <Link href="/" className="mt-5 inline-flex rounded-xl border border-slate-600 px-5 py-3 font-bold text-white hover:bg-slate-800">
-            ← Back to Home
-          </Link>
         </div>
       </section>
     </main>
   );
 }
-
-
-
-
-

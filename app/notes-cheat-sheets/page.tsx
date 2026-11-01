@@ -80,9 +80,6 @@ export default function NotesCheatSheetsPage() {
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100 sm:px-6 lg:px-10">
       <div className="mx-auto max-w-7xl">
-        <Link href="/" className="mb-8 inline-flex text-sm text-slate-400 hover:text-white">
-          ← Back to Home
-        </Link>
 
         <header className="relative mb-10 overflow-hidden rounded-3xl border border-cyan-400/20 bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950/50 p-6 sm:p-10">
           <span className="inline-flex rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cyan-300">
@@ -158,4 +155,3 @@ export default function NotesCheatSheetsPage() {
     </main>
   );
 }
-

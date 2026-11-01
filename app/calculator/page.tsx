@@ -22,9 +22,6 @@ export default function CalculatorPage() {
           <h1 className="text-2xl font-bold tracking-wider text-cyan-400">Devmavox Estimator</h1>
           <p className="text-sm text-gray-400 mt-1">Cloud Infrastructure & Kubernetes Cluster Cost Calculator</p>
         </div>
-        <Link href="/" className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-200 px-4 py-2 rounded-xl transition border border-gray-700">
-          ← Back to Home
-        </Link>
       </div>
 
       {/* Main Calculator Card */}

@@ -20,9 +20,6 @@ export default function ExploreCoursesPage() {
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-12 text-slate-100">
       <div className="mx-auto max-w-7xl">
-        <Link href="/" className="text-sm font-semibold text-cyan-400 hover:text-cyan-300">
-          ← Back to Home
-        </Link>
 
         <header className="py-12 text-center">
           <p className="mb-3 font-semibold uppercase tracking-widest text-cyan-400">

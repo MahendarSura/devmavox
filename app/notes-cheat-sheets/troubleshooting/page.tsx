@@ -30,12 +30,6 @@ export default function TroubleshootingPage() {
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100 sm:px-8">
       <div className="mx-auto max-w-6xl">
-        <Link
-          href="/notes-cheat-sheets"
-          className="text-sm text-cyan-300 hover:underline"
-        >
-          ← All Notes & Cheat Sheets
-        </Link>
 
         <p className="mt-8 text-sm uppercase tracking-widest text-cyan-300">
           DevOps Learning Notes
@@ -90,4 +84,3 @@ export default function TroubleshootingPage() {
     </main>
   );
 }
-

@@ -77,12 +77,6 @@ export default function RealTimeProjectsPage() {
   return (
     <main className="min-h-screen bg-[#0b0f19] px-5 py-12 text-white sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
-        <Link
-          href="/"
-          className="mb-8 inline-flex text-sm text-cyan-400 transition hover:text-cyan-300"
-        >
-          ← Back to Home
-        </Link>
 
         <header className="mb-10 text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-cyan-400">

@@ -60,12 +60,6 @@ export default function RevisedCommandsPage() {
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100 sm:px-8">
       <div className="mx-auto max-w-7xl">
-        <Link
-          href="/notes-cheat-sheets"
-          className="text-sm text-cyan-300 hover:underline"
-        >
-          ← All Notes & Cheat Sheets
-        </Link>
 
         <p className="mt-8 text-sm font-semibold uppercase tracking-widest text-cyan-300">
           Command Library

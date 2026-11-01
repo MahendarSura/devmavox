@@ -133,12 +133,6 @@ export default function TroubleshootingCenterPage() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <div className="mx-auto max-w-7xl px-5 pt-5 sm:px-8">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 rounded-xl bg-cyan-600 px-5 py-3 font-bold text-white transition hover:bg-cyan-700"
-        >
-          ← Back to Main Menu
-        </Link>
       </div>
 
       <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
@@ -183,12 +177,6 @@ export default function TroubleshootingCenterPage() {
         </div>
 
         <div className="mt-12">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800 px-5 py-3 font-bold text-white transition hover:bg-slate-700"
-          >
-            ← Back to Main Menu
-          </Link>
         </div>
       </section>
     </main>

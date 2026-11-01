@@ -105,14 +105,6 @@ export default async function RealTimeProjectDetailPage({ params }: { params: Pr
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 p-6 md:p-12">
-      <nav className="mb-8">
-        <Link 
-          href="/real-time-projects" 
-          className="inline-flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm font-bold text-cyan-400 hover:bg-slate-800 transition"
-        >
-          ← Back to Real-Time Projects
-        </Link>
-      </nav>
 
       <div className="mx-auto max-w-4xl rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-xl">
         <div className="flex items-center gap-4 mb-6">
@@ -163,4 +155,3 @@ export function generateStaticParams() {
     { id: 'project10' },
   ];
 }
-

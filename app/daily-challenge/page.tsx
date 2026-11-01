@@ -60,12 +60,6 @@ export default function Page() {
   return (
     <main className="min-h-screen bg-gray-950 px-4 py-10 text-gray-100 sm:px-6">
       <div className="mx-auto max-w-4xl">
-        <a
-          href="/"
-          className="text-sm text-cyan-400 hover:text-cyan-300"
-        >
-          ← Back to Home
-        </a>
 
         <header className="mb-8 mt-8 text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-cyan-400">

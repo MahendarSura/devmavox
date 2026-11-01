@@ -166,12 +166,6 @@ export default async function TroubleshootingTopicPage({
   return (
     <main className="min-h-screen bg-slate-50 px-5 py-10 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <div className="mx-auto max-w-5xl">
-        <Link
-          href={`/troubleshooting-center/${tool}`}
-          className="text-cyan-700 hover:underline dark:text-cyan-300"
-        >
-          ← Back to {displayName(tool)} Troubleshooting
-        </Link>
 
         <header className="mt-6 rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
           <p className="text-sm font-semibold uppercase tracking-wide text-cyan-700 dark:text-cyan-300">
@@ -202,4 +196,3 @@ export default async function TroubleshootingTopicPage({
     </main>
   );
 }
-
