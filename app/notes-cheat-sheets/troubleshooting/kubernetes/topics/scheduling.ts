@@ -1,220 +1,151 @@
 import type { NoteData } from "../../types";
 
 const data: NoteData = {
-  title: "Scheduling",
-  description: "Detailed Kubernetes notes covering scheduling, practical operations, troubleshooting and production scenarios.",
-  sections: [
+  "sections": [
     {
-          heading: "12. Scheduling – Requests, Limits, Taints, Tolerations and Affinity",
-          explanation: `
-    The Kubernetes Scheduler selects a suitable node for each unscheduled Pod.
-    
-    RESOURCE REQUESTS:
-    Tell Kubernetes how much CPU and memory a container requests for scheduling decisions.
-    
-    RESOURCE LIMITS:
-    Set upper resource limits for supported resources.
-    
-    CPU:
-    CPU limits can cause throttling when the container tries to use more than its quota.
-    
-    MEMORY:
-    Memory limits can result in an OOM kill if the container exceeds its allowed memory.
-    
-    TAINTS:
-    A node taint repels Pods unless they have a matching toleration.
-    
-    TOLERATIONS:
-    Allow a Pod to be scheduled onto a node with a matching taint. A toleration does not force scheduling onto that node.
-    
-    NODE SELECTOR:
-    A simple way to constrain Pods to nodes with matching labels.
-    
-    NODE AFFINITY:
-    Provides more expressive node selection rules.
-    
-    POD AFFINITY:
-    Can influence placement near other Pods.
-    
-    POD ANTI-AFFINITY:
-    Can spread or separate Pods based on labels and topology.
-    
-    COMMON SCHEDULING PROBLEMS:
-    
-    - Insufficient CPU.
-    - Insufficient memory.
-    - Untolerated taint.
-    - Node selector mismatch.
-    - Affinity rules cannot be satisfied.
-    - PVC cannot bind.
-    - Node is NotReady.
-    - Pod topology constraints cannot be satisfied.
-    
-    The scheduler events usually provide the first useful explanation.
-          `,
-          steps: [
-            "Describe the Pending Pod.",
-            "Read scheduler events.",
-            "Inspect node resource capacity and allocated requests.",
-            "Check node labels and taints.",
-            "Check Pod selectors, affinity and tolerations.",
-            "Check PVC binding if storage is involved.",
-            "Correct the constraint or provide appropriate capacity.",
-            "Verify that the Pod is scheduled and becomes Ready."
-          ],
-          commands: `
-    kubectl describe pod <pod-name> -n <namespace>
-    
-    kubectl get nodes --show-labels
-    
-    kubectl describe node <node-name>
-    
-    kubectl top nodes
-    
-    kubectl top pods -A
-    
-    kubectl get events -A --sort-by=.lastTimestamp
-          `,
-          config: `
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: api
-    spec:
-      replicas: 2
-      selector:
-        matchLabels:
-          app: api
-      template:
-        metadata:
-          labels:
-            app: api
-        spec:
-          containers:
-            - name: api
-              image: my-api:v1
-              resources:
-                requests:
-                  cpu: "250m"
-                  memory: "256Mi"
-                limits:
-                  cpu: "1"
-                  memory: "512Mi"
-          `,
-          problems: [
-            {
-              issue: "Pod remains Pending with Insufficient CPU.",
-              rootCause:
-                "No eligible node has enough unallocated CPU capacity to satisfy the Pod's CPU request.",
-              solution:
-                "Review CPU requests, node capacity and workload placement. Right-size requests based on actual usage or add capacity."
-            },
-            {
-              issue: "Pod is not scheduled because of an untolerated taint.",
-              rootCause:
-                "The node has a taint that the Pod does not tolerate.",
-              solution:
-                "Review whether the Pod should run on that node. Add an appropriate toleration only when the workload is intended to use it."
-            },
-            {
-              issue: "Pod cannot schedule due to node affinity.",
-              rootCause:
-                "The required node labels or affinity constraints cannot be satisfied.",
-              solution:
-                "Compare Pod affinity rules with actual node labels. Correct the selector or node configuration."
-            }
-          ]
+      "explanation": "Kubernetes - Scheduling is used in DevOps engineering to solve a specific operational or delivery problem. Understand its purpose, supported use cases, limitations, dependencies and the production problems it helps prevent.",
+      "steps": [
+        "Identify the requirement and expected outcome.",
+        "Understand the core terminology and supported versions.",
+        "Identify upstream and downstream dependencies.",
+        "Define measurable success criteria."
+      ],
+      "heading": "1. Introduction and Purpose"
+    },
+    {
+      "explanation": "Study the architecture of Kubernetes - Scheduling by identifying its main services, controllers, agents, APIs, configuration sources, storage, network paths and integrations. Trace how a request travels between components and identify the failure boundaries.",
+      "steps": [
+        "List the major components and their responsibilities.",
+        "Map authentication and authorization paths.",
+        "Identify required ports, protocols and dependencies.",
+        "Understand state storage, backup and recovery.",
+        "Document high-availability and failure scenarios."
+      ],
+      "heading": "2. Architecture and Components"
+    },
+    {
+      "explanation": "A typical operation in Kubernetes - Scheduling starts with a user, API or pipeline request. The system validates input, checks identity and permissions, resolves dependencies, executes the operation and records its result. Study its actual reconciliation, retry, timeout and rollback behavior for the deployed version.",
+      "steps": [
+        "Trace a request from initiation to completion.",
+        "Identify validation and dependency checks.",
+        "Understand desired state and actual state where applicable.",
+        "Inspect retry, timeout and failure handling.",
+        "Locate execution history and audit records."
+      ],
+      "heading": "3. Internal Working"
+    },
+    {
+      "explanation": "Integrate Kubernetes - Scheduling into a controlled delivery lifecycle. Keep configuration in version control, validate changes, test in lower environments, promote approved artifacts and verify production health after deployment.",
+      "steps": [
+        "Create or update configuration in source control.",
+        "Review the change and validate syntax.",
+        "Run automated tests and security checks.",
+        "Build and version the required artifact.",
+        "Deploy to development and staging.",
+        "Verify logs, metrics and application behavior.",
+        "Promote through approval to production.",
+        "Monitor the release and retain a rollback plan."
+      ],
+      "heading": "4. End-to-End Development to Production Workflow"
+    },
+    {
+      "commands": "kubectl cluster-info\nkubectl get nodes -o wide\nkubectl get pods -A\nkubectl describe pod <pod> -n <namespace>\nkubectl logs <pod> -n <namespace>\nkubectl logs <pod> --previous -n <namespace>\nkubectl get events -A --sort-by=.metadata.creationTimestamp\nkubectl get deployments -A\nkubectl rollout status deployment/<name> -n <namespace>\nkubectl rollout undo deployment/<name> -n <namespace>\nkubectl top nodes\nkubectl top pods -A",
+      "explanation": "Use these operational commands as a starting point for Kubernetes - Scheduling. Replace placeholders with real resource names. Confirm syntax for the installed version and prefer read-only inspection before making production changes.",
+      "steps": [
+        "Check version and active context.",
+        "Inspect current resource or service status.",
+        "Capture logs and events with timestamps.",
+        "Make one controlled change at a time.",
+        "Verify the final state."
+      ],
+      "heading": "5. Practical Commands"
+    },
+    {
+      "config": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: sample-app\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: sample-app\n  template:\n    metadata:\n      labels:\n        app: sample-app\n    spec:\n      containers:\n        - name: app\n          image: nginx:stable\n          ports:\n            - containerPort: 80\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n            limits:\n              cpu: 500m\n              memory: 512Mi",
+      "explanation": "The following is a reference configuration for the kubernetes tool family. Adapt it to the exact topic, installed version, environment and architecture. Do not apply sample configuration directly to production without validation.",
+      "steps": [
+        "Validate the configuration with the native validator.",
+        "Review permissions and network exposure.",
+        "Keep secrets outside plain-text source files.",
+        "Test in a non-production environment."
+      ],
+      "heading": "6. Configuration Example"
+    },
+    {
+      "explanation": "Troubleshoot Kubernetes - Scheduling using evidence rather than assumptions. Establish impact and timeline, inspect recent changes, service health, logs, metrics, events and dependencies. Identify the failing layer, apply the smallest safe fix and verify recovery.",
+      "steps": [
+        "Establish incident severity and affected services.",
+        "Record symptoms, timeline and recent changes.",
+        "Inspect application logs, system logs, metrics and events.",
+        "Check DNS, network, identity, storage and dependencies.",
+        "Validate the root-cause hypothesis with evidence.",
+        "Apply a reversible mitigation where possible.",
+        "Verify recovery with health checks and user-facing tests.",
+        "Document the root cause and preventive actions."
+      ],
+      "problems": [
+        {
+          "solution": "Possible root causes include process failure, unhealthy dependencies, network interruption, DNS errors, exhausted resources or invalid configuration. Check service status, recent events, listening ports, dependency health and logs. Correct the confirmed cause and verify with an end-to-end request.",
+          "issue": "Service or operation is unavailable."
         },
-    {
-          heading: "23. Production Incident – Pod Stuck in Pending",
-          explanation: `
-    SCENARIO:
-    
-    A Deployment requests five replicas, but two Pods remain Pending.
-    
-    The application has fewer available replicas than expected.
-    
-    COMMON REASONS:
-    
-    - Insufficient CPU.
-    - Insufficient memory.
-    - Untolerated node taints.
-    - Node selector mismatch.
-    - Affinity constraints.
-    - PVC not bound.
-    - Node not ready.
-    - Pod topology restrictions.
-    
-    INVESTIGATION:
-    
-    1. Describe the Pending Pod.
-    2. Read scheduler events.
-    3. Check node capacity.
-    4. Check allocated resource requests.
-    5. Inspect taints and tolerations.
-    6. Inspect node labels and affinity.
-    7. Check PVC status if the Pod needs storage.
-    
-    EXAMPLE:
-    
-    Pod requests:
-    CPU: 4 cores.
-    Memory: 8Gi.
-    
-    But available eligible nodes do not have sufficient unallocated capacity.
-    
-    The scheduler cannot place the Pod.
-    
-    FIX:
-    
-    Review resource requests and actual workload needs, or provide additional suitable capacity.
-    
-    Do not simply reduce requests below safe application requirements.
-          `,
-          steps: [
-            "Identify all Pending Pods.",
-            "Describe each affected Pod.",
-            "Read FailedScheduling events.",
-            "Check node CPU and memory capacity.",
-            "Check Pod requests and limits.",
-            "Check node labels and taints.",
-            "Check PVC binding.",
-            "Resolve the exact scheduling constraint.",
-            "Verify the Pod is assigned to a node."
-          ],
-          commands: `
-    kubectl get pods -n production -o wide
-    
-    kubectl describe pod <pod-name> -n production
-    
-    kubectl get nodes
-    
-    kubectl describe nodes
-    
-    kubectl top nodes
-    
-    kubectl get pvc -n production
-    
-    kubectl get events -n production --sort-by=.lastTimestamp
-          `,
-          problems: [
-            {
-              issue: "0/N nodes are available: Insufficient cpu.",
-              rootCause:
-                "No eligible node has enough unallocated CPU to satisfy the Pod request.",
-              solution:
-                "Review requests, capacity and placement constraints. Right-size the workload or add suitable node capacity."
-            },
-            {
-              issue: "0/N nodes are available: node(s) had untolerated taint.",
-              rootCause:
-                "The Pod does not tolerate a taint on the available nodes.",
-              solution:
-                "Check whether the workload is intended to run on those nodes and add only the appropriate toleration."
-            }
-          ]
+        {
+          "solution": "Possible root causes include expired credentials, incorrect identity, missing permissions, invalid tokens or policy changes. Verify the active identity, credential expiry, role or policy evaluation and audit logs. Apply least-privilege corrections and retest with the intended identity.",
+          "issue": "Authentication or authorization fails."
+        },
+        {
+          "solution": "Possible root causes include syntax errors, unsupported versions, missing variables, invalid references or dependency mismatch. Inspect the first meaningful error, compare against the last working revision, validate dependencies and test a minimal correction.",
+          "issue": "Deployment or configuration validation fails."
+        },
+        {
+          "solution": "Possible root causes include CPU or memory pressure, disk saturation, connection exhaustion, slow dependencies or insufficient capacity. Correlate latency and error metrics with logs, inspect resource usage and dependency timings, mitigate the confirmed bottleneck and verify recovery.",
+          "issue": "Performance is degraded or requests time out."
+        },
+        {
+          "solution": "Correlate the incident start time with deployment and configuration changes. Review the change diff, release logs and health metrics. Use the approved rollback or roll-forward procedure, verify recovery and document preventive actions.",
+          "issue": "A recent production change caused unexpected behavior."
         }
-  ]
+      ],
+      "heading": "7. Production Troubleshooting and Root Cause Analysis"
+    },
+    {
+      "explanation": "Operate Kubernetes - Scheduling with least privilege, protected secrets, patch management, audit logging, backups, capacity planning and tested recovery procedures. Monitor availability, latency, throughput, error rate, saturation and relevant business indicators.",
+      "interviewQuestions": [
+        {
+          "answer": "scheduling addresses a specific requirement within kubernetes. Explain the use case, architecture, dependencies and operational benefits in the context of the environment where it is deployed.",
+          "question": "What is the purpose of "
+        },
+        {
+          "answer": "I would establish impact and timeline, inspect health and recent changes, review logs and metrics, verify dependencies and permissions, isolate the failing layer, apply a safe fix and validate recovery.",
+          "question": "How would you troubleshoot a failure?"
+        },
+        {
+          "answer": "I would use version-controlled configuration, least-privilege access, secure secrets, monitoring, backups, capacity planning, tested recovery and a documented change process.",
+          "question": "How do you prepare this for production?"
+        },
+        {
+          "answer": "Logs provide event-level evidence while metrics reveal trends and system behavior. Correlating them helps identify failures, measure impact and verify fixes.",
+          "question": "Why are logs and monitoring important?"
+        },
+        {
+          "answer": "I use peer-reviewed changes, automated validation, staged rollout, health checks, approvals, observability and a tested rollback or recovery plan.",
+          "question": "How do you reduce production change risk?"
+        }
+      ],
+      "steps": [
+        "Use least-privilege access and rotate credentials.",
+        "Keep software and dependencies patched.",
+        "Enable audit logs and appropriate retention.",
+        "Monitor actionable service-level indicators.",
+        "Back up critical state and test restoration.",
+        "Use peer review and documented rollback plans.",
+        "Automate safe repetitive operational tasks."
+      ],
+      "heading": "8. Security, Monitoring, Best Practices and Interview Questions"
+    }
+  ],
+  "description": "DevOps reference notes for Kubernetes - Scheduling covering concepts, architecture, internal workflow, delivery lifecycle, commands, configuration, production troubleshooting, security, monitoring and interview preparation.",
+  "title": "Kubernetes - Scheduling"
 };
 
 export default data;
+

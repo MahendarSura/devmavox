@@ -1,245 +1,151 @@
 import type { NoteData } from "../../types";
 
 const data: NoteData = {
-  title: "Kubernetes Security and RBAC",
-  description: "Detailed Kubernetes notes covering kubernetes security and rbac, practical operations, troubleshooting and production scenarios.",
-  sections: [
+  "sections": [
     {
-          heading: "14. Namespaces and RBAC – Users, Roles and Permissions",
-          explanation: `
-    Namespaces logically separate resources inside a Kubernetes cluster.
-    
-    Example namespaces:
-    - development.
-    - testing.
-    - staging.
-    - production.
-    
-    Namespaces help organize workloads and apply access controls, quotas and policies.
-    
-    RBAC:
-    Role-Based Access Control manages who can perform which actions.
-    
-    IMPORTANT RBAC OBJECTS:
-    
-    Role:
-    Defines permissions within a namespace.
-    
-    ClusterRole:
-    Defines permissions at cluster scope or reusable permissions.
-    
-    RoleBinding:
-    Grants a Role or ClusterRole to a subject within a namespace.
-    
-    ClusterRoleBinding:
-    Grants permissions at cluster scope.
-    
-    ServiceAccount:
-    An identity used by workloads running inside the cluster.
-    
-    COMMON RBAC VERBS:
-    
-    get:
-    Read a single resource or resource details.
-    
-    list:
-    List resources.
-    
-    watch:
-    Watch resource changes.
-    
-    create:
-    Create resources.
-    
-    update:
-    Update resources.
-    
-    patch:
-    Partially modify resources.
-    
-    delete:
-    Delete resources.
-    
-    IMPORTANT SECURITY PRINCIPLE:
-    Grant the minimum permissions required. Avoid using cluster-admin for ordinary application operations.
-          `,
-          steps: [
-            "Identify the user or ServiceAccount.",
-            "Identify the namespace and resource.",
-            "Determine the required action.",
-            "Inspect existing Roles and Bindings.",
-            "Use kubectl auth can-i to test permissions.",
-            "Grant only the required access.",
-            "Verify the action using the intended identity."
-          ],
-          commands: `
-    kubectl get namespaces
-    
-    kubectl get roles -A
-    
-    kubectl get rolebindings -A
-    
-    kubectl get clusterroles
-    
-    kubectl get clusterrolebindings
-    
-    kubectl auth can-i get pods -n production
-    
-    kubectl auth can-i create deployments -n production
-          `,
-          config: `
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: Role
-    metadata:
-      name: pod-reader
-      namespace: production
-    rules:
-      - apiGroups: [""]
-        resources: ["pods"]
-        verbs: ["get", "list", "watch"]
-    ---
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: RoleBinding
-    metadata:
-      name: pod-reader-binding
-      namespace: production
-    subjects:
-      - kind: ServiceAccount
-        name: monitoring
-        namespace: production
-    roleRef:
-      apiGroup: rbac.authorization.k8s.io
-      kind: Role
-      name: pod-reader
-          `,
-          problems: [
-            {
-              issue: "User receives Forbidden when accessing a resource.",
-              rootCause:
-                "The user may be authenticated but does not have the required RBAC permission.",
-              solution:
-                "Check the identity and use kubectl auth can-i. Grant the minimum required permission through the appropriate RoleBinding or ClusterRoleBinding."
-            },
-            {
-              issue: "Application cannot access Kubernetes API resources.",
-              rootCause:
-                "The Pod's ServiceAccount may lack the required RBAC permissions or may not be the intended identity.",
-              solution:
-                "Inspect the Pod ServiceAccount and its RoleBindings. Grant only the required API permissions."
-            }
-          ]
+      "explanation": "Kubernetes - Security is used in DevOps engineering to solve a specific operational or delivery problem. Understand its purpose, supported use cases, limitations, dependencies and the production problems it helps prevent.",
+      "steps": [
+        "Identify the requirement and expected outcome.",
+        "Understand the core terminology and supported versions.",
+        "Identify upstream and downstream dependencies.",
+        "Define measurable success criteria."
+      ],
+      "heading": "1. Introduction and Purpose"
+    },
+    {
+      "explanation": "Study the architecture of Kubernetes - Security by identifying its main services, controllers, agents, APIs, configuration sources, storage, network paths and integrations. Trace how a request travels between components and identify the failure boundaries.",
+      "steps": [
+        "List the major components and their responsibilities.",
+        "Map authentication and authorization paths.",
+        "Identify required ports, protocols and dependencies.",
+        "Understand state storage, backup and recovery.",
+        "Document high-availability and failure scenarios."
+      ],
+      "heading": "2. Architecture and Components"
+    },
+    {
+      "explanation": "A typical operation in Kubernetes - Security starts with a user, API or pipeline request. The system validates input, checks identity and permissions, resolves dependencies, executes the operation and records its result. Study its actual reconciliation, retry, timeout and rollback behavior for the deployed version.",
+      "steps": [
+        "Trace a request from initiation to completion.",
+        "Identify validation and dependency checks.",
+        "Understand desired state and actual state where applicable.",
+        "Inspect retry, timeout and failure handling.",
+        "Locate execution history and audit records."
+      ],
+      "heading": "3. Internal Working"
+    },
+    {
+      "explanation": "Integrate Kubernetes - Security into a controlled delivery lifecycle. Keep configuration in version control, validate changes, test in lower environments, promote approved artifacts and verify production health after deployment.",
+      "steps": [
+        "Create or update configuration in source control.",
+        "Review the change and validate syntax.",
+        "Run automated tests and security checks.",
+        "Build and version the required artifact.",
+        "Deploy to development and staging.",
+        "Verify logs, metrics and application behavior.",
+        "Promote through approval to production.",
+        "Monitor the release and retain a rollback plan."
+      ],
+      "heading": "4. End-to-End Development to Production Workflow"
+    },
+    {
+      "commands": "kubectl cluster-info\nkubectl get nodes -o wide\nkubectl get pods -A\nkubectl describe pod <pod> -n <namespace>\nkubectl logs <pod> -n <namespace>\nkubectl logs <pod> --previous -n <namespace>\nkubectl get events -A --sort-by=.metadata.creationTimestamp\nkubectl get deployments -A\nkubectl rollout status deployment/<name> -n <namespace>\nkubectl rollout undo deployment/<name> -n <namespace>\nkubectl top nodes\nkubectl top pods -A",
+      "explanation": "Use these operational commands as a starting point for Kubernetes - Security. Replace placeholders with real resource names. Confirm syntax for the installed version and prefer read-only inspection before making production changes.",
+      "steps": [
+        "Check version and active context.",
+        "Inspect current resource or service status.",
+        "Capture logs and events with timestamps.",
+        "Make one controlled change at a time.",
+        "Verify the final state."
+      ],
+      "heading": "5. Practical Commands"
+    },
+    {
+      "config": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: sample-app\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: sample-app\n  template:\n    metadata:\n      labels:\n        app: sample-app\n    spec:\n      containers:\n        - name: app\n          image: nginx:stable\n          ports:\n            - containerPort: 80\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n            limits:\n              cpu: 500m\n              memory: 512Mi",
+      "explanation": "The following is a reference configuration for the kubernetes tool family. Adapt it to the exact topic, installed version, environment and architecture. Do not apply sample configuration directly to production without validation.",
+      "steps": [
+        "Validate the configuration with the native validator.",
+        "Review permissions and network exposure.",
+        "Keep secrets outside plain-text source files.",
+        "Test in a non-production environment."
+      ],
+      "heading": "6. Configuration Example"
+    },
+    {
+      "explanation": "Troubleshoot Kubernetes - Security using evidence rather than assumptions. Establish impact and timeline, inspect recent changes, service health, logs, metrics, events and dependencies. Identify the failing layer, apply the smallest safe fix and verify recovery.",
+      "steps": [
+        "Establish incident severity and affected services.",
+        "Record symptoms, timeline and recent changes.",
+        "Inspect application logs, system logs, metrics and events.",
+        "Check DNS, network, identity, storage and dependencies.",
+        "Validate the root-cause hypothesis with evidence.",
+        "Apply a reversible mitigation where possible.",
+        "Verify recovery with health checks and user-facing tests.",
+        "Document the root cause and preventive actions."
+      ],
+      "problems": [
+        {
+          "solution": "Possible root causes include process failure, unhealthy dependencies, network interruption, DNS errors, exhausted resources or invalid configuration. Check service status, recent events, listening ports, dependency health and logs. Correct the confirmed cause and verify with an end-to-end request.",
+          "issue": "Service or operation is unavailable."
         },
-    {
-          heading: "17. Kubernetes Security – SecurityContext, Pod Security and Image Policies",
-          explanation: `
-    Kubernetes security protects cluster resources, workloads and application data.
-    
-    IMPORTANT SECURITY CONTROLS:
-    
-    runAsNonRoot:
-    Requires a non-root process where applicable.
-    
-    runAsUser:
-    Sets the process user ID.
-    
-    runAsGroup:
-    Sets the primary group ID.
-    
-    readOnlyRootFilesystem:
-    Makes the container root filesystem read-only.
-    
-    allowPrivilegeEscalation:
-    Controls whether a process can gain additional privileges.
-    
-    capabilities:
-    Controls Linux capabilities.
-    
-    seccomp:
-    Applies system-call restrictions.
-    
-    serviceAccountName:
-    Selects the ServiceAccount used by a Pod.
-    
-    imagePullSecrets:
-    Provides registry credentials through Kubernetes Secret references.
-    
-    POD SECURITY STANDARDS:
-    Kubernetes defines security profiles such as:
-    - Privileged.
-    - Baseline.
-    - Restricted.
-    
-    A namespace can enforce an appropriate Pod Security Admission policy.
-    
-    IMPORTANT:
-    Security configuration can break an application if it depends on root privileges or writable filesystem paths. Identify the exact requirement and provide the minimum safe permission.
-          `,
-          steps: [
-            "Review image provenance and vulnerability status.",
-            "Run workloads as non-root where possible.",
-            "Set an appropriate ServiceAccount.",
-            "Restrict Linux capabilities.",
-            "Use read-only filesystems where practical.",
-            "Configure resource and network restrictions.",
-            "Protect Secrets and API credentials.",
-            "Verify the workload still functions under the restricted configuration."
-          ],
-          commands: `
-    kubectl get pods -n production
-    
-    kubectl get serviceaccounts -n production
-    
-    kubectl describe pod <pod-name> -n production
-    
-    kubectl get pod <pod-name> -n production -o yaml
-    
-    kubectl auth can-i --list -n production
-          `,
-          config: `
-    apiVersion: v1
-    kind: Pod
-    metadata:
-      name: secure-app
-    spec:
-      serviceAccountName: app-service-account
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 10001
-        runAsGroup: 10001
-      containers:
-        - name: app
-          image: my-app:v1
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop:
-                - ALL
-          volumeMounts:
-            - name: tmp
-              mountPath: /tmp
-      volumes:
-        - name: tmp
-          emptyDir: {}
-          `,
-          problems: [
-            {
-              issue: "Pod fails after enabling runAsNonRoot.",
-              rootCause:
-                "The image may require root or may not have a suitable non-root user configuration.",
-              solution:
-                "Build the image to support a non-root user and provide appropriate ownership for writable paths."
-            },
-            {
-              issue: "Container cannot write after enabling readOnlyRootFilesystem.",
-              rootCause:
-                "The application writes temporary files or runtime data into the container root filesystem.",
-              solution:
-                "Mount dedicated writable volumes or emptyDir paths only where required."
-            }
-          ]
+        {
+          "solution": "Possible root causes include expired credentials, incorrect identity, missing permissions, invalid tokens or policy changes. Verify the active identity, credential expiry, role or policy evaluation and audit logs. Apply least-privilege corrections and retest with the intended identity.",
+          "issue": "Authentication or authorization fails."
+        },
+        {
+          "solution": "Possible root causes include syntax errors, unsupported versions, missing variables, invalid references or dependency mismatch. Inspect the first meaningful error, compare against the last working revision, validate dependencies and test a minimal correction.",
+          "issue": "Deployment or configuration validation fails."
+        },
+        {
+          "solution": "Possible root causes include CPU or memory pressure, disk saturation, connection exhaustion, slow dependencies or insufficient capacity. Correlate latency and error metrics with logs, inspect resource usage and dependency timings, mitigate the confirmed bottleneck and verify recovery.",
+          "issue": "Performance is degraded or requests time out."
+        },
+        {
+          "solution": "Correlate the incident start time with deployment and configuration changes. Review the change diff, release logs and health metrics. Use the approved rollback or roll-forward procedure, verify recovery and document preventive actions.",
+          "issue": "A recent production change caused unexpected behavior."
         }
-  ]
+      ],
+      "heading": "7. Production Troubleshooting and Root Cause Analysis"
+    },
+    {
+      "explanation": "Operate Kubernetes - Security with least privilege, protected secrets, patch management, audit logging, backups, capacity planning and tested recovery procedures. Monitor availability, latency, throughput, error rate, saturation and relevant business indicators.",
+      "interviewQuestions": [
+        {
+          "answer": "security addresses a specific requirement within kubernetes. Explain the use case, architecture, dependencies and operational benefits in the context of the environment where it is deployed.",
+          "question": "What is the purpose of "
+        },
+        {
+          "answer": "I would establish impact and timeline, inspect health and recent changes, review logs and metrics, verify dependencies and permissions, isolate the failing layer, apply a safe fix and validate recovery.",
+          "question": "How would you troubleshoot a failure?"
+        },
+        {
+          "answer": "I would use version-controlled configuration, least-privilege access, secure secrets, monitoring, backups, capacity planning, tested recovery and a documented change process.",
+          "question": "How do you prepare this for production?"
+        },
+        {
+          "answer": "Logs provide event-level evidence while metrics reveal trends and system behavior. Correlating them helps identify failures, measure impact and verify fixes.",
+          "question": "Why are logs and monitoring important?"
+        },
+        {
+          "answer": "I use peer-reviewed changes, automated validation, staged rollout, health checks, approvals, observability and a tested rollback or recovery plan.",
+          "question": "How do you reduce production change risk?"
+        }
+      ],
+      "steps": [
+        "Use least-privilege access and rotate credentials.",
+        "Keep software and dependencies patched.",
+        "Enable audit logs and appropriate retention.",
+        "Monitor actionable service-level indicators.",
+        "Back up critical state and test restoration.",
+        "Use peer review and documented rollback plans.",
+        "Automate safe repetitive operational tasks."
+      ],
+      "heading": "8. Security, Monitoring, Best Practices and Interview Questions"
+    }
+  ],
+  "description": "DevOps reference notes for Kubernetes - Security covering concepts, architecture, internal workflow, delivery lifecycle, commands, configuration, production troubleshooting, security, monitoring and interview preparation.",
+  "title": "Kubernetes - Security"
 };
 
 export default data;
+

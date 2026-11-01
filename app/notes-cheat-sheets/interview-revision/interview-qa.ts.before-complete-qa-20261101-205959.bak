@@ -1,0 +1,351 @@
+const data = {
+  "title": "DevOps Interview Q&A",
+  "description": "Detailed DevOps interview learning notes for 18 tools. Written in simple English with explanations, architecture, real-time workflows, production scenarios, commands, configuration examples and troubleshooting.",
+  "sections": [
+    {
+      "heading": "AWS - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nAWS is a cloud platform. Instead of buying physical servers, companies rent computing, storage, networking and database services. A DevOps engineer uses AWS to build, deploy, secure and monitor applications.\n\n## Architecture\nA common production architecture uses Route 53 for DNS, an Application Load Balancer for incoming HTTP traffic, EC2 instances in private subnets, an Auto Scaling Group for capacity, RDS for database storage and S3 for files. CloudWatch collects metrics and logs. IAM controls access.\n\n## End-to-End Workflow\nDeveloper pushes code to Git. CI builds and tests the application. The pipeline creates an artifact or container image and stores it in a registry. CD deploys it to EC2 or EKS. The load balancer sends user traffic to healthy targets. CloudWatch monitors the application.\n\n## Interview Question\nHow would you deploy a highly available web application on AWS?\n\n## Detailed Answer\nCreate a VPC with public and private subnets in at least two Availability Zones. Place the load balancer in public subnets and application servers in private subnets. Use an Auto Scaling Group to replace unhealthy instances and increase capacity. Use Multi-AZ RDS when database availability is required. Store uploaded files in S3 instead of local server disks. Attach IAM roles instead of storing access keys on servers. Enable monitoring, encryption, backups and tested recovery.\n\n## Production Troubleshooting\nALB returns 502 or 503: check target health, application port, health-check path, security groups and application logs. EC2 cannot reach the internet: check private subnet route table, NAT Gateway, DNS and security rules. AccessDenied: verify the attached IAM role and policy. High cost: inspect idle instances, unattached disks, NAT traffic, snapshots and data transfer.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "aws sts get-caller-identity\naws ec2 describe-instances\naws s3 ls\naws elbv2 describe-target-health --target-group-arn <arn>\naws cloudwatch describe-alarms",
+      "config": "Example EC2 instance role policy idea:\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Allow\",\n    \"Action\": [\"s3:GetObject\"],\n    \"Resource\": [\"arn:aws:s3:::company-app-config/*\"]\n  }]\n}\nThis allows reading only objects from the specified bucket path. Use the smallest permissions required.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Linux - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nLinux is an operating system widely used on cloud servers. DevOps engineers use Linux to run applications, manage services, configure networking, control permissions, inspect logs and automate tasks.\n\n## Architecture\nThe Linux kernel manages CPU, memory, processes, devices and networking. User applications run in user space. systemd manages services on many distributions. Filesystems store data, while logs record system and application activity.\n\n## End-to-End Workflow\nConnect securely to the server. Check system health. Deploy application files with correct ownership and permissions. Configure environment variables and service definitions. Start the service using systemd. Check listening ports and logs. Monitor disk, memory and CPU.\n\n## Interview Question\nA service stopped working after a deployment. How do you troubleshoot it?\n\n## Detailed Answer\nFirst identify the impact and the deployment time. Check systemctl status to understand the service state. Read journalctl and application logs to find the actual error. Check whether the process exists and whether the expected port is listening. Check disk space, inode usage, memory and file permissions. Validate the configuration before restarting. After the fix, confirm the service is healthy and monitor it.\n\n## Production Troubleshooting\nPermission denied: inspect owner, group and mode using ls -l and namei -l. Disk full: use df -h and du -sh to find large directories. Service fails: inspect journalctl and application logs. Port already in use: use ss -lntp to identify the process. High memory: inspect top, free and OOM messages in journalctl or dmesg.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "systemctl status <service>\njournalctl -u <service> -n 200 --no-pager\nss -lntp\nps aux\ntop\nfree -h\ndf -h\ndf -i\nls -l",
+      "config": "Example systemd service:\n[Unit]\nDescription=Sample Web Application\nAfter=network.target\n\n[Service]\nUser=appuser\nWorkingDirectory=/opt/sample-app\nExecStart=/usr/bin/java -jar app.jar\nRestart=on-failure\n\n[Install]\nWantedBy=multi-user.target\nThis defines how systemd starts and monitors the application.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Git - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nGit is a version-control system. It records code changes so developers can work together, review history, create branches and safely return to earlier versions.\n\n## Architecture\nA Git repository contains commits, branches, tags and objects. The working tree contains files being edited. The staging area contains changes selected for the next commit. A remote repository such as GitHub stores shared history.\n\n## End-to-End Workflow\nCreate a feature branch. Edit files. Review changes with git diff. Stage selected files. Commit with a meaningful message. Push the branch. Open a pull request. Review, test and merge after approval.\n\n## Interview Question\nA wrong commit was pushed to the shared main branch. How do you undo it?\n\n## Detailed Answer\nFirst inspect the commit and understand what it changed. For shared history, use git revert because it creates a new commit that reverses the unwanted change. Run tests and push the revert commit. Avoid git reset on shared branches because it rewrites history and can affect other developers.\n\n## Production Troubleshooting\nMerge conflict: open the conflicted file, understand both changes, edit the final result, stage it and continue the merge. Accidentally committed a secret: remove it from the repository and rotate the exposed credential; deleting the latest file alone does not remove it from history. Wrong branch: inspect status and log before moving commits.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "git status\ngit log --oneline --graph --decorate -15\ngit diff\ngit show <commit>\ngit branch\ngit switch -c feature/login\ngit add <file>\ngit commit -m \"Add login validation\"\ngit revert <commit>\ngit push",
+      "config": "Example .gitignore:\nnode_modules/\n.next/\n.env\n.env.local\ndist/\ncoverage/\nThis prevents generated files and local secrets from being added to the repository.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "GitHub Actions - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nGitHub Actions is a CI/CD automation service inside GitHub. It runs workflows when events happen, such as a push, pull request, release or manual trigger.\n\n## Architecture\nA workflow is a YAML file inside .github/workflows. Events start workflows. Jobs contain steps. Jobs run on GitHub-hosted or self-hosted runners. Artifacts store build outputs, while caches speed up repeated dependency downloads.\n\n## End-to-End Workflow\nA developer pushes code. A workflow checks out the repository, installs dependencies, runs lint and tests, builds the application, stores an artifact and deploys after required approvals.\n\n## Interview Question\nHow can GitHub Actions deploy to AWS without storing permanent AWS keys?\n\n## Detailed Answer\nConfigure AWS IAM OIDC federation with GitHub. GitHub provides a short-lived identity token. AWS validates the token against a trust policy restricted to the correct repository and branch or environment. The workflow assumes the role and receives temporary credentials. Give that role only the permissions needed for deployment.\n\n## Production Troubleshooting\nWorkflow does not start: check event filters, branch names and YAML syntax. Job is waiting: inspect runner availability and labels. Secret is unavailable: check repository/environment secret scope and approval rules. Deployment is denied: check OIDC trust conditions and IAM policy. Never print secrets in workflow logs.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "gh workflow list\ngh run list\ngh run view <run-id>\ngh run view <run-id> --log\ngh workflow run <workflow.yml>",
+      "config": "Example workflow:\nname: CI\non: [push, pull_request]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 22\n      - run: npm ci\n      - run: npm test\n      - run: npm run build\nFor production, pin third-party actions to reviewed commit SHAs and define minimal permissions.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Docker - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nDocker packages an application and its required libraries into an image. A container is a running instance of that image. This helps an application behave consistently on a developer laptop, test server and production server.\n\n## Architecture\nA Docker image contains read-only layers. A container adds a writable runtime layer. The Docker daemon manages containers, networks, images and volumes. Registries store and distribute images.\n\n## End-to-End Workflow\nWrite a Dockerfile. Build the image. Run it locally and test it. Tag it with a version. Push it to a registry. Deploy the same image to the target environment. Use health checks, logs and resource limits.\n\n## Interview Question\nA container starts and then exits immediately. How do you find the reason?\n\n## Detailed Answer\nCheck docker ps -a and inspect the exit code. Read container logs. Inspect the configured entrypoint and command. Confirm required environment variables and mounted files exist. Check file permissions and dependency connectivity. A container normally stops when its main process exits, so the application must run in the foreground.\n\n## Production Troubleshooting\nContainer exits: inspect logs and PID 1 command. Cannot connect: inspect Docker network, published port and application bind address. Data disappears: use a volume for persistent data. Image is too large: use multi-stage builds and .dockerignore. Permission denied: check container user and mounted-directory ownership.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "docker ps -a\ndocker logs <container>\ndocker inspect <container>\ndocker exec -it <container> sh\ndocker images\ndocker image history <image>\ndocker stats\ndocker network ls\ndocker volume ls",
+      "config": "Example Dockerfile:\nFROM node:22-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci\nCOPY . .\nRUN npm run build\nEXPOSE 3000\nCMD [\"npm\", \"start\"]\nFor production, consider a multi-stage build, non-root user, pinned base image, health check and smaller runtime image.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Kubernetes - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nKubernetes manages containerized applications across a group of machines. It schedules containers, replaces failed Pods, provides service discovery and supports controlled application updates.\n\n## Architecture\nThe control plane includes the API server, scheduler, controller manager and cluster state store. Worker nodes run kubelet, a container runtime and networking components. Pods are the smallest deployable units.\n\n## End-to-End Workflow\nBuild and publish an image. Define a Deployment and Service in YAML. Apply the manifests. Kubernetes schedules Pods. Readiness checks decide when Pods receive traffic. Monitor rollout status and logs. Roll back if the release is unhealthy.\n\n## Interview Question\nUsers receive 503 errors even though the Deployment exists. What do you check?\n\n## Detailed Answer\nCheck the Ingress controller and its routing rules. Check whether the Service selector matches the Pod labels. Inspect Service endpoints to confirm ready Pods are registered. Verify container ports and readiness probes. Then inspect Pod events, logs, resource limits and NetworkPolicies.\n\n## Production Troubleshooting\nCrashLoopBackOff: inspect current and previous logs, command, configuration and dependencies. ImagePullBackOff: verify image name, tag and registry credentials. Pending Pod: inspect scheduler events, resources, taints, affinity and storage. Service has no endpoints: compare selectors and labels. OOMKilled: inspect memory usage and limits.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "kubectl get nodes\nkubectl get pods -A\nkubectl get deploy,svc,endpoints -n <namespace>\nkubectl describe pod <pod> -n <namespace>\nkubectl logs <pod> -n <namespace>\nkubectl logs <pod> --previous -n <namespace>\nkubectl get events -n <namespace> --sort-by=.lastTimestamp\nkubectl rollout status deployment/<name> -n <namespace>",
+      "config": "Example Deployment:\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: web\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: web\n  template:\n    metadata:\n      labels:\n        app: web\n    spec:\n      containers:\n        - name: web\n          image: nginx:1.27\n          ports:\n            - containerPort: 80\n          readinessProbe:\n            httpGet:\n              path: /\n              port: 80\nThis creates three replicas and sends traffic only after readiness succeeds.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "EKS - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nAmazon EKS is AWS managed Kubernetes. AWS operates the Kubernetes control plane, while the customer manages worker capacity, networking, workloads, permissions and cluster operations.\n\n## Architecture\nAn EKS cluster has a managed control plane connected to worker nodes or Fargate workloads. The VPC CNI provides Pod networking. IAM controls AWS access, while Kubernetes RBAC controls Kubernetes API permissions. Add-ons provide essential cluster functions.\n\n## End-to-End Workflow\nCreate the VPC and subnets. Create the EKS cluster. Configure managed node groups or Fargate. Configure workload identity. Install required add-ons. Deploy applications using Kubernetes manifests or Helm. Monitor nodes, Pods, networking and control-plane activity.\n\n## Interview Question\nAn application Pod cannot access an AWS S3 bucket. How do you troubleshoot?\n\n## Detailed Answer\nFirst confirm which AWS identity the Pod is using. Configure IRSA or EKS Pod Identity for the workload instead of giving broad permissions to every node. Verify the service-account association, trust relationship and S3 policy. Check DNS, network egress and any endpoint policy. Test with the AWS CLI inside a safe diagnostic Pod.\n\n## Production Troubleshooting\nPod cannot obtain AWS credentials: check workload identity configuration and trust policy. Pods remain Pending: check node capacity, subnet IP availability and scheduling events. DNS failures: inspect CoreDNS and network access. Node NotReady: inspect kubelet, node conditions and CNI health.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "aws eks describe-cluster --name <cluster>\naws eks list-nodegroups --cluster-name <cluster>\naws eks update-kubeconfig --name <cluster>\nkubectl get nodes -o wide\nkubectl get pods -n kube-system\nkubectl describe pod <pod> -n <namespace>",
+      "config": "Example service-account annotation for IRSA:\napiVersion: v1\nkind: ServiceAccount\nmetadata:\n  name: app-service-account\n  namespace: app\n  annotations:\n    eks.amazonaws.com/role-arn: arn:aws:iam::<account-id>:role/app-s3-role\nThe IAM role trust policy must also allow the matching cluster OIDC provider and service-account subject.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Jenkins - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nJenkins is an automation server used to build, test and deploy applications. A Jenkins pipeline describes the steps needed to move code from source control to a deployable release.\n\n## Architecture\nThe controller manages jobs, credentials, plugins and scheduling. Agents execute build tasks. Jenkinsfiles define pipeline stages. Credentials are stored in Jenkins credentials management and should be exposed only to the required steps.\n\n## End-to-End Workflow\nA Git webhook starts a pipeline. Jenkins checks out code, installs dependencies, runs tests, builds an artifact or image, scans it, publishes it and deploys to the target environment. Each stage reports success or failure.\n\n## Interview Question\nA Jenkins pipeline remains in the queue and never starts. What do you check?\n\n## Detailed Answer\nInspect the queue reason and required agent label. Check whether matching agents are online and have free executors. Review agent provisioning, cloud capacity, controller logs and agent connection logs. Check whether a node is temporarily offline or restricted. Do not increase executors blindly when the machine is already overloaded.\n\n## Production Troubleshooting\nNo executor: check queue and node labels. Agent offline: check network, Java compatibility and agent logs. Pipeline syntax error: validate Jenkinsfile. Plugin issue: check plugin compatibility and controller logs. Secret unavailable: check credential ID and scope. Back up JENKINS_HOME.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "Inspect Manage Jenkins > Build Queue\nInspect Manage Jenkins > Nodes\nReview pipeline Console Output\nCheck controller logs\nCheck agent service and connection logs\nValidate agent labels in Jenkinsfile",
+      "config": "Example Declarative Jenkinsfile:\npipeline {\n  agent any\n  stages {\n    stage('Checkout') { steps { checkout scm } }\n    stage('Build') { steps { sh 'mvn clean package' } }\n    stage('Test') { steps { sh 'mvn test' } }\n  }\n}\nUse credentials binding for secrets and move production deployment behind an approval step.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Terraform - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nTerraform is an Infrastructure as Code tool. Engineers describe the required infrastructure in configuration files. Terraform compares that configuration with its state and the real environment, then proposes changes.\n\n## Architecture\nTerraform configuration contains providers, resources, data sources, variables and outputs. State maps configuration resources to real infrastructure. A backend stores state. A locking mechanism prevents unsafe concurrent updates.\n\n## End-to-End Workflow\nWrite configuration. Run terraform fmt and validate. Initialize providers and backend. Review terraform plan. Apply an approved plan. Store state remotely and review changes through version control.\n\n## Interview Question\nTwo engineers try to apply changes to the same environment. How do you prevent state corruption?\n\n## Detailed Answer\nUse a remote backend with state locking and encryption. Restrict state access because it can contain sensitive values. Run production plans through CI and serialize applies. Require approval for destructive changes. If a lock remains, confirm the owner and whether an operation is still running before taking recovery action.\n\n## Production Troubleshooting\nUnexpected resource replacement: inspect plan and immutable fields. State lock error: verify lock owner before recovery. Drift: compare plan with actual infrastructure. Provider error: check credentials, region and provider version. Never commit state files or run state commands without understanding their impact.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "terraform init\nterraform fmt -check\nterraform validate\nterraform plan -out=tfplan\nterraform show tfplan\nterraform apply tfplan\nterraform state list\nterraform output",
+      "config": "Example variable and resource:\nvariable \"instance_type\" {\n  type    = string\n  default = \"t3.micro\"\n}\nresource \"aws_instance\" \"web\" {\n  ami           = var.ami_id\n  instance_type = var.instance_type\n  tags = { Name = \"dev-web\" }\n}\nDefine ami_id separately and use a reviewed provider version and remote backend.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Ansible - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nAnsible automates server configuration and application setup. It connects to managed machines, runs tasks and helps keep systems in the required state.\n\n## Architecture\nThe control node runs Ansible. Inventory lists managed hosts and groups. Playbooks contain plays and tasks. Modules perform work on remote systems. Roles organize reusable tasks, templates, files, variables and handlers.\n\n## End-to-End Workflow\nCreate inventory. Define variables. Write a playbook using suitable modules. Run syntax checks. Test in check mode or staging. Apply to a limited group first. Verify the result and run again to confirm idempotency.\n\n## Interview Question\nA playbook reports changed every time even when nothing appears to change. Why?\n\n## Detailed Answer\nA shell or command task may always report changed unless it has suitable creates, removes or changed_when conditions. A template may contain changing timestamps or unstable values. Prefer declarative modules such as package, copy, template and service. Run the playbook twice and confirm the second run reports no unnecessary changes.\n\n## Production Troubleshooting\nUnreachable host: verify SSH, DNS, port and key. Permission denied: check remote user and become settings. Repeated changed status: inspect command tasks and template values. Wrong variable: check precedence and inventory group membership. Test against a small host group before broad rollout.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "ansible-inventory --graph\nansible all -m ping\nansible-playbook site.yml --syntax-check\nansible-playbook site.yml --check --diff\nansible-playbook site.yml --limit webservers",
+      "config": "Example playbook:\n- name: Configure web servers\n  hosts: webservers\n  become: true\n  tasks:\n    - name: Install nginx\n      ansible.builtin.package:\n        name: nginx\n        state: present\n    - name: Ensure nginx is running\n      ansible.builtin.service:\n        name: nginx\n        state: started\n        enabled: true\nUse Ansible Vault for secrets and keep inventory variables organized.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "ArgoCD - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nArgo CD is a GitOps continuous delivery tool for Kubernetes. It watches the desired application configuration in Git and compares it with the live cluster.\n\n## Architecture\nThe API server provides the interface. The repository server reads Git repositories and renders manifests. The application controller compares desired and live state and performs reconciliation. Applications connect repositories to destination clusters and namespaces.\n\n## End-to-End Workflow\nStore Kubernetes YAML or Helm charts in Git. Create an Argo CD Application. Argo CD reads the repository and compares it with the cluster. A developer merges a change. Argo CD detects the change and syncs it according to the configured policy.\n\n## Interview Question\nArgo CD shows an application as OutOfSync. How do you investigate?\n\n## Detailed Answer\nOpen the application diff and compare Git manifests with live resources. Identify whether someone changed the cluster manually, a controller changed a field, or Git contains a new desired version. Decide which state is correct. Fix the source in Git and sync through the approved process. Review prune and self-heal settings before enabling them.\n\n## Production Troubleshooting\nOutOfSync: inspect diff and live drift. Sync failed: inspect repository rendering, permissions, API errors and events. App missing resources: verify path, target revision and namespace. Health degraded: inspect the affected Kubernetes resources and their events.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "argocd app list\nargocd app get <app>\nargocd app diff <app>\nargocd app history <app>\nargocd app sync <app>\nargocd app rollback <app> <revision>",
+      "config": "Example Application:\napiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: web-app\n  namespace: argocd\nspec:\n  source:\n    repoURL: https://github.com/company/platform-config.git\n    targetRevision: main\n    path: apps/web\n  destination:\n    server: https://kubernetes.default.svc\n    namespace: web\n  syncPolicy:\n    automated:\n      prune: false\n      selfHeal: true\nReview automation settings carefully for production.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Helm - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nHelm is a package manager for Kubernetes. A Helm chart contains templates and default values that can be reused to deploy an application in different environments.\n\n## Architecture\nA chart contains Chart.yaml, values.yaml and templates. A release is an installed instance of a chart. Helm renders templates using values and sends the resulting Kubernetes resources to the cluster.\n\n## End-to-End Workflow\nCreate or select a chart. Set environment-specific values. Run lint and template checks. Review rendered YAML. Install or upgrade the release. Check rollout and application health. Use release history for controlled rollback.\n\n## Interview Question\nA Helm upgrade fails because a Kubernetes field is immutable. What do you do?\n\n## Detailed Answer\nRead the exact Kubernetes API error and inspect the rendered manifest. Identify which immutable field changed and why. Plan a supported migration or controlled replacement. Check data persistence, service availability and dependencies. Never delete a stateful resource blindly just to make Helm succeed.\n\n## Production Troubleshooting\nTemplate rendering error: inspect template syntax and values. Release pending: inspect hooks and Kubernetes events. Immutable field error: plan migration. Wrong environment values: verify the selected values file and command-line overrides. Rollback may not reverse external database changes.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "helm list -A\nhelm lint ./chart\nhelm template <release> ./chart -f values.yaml\nhelm upgrade --install <release> ./chart -n <namespace> -f values.yaml --dry-run\nhelm history <release> -n <namespace>\nhelm rollback <release> <revision> -n <namespace>",
+      "config": "Example values.yaml:\nreplicaCount: 3\nimage:\n  repository: nginx\n  tag: \"1.27\"\nservice:\n  type: ClusterIP\n  port: 80\nresources:\n  requests:\n    cpu: 100m\n    memory: 128Mi\nKeep secrets outside plain-text values files and inject them through an approved secret manager.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Prometheus - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nPrometheus collects time-series metrics from applications and infrastructure. Teams use it to understand system health, create alerts and investigate performance problems.\n\n## Architecture\nPrometheus periodically scrapes metrics endpoints. It stores timestamped samples with labels. PromQL queries the data. Recording rules precompute useful queries. Alerting rules send firing alerts to Alertmanager for routing and notification.\n\n## End-to-End Workflow\nExpose application metrics. Configure scrape targets. Confirm targets are healthy. Build PromQL queries. Create recording and alerting rules. Route alerts through Alertmanager. Review retention and storage capacity.\n\n## Interview Question\nA Prometheus target is DOWN. What do you check?\n\n## Detailed Answer\nRead the exact scrape error on the Targets page. Test the metrics endpoint from the Prometheus network context. Check DNS, routing, firewall rules, port, metrics path, TLS, authentication and exporter health. Verify service discovery and relabeling have not removed the target.\n\n## Production Troubleshooting\nTarget DOWN: inspect scrape error and network path. No data: verify metric name, labels, time range and scrape status. High memory: inspect retention, series count and cardinality. Alert noise: improve expression, duration, severity and routing. Avoid labels containing user IDs or request IDs.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "Query: up\nQuery: rate(http_requests_total[5m])\nQuery: sum by (status) (rate(http_requests_total[5m]))\nInspect Prometheus /targets\nInspect Prometheus /rules\nCheck Prometheus and exporter logs",
+      "config": "Example scrape job:\nscrape_configs:\n  - job_name: node-exporter\n    static_configs:\n      - targets: ['node1:9100', 'node2:9100']\nSet suitable scrape intervals, labels, authentication and TLS for the environment. Avoid putting sensitive credentials in a public configuration repository.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Grafana - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nGrafana helps teams view metrics and logs through dashboards. It connects to data sources such as Prometheus and Loki and presents information in panels, tables and alerts.\n\n## Architecture\nA data source connects Grafana to a backend. A dashboard contains panels. Each panel runs a query and displays its result. Variables allow reusable filters. Alert rules evaluate conditions and send notifications through contact points.\n\n## End-to-End Workflow\nAdd a data source. Test connectivity. Create a dashboard. Add panels with queries. Set variables and time ranges. Configure alert rules and notification routing. Provision important dashboards through version-controlled configuration.\n\n## Interview Question\nA dashboard shows No data, but the application is running. How do you troubleshoot?\n\n## Detailed Answer\nTest the data source connection. Inspect the panel query and time range. Check dashboard variables and label filters. Confirm the metric exists in the backend and that timestamps fall inside the selected range. Use Explore to run the query directly. Check datasource credentials and network access.\n\n## Production Troubleshooting\nNo data: check query, labels and time range. Datasource unavailable: verify URL, DNS, credentials and firewall. Dashboard is slow: reduce expensive queries and excessive panel counts. Alert not sent: inspect rule evaluation, contact point and notification policy.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "Use Grafana Explore to test queries\nOpen panel Query Inspector\nTest the data source connection\nCheck Grafana server logs\nFor Prometheus, test the same PromQL query directly",
+      "config": "Example Prometheus data source provisioning:\napiVersion: 1\ndatasources:\n  - name: Prometheus\n    type: prometheus\n    access: proxy\n    url: http://prometheus:9090\n    isDefault: true\nUse secure secret handling for credentials and validate connectivity from the Grafana server.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Maven - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nMaven is a Java build and dependency management tool. It reads project information from pom.xml, downloads required libraries and runs standard build lifecycle phases.\n\n## Architecture\nThe POM defines project coordinates, dependencies, plugins and build settings. Maven lifecycle phases run in order. Repositories provide dependencies and plugins. The local repository caches downloaded artifacts.\n\n## End-to-End Workflow\nCheck the Java and Maven versions. Review pom.xml. Resolve dependencies. Compile source code. Run unit tests. Package the application. Run verification checks. Publish the versioned artifact to a repository manager.\n\n## Interview Question\nThe Maven build works on a developer laptop but fails in CI while downloading dependencies. Why?\n\n## Detailed Answer\nCompare Java and Maven versions, settings.xml, active profiles, mirrors, proxy configuration, repository credentials and network access. Check whether the dependency coordinates exist in the configured repository. Run the same build with the CI settings. Use debug logs carefully because they may reveal sensitive information.\n\n## Production Troubleshooting\nCould not resolve dependency: check repository URL, coordinates, credentials and network. Compilation error: check JDK compatibility and source level. Tests fail: inspect test reports. Different local and CI output: compare JDK, Maven, profiles and settings.xml.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "mvn -version\nmvn clean compile\nmvn test\nmvn clean package\nmvn clean verify\nmvn dependency:tree\nmvn help:effective-pom\nmvn -U clean verify",
+      "config": "Example dependency:\n<dependency>\n  <groupId>org.example</groupId>\n  <artifactId>sample-library</artifactId>\n  <version>1.2.0</version>\n  <scope>compile</scope>\n</dependency>\nPin dependency and plugin versions. Use a controlled repository mirror for reliable CI builds.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Nexus - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nNexus Repository Manager stores and distributes software artifacts. Teams use it to host internal releases and cache dependencies from external repositories.\n\n## Architecture\nHosted repositories store internal artifacts. Proxy repositories cache remote artifacts. Group repositories combine multiple repositories behind one URL. Blob stores hold artifact data. Users and roles control access.\n\n## End-to-End Workflow\nConfigure hosted and proxy repositories. Create a group endpoint. Configure Maven, npm or Docker clients to use Nexus. Publish versioned artifacts. Apply retention and cleanup policies. Back up repository metadata and blob data consistently.\n\n## Interview Question\nDevelopers cannot download dependencies from Nexus. How do you investigate?\n\n## Detailed Answer\nCheck whether Nexus is healthy. Inspect repository status and group membership/order. Verify the proxy remote is reachable. Check storage capacity, user privileges, TLS certificates, DNS and outbound network access. Use the HTTP status and Nexus logs to distinguish authentication, authorization, missing artifact and upstream failures.\n\n## Production Troubleshooting\n401: authentication is missing or invalid. 403: user lacks permission. 404: artifact or repository path may be wrong. Proxy failure: inspect remote availability and cached metadata. Storage full: inspect blob stores and cleanup policy before deleting anything.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "Test the repository URL using curl\nInspect Nexus repository status in the UI\nReview Nexus application logs\nCheck client settings.xml\nCheck filesystem capacity and blob-store health",
+      "config": "Example Maven mirror settings:\n<settings>\n  <mirrors>\n    <mirror>\n      <id>company-nexus</id>\n      <mirrorOf>*</mirrorOf>\n      <url>https://nexus.example.com/repository/maven-group/</url>\n    </mirror>\n  </mirrors>\n</settings>\nUse the actual approved repository URL and credentials method for your company.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Jira - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nJira is a work tracking platform. Software and DevOps teams use it to record tasks, bugs, incidents, changes and releases and to track ownership and progress.\n\n## Architecture\nProjects contain issues. Issue types classify work. Workflows define statuses and transitions. Boards display work. Components and versions help organize ownership and releases. JQL searches and filters issues.\n\n## End-to-End Workflow\nCreate an issue with a clear description and acceptance criteria. Assign an owner and priority. Move it through the approved workflow. Link related bugs, incidents and changes. Connect release information from CI/CD and review dashboards.\n\n## Interview Question\nHow would you use Jira to track a production incident and its corrective actions?\n\n## Detailed Answer\nCreate an incident issue with impact, severity, affected service, start and end times, owner and current status. Record investigation findings and link related deployment or change issues. After service recovery, document root cause and corrective actions with owners and due dates. Link follow-up bugs and release versions so the work can be traced.\n\n## Production Troubleshooting\nIssue cannot transition: inspect workflow conditions and permissions. User cannot see project: check project roles and issue security. Dashboard count is wrong: inspect JQL and resolution values. Release is not traceable: link deployment metadata and version issues.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "JQL: project = OPS AND statusCategory != Done ORDER BY priority DESC\nJQL: issuetype = Bug AND created >= -7d\nJQL: assignee = currentUser() AND resolution is EMPTY\nUse Jira REST API only with approved authentication and permissions.",
+      "config": "Example issue template fields:\nSummary: API latency increased after release\nImpact: Checkout requests delayed\nSeverity: High\nAffected service: checkout-api\nStarted: <timestamp>\nOwner: <team>\nRelated release: <version>\nFollow-up: <corrective action>\nKeep incident fields consistent so teams can report accurately.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    },
+    {
+      "heading": "Tomcat - Interview Questions and Practical Answers",
+      "explanation": "## Introduction\nApache Tomcat is a Java web application server. It runs Java web applications, commonly packaged as WAR files, and handles incoming HTTP requests through configured connectors.\n\n## Architecture\nTomcat runs inside a Java Virtual Machine. Connectors accept network requests. Worker threads process requests. Applications run in web contexts. Access logs record requests, while Catalina and application logs capture runtime events.\n\n## End-to-End Workflow\nInstall a supported JDK and Tomcat version. Configure the service account and connectors. Deploy the versioned WAR file. Configure external environment settings. Start Tomcat. Verify the application URL, logs, thread usage and JVM health.\n\n## Interview Question\nTomcat becomes slow under load, but CPU usage remains low. What do you investigate?\n\n## Detailed Answer\nCheck request latency and access logs. Inspect busy and available connector threads, blocked threads, database connection pool waits, downstream service latency, garbage collection pauses, heap pressure and file descriptor limits. Capture thread dumps during the issue and correlate them with application and database metrics.\n\n## Production Troubleshooting\nHTTP 404: check context path and deployment. HTTP 500: inspect application stack trace. OutOfMemoryError: inspect heap, GC logs and memory usage. Thread exhaustion: inspect blocked requests and downstream waits. Port conflict: identify the process listening on the configured port.",
+      "steps": [
+        "Understand the business impact and identify which environment is affected.",
+        "Check the recent code, configuration or infrastructure change.",
+        "Collect logs, metrics, events and command output before changing anything.",
+        "Find the failing component and explain why it caused the issue.",
+        "Apply the smallest safe fix and verify application health.",
+        "Document the root cause and preventive action."
+      ],
+      "commands": "systemctl status tomcat\njournalctl -u tomcat -n 200\nInspect catalina.out and access logs\njcmd <pid> Thread.print\njcmd <pid> GC.heap_info\nss -lntp",
+      "config": "Example connector settings:\n<Connector port=\"8080\" protocol=\"HTTP/1.1\"\n           connectionTimeout=\"20000\"\n           maxThreads=\"200\"\n           redirectPort=\"8443\" />\nTune thread counts and timeouts only after measuring request concurrency, memory and downstream capacity.",
+      "problems": [
+        "Do not restart services or delete resources without checking the reason for failure.",
+        "Do not expose passwords, tokens, private keys or cloud credentials in logs.",
+        "Always verify the result after applying a production fix."
+      ]
+    }
+  ]
+}
+
+export default data;
+

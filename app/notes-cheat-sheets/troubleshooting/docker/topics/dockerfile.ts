@@ -1,208 +1,151 @@
 import type { NoteData } from "../../types";
 
 const data: NoteData = {
-  title: "Docker Dockerfile",
-  description: "Detailed Docker dockerfile notes, practical steps, commands, root causes and solutions.",
-  sections: [
+  "sections": [
     {
-      heading: "04. Dockerfile – Instructions and Build Process",
-      explanation: `
-A Dockerfile contains instructions used to build a Docker image.
-
-IMPORTANT DOCKERFILE INSTRUCTIONS:
-
-FROM:
-Selects the base image.
-
-RUN:
-Executes commands during image build. Commonly used to install packages or build application files.
-
-COPY:
-Copies files from the build context into the image.
-
-ADD:
-Copies files and supports additional features such as local archive extraction. Prefer COPY for ordinary file copying.
-
-WORKDIR:
-Sets the working directory for subsequent instructions.
-
-ENV:
-Defines environment variables in the image configuration.
-
-ARG:
-Defines build-time variables.
-
-USER:
-Sets the user used by subsequent build instructions and the container's default process.
-
-EXPOSE:
-Documents the port that the application expects to use. It does not publish the port to the host.
-
-CMD:
-Provides the default command or arguments for the container.
-
-ENTRYPOINT:
-Defines the main executable for the container.
-
-HEALTHCHECK:
-Defines a command Docker can use to determine whether the container is healthy.
-
-SHELL:
-Changes the shell used for shell-form RUN instructions.
-
-STOPSIGNAL:
-Sets the signal sent when stopping the container.
-
-BUILD CONTEXT:
-The directory sent to the builder. Files excluded by .dockerignore are not sent as normal build-context files.
-
-LAYERING:
-Many Dockerfile instructions create image layers. Ordering instructions carefully helps reuse build cache.
-
-MULTI-STAGE BUILDS:
-Use one stage to compile or build an application and another stage to contain only the runtime files. This can reduce final image size and avoid shipping build tools.
-
-SECURITY:
-Do not copy passwords, private keys or production secrets into image layers. Removing a secret in a later layer does not reliably remove it from the image history.
-      `,
-      steps: [
-        "Choose a suitable and maintained base image.",
-        "Set WORKDIR.",
-        "Copy dependency manifests before frequently changing application source when that helps cache reuse.",
-        "Install dependencies with reproducible version constraints.",
-        "Copy application source.",
-        "Set a non-root USER where practical.",
-        "Define the startup command.",
-        "Build and test the image.",
-        "Scan and inspect the image before publishing."
+      "explanation": "Docker - Dockerfile is used in DevOps engineering to solve a specific operational or delivery problem. Understand its purpose, supported use cases, limitations, dependencies and the production problems it helps prevent.",
+      "steps": [
+        "Identify the requirement and expected outcome.",
+        "Understand the core terminology and supported versions.",
+        "Identify upstream and downstream dependencies.",
+        "Define measurable success criteria."
       ],
-      commands: `
-docker build -t myapp:v1 .
-
-# Specify Dockerfile
-docker build -f Dockerfile.prod -t myapp:prod .
-
-# Disable build cache
-docker build --no-cache -t myapp:test .
-
-# Pull base image before building
-docker build --pull -t myapp:latest .
-
-# Show image layers
-docker history myapp:v1
-
-# Inspect image configuration
-docker image inspect myapp:v1
-      `,
-      config: `
-# Example Dockerfile for a Node.js application
-
-FROM node:22-alpine
-
-WORKDIR /app
-
-COPY package*.json ./
-
-RUN npm ci
-
-COPY . .
-
-ENV NODE_ENV=production
-
-EXPOSE 3000
-
-USER node
-
-CMD ["npm", "start"]
-      `,
-      problems: [
-        {
-          issue: "Docker build fails with COPY failed: file not found.",
-          rootCause:
-            "The file may not exist inside the build context, the path may be incorrect or .dockerignore may exclude it.",
-          solution:
-            "Check the build command's context directory, verify the source path and inspect .dockerignore."
-        },
-        {
-          issue: "Docker image becomes very large.",
-          rootCause:
-            "The image may contain build tools, package caches, unnecessary files or multiple versions of dependencies.",
-          solution:
-            "Use a suitable smaller base image, multi-stage builds, .dockerignore and cleanup in the same build layer where appropriate."
-        },
-        {
-          issue: "Docker build uses outdated dependencies or source.",
-          rootCause:
-            "The build cache may be reused because the inputs to an instruction have not changed.",
-          solution:
-            "Inspect the build output and cache inputs. Use --no-cache only when a clean rebuild is necessary; use --pull when a fresh base image is required."
-        }
-      ]
+      "heading": "1. Introduction and Purpose"
     },
     {
-      heading: "16. BuildKit, Buildx and Multi-Platform Builds",
-      explanation: `
-BuildKit is a modern build engine used by Docker to build images efficiently.
-
-Benefits can include:
-- Improved build performance.
-- Better cache handling.
-- Parallel build steps where possible.
-- Build secrets.
-- SSH forwarding.
-- Multi-platform build support through buildx.
-
-BUILDX:
-A Docker CLI plugin used for advanced builds and builder management.
-
-MULTI-STAGE BUILD:
-Separates build-time tools from the final runtime image.
-
-BUILD SECRET:
-Allows a build step to access a secret without placing the secret directly into a normal image layer.
-
-IMPORTANT:
-Do not use ARG or ENV as a substitute for BuildKit secret mounts when handling sensitive build credentials.
-
-MULTI-PLATFORM:
-An image can be built for architectures such as linux/amd64 and linux/arm64. The builder and target platform must be configured correctly.
-      `,
-      steps: [
-        "Check the available builder.",
-        "Use multi-stage builds to separate build and runtime dependencies.",
-        "Use cache efficiently.",
-        "Use BuildKit secret mounts for sensitive build-time data.",
-        "Select the required target platforms.",
-        "Test the image on the target architecture or a suitable runtime."
+      "explanation": "Study the architecture of Docker - Dockerfile by identifying its main services, controllers, agents, APIs, configuration sources, storage, network paths and integrations. Trace how a request travels between components and identify the failure boundaries.",
+      "steps": [
+        "List the major components and their responsibilities.",
+        "Map authentication and authorization paths.",
+        "Identify required ports, protocols and dependencies.",
+        "Understand state storage, backup and recovery.",
+        "Document high-availability and failure scenarios."
       ],
-      commands: `
-docker buildx version
-docker buildx ls
-
-docker buildx build --platform linux/amd64,linux/arm64 \\
-  -t registry.example.com/team/api:v1 .
-
-docker buildx build --secret id=npmrc,src=.npmrc \\
-  -t myapp:build .
-      `,
-      problems: [
+      "heading": "2. Architecture and Components"
+    },
+    {
+      "explanation": "A typical operation in Docker - Dockerfile starts with a user, API or pipeline request. The system validates input, checks identity and permissions, resolves dependencies, executes the operation and records its result. Study its actual reconciliation, retry, timeout and rollback behavior for the deployed version.",
+      "steps": [
+        "Trace a request from initiation to completion.",
+        "Identify validation and dependency checks.",
+        "Understand desired state and actual state where applicable.",
+        "Inspect retry, timeout and failure handling.",
+        "Locate execution history and audit records."
+      ],
+      "heading": "3. Internal Working"
+    },
+    {
+      "explanation": "Integrate Docker - Dockerfile into a controlled delivery lifecycle. Keep configuration in version control, validate changes, test in lower environments, promote approved artifacts and verify production health after deployment.",
+      "steps": [
+        "Create or update configuration in source control.",
+        "Review the change and validate syntax.",
+        "Run automated tests and security checks.",
+        "Build and version the required artifact.",
+        "Deploy to development and staging.",
+        "Verify logs, metrics and application behavior.",
+        "Promote through approval to production.",
+        "Monitor the release and retain a rollback plan."
+      ],
+      "heading": "4. End-to-End Development to Production Workflow"
+    },
+    {
+      "commands": "docker version\ndocker info\ndocker ps -a\ndocker images\ndocker inspect <container>\ndocker logs <container>\ndocker exec -it <container> sh\ndocker stats\ndocker network ls\ndocker volume ls\ndocker build -t app:1.0 .\ndocker run -d -p 8080:80 app:1.0",
+      "explanation": "Use these operational commands as a starting point for Docker - Dockerfile. Replace placeholders with real resource names. Confirm syntax for the installed version and prefer read-only inspection before making production changes.",
+      "steps": [
+        "Check version and active context.",
+        "Inspect current resource or service status.",
+        "Capture logs and events with timestamps.",
+        "Make one controlled change at a time.",
+        "Verify the final state."
+      ],
+      "heading": "5. Practical Commands"
+    },
+    {
+      "config": "services:\n  app:\n    image: nginx:stable\n    ports:\n      - \"8080:80\"\n    restart: unless-stopped\n    healthcheck:\n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost\"]\n      interval: 30s\n      timeout: 5s\n      retries: 3",
+      "explanation": "The following is a reference configuration for the docker tool family. Adapt it to the exact topic, installed version, environment and architecture. Do not apply sample configuration directly to production without validation.",
+      "steps": [
+        "Validate the configuration with the native validator.",
+        "Review permissions and network exposure.",
+        "Keep secrets outside plain-text source files.",
+        "Test in a non-production environment."
+      ],
+      "heading": "6. Configuration Example"
+    },
+    {
+      "explanation": "Troubleshoot Docker - Dockerfile using evidence rather than assumptions. Establish impact and timeline, inspect recent changes, service health, logs, metrics, events and dependencies. Identify the failing layer, apply the smallest safe fix and verify recovery.",
+      "steps": [
+        "Establish incident severity and affected services.",
+        "Record symptoms, timeline and recent changes.",
+        "Inspect application logs, system logs, metrics and events.",
+        "Check DNS, network, identity, storage and dependencies.",
+        "Validate the root-cause hypothesis with evidence.",
+        "Apply a reversible mitigation where possible.",
+        "Verify recovery with health checks and user-facing tests.",
+        "Document the root cause and preventive actions."
+      ],
+      "problems": [
         {
-          issue: "Image fails with exec format error on another server.",
-          rootCause:
-            "The image architecture may not match the host architecture.",
-          solution:
-            "Inspect the image platform and host architecture. Build or publish an image for the required platform."
+          "solution": "Possible root causes include process failure, unhealthy dependencies, network interruption, DNS errors, exhausted resources or invalid configuration. Check service status, recent events, listening ports, dependency health and logs. Correct the confirmed cause and verify with an end-to-end request.",
+          "issue": "Service or operation is unavailable."
         },
         {
-          issue: "Build cannot access a private package registry.",
-          rootCause:
-            "The build process may not have the required authentication or secret mount.",
-          solution:
-            "Configure a secure BuildKit secret or approved package credential mechanism and verify that the secret is not copied into the image."
+          "solution": "Possible root causes include expired credentials, incorrect identity, missing permissions, invalid tokens or policy changes. Verify the active identity, credential expiry, role or policy evaluation and audit logs. Apply least-privilege corrections and retest with the intended identity.",
+          "issue": "Authentication or authorization fails."
+        },
+        {
+          "solution": "Possible root causes include syntax errors, unsupported versions, missing variables, invalid references or dependency mismatch. Inspect the first meaningful error, compare against the last working revision, validate dependencies and test a minimal correction.",
+          "issue": "Deployment or configuration validation fails."
+        },
+        {
+          "solution": "Possible root causes include CPU or memory pressure, disk saturation, connection exhaustion, slow dependencies or insufficient capacity. Correlate latency and error metrics with logs, inspect resource usage and dependency timings, mitigate the confirmed bottleneck and verify recovery.",
+          "issue": "Performance is degraded or requests time out."
+        },
+        {
+          "solution": "Correlate the incident start time with deployment and configuration changes. Review the change diff, release logs and health metrics. Use the approved rollback or roll-forward procedure, verify recovery and document preventive actions.",
+          "issue": "A recent production change caused unexpected behavior."
         }
-      ]
+      ],
+      "heading": "7. Production Troubleshooting and Root Cause Analysis"
+    },
+    {
+      "explanation": "Operate Docker - Dockerfile with least privilege, protected secrets, patch management, audit logging, backups, capacity planning and tested recovery procedures. Monitor availability, latency, throughput, error rate, saturation and relevant business indicators.",
+      "interviewQuestions": [
+        {
+          "answer": "dockerfile addresses a specific requirement within docker. Explain the use case, architecture, dependencies and operational benefits in the context of the environment where it is deployed.",
+          "question": "What is the purpose of "
+        },
+        {
+          "answer": "I would establish impact and timeline, inspect health and recent changes, review logs and metrics, verify dependencies and permissions, isolate the failing layer, apply a safe fix and validate recovery.",
+          "question": "How would you troubleshoot a failure?"
+        },
+        {
+          "answer": "I would use version-controlled configuration, least-privilege access, secure secrets, monitoring, backups, capacity planning, tested recovery and a documented change process.",
+          "question": "How do you prepare this for production?"
+        },
+        {
+          "answer": "Logs provide event-level evidence while metrics reveal trends and system behavior. Correlating them helps identify failures, measure impact and verify fixes.",
+          "question": "Why are logs and monitoring important?"
+        },
+        {
+          "answer": "I use peer-reviewed changes, automated validation, staged rollout, health checks, approvals, observability and a tested rollback or recovery plan.",
+          "question": "How do you reduce production change risk?"
+        }
+      ],
+      "steps": [
+        "Use least-privilege access and rotate credentials.",
+        "Keep software and dependencies patched.",
+        "Enable audit logs and appropriate retention.",
+        "Monitor actionable service-level indicators.",
+        "Back up critical state and test restoration.",
+        "Use peer review and documented rollback plans.",
+        "Automate safe repetitive operational tasks."
+      ],
+      "heading": "8. Security, Monitoring, Best Practices and Interview Questions"
     }
-  ]
+  ],
+  "description": "DevOps reference notes for Docker - Dockerfile covering concepts, architecture, internal workflow, delivery lifecycle, commands, configuration, production troubleshooting, security, monitoring and interview preparation.",
+  "title": "Docker - Dockerfile"
 };
 
 export default data;
+

@@ -1,152 +1,151 @@
 import type { NoteData } from "../../types";
 
 const data: NoteData = {
-  title: "Docker Registry",
-  description: "Detailed Docker registry notes, practical steps, commands, root causes and solutions.",
-  sections: [
+  "sections": [
     {
-      heading: "11. Docker Registry – Pull, Push, Login and Private Images",
-      explanation: `
-A Docker registry stores and distributes images.
-
-Examples:
-- Docker Hub.
-- Private company registries.
-- Cloud container registries.
-
-Typical workflow:
-
-1. Build an image.
-2. Tag the image with the registry and repository name.
-3. Authenticate if required.
-4. Push the image.
-5. Pull the image from the deployment environment.
-6. Deploy the required version.
-
-A registry path commonly contains:
-registry / namespace / repository : tag
-
-Example:
-registry.example.com/team/api:v2.1
-
-Authentication failures, missing repositories, network restrictions and TLS configuration can all cause registry errors.
-
-Do not put registry passwords directly into scripts or source code. Use an approved credential store or CI/CD secret mechanism.
-      `,
-      steps: [
-        "Confirm the registry hostname and repository path.",
-        "Check DNS and network connectivity to the registry.",
-        "Authenticate using the approved credential method.",
-        "Tag the image correctly.",
-        "Push the intended version.",
-        "Verify the image exists in the registry.",
-        "Pull the image from a clean deployment environment."
+      "explanation": "Docker - Registry is used in DevOps engineering to solve a specific operational or delivery problem. Understand its purpose, supported use cases, limitations, dependencies and the production problems it helps prevent.",
+      "steps": [
+        "Identify the requirement and expected outcome.",
+        "Understand the core terminology and supported versions.",
+        "Identify upstream and downstream dependencies.",
+        "Define measurable success criteria."
       ],
-      commands: `
-docker login registry.example.com
-
-docker build -t registry.example.com/team/api:v2.1 .
-
-docker push registry.example.com/team/api:v2.1
-
-docker pull registry.example.com/team/api:v2.1
-
-docker image inspect registry.example.com/team/api:v2.1
-      `,
-      problems: [
-        {
-          issue: "Docker push returns unauthorized.",
-          rootCause:
-            "The credentials may be invalid, expired or missing permission to push to the repository.",
-          solution:
-            "Authenticate using the approved credential method and verify repository-level push permissions."
-        },
-        {
-          issue: "Docker pull fails with manifest unknown.",
-          rootCause:
-            "The requested repository or tag may not exist, or the image may have been pushed under a different path.",
-          solution:
-            "Verify the registry hostname, namespace, repository and exact tag."
-        },
-        {
-          issue: "Image pull fails due to certificate verification.",
-          rootCause:
-            "The registry TLS certificate may be invalid, untrusted or incorrectly configured.",
-          solution:
-            "Fix the registry certificate chain and trust configuration. Do not disable TLS verification as a permanent workaround."
-        }
-      ]
+      "heading": "1. Introduction and Purpose"
     },
     {
-      heading: "22. Real Production Incident – ImagePullBackOff or Registry Pull Failure",
-      explanation: `
-SCENARIO:
-
-A deployment host cannot pull the required application image.
-
-Docker error examples can include:
-- pull access denied.
-- repository does not exist.
-- manifest unknown.
-- unauthorized.
-- certificate signed by unknown authority.
-- no matching manifest for the requested platform.
-
-INVESTIGATION:
-
-1. Verify the complete registry image path.
-2. Verify repository and tag.
-3. Check authentication.
-4. Check repository pull permissions.
-5. Check DNS and network access.
-6. Check registry TLS certificates.
-7. Check host architecture against image platform.
-
-Do not treat every pull failure as a password problem. The exact error message is important.
-      `,
-      steps: [
-        "Capture the full image-pull error.",
-        "Verify registry hostname and repository path.",
-        "Verify the tag exists.",
-        "Check authentication and pull permission.",
-        "Check DNS, proxy and TLS.",
-        "Check target architecture.",
-        "Retry the pull after correcting the identified issue."
+      "explanation": "Study the architecture of Docker - Registry by identifying its main services, controllers, agents, APIs, configuration sources, storage, network paths and integrations. Trace how a request travels between components and identify the failure boundaries.",
+      "steps": [
+        "List the major components and their responsibilities.",
+        "Map authentication and authorization paths.",
+        "Identify required ports, protocols and dependencies.",
+        "Understand state storage, backup and recovery.",
+        "Document high-availability and failure scenarios."
       ],
-      commands: `
-docker pull registry.example.com/team/api:v1
-
-docker login registry.example.com
-
-docker image inspect registry.example.com/team/api:v1
-
-docker info
-      `,
-      problems: [
+      "heading": "2. Architecture and Components"
+    },
+    {
+      "explanation": "A typical operation in Docker - Registry starts with a user, API or pipeline request. The system validates input, checks identity and permissions, resolves dependencies, executes the operation and records its result. Study its actual reconciliation, retry, timeout and rollback behavior for the deployed version.",
+      "steps": [
+        "Trace a request from initiation to completion.",
+        "Identify validation and dependency checks.",
+        "Understand desired state and actual state where applicable.",
+        "Inspect retry, timeout and failure handling.",
+        "Locate execution history and audit records."
+      ],
+      "heading": "3. Internal Working"
+    },
+    {
+      "explanation": "Integrate Docker - Registry into a controlled delivery lifecycle. Keep configuration in version control, validate changes, test in lower environments, promote approved artifacts and verify production health after deployment.",
+      "steps": [
+        "Create or update configuration in source control.",
+        "Review the change and validate syntax.",
+        "Run automated tests and security checks.",
+        "Build and version the required artifact.",
+        "Deploy to development and staging.",
+        "Verify logs, metrics and application behavior.",
+        "Promote through approval to production.",
+        "Monitor the release and retain a rollback plan."
+      ],
+      "heading": "4. End-to-End Development to Production Workflow"
+    },
+    {
+      "commands": "docker version\ndocker info\ndocker ps -a\ndocker images\ndocker inspect <container>\ndocker logs <container>\ndocker exec -it <container> sh\ndocker stats\ndocker network ls\ndocker volume ls\ndocker build -t app:1.0 .\ndocker run -d -p 8080:80 app:1.0",
+      "explanation": "Use these operational commands as a starting point for Docker - Registry. Replace placeholders with real resource names. Confirm syntax for the installed version and prefer read-only inspection before making production changes.",
+      "steps": [
+        "Check version and active context.",
+        "Inspect current resource or service status.",
+        "Capture logs and events with timestamps.",
+        "Make one controlled change at a time.",
+        "Verify the final state."
+      ],
+      "heading": "5. Practical Commands"
+    },
+    {
+      "config": "services:\n  app:\n    image: nginx:stable\n    ports:\n      - \"8080:80\"\n    restart: unless-stopped\n    healthcheck:\n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost\"]\n      interval: 30s\n      timeout: 5s\n      retries: 3",
+      "explanation": "The following is a reference configuration for the docker tool family. Adapt it to the exact topic, installed version, environment and architecture. Do not apply sample configuration directly to production without validation.",
+      "steps": [
+        "Validate the configuration with the native validator.",
+        "Review permissions and network exposure.",
+        "Keep secrets outside plain-text source files.",
+        "Test in a non-production environment."
+      ],
+      "heading": "6. Configuration Example"
+    },
+    {
+      "explanation": "Troubleshoot Docker - Registry using evidence rather than assumptions. Establish impact and timeline, inspect recent changes, service health, logs, metrics, events and dependencies. Identify the failing layer, apply the smallest safe fix and verify recovery.",
+      "steps": [
+        "Establish incident severity and affected services.",
+        "Record symptoms, timeline and recent changes.",
+        "Inspect application logs, system logs, metrics and events.",
+        "Check DNS, network, identity, storage and dependencies.",
+        "Validate the root-cause hypothesis with evidence.",
+        "Apply a reversible mitigation where possible.",
+        "Verify recovery with health checks and user-facing tests.",
+        "Document the root cause and preventive actions."
+      ],
+      "problems": [
         {
-          issue: "pull access denied.",
-          rootCause:
-            "The repository may be private, the user may not be authenticated or pull permission may be missing.",
-          solution:
-            "Authenticate securely and verify repository access permissions."
+          "solution": "Possible root causes include process failure, unhealthy dependencies, network interruption, DNS errors, exhausted resources or invalid configuration. Check service status, recent events, listening ports, dependency health and logs. Correct the confirmed cause and verify with an end-to-end request.",
+          "issue": "Service or operation is unavailable."
         },
         {
-          issue: "manifest unknown.",
-          rootCause:
-            "The repository or requested tag may not exist.",
-          solution:
-            "Verify the exact repository path and tag in the registry."
+          "solution": "Possible root causes include expired credentials, incorrect identity, missing permissions, invalid tokens or policy changes. Verify the active identity, credential expiry, role or policy evaluation and audit logs. Apply least-privilege corrections and retest with the intended identity.",
+          "issue": "Authentication or authorization fails."
         },
         {
-          issue: "no matching manifest for the requested platform.",
-          rootCause:
-            "The registry image may not contain a manifest for the host's required architecture.",
-          solution:
-            "Build and publish the required platform image or configure a suitable multi-platform image."
+          "solution": "Possible root causes include syntax errors, unsupported versions, missing variables, invalid references or dependency mismatch. Inspect the first meaningful error, compare against the last working revision, validate dependencies and test a minimal correction.",
+          "issue": "Deployment or configuration validation fails."
+        },
+        {
+          "solution": "Possible root causes include CPU or memory pressure, disk saturation, connection exhaustion, slow dependencies or insufficient capacity. Correlate latency and error metrics with logs, inspect resource usage and dependency timings, mitigate the confirmed bottleneck and verify recovery.",
+          "issue": "Performance is degraded or requests time out."
+        },
+        {
+          "solution": "Correlate the incident start time with deployment and configuration changes. Review the change diff, release logs and health metrics. Use the approved rollback or roll-forward procedure, verify recovery and document preventive actions.",
+          "issue": "A recent production change caused unexpected behavior."
         }
-      ]
+      ],
+      "heading": "7. Production Troubleshooting and Root Cause Analysis"
+    },
+    {
+      "explanation": "Operate Docker - Registry with least privilege, protected secrets, patch management, audit logging, backups, capacity planning and tested recovery procedures. Monitor availability, latency, throughput, error rate, saturation and relevant business indicators.",
+      "interviewQuestions": [
+        {
+          "answer": "registry addresses a specific requirement within docker. Explain the use case, architecture, dependencies and operational benefits in the context of the environment where it is deployed.",
+          "question": "What is the purpose of "
+        },
+        {
+          "answer": "I would establish impact and timeline, inspect health and recent changes, review logs and metrics, verify dependencies and permissions, isolate the failing layer, apply a safe fix and validate recovery.",
+          "question": "How would you troubleshoot a failure?"
+        },
+        {
+          "answer": "I would use version-controlled configuration, least-privilege access, secure secrets, monitoring, backups, capacity planning, tested recovery and a documented change process.",
+          "question": "How do you prepare this for production?"
+        },
+        {
+          "answer": "Logs provide event-level evidence while metrics reveal trends and system behavior. Correlating them helps identify failures, measure impact and verify fixes.",
+          "question": "Why are logs and monitoring important?"
+        },
+        {
+          "answer": "I use peer-reviewed changes, automated validation, staged rollout, health checks, approvals, observability and a tested rollback or recovery plan.",
+          "question": "How do you reduce production change risk?"
+        }
+      ],
+      "steps": [
+        "Use least-privilege access and rotate credentials.",
+        "Keep software and dependencies patched.",
+        "Enable audit logs and appropriate retention.",
+        "Monitor actionable service-level indicators.",
+        "Back up critical state and test restoration.",
+        "Use peer review and documented rollback plans.",
+        "Automate safe repetitive operational tasks."
+      ],
+      "heading": "8. Security, Monitoring, Best Practices and Interview Questions"
     }
-  ]
+  ],
+  "description": "DevOps reference notes for Docker - Registry covering concepts, architecture, internal workflow, delivery lifecycle, commands, configuration, production troubleshooting, security, monitoring and interview preparation.",
+  "title": "Docker - Registry"
 };
 
 export default data;
+

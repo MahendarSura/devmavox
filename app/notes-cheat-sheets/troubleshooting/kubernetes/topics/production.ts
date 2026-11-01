@@ -1,277 +1,151 @@
 import type { NoteData } from "../../types";
 
 const data: NoteData = {
-  title: "Production Deployment and Incidents",
-  description: "Detailed Kubernetes notes covering production deployment and incidents, practical operations, troubleshooting and production scenarios.",
-  sections: [
+  "sections": [
     {
-          heading: "20. Production Deployment Workflow – CI/CD to Kubernetes",
-          explanation: `
-    A common production workflow:
-    
-    1. Developer pushes code to Git.
-    2. CI pipeline starts.
-    3. Tests and code checks run.
-    4. Docker image is built.
-    5. Image is scanned.
-    6. Image is pushed to a container registry.
-    7. Deployment pipeline updates Kubernetes manifests or Helm values.
-    8. Kubernetes Deployment creates a new ReplicaSet.
-    9. Scheduler assigns Pods to nodes.
-    10. Kubelet starts containers.
-    11. Readiness checks determine when Pods can receive traffic.
-    12. Monitoring verifies application behavior.
-    
-    IMPORTANT RELEASE PRACTICES:
-    
-    - Use immutable image versions or digests.
-    - Keep deployment manifests in version control.
-    - Review configuration changes.
-    - Use separate configuration for environments.
-    - Protect production credentials.
-    - Use readiness and startup probes.
-    - Configure resource requests and limits.
-    - Use a safe rollout strategy.
-    - Monitor after deployment.
-    - Maintain a tested rollback process.
-    
-    Kubernetes can manage the desired state of resources, but it cannot guarantee that a new application release is logically correct.
-          `,
-          steps: [
-            "Commit application changes.",
-            "Run tests and quality checks.",
-            "Build and scan the container image.",
-            "Push the approved image to the registry.",
-            "Update the Deployment image or Helm values.",
-            "Apply the approved configuration.",
-            "Monitor rollout status.",
-            "Verify Pods, Services and application endpoints.",
-            "Monitor errors and latency.",
-            "Rollback if the new release causes unacceptable impact."
-          ],
-          commands: `
-    kubectl apply -f deployment.yaml
-    
-    kubectl get deployments -n production
-    
-    kubectl rollout status deployment/api -n production
-    
-    kubectl get pods -n production -o wide
-    
-    kubectl get services -n production
-    
-    kubectl logs deployment/api -n production
-    
-    kubectl rollout undo deployment/api -n production
-          `,
-          problems: [
-            {
-              issue: "New deployment causes production downtime.",
-              rootCause:
-                "Readiness checks, rollout settings, capacity or application compatibility may be incorrect.",
-              solution:
-                "Stop further rollout, inspect unavailable replicas and application errors, then roll back or apply the verified fix."
-            },
-            {
-              issue: "New image is deployed but old application behavior remains.",
-              rootCause:
-                "The Deployment may still reference an old image, a mutable tag may resolve unexpectedly or the rollout may not have completed.",
-              solution:
-                "Inspect the Deployment's image reference, Pod image IDs and rollout status. Prefer immutable release tags or digests."
-            }
-          ]
+      "explanation": "Kubernetes - Production is used in DevOps engineering to solve a specific operational or delivery problem. Understand its purpose, supported use cases, limitations, dependencies and the production problems it helps prevent.",
+      "steps": [
+        "Identify the requirement and expected outcome.",
+        "Understand the core terminology and supported versions.",
+        "Identify upstream and downstream dependencies.",
+        "Define measurable success criteria."
+      ],
+      "heading": "1. Introduction and Purpose"
+    },
+    {
+      "explanation": "Study the architecture of Kubernetes - Production by identifying its main services, controllers, agents, APIs, configuration sources, storage, network paths and integrations. Trace how a request travels between components and identify the failure boundaries.",
+      "steps": [
+        "List the major components and their responsibilities.",
+        "Map authentication and authorization paths.",
+        "Identify required ports, protocols and dependencies.",
+        "Understand state storage, backup and recovery.",
+        "Document high-availability and failure scenarios."
+      ],
+      "heading": "2. Architecture and Components"
+    },
+    {
+      "explanation": "A typical operation in Kubernetes - Production starts with a user, API or pipeline request. The system validates input, checks identity and permissions, resolves dependencies, executes the operation and records its result. Study its actual reconciliation, retry, timeout and rollback behavior for the deployed version.",
+      "steps": [
+        "Trace a request from initiation to completion.",
+        "Identify validation and dependency checks.",
+        "Understand desired state and actual state where applicable.",
+        "Inspect retry, timeout and failure handling.",
+        "Locate execution history and audit records."
+      ],
+      "heading": "3. Internal Working"
+    },
+    {
+      "explanation": "Integrate Kubernetes - Production into a controlled delivery lifecycle. Keep configuration in version control, validate changes, test in lower environments, promote approved artifacts and verify production health after deployment.",
+      "steps": [
+        "Create or update configuration in source control.",
+        "Review the change and validate syntax.",
+        "Run automated tests and security checks.",
+        "Build and version the required artifact.",
+        "Deploy to development and staging.",
+        "Verify logs, metrics and application behavior.",
+        "Promote through approval to production.",
+        "Monitor the release and retain a rollback plan."
+      ],
+      "heading": "4. End-to-End Development to Production Workflow"
+    },
+    {
+      "commands": "kubectl cluster-info\nkubectl get nodes -o wide\nkubectl get pods -A\nkubectl describe pod <pod> -n <namespace>\nkubectl logs <pod> -n <namespace>\nkubectl logs <pod> --previous -n <namespace>\nkubectl get events -A --sort-by=.metadata.creationTimestamp\nkubectl get deployments -A\nkubectl rollout status deployment/<name> -n <namespace>\nkubectl rollout undo deployment/<name> -n <namespace>\nkubectl top nodes\nkubectl top pods -A",
+      "explanation": "Use these operational commands as a starting point for Kubernetes - Production. Replace placeholders with real resource names. Confirm syntax for the installed version and prefer read-only inspection before making production changes.",
+      "steps": [
+        "Check version and active context.",
+        "Inspect current resource or service status.",
+        "Capture logs and events with timestamps.",
+        "Make one controlled change at a time.",
+        "Verify the final state."
+      ],
+      "heading": "5. Practical Commands"
+    },
+    {
+      "config": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: sample-app\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: sample-app\n  template:\n    metadata:\n      labels:\n        app: sample-app\n    spec:\n      containers:\n        - name: app\n          image: nginx:stable\n          ports:\n            - containerPort: 80\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n            limits:\n              cpu: 500m\n              memory: 512Mi",
+      "explanation": "The following is a reference configuration for the kubernetes tool family. Adapt it to the exact topic, installed version, environment and architecture. Do not apply sample configuration directly to production without validation.",
+      "steps": [
+        "Validate the configuration with the native validator.",
+        "Review permissions and network exposure.",
+        "Keep secrets outside plain-text source files.",
+        "Test in a non-production environment."
+      ],
+      "heading": "6. Configuration Example"
+    },
+    {
+      "explanation": "Troubleshoot Kubernetes - Production using evidence rather than assumptions. Establish impact and timeline, inspect recent changes, service health, logs, metrics, events and dependencies. Identify the failing layer, apply the smallest safe fix and verify recovery.",
+      "steps": [
+        "Establish incident severity and affected services.",
+        "Record symptoms, timeline and recent changes.",
+        "Inspect application logs, system logs, metrics and events.",
+        "Check DNS, network, identity, storage and dependencies.",
+        "Validate the root-cause hypothesis with evidence.",
+        "Apply a reversible mitigation where possible.",
+        "Verify recovery with health checks and user-facing tests.",
+        "Document the root cause and preventive actions."
+      ],
+      "problems": [
+        {
+          "solution": "Possible root causes include process failure, unhealthy dependencies, network interruption, DNS errors, exhausted resources or invalid configuration. Check service status, recent events, listening ports, dependency health and logs. Correct the confirmed cause and verify with an end-to-end request.",
+          "issue": "Service or operation is unavailable."
         },
-    {
-          heading: "25. Production Incident – Node NotReady",
-          explanation: `
-    SCENARIO:
-    
-    A worker node changes to NotReady.
-    
-    Pods on that node may become unavailable or experience disruption.
-    
-    POSSIBLE CAUSES:
-    
-    - Kubelet stopped.
-    - Container runtime failed.
-    - Node memory pressure.
-    - Node disk pressure.
-    - Network connectivity failure.
-    - API Server communication failure.
-    - Node operating system problem.
-    
-    INVESTIGATION:
-    
-    1. Check node conditions.
-    2. Describe the node.
-    3. Inspect node events.
-    4. Check kubelet service.
-    5. Check container runtime.
-    6. Check memory and disk.
-    7. Check node network connectivity.
-    
-    IMPORTANT:
-    Do not immediately delete all Pods on the node. Understand workload controllers, storage attachments and disruption requirements before recovery actions.
-    
-    Managed Kubernetes providers may restrict direct access to control-plane and worker components. Use provider-supported node diagnostics where applicable.
-          `,
-          steps: [
-            "Identify the NotReady node.",
-            "Describe node conditions.",
-            "Inspect node events.",
-            "Check kubelet status.",
-            "Check container runtime status.",
-            "Check memory, disk and filesystem.",
-            "Investigate node network connectivity.",
-            "Restore node health or follow the node replacement process.",
-            "Verify affected workloads recover."
-          ],
-          commands: `
-    kubectl get nodes -o wide
-    
-    kubectl describe node <node-name>
-    
-    kubectl get pods -A -o wide
-    
-    # Linux worker node
-    sudo systemctl status kubelet
-    
-    sudo journalctl -u kubelet --since "30 minutes ago"
-    
-    sudo systemctl status containerd
-    
-    free -h
-    
-    df -h
-          `,
-          problems: [
-            {
-              issue: "Node condition shows Ready=False.",
-              rootCause:
-                "Kubelet may be unhealthy, the node may be disconnected or a critical node component may have failed.",
-              solution:
-                "Inspect node conditions and kubelet logs, restore runtime or network health and verify the node becomes Ready."
-            },
-            {
-              issue: "Node shows DiskPressure.",
-              rootCause:
-                "Node storage is approaching configured pressure thresholds.",
-              solution:
-                "Identify filesystem usage, container image storage, logs and local data. Perform controlled cleanup and expand capacity if necessary."
-            }
-          ]
+        {
+          "solution": "Possible root causes include expired credentials, incorrect identity, missing permissions, invalid tokens or policy changes. Verify the active identity, credential expiry, role or policy evaluation and audit logs. Apply least-privilege corrections and retest with the intended identity.",
+          "issue": "Authentication or authorization fails."
         },
-    {
-          heading: "28. Production Engineer RCA – Complete Incident Investigation Method",
-          explanation: `
-    A Kubernetes production engineer should not randomly restart Pods.
-    
-    Follow a repeatable incident investigation process.
-    
-    1. UNDERSTAND IMPACT:
-    Which application is failing? How many users are affected? Is the issue total or partial?
-    
-    2. RECORD THE TIME:
-    Record when the incident started and identify recent deployments or configuration changes.
-    
-    3. IDENTIFY THE FAILURE LAYER:
-    - Cluster.
-    - Node.
-    - Pod.
-    - Container.
-    - Service.
-    - DNS.
-    - Ingress.
-    - Storage.
-    - Application dependency.
-    
-    4. COLLECT EVIDENCE:
-    - Pod status.
-    - Events.
-    - Container logs.
-    - Previous logs.
-    - Node conditions.
-    - Resource usage.
-    - Service endpoints.
-    - Network policies.
-    - Deployment history.
-    
-    5. FORM A HYPOTHESIS:
-    Use actual error messages and evidence.
-    
-    6. TEST THE HYPOTHESIS:
-    Use safe, targeted commands.
-    
-    7. RECOVER:
-    Apply the approved fix or rollback.
-    
-    8. VERIFY:
-    Check readiness, traffic, error rate and business functionality.
-    
-    9. PREVENT:
-    Improve monitoring, configuration validation, deployment testing and recovery procedures.
-    
-    10. DOCUMENT:
-    Record impact, timeline, root cause, recovery and preventive action.
-    
-    IMPORTANT:
-    A Pod being Running does not prove the application is healthy.
-    A Deployment being Available does not prove every business workflow is working.
-    A successful rollout does not prove the release is free of bugs.
-          `,
-          steps: [
-            "Confirm incident impact and severity.",
-            "Record incident start time.",
-            "Check cluster and node status.",
-            "Identify affected resources.",
-            "Collect events, logs and resource metrics.",
-            "Compare the current release with the last known-good release.",
-            "Test the suspected root cause.",
-            "Apply the smallest safe fix or rollback.",
-            "Verify application and business functionality.",
-            "Document the incident and prevention actions."
-          ],
-          commands: `
-    kubectl config current-context
-    
-    kubectl get nodes
-    
-    kubectl get pods -A -o wide
-    
-    kubectl get deployments -A
-    
-    kubectl get services -A
-    
-    kubectl get events -A --sort-by=.lastTimestamp
-    
-    kubectl logs <pod-name> -n <namespace> --previous
-    
-    kubectl describe pod <pod-name> -n <namespace>
-    
-    kubectl top nodes
-    
-    kubectl top pods -A
-    
-    kubectl get endpointslices -A
-          `,
-          problems: [
-            {
-              issue: "Engineer repeatedly deletes and recreates failing Pods.",
-              rootCause:
-                "The actual application, configuration, storage or infrastructure problem is not being investigated.",
-              solution:
-                "Collect evidence first, identify the root cause and correct the controller-managed workload configuration."
-            },
-            {
-              issue: "Incident returns after recovery.",
-              rootCause:
-                "The immediate symptom was removed, but the underlying failure condition remains.",
-              solution:
-                "Complete root-cause analysis and add preventive controls such as alerts, tests, resource tuning or configuration validation."
-            }
-          ]
+        {
+          "solution": "Possible root causes include syntax errors, unsupported versions, missing variables, invalid references or dependency mismatch. Inspect the first meaningful error, compare against the last working revision, validate dependencies and test a minimal correction.",
+          "issue": "Deployment or configuration validation fails."
+        },
+        {
+          "solution": "Possible root causes include CPU or memory pressure, disk saturation, connection exhaustion, slow dependencies or insufficient capacity. Correlate latency and error metrics with logs, inspect resource usage and dependency timings, mitigate the confirmed bottleneck and verify recovery.",
+          "issue": "Performance is degraded or requests time out."
+        },
+        {
+          "solution": "Correlate the incident start time with deployment and configuration changes. Review the change diff, release logs and health metrics. Use the approved rollback or roll-forward procedure, verify recovery and document preventive actions.",
+          "issue": "A recent production change caused unexpected behavior."
         }
-  ]
+      ],
+      "heading": "7. Production Troubleshooting and Root Cause Analysis"
+    },
+    {
+      "explanation": "Operate Kubernetes - Production with least privilege, protected secrets, patch management, audit logging, backups, capacity planning and tested recovery procedures. Monitor availability, latency, throughput, error rate, saturation and relevant business indicators.",
+      "interviewQuestions": [
+        {
+          "answer": "production addresses a specific requirement within kubernetes. Explain the use case, architecture, dependencies and operational benefits in the context of the environment where it is deployed.",
+          "question": "What is the purpose of "
+        },
+        {
+          "answer": "I would establish impact and timeline, inspect health and recent changes, review logs and metrics, verify dependencies and permissions, isolate the failing layer, apply a safe fix and validate recovery.",
+          "question": "How would you troubleshoot a failure?"
+        },
+        {
+          "answer": "I would use version-controlled configuration, least-privilege access, secure secrets, monitoring, backups, capacity planning, tested recovery and a documented change process.",
+          "question": "How do you prepare this for production?"
+        },
+        {
+          "answer": "Logs provide event-level evidence while metrics reveal trends and system behavior. Correlating them helps identify failures, measure impact and verify fixes.",
+          "question": "Why are logs and monitoring important?"
+        },
+        {
+          "answer": "I use peer-reviewed changes, automated validation, staged rollout, health checks, approvals, observability and a tested rollback or recovery plan.",
+          "question": "How do you reduce production change risk?"
+        }
+      ],
+      "steps": [
+        "Use least-privilege access and rotate credentials.",
+        "Keep software and dependencies patched.",
+        "Enable audit logs and appropriate retention.",
+        "Monitor actionable service-level indicators.",
+        "Back up critical state and test restoration.",
+        "Use peer review and documented rollback plans.",
+        "Automate safe repetitive operational tasks."
+      ],
+      "heading": "8. Security, Monitoring, Best Practices and Interview Questions"
+    }
+  ],
+  "description": "DevOps reference notes for Kubernetes - Production covering concepts, architecture, internal workflow, delivery lifecycle, commands, configuration, production troubleshooting, security, monitoring and interview preparation.",
+  "title": "Kubernetes - Production"
 };
 
 export default data;
+

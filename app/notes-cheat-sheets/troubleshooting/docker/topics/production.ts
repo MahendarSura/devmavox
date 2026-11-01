@@ -1,415 +1,151 @@
 import type { NoteData } from "../../types";
 
 const data: NoteData = {
-  title: "Docker Production",
-  description: "Detailed Docker production notes, practical steps, commands, root causes and solutions.",
-  sections: [
+  "sections": [
     {
-      heading: "19. Production Workflow – Developer to CI/CD to Deployment",
-      explanation: `
-A common production workflow looks like this:
-
-1. Developer commits application code.
-2. Git-based CI pipeline starts.
-3. Pipeline runs tests and code checks.
-4. Docker image is built.
-5. Image is scanned and validated.
-6. Image is tagged with a release version or commit identifier.
-7. Image is pushed to a registry.
-8. Deployment system pulls the approved image.
-9. Runtime configuration and secrets are supplied.
-10. Application starts.
-11. Health checks and smoke tests run.
-12. Monitoring checks application behavior.
-13. If the release fails, the team follows its rollback procedure.
-
-IMPORTANT PRODUCTION PRINCIPLES:
-
-- Prefer immutable, traceable image versions.
-- Avoid relying on a mutable latest tag for controlled releases.
-- Keep secrets outside the image.
-- Use persistent storage for stateful workloads.
-- Set resource limits based on measured capacity.
-- Configure logs and monitoring.
-- Test rollback procedures.
-- Deploy gradually where the platform supports safe rollout strategies.
-
-Docker alone does not provide every orchestration feature required for large-scale production. Teams may use Kubernetes, Swarm or managed container platforms depending on their architecture.
-      `,
-      steps: [
-        "Commit code and review the change.",
-        "Run automated tests.",
-        "Build the Docker image.",
-        "Scan and test the image.",
-        "Push the image using a unique release tag.",
-        "Deploy the exact image reference.",
-        "Verify health checks and application endpoints.",
-        "Monitor errors, latency and resource usage.",
-        "Rollback to a known-good image if the release fails."
+      "explanation": "Docker - Production is used in DevOps engineering to solve a specific operational or delivery problem. Understand its purpose, supported use cases, limitations, dependencies and the production problems it helps prevent.",
+      "steps": [
+        "Identify the requirement and expected outcome.",
+        "Understand the core terminology and supported versions.",
+        "Identify upstream and downstream dependencies.",
+        "Define measurable success criteria."
       ],
-      commands: `
-# Example release commands
-
-docker build -t registry.example.com/team/api:2026.10.31 .
-
-docker push registry.example.com/team/api:2026.10.31
-
-docker pull registry.example.com/team/api:2026.10.31
-
-docker run -d --name api \\
-  --restart unless-stopped \\
-  -p 3000:3000 \\
-  registry.example.com/team/api:2026.10.31
-
-docker logs --tail 100 api
-docker inspect api
-      `,
-      problems: [
-        {
-          issue: "New release fails after deployment.",
-          rootCause:
-            "The image may contain a regression, configuration may be incorrect or a dependency may not be compatible.",
-          solution:
-            "Stop further rollout, collect logs and health evidence, compare the release with the previous version and follow the approved rollback process."
-        },
-        {
-          issue: "Production server runs an unexpected application version.",
-          rootCause:
-            "The deployment may use a mutable tag or the release pipeline may not have verified the exact image digest.",
-          solution:
-            "Use traceable version tags or digest-pinned references and record the deployed image identity in the release process."
-        }
-      ]
+      "heading": "1. Introduction and Purpose"
     },
     {
-      heading: "20. Real Production Incident – Container Keeps Restarting",
-      explanation: `
-SCENARIO:
-
-An API container restarts repeatedly after a production deployment.
-
-USER IMPACT:
-Requests fail intermittently or the API becomes unavailable.
-
-INCIDENT INVESTIGATION:
-
-Step 1 – Confirm the container state.
-Use docker ps -a and identify restart count and current status.
-
-Step 2 – Read the logs.
-Use docker logs with a limited time window. Look for startup errors, missing configuration, failed dependency connections and stack traces.
-
-Step 3 – Inspect container state.
-Check exit code, OOMKilled, restart policy and startup configuration.
-
-Step 4 – Check dependencies.
-Verify database DNS, port, credentials and service readiness.
-
-Step 5 – Compare with the previous release.
-Check changes in environment variables, image version, Dockerfile and application configuration.
-
-Step 6 – Find root cause.
-Do not assume that restart count itself explains the problem. Use the evidence to identify the failure.
-
-EXAMPLE ROOT CAUSE:
-The new API release expects DATABASE_HOST, but the deployment configuration still provides DB_HOST. The application cannot connect to the database and exits.
-
-FIX:
-Correct the runtime configuration, deploy the corrected release and verify successful startup.
-
-VERIFICATION:
-- Container remains running.
-- Health check passes.
-- API endpoint responds.
-- Database connection succeeds.
-- Restart count no longer increases.
-- Error rate returns to normal.
-
-PREVENTION:
-Validate required environment variables during startup, test deployment configuration in CI and monitor restart events.
-      `,
-      steps: [
-        "Confirm impact and identify affected containers.",
-        "Capture container status, restart count and exit code.",
-        "Collect application logs and inspect output.",
-        "Check OOMKilled and resource usage.",
-        "Verify dependency connectivity.",
-        "Compare the deployed configuration with the previous working release.",
-        "Apply the smallest safe fix or rollback.",
-        "Verify service health and monitor for recurrence.",
-        "Document root cause and prevention actions."
+      "explanation": "Study the architecture of Docker - Production by identifying its main services, controllers, agents, APIs, configuration sources, storage, network paths and integrations. Trace how a request travels between components and identify the failure boundaries.",
+      "steps": [
+        "List the major components and their responsibilities.",
+        "Map authentication and authorization paths.",
+        "Identify required ports, protocols and dependencies.",
+        "Understand state storage, backup and recovery.",
+        "Document high-availability and failure scenarios."
       ],
-      commands: `
-docker ps -a
-
-docker inspect api
-
-docker inspect --format '{{.State.ExitCode}}' api
-
-docker inspect --format '{{.State.OOMKilled}}' api
-
-docker logs --since 30m --tail 300 api
-
-docker stats --no-stream api
-
-docker events --since 30m
-      `,
-      config: `
-# Example: required configuration validation in Node.js
-
-const requiredVariables = [
-  "DATABASE_HOST",
-  "DATABASE_USER",
-  "DATABASE_PASSWORD"
-];
-
-for (const variable of requiredVariables) {
-  if (!process.env[variable]) {
-    throw new Error(\`Missing required environment variable: \${variable}\`);
-  }
-}
-      `,
-      problems: [
-        {
-          issue: "Container repeatedly restarts after a new release.",
-          rootCause:
-            "The application exits during startup because of invalid configuration, a missing dependency, a failed migration or an application regression.",
-          solution:
-            "Use logs, inspect state and compare release configuration. Correct the root cause or roll back to the last known-good image."
-        }
-      ]
+      "heading": "2. Architecture and Components"
     },
     {
-      heading: "21. Real Production Incident – Database Connection Failure",
-      explanation: `
-SCENARIO:
-
-The API container is running, but every database request fails.
-
-COMMON SYMPTOMS:
-
-- Connection refused.
-- Name or service not known.
-- Connection timed out.
-- Authentication failed.
-- Too many connections.
-
-INVESTIGATION:
-
-1. Check the exact error message in API logs.
-2. Confirm the database container or service is running.
-3. Check whether API and database share a network.
-4. Check the database hostname.
-5. Check the database listening port.
-6. Check credentials and database name.
-7. Check database readiness and connection limits.
-
-IMPORTANT:
-Inside the API container, localhost refers to the API container itself. Use the database service name or network alias.
-
-Connection refused usually means the destination was reached but no process accepted the connection at that address and port.
-
-Connection timed out can indicate network filtering, routing problems or a service that is not responding.
-
-Authentication failed points toward credentials or database authorization, not necessarily Docker networking.
-      `,
-      steps: [
-        "Read the exact database error.",
-        "Inspect both API and database containers.",
-        "Inspect shared network membership.",
-        "Test database DNS resolution from the API network.",
-        "Test TCP connectivity to the database port.",
-        "Verify credentials securely.",
-        "Check database readiness and connection capacity.",
-        "Correct the relevant configuration and retest."
+      "explanation": "A typical operation in Docker - Production starts with a user, API or pipeline request. The system validates input, checks identity and permissions, resolves dependencies, executes the operation and records its result. Study its actual reconciliation, retry, timeout and rollback behavior for the deployed version.",
+      "steps": [
+        "Trace a request from initiation to completion.",
+        "Identify validation and dependency checks.",
+        "Understand desired state and actual state where applicable.",
+        "Inspect retry, timeout and failure handling.",
+        "Locate execution history and audit records."
       ],
-      commands: `
-docker logs --tail 200 api
-docker logs --tail 200 database
-
-docker inspect api
-docker inspect database
-
-docker network ls
-docker network inspect app-network
-
-# If the diagnostic utilities exist in the API image:
-getent hosts database
-nc -vz database 5432
-      `,
-      config: `
-# Incorrect application configuration
-DATABASE_HOST=localhost
-
-# Correct when the database service is named "database"
-DATABASE_HOST=database
-DATABASE_PORT=5432
-      `,
-      problems: [
-        {
-          issue: "Connection refused.",
-          rootCause:
-            "The database may not be listening on the target port, may still be starting or may be bound to a different interface.",
-          solution:
-            "Check database logs, listening address, port and readiness. Ensure the API uses the correct service name and port."
-        },
-        {
-          issue: "Name or service not known.",
-          rootCause:
-            "The hostname may be incorrect or the containers may not share a network with the expected DNS behavior.",
-          solution:
-            "Verify the Compose service name or Docker network alias and inspect network membership."
-        },
-        {
-          issue: "Password authentication failed.",
-          rootCause:
-            "The application may use an incorrect, outdated or mismatched credential.",
-          solution:
-            "Verify the secret source and database user permissions. Rotate credentials through the approved secret-management process if necessary."
-        }
-      ]
+      "heading": "3. Internal Working"
     },
     {
-      heading: "24. Real Production Incident – Docker Host Disk Full",
-      explanation: `
-SCENARIO:
-
-The Docker host reports no free disk space. New containers fail to start or applications cannot write files.
-
-POSSIBLE CONSUMERS:
-
-- Container logs.
-- Image layers.
-- Build cache.
-- Container writable layers.
-- Volumes.
-- Application data.
-
-INVESTIGATION:
-
-1. Run df -h to identify the full filesystem.
-2. Run docker system df.
-3. Inspect large log files and configured logging drivers.
-4. Check volumes before cleanup.
-5. Check build cache and unused images.
-6. Confirm whether the filesystem is shared with application data.
-
-RECOVERY:
-Remove only approved unused objects. Do not remove volumes without verifying their contents and backup status.
-
-PREVENTION:
-Configure log rotation, monitor disk usage, define image retention and maintain volume backup policies.
-      `,
-      steps: [
-        "Identify the full filesystem.",
-        "Inspect Docker storage usage.",
-        "Identify large logs, images, cache or volumes.",
-        "Confirm which data is safe to remove.",
-        "Back up important data.",
-        "Perform controlled cleanup.",
-        "Verify disk capacity and application health."
+      "explanation": "Integrate Docker - Production into a controlled delivery lifecycle. Keep configuration in version control, validate changes, test in lower environments, promote approved artifacts and verify production health after deployment.",
+      "steps": [
+        "Create or update configuration in source control.",
+        "Review the change and validate syntax.",
+        "Run automated tests and security checks.",
+        "Build and version the required artifact.",
+        "Deploy to development and staging.",
+        "Verify logs, metrics and application behavior.",
+        "Promote through approval to production.",
+        "Monitor the release and retain a rollback plan."
       ],
-      commands: `
-df -h
-docker system df
-docker image ls
-docker ps -a
-docker volume ls
-
-docker builder prune
-docker image prune
-      `,
-      problems: [
-        {
-          issue: "Disk is still full after removing containers.",
-          rootCause:
-            "The actual space consumer may be logs, volumes, images, build cache or application files.",
-          solution:
-            "Identify the filesystem and its largest consumers before selecting a cleanup operation."
-        }
-      ]
+      "heading": "4. End-to-End Development to Production Workflow"
     },
     {
-      heading: "25. Docker Troubleshooting Method – Production Engineer RCA Checklist",
-      explanation: `
-A production engineer should follow a repeatable investigation method.
-
-1. UNDERSTAND IMPACT:
-Which service is affected? How many users? Is the issue total or partial?
-
-2. RECORD TIME:
-Record when the incident started and when symptoms were observed.
-
-3. COLLECT EVIDENCE:
-Capture container state, logs, events, resource usage and relevant host information.
-
-4. FORM A HYPOTHESIS:
-Use the evidence to identify likely causes.
-
-5. TEST SAFELY:
-Run targeted checks. Avoid destructive commands during investigation.
-
-6. IDENTIFY ROOT CAUSE:
-Find the condition that caused the failure, not just the visible symptom.
-
-7. RECOVER:
-Apply a safe fix or rollback according to the incident procedure.
-
-8. VERIFY:
-Confirm application health, user-facing behavior, dependency connectivity and resource stability.
-
-9. PREVENT:
-Add validation, monitoring, alerts, automated tests or configuration controls.
-
-10. DOCUMENT:
-Record impact, timeline, evidence, root cause, recovery and follow-up actions.
-
-A restart is an action, not a root-cause analysis.
-      `,
-      steps: [
-        "Confirm impact and severity.",
-        "Record the incident timeline.",
-        "Collect logs and diagnostic output.",
-        "Inspect container, image, network, storage and resource configuration as relevant.",
-        "Compare current state with the last known-good state.",
-        "Test the suspected root cause.",
-        "Apply the approved fix or rollback.",
-        "Verify service recovery.",
-        "Create preventive actions and document the incident."
+      "commands": "docker version\ndocker info\ndocker ps -a\ndocker images\ndocker inspect <container>\ndocker logs <container>\ndocker exec -it <container> sh\ndocker stats\ndocker network ls\ndocker volume ls\ndocker build -t app:1.0 .\ndocker run -d -p 8080:80 app:1.0",
+      "explanation": "Use these operational commands as a starting point for Docker - Production. Replace placeholders with real resource names. Confirm syntax for the installed version and prefer read-only inspection before making production changes.",
+      "steps": [
+        "Check version and active context.",
+        "Inspect current resource or service status.",
+        "Capture logs and events with timestamps.",
+        "Make one controlled change at a time.",
+        "Verify the final state."
       ],
-      commands: `
-docker ps -a
-docker logs --since 30m --tail 300 <container>
-docker inspect <container>
-docker stats --no-stream
-docker events --since 30m
-docker system df
-docker network ls
-docker volume ls
-
-# Linux host diagnostics
-df -h
-free -h
-sudo journalctl -u docker --since "30 minutes ago"
-      `,
-      problems: [
+      "heading": "5. Practical Commands"
+    },
+    {
+      "config": "services:\n  app:\n    image: nginx:stable\n    ports:\n      - \"8080:80\"\n    restart: unless-stopped\n    healthcheck:\n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost\"]\n      interval: 30s\n      timeout: 5s\n      retries: 3",
+      "explanation": "The following is a reference configuration for the docker tool family. Adapt it to the exact topic, installed version, environment and architecture. Do not apply sample configuration directly to production without validation.",
+      "steps": [
+        "Validate the configuration with the native validator.",
+        "Review permissions and network exposure.",
+        "Keep secrets outside plain-text source files.",
+        "Test in a non-production environment."
+      ],
+      "heading": "6. Configuration Example"
+    },
+    {
+      "explanation": "Troubleshoot Docker - Production using evidence rather than assumptions. Establish impact and timeline, inspect recent changes, service health, logs, metrics, events and dependencies. Identify the failing layer, apply the smallest safe fix and verify recovery.",
+      "steps": [
+        "Establish incident severity and affected services.",
+        "Record symptoms, timeline and recent changes.",
+        "Inspect application logs, system logs, metrics and events.",
+        "Check DNS, network, identity, storage and dependencies.",
+        "Validate the root-cause hypothesis with evidence.",
+        "Apply a reversible mitigation where possible.",
+        "Verify recovery with health checks and user-facing tests.",
+        "Document the root cause and preventive actions."
+      ],
+      "problems": [
         {
-          issue: "Engineer restarts the container repeatedly but the issue returns.",
-          rootCause:
-            "The restart treats the symptom but leaves the actual failure condition unchanged.",
-          solution:
-            "Collect evidence, identify the failure condition and fix the application, configuration, dependency or infrastructure problem."
+          "solution": "Possible root causes include process failure, unhealthy dependencies, network interruption, DNS errors, exhausted resources or invalid configuration. Check service status, recent events, listening ports, dependency health and logs. Correct the confirmed cause and verify with an end-to-end request.",
+          "issue": "Service or operation is unavailable."
         },
         {
-          issue: "Troubleshooting removes useful incident evidence.",
-          rootCause:
-            "The engineer deletes or recreates the affected container before recording its state and logs.",
-          solution:
-            "Capture relevant logs, inspect output, events and configuration before performing destructive cleanup."
+          "solution": "Possible root causes include expired credentials, incorrect identity, missing permissions, invalid tokens or policy changes. Verify the active identity, credential expiry, role or policy evaluation and audit logs. Apply least-privilege corrections and retest with the intended identity.",
+          "issue": "Authentication or authorization fails."
+        },
+        {
+          "solution": "Possible root causes include syntax errors, unsupported versions, missing variables, invalid references or dependency mismatch. Inspect the first meaningful error, compare against the last working revision, validate dependencies and test a minimal correction.",
+          "issue": "Deployment or configuration validation fails."
+        },
+        {
+          "solution": "Possible root causes include CPU or memory pressure, disk saturation, connection exhaustion, slow dependencies or insufficient capacity. Correlate latency and error metrics with logs, inspect resource usage and dependency timings, mitigate the confirmed bottleneck and verify recovery.",
+          "issue": "Performance is degraded or requests time out."
+        },
+        {
+          "solution": "Correlate the incident start time with deployment and configuration changes. Review the change diff, release logs and health metrics. Use the approved rollback or roll-forward procedure, verify recovery and document preventive actions.",
+          "issue": "A recent production change caused unexpected behavior."
         }
-      ]
+      ],
+      "heading": "7. Production Troubleshooting and Root Cause Analysis"
+    },
+    {
+      "explanation": "Operate Docker - Production with least privilege, protected secrets, patch management, audit logging, backups, capacity planning and tested recovery procedures. Monitor availability, latency, throughput, error rate, saturation and relevant business indicators.",
+      "interviewQuestions": [
+        {
+          "answer": "production addresses a specific requirement within docker. Explain the use case, architecture, dependencies and operational benefits in the context of the environment where it is deployed.",
+          "question": "What is the purpose of "
+        },
+        {
+          "answer": "I would establish impact and timeline, inspect health and recent changes, review logs and metrics, verify dependencies and permissions, isolate the failing layer, apply a safe fix and validate recovery.",
+          "question": "How would you troubleshoot a failure?"
+        },
+        {
+          "answer": "I would use version-controlled configuration, least-privilege access, secure secrets, monitoring, backups, capacity planning, tested recovery and a documented change process.",
+          "question": "How do you prepare this for production?"
+        },
+        {
+          "answer": "Logs provide event-level evidence while metrics reveal trends and system behavior. Correlating them helps identify failures, measure impact and verify fixes.",
+          "question": "Why are logs and monitoring important?"
+        },
+        {
+          "answer": "I use peer-reviewed changes, automated validation, staged rollout, health checks, approvals, observability and a tested rollback or recovery plan.",
+          "question": "How do you reduce production change risk?"
+        }
+      ],
+      "steps": [
+        "Use least-privilege access and rotate credentials.",
+        "Keep software and dependencies patched.",
+        "Enable audit logs and appropriate retention.",
+        "Monitor actionable service-level indicators.",
+        "Back up critical state and test restoration.",
+        "Use peer review and documented rollback plans.",
+        "Automate safe repetitive operational tasks."
+      ],
+      "heading": "8. Security, Monitoring, Best Practices and Interview Questions"
     }
-  ]
+  ],
+  "description": "DevOps reference notes for Docker - Production covering concepts, architecture, internal workflow, delivery lifecycle, commands, configuration, production troubleshooting, security, monitoring and interview preparation.",
+  "title": "Docker - Production"
 };
 
 export default data;
+

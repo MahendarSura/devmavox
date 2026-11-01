@@ -1,120 +1,151 @@
 import type { NoteData } from "../../types";
 
 const data: NoteData = {
-  title: "Kubernetes Networking",
-  description: "Detailed Kubernetes notes covering kubernetes networking, practical operations, troubleshooting and production scenarios.",
-  sections: [
+  "sections": [
     {
-          heading: "07. Kubernetes Networking – Pod IP, CNI and NetworkPolicy",
-          explanation: `
-    Kubernetes networking provides communication between Pods and Services.
-    
-    Important networking concepts:
-    
-    POD NETWORK:
-    Each Pod receives an IP address through the cluster networking implementation.
-    
-    CNI:
-    Container Network Interface plugins provide network configuration for Pods.
-    
-    SERVICE NETWORK:
-    Services provide stable virtual access to selected backend Pods.
-    
-    CLUSTER DNS:
-    Provides name resolution for Services and other cluster resources.
-    
-    NETWORK POLICY:
-    Controls permitted network traffic when supported and enforced by the installed network plugin.
-    
-    COMMON NETWORKING FLOW:
-    
-    Client Pod
-       |
-       v
-    Kubernetes Service
-       |
-       v
-    Selected backend Pod
-       |
-       v
-    Application container
-    
-    COMMON NETWORKING ISSUES:
-    
-    1. Pod cannot reach another Pod.
-    2. Service has no endpoints.
-    3. DNS lookup fails.
-    4. NetworkPolicy blocks traffic.
-    5. CNI plugin has failed.
-    6. Application listens only on localhost.
-    7. Firewall or routing rules block traffic.
-    
-    IMPORTANT:
-    A NetworkPolicy resource has no effect unless the cluster network implementation supports and enforces it.
-    
-    Use the actual cluster CNI documentation when diagnosing plugin-specific behavior.
-          `,
-          steps: [
-            "Check Pod IP addresses.",
-            "Check whether the source and destination Pods are healthy.",
-            "Inspect the Service and EndpointSlices.",
-            "Test DNS resolution.",
-            "Test TCP connectivity.",
-            "Inspect NetworkPolicies.",
-            "Investigate CNI and node networking if Pod-level connectivity fails."
-          ],
-          commands: `
-    kubectl get pods -o wide -A
-    
-    kubectl get services -A
-    
-    kubectl get endpointslices -A
-    
-    kubectl get networkpolicies -A
-    
-    kubectl describe networkpolicy <policy-name> -n <namespace>
-    
-    kubectl exec -it <pod-name> -- sh
-          `,
-          config: `
-    apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
-    metadata:
-      name: allow-api-from-frontend
-      namespace: production
-    spec:
-      podSelector:
-        matchLabels:
-          app: api
-      policyTypes:
-        - Ingress
-      ingress:
-        - from:
-            - podSelector:
-                matchLabels:
-                  app: frontend
-          ports:
-            - protocol: TCP
-              port: 8080
-          `,
-          problems: [
-            {
-              issue: "One Pod cannot connect to another Pod.",
-              rootCause:
-                "The application may not be listening, the destination Pod may be unhealthy, or CNI and network policy rules may block traffic.",
-              solution:
-                "Check Pod IPs, application listening address, NetworkPolicies and CNI health."
-            },
-            {
-              issue: "NetworkPolicy blocks application traffic.",
-              rootCause:
-                "The policy may select the destination Pod but fail to allow the intended source or port.",
-              solution:
-                "Inspect policy selectors and allowed traffic. Add only the required ingress or egress rule."
-            }
-          ]
+      "explanation": "Kubernetes - Networking is used in DevOps engineering to solve a specific operational or delivery problem. Understand its purpose, supported use cases, limitations, dependencies and the production problems it helps prevent.",
+      "steps": [
+        "Identify the requirement and expected outcome.",
+        "Understand the core terminology and supported versions.",
+        "Identify upstream and downstream dependencies.",
+        "Define measurable success criteria."
+      ],
+      "heading": "1. Introduction and Purpose"
+    },
+    {
+      "explanation": "Study the architecture of Kubernetes - Networking by identifying its main services, controllers, agents, APIs, configuration sources, storage, network paths and integrations. Trace how a request travels between components and identify the failure boundaries.",
+      "steps": [
+        "List the major components and their responsibilities.",
+        "Map authentication and authorization paths.",
+        "Identify required ports, protocols and dependencies.",
+        "Understand state storage, backup and recovery.",
+        "Document high-availability and failure scenarios."
+      ],
+      "heading": "2. Architecture and Components"
+    },
+    {
+      "explanation": "A typical operation in Kubernetes - Networking starts with a user, API or pipeline request. The system validates input, checks identity and permissions, resolves dependencies, executes the operation and records its result. Study its actual reconciliation, retry, timeout and rollback behavior for the deployed version.",
+      "steps": [
+        "Trace a request from initiation to completion.",
+        "Identify validation and dependency checks.",
+        "Understand desired state and actual state where applicable.",
+        "Inspect retry, timeout and failure handling.",
+        "Locate execution history and audit records."
+      ],
+      "heading": "3. Internal Working"
+    },
+    {
+      "explanation": "Integrate Kubernetes - Networking into a controlled delivery lifecycle. Keep configuration in version control, validate changes, test in lower environments, promote approved artifacts and verify production health after deployment.",
+      "steps": [
+        "Create or update configuration in source control.",
+        "Review the change and validate syntax.",
+        "Run automated tests and security checks.",
+        "Build and version the required artifact.",
+        "Deploy to development and staging.",
+        "Verify logs, metrics and application behavior.",
+        "Promote through approval to production.",
+        "Monitor the release and retain a rollback plan."
+      ],
+      "heading": "4. End-to-End Development to Production Workflow"
+    },
+    {
+      "commands": "kubectl cluster-info\nkubectl get nodes -o wide\nkubectl get pods -A\nkubectl describe pod <pod> -n <namespace>\nkubectl logs <pod> -n <namespace>\nkubectl logs <pod> --previous -n <namespace>\nkubectl get events -A --sort-by=.metadata.creationTimestamp\nkubectl get deployments -A\nkubectl rollout status deployment/<name> -n <namespace>\nkubectl rollout undo deployment/<name> -n <namespace>\nkubectl top nodes\nkubectl top pods -A",
+      "explanation": "Use these operational commands as a starting point for Kubernetes - Networking. Replace placeholders with real resource names. Confirm syntax for the installed version and prefer read-only inspection before making production changes.",
+      "steps": [
+        "Check version and active context.",
+        "Inspect current resource or service status.",
+        "Capture logs and events with timestamps.",
+        "Make one controlled change at a time.",
+        "Verify the final state."
+      ],
+      "heading": "5. Practical Commands"
+    },
+    {
+      "config": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: sample-app\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: sample-app\n  template:\n    metadata:\n      labels:\n        app: sample-app\n    spec:\n      containers:\n        - name: app\n          image: nginx:stable\n          ports:\n            - containerPort: 80\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n            limits:\n              cpu: 500m\n              memory: 512Mi",
+      "explanation": "The following is a reference configuration for the kubernetes tool family. Adapt it to the exact topic, installed version, environment and architecture. Do not apply sample configuration directly to production without validation.",
+      "steps": [
+        "Validate the configuration with the native validator.",
+        "Review permissions and network exposure.",
+        "Keep secrets outside plain-text source files.",
+        "Test in a non-production environment."
+      ],
+      "heading": "6. Configuration Example"
+    },
+    {
+      "explanation": "Troubleshoot Kubernetes - Networking using evidence rather than assumptions. Establish impact and timeline, inspect recent changes, service health, logs, metrics, events and dependencies. Identify the failing layer, apply the smallest safe fix and verify recovery.",
+      "steps": [
+        "Establish incident severity and affected services.",
+        "Record symptoms, timeline and recent changes.",
+        "Inspect application logs, system logs, metrics and events.",
+        "Check DNS, network, identity, storage and dependencies.",
+        "Validate the root-cause hypothesis with evidence.",
+        "Apply a reversible mitigation where possible.",
+        "Verify recovery with health checks and user-facing tests.",
+        "Document the root cause and preventive actions."
+      ],
+      "problems": [
+        {
+          "solution": "Possible root causes include process failure, unhealthy dependencies, network interruption, DNS errors, exhausted resources or invalid configuration. Check service status, recent events, listening ports, dependency health and logs. Correct the confirmed cause and verify with an end-to-end request.",
+          "issue": "Service or operation is unavailable."
+        },
+        {
+          "solution": "Possible root causes include expired credentials, incorrect identity, missing permissions, invalid tokens or policy changes. Verify the active identity, credential expiry, role or policy evaluation and audit logs. Apply least-privilege corrections and retest with the intended identity.",
+          "issue": "Authentication or authorization fails."
+        },
+        {
+          "solution": "Possible root causes include syntax errors, unsupported versions, missing variables, invalid references or dependency mismatch. Inspect the first meaningful error, compare against the last working revision, validate dependencies and test a minimal correction.",
+          "issue": "Deployment or configuration validation fails."
+        },
+        {
+          "solution": "Possible root causes include CPU or memory pressure, disk saturation, connection exhaustion, slow dependencies or insufficient capacity. Correlate latency and error metrics with logs, inspect resource usage and dependency timings, mitigate the confirmed bottleneck and verify recovery.",
+          "issue": "Performance is degraded or requests time out."
+        },
+        {
+          "solution": "Correlate the incident start time with deployment and configuration changes. Review the change diff, release logs and health metrics. Use the approved rollback or roll-forward procedure, verify recovery and document preventive actions.",
+          "issue": "A recent production change caused unexpected behavior."
         }
-  ]
+      ],
+      "heading": "7. Production Troubleshooting and Root Cause Analysis"
+    },
+    {
+      "explanation": "Operate Kubernetes - Networking with least privilege, protected secrets, patch management, audit logging, backups, capacity planning and tested recovery procedures. Monitor availability, latency, throughput, error rate, saturation and relevant business indicators.",
+      "interviewQuestions": [
+        {
+          "answer": "networking addresses a specific requirement within kubernetes. Explain the use case, architecture, dependencies and operational benefits in the context of the environment where it is deployed.",
+          "question": "What is the purpose of "
+        },
+        {
+          "answer": "I would establish impact and timeline, inspect health and recent changes, review logs and metrics, verify dependencies and permissions, isolate the failing layer, apply a safe fix and validate recovery.",
+          "question": "How would you troubleshoot a failure?"
+        },
+        {
+          "answer": "I would use version-controlled configuration, least-privilege access, secure secrets, monitoring, backups, capacity planning, tested recovery and a documented change process.",
+          "question": "How do you prepare this for production?"
+        },
+        {
+          "answer": "Logs provide event-level evidence while metrics reveal trends and system behavior. Correlating them helps identify failures, measure impact and verify fixes.",
+          "question": "Why are logs and monitoring important?"
+        },
+        {
+          "answer": "I use peer-reviewed changes, automated validation, staged rollout, health checks, approvals, observability and a tested rollback or recovery plan.",
+          "question": "How do you reduce production change risk?"
+        }
+      ],
+      "steps": [
+        "Use least-privilege access and rotate credentials.",
+        "Keep software and dependencies patched.",
+        "Enable audit logs and appropriate retention.",
+        "Monitor actionable service-level indicators.",
+        "Back up critical state and test restoration.",
+        "Use peer review and documented rollback plans.",
+        "Automate safe repetitive operational tasks."
+      ],
+      "heading": "8. Security, Monitoring, Best Practices and Interview Questions"
+    }
+  ],
+  "description": "DevOps reference notes for Kubernetes - Networking covering concepts, architecture, internal workflow, delivery lifecycle, commands, configuration, production troubleshooting, security, monitoring and interview preparation.",
+  "title": "Kubernetes - Networking"
 };
 
 export default data;
+
