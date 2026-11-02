@@ -10,7 +10,7 @@ const categories = [
   { name: "Real-Time Production Scenario Questions", slug: "production-scenarios" },
   { name: "Troubleshooting-Based Questions", slug: "troubleshooting" },
   { name: "Scenario-Based Practical Questions", slug: "practical-scenarios" },
-  { name: "Frequently Asked Interview Questions", slug: "frequently-asked" }
+  { name: "Frequently Asked Interview Questions", slug: "frequently-asked" },
 ];
 
 const tools = [
@@ -19,8 +19,14 @@ const tools = [
   ["Ansible", "ansible"], ["Linux", "linux"], ["ArgoCD", "argocd"],
   ["Helm", "helm"], ["Prometheus", "prometheus"], ["Grafana", "grafana"],
   ["EKS", "eks"], ["Maven", "maven"], ["Nexus", "nexus"],
-  ["Jira", "jira"], ["Tomcat", "tomcat"]
+  ["Jira", "jira"], ["Tomcat", "tomcat"],
 ];
+
+type InterviewEntry = {
+  heading: string;
+  explanation: string;
+  interviewQuestions?: { question: string; answer: string }[];
+};
 
 export function generateStaticParams() {
   return categories.flatMap((category) =>
@@ -29,9 +35,9 @@ export function generateStaticParams() {
 }
 
 export default async function ToolInterviewPage({
-  params
+  params,
 }: {
-  params: Promise<{ category: string; tool: string }>
+  params: Promise<{ category: string; tool: string }>;
 }) {
   const { category, tool } = await params;
   const selectedCategory = categories.find((item) => item.slug === category);
@@ -40,17 +46,35 @@ export default async function ToolInterviewPage({
   if (!selectedCategory || !selectedTool) notFound();
 
   const heading = `${selectedTool[0]} - ${selectedCategory.name}`;
-  const section = interviewQA.sections.find((item: { heading: string }) => item.heading === heading);
+  const entries = interviewQA as unknown as InterviewEntry[];
+  const entry = entries.find((item) => item.heading === heading);
 
-  if (!section) notFound();
+  if (!entry) notFound();
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-8">
-      <Link href={`/notes-cheat-sheets/interview-revision/interview-qa/${category}`} className="text-sm text-blue-600">
+      <Link
+        href={`/notes-cheat-sheets/interview-revision/interview-qa/${category}`}
+        className="text-sm text-blue-600"
+      >
         ← Back to {selectedCategory.name}
       </Link>
+
       <h1 className="mt-5 mb-6 text-3xl font-bold">{heading}</h1>
-      <NotesRenderer data={{ title: heading, description: interviewQA.description, sections: [section] }} />
+
+      <NotesRenderer
+        data={{
+          title: heading,
+          description: entry.explanation,
+          sections: [
+            {
+              heading: entry.heading,
+              explanation: entry.explanation,
+              interviewQuestions: entry.interviewQuestions ?? [],
+            },
+          ],
+        }}
+      />
     </main>
   );
 }
