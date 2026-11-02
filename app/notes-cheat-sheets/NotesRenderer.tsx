@@ -28,6 +28,30 @@ type NotesRendererProps = {
   backLabel?: string;
 };
 
+function renderExplanation(explanation: string) {
+  return explanation.split(/\r?\n/).map((line, index) => {
+    const trimmed = line.trim();
+    const numbered = trimmed.match(/^(\d+)\.\s+(.+)$/);
+
+    if (!trimmed) {
+      return <div key={index} className="h-2" />;
+    }
+
+    if (numbered) {
+      return (
+        <p key={index} className="mt-4 font-semibold text-cyan-100">
+          {numbered[1]}. {numbered[2]}
+        </p>
+      );
+    }
+
+    return (
+      <p key={index} className="mt-1">
+        {trimmed}
+      </p>
+    );
+  });
+}
 export default function NotesRenderer({ data }: NotesRendererProps) {
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100 sm:px-8">
@@ -43,10 +67,12 @@ export default function NotesRenderer({ data }: NotesRendererProps) {
           {data.sections.map((section) => (
             <article key={section.heading} className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
               <h2 className="text-xl font-bold text-cyan-200">{section.heading}</h2>
-              <p className="mt-4 leading-7 text-slate-300">{section.explanation}</p>
+              <div className="mt-4 whitespace-pre-line leading-8 text-slate-300">
+  {(data.title.toLowerCase().includes("architecture") || data.title.toLowerCase().includes("real-time")) ? renderExplanation(section.explanation) : section.explanation}
+</div>
 
               <h3 className="mt-6 font-semibold text-white">Practical Steps</h3>
-              <ol className="mt-3 list-decimal space-y-2 pl-6 leading-7 text-slate-300">
+              <ol className="mt-3 list-decimal space-y-3 pl-6 leading-8 text-slate-300">
                 {(section.steps ?? []).map((step) => <li key={step}>{step}</li>)}
               </ol>
 
