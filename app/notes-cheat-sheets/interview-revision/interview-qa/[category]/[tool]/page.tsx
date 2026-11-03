@@ -14,12 +14,23 @@ const categories = [
 ];
 
 const tools = [
-  ["AWS", "aws"], ["Docker", "docker"], ["Kubernetes", "kubernetes"],
-  ["Jenkins", "jenkins"], ["Git", "git"], ["Terraform", "terraform"],
-  ["Ansible", "ansible"], ["Linux", "linux"], ["ArgoCD", "argocd"],
-  ["Helm", "helm"], ["Prometheus", "prometheus"], ["Grafana", "grafana"],
-  ["EKS", "eks"], ["Maven", "maven"], ["Nexus", "nexus"],
-  ["Jira", "jira"], ["Tomcat", "tomcat"],
+  ["Ansible", "ansible"],
+  ["ArgoCD", "argocd"],
+  ["AWS", "aws"],
+  ["Docker", "docker"],
+  ["EKS", "eks"],
+  ["Git", "git"],
+  ["Grafana", "grafana"],
+  ["Helm", "helm"],
+  ["Jenkins", "jenkins"],
+  ["Jira", "jira"],
+  ["Kubernetes", "kubernetes"],
+  ["Linux", "linux"],
+  ["Maven", "maven"],
+  ["Nexus", "nexus"],
+  ["Prometheus", "prometheus"],
+  ["Terraform", "terraform"],
+  ["Tomcat", "tomcat"],
 ];
 
 type InterviewEntry = {
