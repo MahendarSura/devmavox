@@ -52,69 +52,6 @@ function renderExplanation(explanation: string) {
     );
   });
 }
-function renderInterviewAnswer(answer: string) {
-  const lines = answer.split(/\r?\n/);
-
-  const commandPattern =
-    /^\s*(?:(?:\$|#)\s*)?(?:aws|kubectl|docker|docker-compose|git|terraform|ansible|helm|argocd|jenkins(?:-cli)?|mvn|npm|npx|systemctl|journalctl|curl|wget|ssh|scp|chmod|chown|grep|find|tail|head|cat|less|ps|top|df|du|free|ping|traceroute|nslookup|dig|netstat|ss|iptables|firewall-cmd|podman|crictl|ctr|openssl|python|pip|bash|sh|apt|yum|dnf|rpm|kubectx|kubens|kustomize|istioctl|gcloud|az|s3cmd|mysql|psql|redis-cli|mongosh|nc|telnet|make|gradle|mvnw|java|javac|go|node|pm2|supervisorctl|consul|vault|packer|terragrunt|tofu)\b/i;
-
-  return (
-    <div className="space-y-2">
-      {lines.map((line, index) => {
-        const check = line.trim();
-
-        if (check.length === 0) {
-          return <div key={index} className="h-2" />;
-        }
-
-        const isHeading =
-          /^[A-Z][A-Z0-9 &/()_.:+-]{3,}$/.test(check);
-
-        if (isHeading) {
-          return (
-            <h4
-              key={index}
-              className="pt-4 pb-1 font-bold tracking-wide text-cyan-300 whitespace-pre-wrap"
-            >
-              {line}
-            </h4>
-          );
-        }
-
-        if (/^\s*\d+[.)]\s/.test(line)) {
-          return (
-            <p
-              key={index}
-              className="ml-2 border-l-2 border-cyan-700 pl-4 py-1 leading-7 text-slate-200 whitespace-pre-wrap"
-            >
-              {line}
-            </p>
-          );
-        }
-
-        if (commandPattern.test(line)) {
-          return (
-            <pre
-              key={index}
-              className="overflow-x-auto rounded-lg border border-slate-700 bg-black p-4 text-sm leading-6 text-green-300 whitespace-pre-wrap"
-            >
-              <code>{line}</code>
-            </pre>
-          );
-        }
-
-        return (
-          <p
-            key={index}
-            className="leading-7 text-slate-300 whitespace-pre-wrap"
-          >
-            {line}
-          </p>
-        );
-      })}
-    </div>
-  );
-}
 export default function NotesRenderer({ data }: NotesRendererProps) {
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100 sm:px-8">
@@ -179,7 +116,9 @@ export default function NotesRenderer({ data }: NotesRendererProps) {
                         <p className="font-semibold text-cyan-300">
                           Q{index + 1}. {item.question}
                         </p>
-                        <div className="mt-4">{renderInterviewAnswer(item.answer)}</div>
+                        <p className="mt-2 text-sm leading-6 text-slate-300">
+                          {item.answer}
+                        </p>
                       </div>
                     ))}
                   </div>
