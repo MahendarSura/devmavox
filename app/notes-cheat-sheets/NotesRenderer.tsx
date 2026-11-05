@@ -64,8 +64,8 @@ export default function NotesRenderer({ data }: NotesRendererProps) {
         <p className="mt-4 leading-7 text-slate-300">{data.description}</p>
 
         <div className="mt-8 space-y-8">
-          {data.sections.map((section) => (
-            <article key={section.heading} className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+          {data.sections.map((section, index) => (
+            <article key={`${section.heading}-${index}`} className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
               <h2 className="text-xl font-bold text-cyan-200">{section.heading}</h2>
               <div className="mt-4 whitespace-pre-line leading-8 text-slate-300">
   {(data.title.toLowerCase().includes("architecture") || data.title.toLowerCase().includes("real-time")) ? renderExplanation(section.explanation) : section.explanation}
