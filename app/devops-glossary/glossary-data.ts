@@ -1,15 +1,45 @@
+import { buildBulkGlossaryLearningContent } from "./bulk-glossary-learning-content";
 import { dockerGlossaryDetails } from "./docker-glossary-details";
 import { kubernetesGlossaryDetails } from "./kubernetes-glossary-details";
 import { cicdGlossaryDetails } from "./cicd-glossary-details";
 import { gitGlossaryDetails } from "./git-glossary-details";
 import { iacGlossaryDetails } from "./iac-glossary-details";
-import { gitopsGlossaryDetails } from "./gitops-glossary-details";
+import { gitopsGlossaryDetails } from "./gitops-glossary-details";
+
 import { monitoringGlossaryDetails } from "./monitoring-glossary-details";
 import { linuxGlossaryDetails } from "./linux-glossary-details";
 import { productionReliabilityGlossaryDetails } from "./production-reliability-glossary-details";
 import { fundamentalsGlossaryDetails } from "./fundamentals-glossary-details";
 import { devsecopsSecurityGlossaryDetails } from "./devsecops-security-glossary-details";
 import { cloudAwsGlossaryDetails } from "./cloud-aws-glossary-details";
+import { dockerRemainingLearningContent } from "./docker-remaining-learning-content";
+import { dockerCategoryLearningContent } from "./docker-category-learning-content";
+import { kubernetesCategoryLearningContent } from "./kubernetes-category-learning-content";
+import { cicdCategoryLearningContent } from "./cicd-category-learning-content";
+import { gitCategoryLearningContent } from "./git-category-learning-content";
+import { iacCategoryLearningContent } from "./iac-category-learning-content";
+import { gitopsCategoryLearningContent } from "./gitops-category-learning-content";
+import { monitoringCategoryLearningContent } from "./monitoring-category-learning-content";
+import { linuxCategoryLearningContent } from "./linux-category-learning-content";
+import { productionReliabilityCategoryLearningContent } from "./production-reliability-category-learning-content";
+import { fundamentalsCategoryLearningContent } from "./fundamentals-category-learning-content";
+import { devsecopsSecurityCategoryLearningContent } from "./devsecops-security-category-learning-content";
+import { cloudAwsCategoryLearningContent } from "./cloud-aws-category-learning-content";
+export type GlossaryLearningSection = {
+  title: string;
+    teluguTitle?: string;
+  items: {
+    title: string;
+    teluguTitle?: string;
+    explanation: string;
+    teluguExplanation?: string;
+    example?: string;
+    teluguExample?: string;
+    details?: string[];
+    teluguDetails?: string[];
+    commands?: string[];
+  }[];
+};
 export type GlossaryTerm = {
   name: string;
   definition: string;
@@ -23,11 +53,13 @@ export type GlossaryTerm = {
   troubleshooting?: string[];
   bestPractices?: string[];
   securityConsiderations?: string[];
+  learningContent?: GlossaryLearningSection[];
 };
 
 export type GlossaryCategory = {
   slug: string;
   title: string;
+    teluguTitle?: string;
   description: string;
   purpose: string;
   icon: string;
@@ -69,6 +101,48 @@ const makeTerms = (
       ...fundamentalsGlossaryDetails[name],
       ...cloudAwsGlossaryDetails[name],
       ...devsecopsSecurityGlossaryDetails[name],
+      ...(buildBulkGlossaryLearningContent(name, definition, project, related)
+        ? { learningContent: buildBulkGlossaryLearningContent(name, definition, project, related) }
+        : {}),
+    ...(dockerRemainingLearningContent[name]
+      ? { learningContent: dockerRemainingLearningContent[name] }
+      : {}),
+    ...(dockerCategoryLearningContent[name]
+      ? { learningContent: dockerCategoryLearningContent[name] }
+      : {}),
+  ...(kubernetesCategoryLearningContent[name]
+    ? { learningContent: kubernetesCategoryLearningContent[name] }
+    : {}),
+  ...(cicdCategoryLearningContent[name]
+    ? { learningContent: cicdCategoryLearningContent[name] }
+    : {}),
+  ...(gitCategoryLearningContent[name]
+    ? { learningContent: gitCategoryLearningContent[name] }
+    : {}),
+  ...(iacCategoryLearningContent[name]
+    ? { learningContent: iacCategoryLearningContent[name] }
+    : {}),
+  ...(gitopsCategoryLearningContent[name]
+    ? { learningContent: gitopsCategoryLearningContent[name] }
+    : {}),
+  ...(monitoringCategoryLearningContent[name]
+    ? { learningContent: monitoringCategoryLearningContent[name] }
+    : {}),
+  ...(linuxCategoryLearningContent[name]
+    ? { learningContent: linuxCategoryLearningContent[name] }
+    : {}),
+  ...(productionReliabilityCategoryLearningContent[name]
+    ? { learningContent: productionReliabilityCategoryLearningContent[name] }
+    : {}),
+  ...(fundamentalsCategoryLearningContent[name]
+    ? { learningContent: fundamentalsCategoryLearningContent[name] }
+    : {}),
+  ...(devsecopsSecurityCategoryLearningContent[name]
+    ? { learningContent: devsecopsSecurityCategoryLearningContent[name] }
+    : {}),
+  ...(cloudAwsCategoryLearningContent[name]
+    ? { learningContent: cloudAwsCategoryLearningContent[name] }
+    : {}),
   }));
 
 export const glossaryCategories: GlossaryCategory[] = [
@@ -315,6 +389,213 @@ export const glossaryCategories: GlossaryCategory[] = [
   },
 ];
 
+/* DEVMAvox_DOCKER_STYLE_17_SECTION_NORMALIZER */
+const dockerStyle17Titles = [
+  "1. Purpose – Why Is It Used?",
+  "2. Real-Time Project Example",
+  "3. How It Works – Workflow",
+  "4. Practical Commands",
+  "5. Common Mistakes",
+  "6. Configuration Examples",
+  "7. Troubleshooting",
+  "8. Best Practices",
+  "9. Security Considerations",
+  "10. Related Concepts",
+  "11. Architecture & Internals",
+  "12. Implementation – Hands-on",
+  "13. Production Use Cases",
+  "14. Monitoring & Observability",
+  "15. Recovery & Incident Management",
+  "16. Automation & CI/CD Integration",
+  "17. Performance & Capacity",
+];
+
+const dockerStyle17Telugu = (name: string, topic: string) =>
+  `${name} లో ${topic} ను అమలు చేసేటప్పుడు project requirement, dependencies, permissions మరియు environment ను ముందుగా పరిశీలించాలి. Change చేసిన తర్వాత logs, status, metrics మరియు application behaviour ద్వారా ఫలితాన్ని validate చేయాలి. Production లో అమలు చేసే ముందు staging లో పరీక్షించి rollback విధానాన్ని సిద్ధంగా ఉంచాలి.`;
+
+const dockerStyle17English = (name: string, topic: string, context: string) =>
+  `For ${name}, ${topic.toLowerCase()} must be handled according to the technology's actual role in the project. ${context} Validate prerequisites, permissions, dependencies and the resulting runtime behaviour. Test changes outside production first, monitor the result and document the operational evidence.`;
+
+function normalizeDockerStyle17(term: GlossaryTerm): void {
+  if (!term.learningContent || term.learningContent.length < 13) return;
+
+  const old = term.learningContent;
+
+  const fillMissingTranslations = (
+    section: GlossaryLearningSection,
+    index: number
+  ): GlossaryLearningSection => {
+    const items = section.items || [];
+
+    return {
+      ...section,
+      title: dockerStyle17Titles[index],
+      items: items.map((item) => ({
+        ...item,
+        explanation:
+          item.explanation?.trim() ||
+          dockerStyle17English(
+            term.name,
+            item.title || section.title,
+            term.definition || term.purpose || "This concept supports the DevOps lifecycle."
+          ),
+        teluguExplanation:
+          item.teluguExplanation?.trim() ||
+          dockerStyle17Telugu(
+            term.name,
+            item.title || section.title
+          ),
+      })),
+    };
+  };
+
+  // Existing 17-section content: preserve every section and item.
+  // Only correct titles and fill missing translations.
+  if (old.length === 17) {
+    term.learningContent = old.map((section, index) =>
+      fillMissingTranslations(section, index)
+    );
+    return;
+  }
+
+  // Do not silently discard unexpected structures.
+  if (old.length !== 13) {
+    throw new Error(
+      `${term.name}: expected 13 or 17 sections, found ${old.length}`
+    );
+  }
+
+  // Reorder the original 13 sections into the required Docker order.
+  const ordered = [
+    old[0],
+    old[2],
+    old[1],
+    old[5],
+    old[7],
+    old[6],
+    old[8],
+    old[9],
+    old[10],
+    old[12],
+    old[3],
+    old[4],
+    old[11],
+  ];
+
+  const base = ordered.map((section, index) =>
+    fillMissingTranslations(section, index)
+  );
+
+  const commands = term.commands?.length ? term.commands : [];
+  const related = term.related?.length ? term.related : [];
+  const workflow = term.workflow?.length ? term.workflow : [];
+  const project = term.project || "the production application";
+  const definition = term.definition ||
+    `${term.name} supports a defined part of the DevOps lifecycle.`;
+
+  const extras: GlossaryLearningSection[] = [
+    {
+      title: dockerStyle17Titles[13],
+      items: [{
+        title: `${term.name} – Monitoring & Observability`,
+        explanation: `Monitor ${term.name} by collecting relevant availability, success and failure counts, latency, resource consumption and dependency health. Establish baselines, configure actionable alerts and correlate metrics with logs and deployment changes. In ${project}, validate both component health and the user-visible outcome.`,
+        teluguExplanation: `${term.name} monitoring కోసం availability, success/failure counts, latency, resource usage మరియు dependency health పరిశీలించాలి. Baseline నిర్ణయించి actionable alerts configure చేయాలి. Logs, metrics మరియు deployment changes correlate చేసి ${project} లో application behaviour కూడా validate చేయాలి.`,
+        details: [
+          `Monitoring objective: verify the expected behaviour of ${term.name}.`,
+          "Record baseline values before changing thresholds.",
+          "Correlate alerts with logs, metrics, traces and deployment history.",
+          "Alert on actionable symptoms and assign clear ownership.",
+        ],
+        ...(commands.length ? { commands } : {}),
+      }],
+    },
+    {
+      title: dockerStyle17Titles[14],
+      items: [{
+        title: `${term.name} – Recovery & Incident Management`,
+        explanation: `When ${term.name} fails, identify the affected scope, capture timestamps and error evidence, and compare the current state with the last known-good state. Follow the documented recovery procedure, restore required configuration or dependencies, and validate the service before declaring recovery.`,
+        teluguExplanation: `${term.name} failure వచ్చినప్పుడు affected scope గుర్తించి timestamps, errors మరియు logs సేకరించాలి. Current state ను last known-good state తో compare చేయాలి. Documented recovery procedure ప్రకారం configuration లేదా dependencies restore చేసి service health validate చేయాలి.`,
+        details: [
+          "Preserve logs, events and recent-change evidence.",
+          "Prefer a known-good rollback or documented restore procedure.",
+          "Validate dependencies and end-to-end application behaviour.",
+          "Record root cause, customer impact and preventive actions.",
+          ...(term.troubleshooting || []).slice(0, 3),
+        ],
+      }],
+    },
+    {
+      title: dockerStyle17Titles[15],
+      items: [{
+        title: `${term.name} – Automation & CI/CD Integration`,
+        explanation: `Integrate ${term.name} into the delivery workflow at the appropriate stage. Version-control configuration when appropriate, validate changes automatically, use scoped credentials and make pipeline failures visible. Promote reviewed configuration or artifacts through controlled environments with production approval and rollback gates.`,
+        teluguExplanation: `${term.name} ను delivery workflow లో సరైన stage వద్ద integrate చేయాలి. Configuration ను version control లో ఉంచి automated validation చేయాలి. Scoped credentials ఉపయోగించి reviewed configuration లేదా artifacts ను controlled environments ద్వారా promote చేయాలి. Production changes కు approval మరియు rollback gates ఉండాలి.`,
+        details: [
+          "Trigger automation from reviewed source or configuration changes.",
+          "Validate syntax, policies, tests and prerequisites.",
+          "Use least-privilege service identities and protected secrets.",
+          "Keep pipeline output and deployment evidence traceable.",
+          ...workflow.slice(0, 3),
+        ],
+      }],
+    },
+    {
+      title: dockerStyle17Titles[16],
+      items: [{
+        title: `${term.name} – Performance & Capacity`,
+        explanation: `Evaluate ${term.name} against the workload it supports in ${project}. Identify bottlenecks using throughput, latency, queue depth, CPU, memory, storage, connection limits or concurrency as appropriate. Load-test meaningful changes, define capacity thresholds and verify that scaling does not create downstream pressure.`,
+        teluguExplanation: `${project} లో ${term.name} పై పడే workload ఆధారంగా performance మరియు capacity evaluate చేయాలి. Throughput, latency, queue depth, CPU, memory, storage మరియు concurrency వంటి relevant metrics పరిశీలించాలి. Changes ను load test చేసి capacity thresholds నిర్ణయించాలి. Scaling వల్ల downstream services పై అదనపు ఒత్తిడి రాకుండా verify చేయాలి.`,
+        details: [
+          `Performance context: ${definition}`,
+          "Measure a baseline and compare results after each change.",
+          "Check the component and its upstream/downstream dependencies.",
+          "Set capacity limits and scaling thresholds.",
+          ...(related.length ? [`Related dependencies: ${related.join(", ")}`] : []),
+        ],
+      }],
+    },
+  ];
+
+  term.learningContent = [...base, ...extras];
+}
+
+// Normalize all concepts. Preserve Docker Container completely.
+for (const category of glossaryCategories) {
+  for (const term of category.terms) {
+    if (
+      category.slug === "containers-docker" &&
+      term.name === "Docker Container"
+    ) {
+      continue;
+    }
+
+    normalizeDockerStyle17(term);
+
+    // Remove only the automatically generated generic Telugu paragraph.
+    // Preserve original Telugu explanations in all other items.
+    if (
+      category.slug === "containers-docker" &&
+      term.learningContent
+    ) {
+      for (const section of term.learningContent) {
+        section.items = section.items.map((item) => {
+          const generatedParagraph = dockerStyle17Telugu(
+            term.name,
+            item.title || section.title
+          );
+
+          if (item.teluguExplanation === generatedParagraph) {
+            const updated = { ...item };
+            delete updated.teluguExplanation;
+            return updated;
+          }
+
+          return item;
+        });
+      }
+    }
+  }
+}
 export function slugify(value: string): string {
   return value
     .toLowerCase()
@@ -340,14 +621,3 @@ export function getAllTermParams() {
     }))
   );
 }
-
-
-
-
-
-
-
-
-
-
-

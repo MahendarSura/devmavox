@@ -1,5 +1,7 @@
 import type { GlossaryTerm } from "./glossary-data";
+import { dockerContainerLearningContent } from "./docker-container-learning-content";
 
+import { dockerImageLearningContent } from "./docker-image-learning-content";
 export const dockerGlossaryDetails: Record<string, Partial<GlossaryTerm>> = {
   "Docker": {
     project: "In a DevMavox application environment, developers use Docker to package the Next.js application and its runtime dependencies into a consistent container image. The same image is tested in development, validated in CI/CD, and deployed to staging and production.",
@@ -95,10 +97,12 @@ export const dockerGlossaryDetails: Record<string, Partial<GlossaryTerm>> = {
       "Never include secrets in image layers; deleting a secret in a later layer does not reliably remove it from the earlier layer.",
       "Use trusted, maintained base images and scan the final image for vulnerabilities.",
       "Restrict who can push to production repositories and enable registry access controls."
-    ]
+    ],
+    learningContent: dockerImageLearningContent,
   },
 
   "Docker Container": {
+    learningContent: dockerContainerLearningContent,
     project: "The DevMavox deployment runs the application as a Docker container created from an approved image. The container receives environment configuration, exposes the application port, and uses health checks so the deployment platform can detect failures.",
     purpose: "A container is an isolated process environment created from an image. It has its own filesystem view, process namespace and network configuration, while sharing the host kernel. Containers provide a consistent way to start, stop, replace and scale application instances without rebuilding the application for every deployment.",
     workflow: [
@@ -522,4 +526,3 @@ export const dockerGlossaryDetails: Record<string, Partial<GlossaryTerm>> = {
     ]
   }
 };
-
