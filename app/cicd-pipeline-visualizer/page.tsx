@@ -444,10 +444,6 @@ export default function CicdPipelineVisualizerPage() {
                   onClick={() => {
                     setActive(section.id);
                     setExpanded(section.id);
-                    document.getElementById(section.id)?.scrollIntoView({
-                      behavior: "smooth",
-                      block: "start"
-                    });
                   }}
                   className={`rounded-lg px-3 py-2 text-left text-xs transition ${
                     active === section.id
@@ -462,8 +458,7 @@ export default function CicdPipelineVisualizerPage() {
             </nav>
           </aside>
 
-          <div className="space-y-4">
-            {sections.map((section) => (
+          <div className="space-y-4">`r`n            {sections.filter((section) => section.id === active).map((section) => (
               <section
                 id={section.id}
                 key={section.id}
