@@ -1,1 +1,5 @@
-export default function Page() { return <main><h1>command-explorer</h1></main> }
+import FeatureExplorer from "@/components/devmavox-learning/FeatureExplorer";
+
+export default function Page() {
+  return <FeatureExplorer featureId="command-explorer" />;
+}

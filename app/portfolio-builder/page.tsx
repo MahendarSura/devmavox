@@ -1,1 +1,5 @@
-export default function Page() { return <main><h1>portfolio-builder</h1></main> }
+import FeatureExplorer from "@/components/devmavox-learning/FeatureExplorer";
+
+export default function Page() {
+  return <FeatureExplorer featureId="portfolio-builder" />;
+}
