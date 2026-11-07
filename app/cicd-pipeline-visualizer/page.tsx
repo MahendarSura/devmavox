@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { cicdTopicContent } from "./cicd-learning-content";
 
 type Topic = {
   title: string;
@@ -668,6 +669,331 @@ const stages: Stage[] = [
   }
 ];
 
+
+// DEVMAVOX_BATCH_1_GITHUB_JENKINS
+const addDevMavoxTopic = (
+  stageId: number,
+  topic: (typeof stages)[number]["topics"][number]
+) => {
+  const stage = stages.find(item => item.id === stageId);
+  if (stage && !stage.topics.some(item => item.title === topic.title)) {
+    stage.topics.push(topic);
+  }
+};
+
+// ============================================================
+// STAGE 2 — GITHUB: 9 ADDITIONAL TOPICS
+// ============================================================
+
+addDevMavoxTopic(2, {
+  title: "Commit Hygiene and Atomic Changes",
+  overview: "A Git commit records a snapshot of staged changes. Atomic commits group one logical change so reviewers can understand exactly what was modified and why.",
+  purpose: "Small, meaningful commits make code review, regression investigation, cherry-picking and rollback safer.",
+  architecture: "Working tree → Git staging area → Commit object → Local branch → Remote GitHub branch.",
+  workflow: ["Check modified files.", "Review the diff.", "Stage only related files.", "Write a clear commit message.", "Create the commit.", "Inspect the commit.", "Push the branch."],
+  example: "A payment validation fix is committed separately from an unrelated README update, allowing reviewers to understand and revert the functional change independently.",
+  commands: ["git status --short", "git diff", "git add src/main/java/com/example/payment/PaymentService.java", "git diff --cached", "git commit -m 'fix: reject negative payment amounts'", "git show --stat --oneline HEAD"],
+  configuration: "Define a commit-message convention such as type: summary. Configure repository contribution guidance and optional commit-message validation.",
+  failures: ["Unrelated files are included.", "A generated file is committed.", "Commit message does not explain intent.", "Sensitive configuration is staged accidentally."],
+  recovery: ["Inspect git diff --cached before committing.", "Unstage unrelated files with git restore --staged.", "Correct the commit message when safe.", "Remove exposed secrets and rotate credentials immediately."],
+  bestPractices: ["Keep commits focused.", "Review staged changes.", "Do not commit build output or secrets.", "Mention the reason for a non-obvious change.", "Avoid giant commits."],
+  exercise: "Create two separate commits for a payment validation change and a documentation change. Inspect both with git log and git show.",
+  interview: ["What is an atomic commit?", "What is the difference between the working tree and staging area?", "Why should developers inspect git diff --cached?"]
+});
+
+addDevMavoxTopic(2, {
+  title: "Branch Protection and Repository Rulesets",
+  overview: "GitHub branch protection and repository rulesets enforce conditions before changes can enter important branches such as main.",
+  purpose: "They prevent unreviewed, untested or unauthorized changes from bypassing the team's integration process.",
+  architecture: "Developer branch → Pull request → Required approvals and status checks → Merge authorization → Protected main branch.",
+  workflow: ["Open repository settings.", "Select branch protection or rulesets.", "Choose the target branch pattern.", "Require pull requests.", "Set approval requirements.", "Require CI status checks.", "Save and test the policy."],
+  example: "The payment repository requires one approval and successful Jenkins checks before a pull request can merge into main.",
+  commands: ["git branch --show-current", "git status", "git fetch origin", "git log origin/main --oneline -5"],
+  configuration: "Require pull requests, required checks and appropriate approvals. Apply restrictions carefully to administrators and automation identities according to organizational policy.",
+  failures: ["A required status check is not recognized.", "A developer bypasses an intended rule.", "No eligible reviewer can approve.", "A ruleset targets the wrong branch pattern."],
+  recovery: ["Verify the exact check name reported by GitHub.", "Review bypass permissions.", "Correct reviewer and team permissions.", "Test the branch pattern against the intended branches."],
+  bestPractices: ["Protect main and release branches.", "Require checks that actually validate the code.", "Review bypass permissions periodically.", "Avoid requiring obsolete CI check names.", "Document emergency merge procedures."],
+  exercise: "Configure a test repository so main requires one approval and a successful CI status check.",
+  interview: ["What is branch protection?", "What is a GitHub ruleset?", "Why must required status-check names match the checks reported by CI?"]
+});
+
+addDevMavoxTopic(2, {
+  title: "Code Review and CODEOWNERS",
+  overview: "Code review is a structured examination of proposed changes. CODEOWNERS maps repository paths to responsible users or teams.",
+  purpose: "Review ownership helps ensure that sensitive application areas receive feedback from engineers familiar with their behavior and risks.",
+  architecture: "Pull request diff → Changed file paths → CODEOWNERS matching → Review request → Comments and approval.",
+  workflow: ["Identify changed paths.", "Check applicable CODEOWNERS entries.", "Request reviewers.", "Review correctness and security.", "Submit comments.", "Resolve discussions.", "Approve when requirements are satisfied."],
+  example: "Changes under src/main/java/com/example/payment/ require review from the payment-platform team.",
+  commands: ["git diff origin/main...HEAD --name-only", "git diff origin/main...HEAD", "git ls-files CODEOWNERS"],
+  configuration: "Create a CODEOWNERS file in a supported repository location. Use valid GitHub usernames or team references and ensure owners have repository access.",
+  failures: ["CODEOWNERS path pattern does not match.", "Referenced team lacks access.", "Review request is not generated.", "A critical change receives no domain review."],
+  recovery: ["Validate path patterns and file location.", "Check team membership and repository permissions.", "Re-request reviewers after correcting ownership.", "Inspect the changed-file list."],
+  bestPractices: ["Assign owners to critical paths.", "Keep ownership current.", "Avoid assigning every file to one overloaded team.", "Review security-sensitive changes carefully.", "Treat approval as technical review, not a formality."],
+  exercise: "Create a CODEOWNERS entry for the payment service and verify which team should review a sample pull request.",
+  interview: ["What is CODEOWNERS?", "How does code review reduce production risk?", "What should a reviewer check beyond code formatting?"]
+});
+
+addDevMavoxTopic(2, {
+  title: "Merge Strategies: Merge, Squash and Rebase",
+  overview: "GitHub supports different ways to integrate pull-request commits. Merge commits preserve branch history, squash combines changes into one commit, and rebase replays commits onto a new base.",
+  purpose: "A consistent merge strategy makes repository history easier to understand and maintain.",
+  architecture: "Feature branch commits → Pull request validation → Selected integration strategy → Updated target branch history.",
+  workflow: ["Review branch history.", "Confirm repository merge policy.", "Check whether the branch is current.", "Select the permitted strategy.", "Merge the pull request.", "Inspect main history."],
+  example: "A team uses squash merging for short-lived feature branches so each merged payment feature appears as one logical commit on main.",
+  commands: ["git log --oneline --graph --decorate --all", "git fetch origin", "git rebase origin/main", "git log origin/main --oneline -10"],
+  configuration: "Enable only the merge methods supported by the team's branching policy in GitHub repository settings.",
+  failures: ["Rebase creates conflicts.", "Squashing removes useful individual commit context.", "Merge commit history becomes difficult to follow.", "A branch is rewritten after collaborators have based work on it."],
+  recovery: ["Resolve conflicts and continue the rebase.", "Abort with git rebase --abort when necessary.", "Coordinate rewritten shared branches.", "Use the team's documented merge strategy."],
+  bestPractices: ["Choose a consistent strategy.", "Do not rewrite shared history without coordination.", "Preserve useful commit messages.", "Understand the effect on release and audit history."],
+  exercise: "Create a test feature branch with multiple commits and compare merge, squash and rebase history.",
+  interview: ["What is squash merging?", "How does rebase differ from merge?", "When can rewriting Git history create problems?"]
+});
+
+addDevMavoxTopic(2, {
+  title: "Pull Request Merge Conflict Resolution",
+  overview: "A merge conflict occurs when Git cannot automatically combine competing changes, commonly because branches modify overlapping lines or files.",
+  purpose: "Correct conflict resolution prevents accidental loss of business logic while integrating parallel development.",
+  architecture: "Feature branch + Updated main → Git three-way merge → Conflict markers → Developer resolution → Validated merge.",
+  workflow: ["Fetch the latest target branch.", "Update the feature branch.", "Identify conflicted files.", "Inspect both versions.", "Resolve the intended final logic.", "Run tests.", "Commit the resolution and push."],
+  example: "Two developers modify payment timeout handling. The resolver combines the required logic instead of blindly accepting one side.",
+  commands: ["git fetch origin", "git merge origin/main", "git status", "git diff --name-only --diff-filter=U", "git add src/main/java/com/example/payment/PaymentService.java", "git commit", "git push"],
+  configuration: "Use the repository's approved merge or rebase workflow. Protect critical files with review ownership and required CI checks.",
+  failures: ["Conflict markers remain in source.", "One side's business logic is lost.", "Tests fail after resolution.", "A binary file cannot be merged automatically."],
+  recovery: ["Inspect every conflicted file.", "Remove conflict markers after choosing correct logic.", "Ask the relevant code owner when intent is unclear.", "Run focused and full tests before pushing."],
+  bestPractices: ["Keep branches short-lived.", "Integrate main frequently.", "Never resolve blindly with ours or theirs.", "Test the combined behavior.", "Request another review for risky resolutions."],
+  exercise: "Create two branches that edit the same method, trigger a conflict and resolve it without losing either required behavior.",
+  interview: ["Why do merge conflicts happen?", "What do conflict markers mean?", "Why must tests run after conflict resolution?"]
+});
+
+addDevMavoxTopic(2, {
+  title: "GitHub Repository Permissions and Teams",
+  overview: "GitHub repository permissions control who can read, write, maintain or administer repository resources. Organizations can assign access through teams.",
+  purpose: "Role-based access limits accidental changes and reduces the risk of unauthorized source-code or workflow modifications.",
+  architecture: "Organization membership → Team membership → Repository role → Branch and workflow permissions.",
+  workflow: ["Identify required responsibilities.", "Create or select a team.", "Assign the minimum repository role.", "Configure protected-branch rules.", "Review outside collaborators.", "Audit access periodically."],
+  example: "Application developers can contribute through pull requests while only an approved release team can administer production deployment settings.",
+  commands: ["git remote -v", "gh auth status", "gh repo view --json nameWithOwner,visibility"],
+  configuration: "Use organization teams and repository roles. Apply least privilege and separate source contribution from administrative access.",
+  failures: ["Developer cannot push a branch.", "Automation token lacks permission.", "Former team member retains access.", "A workflow receives broader permissions than required."],
+  recovery: ["Check organization and repository membership.", "Verify token scopes and workflow permissions.", "Remove obsolete access.", "Grant only the specific permission required."],
+  bestPractices: ["Prefer teams over individual grants.", "Audit access regularly.", "Use least privilege.", "Protect secrets and environments.", "Separate administrative and routine development access."],
+  exercise: "Design a permission model for developers, reviewers, CI automation and repository administrators.",
+  interview: ["What is least privilege?", "Why use GitHub teams?", "Why should CI tokens have limited permissions?"]
+});
+
+addDevMavoxTopic(2, {
+  title: "Pull Request Templates and Review Checklists",
+  overview: "A pull request template provides a consistent structure for describing changes, validation evidence, risk and deployment considerations.",
+  purpose: "Templates help reviewers obtain the context needed to assess changes without repeatedly asking for missing information.",
+  architecture: "Pull request creation → Template fields → Author-provided evidence → Reviewer checklist → Approval decision.",
+  workflow: ["Create the template directory.", "Add a pull request template.", "Define change and test sections.", "Include risk and rollback prompts.", "Open a test pull request.", "Improve unclear checklist items."],
+  example: "A payment API change includes test evidence, database migration impact, monitoring changes and rollback instructions.",
+  commands: ["git ls-files .github", "git status --short", "git add .github/pull_request_template.md", "git commit -m 'docs: add pull request template'"],
+  configuration: "Store the template under .github/pull_request_template.md or another GitHub-supported template location. Keep checklist items relevant to the repository.",
+  failures: ["Template is not displayed.", "Checklist is too long to be useful.", "Authors mark items complete without evidence."],
+  recovery: ["Verify the supported file path and default branch.", "Remove irrelevant checklist items.", "Ask for links, test output or screenshots where evidence is required."],
+  bestPractices: ["Ask for business context.", "Require test evidence.", "Include security and migration impact when relevant.", "Keep templates concise and actionable."],
+  exercise: "Create a pull request template for the payment application with testing, security, deployment and rollback sections.",
+  interview: ["Why use a pull request template?", "What evidence should a production-risk change include?", "How can review checklists become ineffective?"]
+});
+
+addDevMavoxTopic(2, {
+  title: "GitHub Releases, Tags and Version Traceability",
+  overview: "Git tags identify specific commits, while GitHub Releases attach human-readable release notes and distribution information to a tagged version.",
+  purpose: "Release references make it possible to connect deployed software to source history and communicate what changed.",
+  architecture: "Approved main commit → Version tag → GitHub Release → CI artifact and image metadata → Deployment record.",
+  workflow: ["Select the approved commit.", "Choose the version.", "Create an annotated tag.", "Push the tag.", "Generate release notes.", "Verify CI artifacts reference the same commit."],
+  example: "Release v1.4.0 points to the exact payment-service commit used to build the production image.",
+  commands: ["git log --oneline -5", "git tag -a v1.4.0 -m 'Payment service 1.4.0'", "git show v1.4.0", "git push origin v1.4.0"],
+  configuration: "Define semantic-versioning rules and release permissions. Configure CI to build from the tagged commit and record its commit SHA.",
+  failures: ["Tag points to the wrong commit.", "Tag already exists.", "Release artifact was built from a different revision.", "Version naming is inconsistent."],
+  recovery: ["Inspect the tag target with git show.", "Follow the organization's tag correction policy.", "Rebuild from the approved tag when appropriate.", "Compare artifact metadata with the release commit."],
+  bestPractices: ["Use immutable release references.", "Create annotated tags.", "Record commit SHA and artifact digest.", "Do not silently move published production tags."],
+  exercise: "Create a test annotated release tag and verify the referenced commit and release notes.",
+  interview: ["What is an annotated Git tag?", "How does a GitHub Release differ from a tag?", "Why record the commit SHA in a deployment?"]
+});
+
+addDevMavoxTopic(2, {
+  title: "GitHub Status Checks and Required CI Evidence",
+  overview: "Status checks report the result of automated validation associated with a commit or pull request. Branch rules can require selected checks before merging.",
+  purpose: "Required checks prevent changes from entering the main branch when builds, tests or security validation have failed.",
+  architecture: "Pull request commit → Jenkins or CI provider → Check result → GitHub status/checks API → Merge eligibility.",
+  workflow: ["Connect CI to the repository.", "Run validation for pull requests.", "Publish a stable check name.", "Configure that check as required.", "Submit a test change.", "Verify merge is blocked when the check fails."],
+  example: "The payment pull request cannot merge until the Jenkins build-and-test check succeeds for the latest commit.",
+  commands: ["git rev-parse HEAD", "git status --short", "gh pr checks", "gh pr view --json statusCheckRollup"],
+  configuration: "Configure CI integration and require the correct check context or check name. Ensure checks are reported for the latest commit rather than an outdated revision.",
+  failures: ["Required check remains pending.", "Check name changed after a pipeline rename.", "CI does not report pull-request results.", "A stale successful result is mistaken for current validation."],
+  recovery: ["Inspect the latest commit's check results.", "Correct CI integration and permissions.", "Update branch rules to the intended check name.", "Rerun validation on the current commit."],
+  bestPractices: ["Require meaningful checks.", "Keep check names stable.", "Include tests and security validation.", "Do not bypass failed checks without documented emergency approval."],
+  exercise: "Configure a test branch to require a CI check and verify that a failing check blocks merging.",
+  interview: ["What is a status check?", "Why can a required check remain pending?", "Why must checks validate the latest commit?"]
+});
+
+// ============================================================
+// STAGE 3 — JENKINS: 9 ADDITIONAL TOPICS
+// ============================================================
+
+addDevMavoxTopic(3, {
+  title: "Jenkins Controller Security and Administration",
+  overview: "The Jenkins controller manages configuration, job scheduling, credentials and build coordination. Its administrative interface and stored data require strong protection.",
+  purpose: "A compromised controller can expose source code, credentials and deployment access across the delivery platform.",
+  architecture: "Administrator → HTTPS reverse proxy → Jenkins authentication and authorization → Controller configuration → Agents.",
+  workflow: ["Expose Jenkins through protected HTTPS.", "Configure authentication.", "Choose an authorization strategy.", "Restrict administrative access.", "Review installed plugins.", "Monitor audit and system logs.", "Test backup restoration."],
+  example: "Only platform administrators can configure global Jenkins settings, while application teams can run and manage their permitted pipeline jobs.",
+  commands: ["sudo systemctl status jenkins", "sudo journalctl -u jenkins -n 100", "curl -I https://jenkins.example.com/login"],
+  configuration: "Use an approved identity provider or secure local authentication, role-based authorization, HTTPS and restricted network access. Keep JENKINS_HOME protected.",
+  failures: ["Unauthorized users can administer jobs.", "Login integration fails.", "Jenkins is exposed without HTTPS.", "Controller disk fills with build data."],
+  recovery: ["Restrict network access immediately.", "Restore a known-good authorization configuration.", "Check identity-provider connectivity.", "Rotate exposed credentials and clean retained data according to policy."],
+  bestPractices: ["Apply least privilege.", "Disable unnecessary public access.", "Patch Jenkins and plugins.", "Protect JENKINS_HOME.", "Separate controller duties from build execution."],
+  exercise: "Design Jenkins roles for administrators, developers and read-only auditors.",
+  interview: ["Why should builds not run on the controller?", "What is JENKINS_HOME?", "How do you secure Jenkins administration?"]
+});
+
+addDevMavoxTopic(3, {
+  title: "Jenkins Agent Provisioning and Labels",
+  overview: "Jenkins agents execute pipeline workloads. Labels describe agent capabilities so jobs can request an environment with the required operating system and tools.",
+  purpose: "Correct agent provisioning separates workloads, improves capacity management and ensures builds run with predictable dependencies.",
+  architecture: "Pipeline agent directive → Label expression → Jenkins queue → Matching agent → Workspace and executors.",
+  workflow: ["Prepare an agent host or container.", "Install required runtime tools.", "Configure secure controller connectivity.", "Assign descriptive labels.", "Set executor capacity.", "Run a test pipeline on the label."],
+  example: "A Java build requests a java17-linux agent, while a Docker image stage runs on an approved docker-capable agent.",
+  commands: ["java -version", "mvn -version", "docker version", "sudo systemctl status jenkins-agent"],
+  configuration: "Define labels such as linux, java17 and docker. Configure the supported inbound or SSH connection method and restrict agent permissions.",
+  failures: ["Build remains queued because no agent matches.", "Agent disconnects during execution.", "Required tool is missing.", "Concurrent builds exhaust agent resources."],
+  recovery: ["Check label expressions and online status.", "Inspect agent connection logs.", "Install or configure the required tool.", "Adjust executor count and capacity."],
+  bestPractices: ["Use dedicated build agents.", "Keep agent images reproducible.", "Avoid excessive executors on small hosts.", "Use ephemeral agents where practical.", "Restrict deployment-capable agents."],
+  exercise: "Create a Linux agent with a java17 label and execute a Maven version check on it.",
+  interview: ["What is a Jenkins agent label?", "Why can a pipeline remain queued?", "What is the relationship between executors and agent capacity?"]
+});
+
+addDevMavoxTopic(3, {
+  title: "Pipeline Triggers and Webhook Reliability",
+  overview: "Jenkins pipelines can start from webhooks, SCM polling, schedules, upstream jobs or manual requests. Each trigger has different latency and operational characteristics.",
+  purpose: "Reliable triggers ensure relevant source changes start validation without creating duplicate or unnecessary builds.",
+  architecture: "GitHub event or schedule → Jenkins trigger configuration → Job selection → Queue → Pipeline run.",
+  workflow: ["Choose the required event.", "Configure the repository integration.", "Set branch and pull-request behavior.", "Send a test event.", "Inspect the trigger cause.", "Check duplicate-build behavior."],
+  example: "A merge into main starts the payment release pipeline, while ordinary feature-branch pushes run pull-request validation only.",
+  commands: ["curl -I https://jenkins.example.com/github-webhook/", "sudo journalctl -u jenkins -n 100", "git rev-parse HEAD"],
+  configuration: "Use the GitHub integration supported by the job type. Configure event selection, credentials and webhook endpoint. Avoid enabling overlapping polling and webhook triggers without a reason.",
+  failures: ["Webhook delivery succeeds but no job starts.", "Wrong branch starts a release job.", "Duplicate builds enter the queue.", "Webhook endpoint is unreachable."],
+  recovery: ["Inspect GitHub delivery payload and Jenkins logs.", "Verify job branch filters and repository configuration.", "Review trigger overlap.", "Check reverse proxy and firewall routing."],
+  bestPractices: ["Use HTTPS.", "Trigger only relevant events.", "Validate branch conditions.", "Monitor failed webhook deliveries.", "Prevent untrusted pull requests from accessing deployment credentials."],
+  exercise: "Configure a test job to run on a main-branch push and verify the trigger cause in Jenkins.",
+  interview: ["Webhook versus SCM polling?", "How do you prevent duplicate builds?", "Why should untrusted pull requests not receive deployment credentials?"]
+});
+
+addDevMavoxTopic(3, {
+  title: "Jenkins Parameters and Environment Variables",
+  overview: "Build parameters provide controlled inputs to a job. Environment variables expose runtime information such as build number, workspace and configured application values.",
+  purpose: "Explicit inputs make pipelines reusable across branches and environments while keeping deployment choices visible.",
+  architecture: "User or upstream parameter → Jenkins build environment → Pipeline validation → Stage execution.",
+  workflow: ["Declare required parameters.", "Set safe defaults.", "Validate input values.", "Use environment variables in steps.", "Record non-secret build metadata.", "Reject invalid deployment targets."],
+  example: "A release job accepts an environment parameter limited to staging or production and rejects arbitrary namespace input.",
+  commands: ["printenv BUILD_NUMBER", "printenv WORKSPACE", "git rev-parse --short HEAD"],
+  configuration: "Use parameters and environment blocks in the Jenkinsfile. Store secrets in Jenkins credentials rather than ordinary parameters or environment definitions.",
+  failures: ["Parameter is empty.", "Invalid environment is selected.", "Variable is unavailable on the agent.", "Sensitive value appears in logs."],
+  recovery: ["Add input validation.", "Check parameter names and scope.", "Inspect the executing agent environment.", "Rotate exposed secrets and remove unsafe logging."],
+  bestPractices: ["Validate every external input.", "Use allow-listed deployment targets.", "Keep secrets in credential bindings.", "Record commit and build metadata.", "Avoid printing the complete environment."],
+  exercise: "Create a pipeline with a staging/production choice parameter and reject all other values.",
+  interview: ["What is a Jenkins parameter?", "What is the difference between params and env?", "Why should secrets not be normal build parameters?"]
+});
+
+addDevMavoxTopic(3, {
+  title: "Jenkins Shared Libraries",
+  overview: "Jenkins Shared Libraries package reusable pipeline logic so multiple Jenkinsfiles can use common functions and standard delivery steps.",
+  purpose: "Centralized pipeline logic reduces duplication and makes security and release practices easier to maintain.",
+  architecture: "Application Jenkinsfile → Shared Library reference → Library vars or src code → Reusable pipeline steps.",
+  workflow: ["Create a library repository.", "Define approved functions.", "Configure the library in Jenkins.", "Pin or select a library version.", "Import it in a Jenkinsfile.", "Test changes before broad adoption."],
+  example: "Several Java services call a shared Maven validation function that runs tests and publishes JUnit reports consistently.",
+  commands: ["git clone https://github.com/example/devops-jenkins-library.git", "git tag -a v1.0.0 -m 'Library 1.0.0'", "git ls-files vars src"],
+  configuration: "Configure the Global Pipeline Library with repository location, credentials and default version. Use trusted-library privileges cautiously.",
+  failures: ["Library cannot be retrieved.", "Function name is unresolved.", "Library version introduces breaking behavior.", "Untrusted code gains excessive pipeline permissions."],
+  recovery: ["Verify repository credentials and revision.", "Check vars and src naming conventions.", "Pin a known-good version.", "Review trust configuration and revert unsafe changes."],
+  bestPractices: ["Version shared libraries.", "Document public functions.", "Test library changes.", "Keep application-specific logic in application repositories.", "Review trusted code carefully."],
+  exercise: "Create a shared function that prints build metadata and call it from a sample Jenkinsfile.",
+  interview: ["What is a Jenkins Shared Library?", "What belongs in vars?", "Why should shared libraries be versioned?"]
+});
+
+addDevMavoxTopic(3, {
+  title: "Jenkins Workspace Management and Cleanup",
+  overview: "A Jenkins workspace is the agent-side directory used by a job to check out source code and create temporary build files.",
+  purpose: "Controlled workspace management prevents stale artifacts, disk exhaustion and accidental reuse of another build's output.",
+  architecture: "Job allocation → Agent workspace → SCM checkout → Build files and reports → Archive or cleanup.",
+  workflow: ["Allocate the agent.", "Check out the required revision.", "Run build steps.", "Archive required artifacts.", "Publish reports.", "Clean temporary files safely."],
+  example: "The payment pipeline cleans its workspace before checkout so a previous JAR cannot be mistaken for the current build output.",
+  commands: ["pwd", "git status --short", "du -sh .", "find . -maxdepth 2 -type f"],
+  configuration: "Use clean checkout or workspace cleanup options where appropriate. Preserve required reports and artifacts before deleting temporary workspace data.",
+  failures: ["Disk space is exhausted.", "Old files affect the build.", "Concurrent jobs conflict in a shared directory.", "Cleanup removes a required report."],
+  recovery: ["Inspect workspace disk usage.", "Use isolated workspaces.", "Archive required files before cleanup.", "Review cleanup scope and concurrent-build settings."],
+  bestPractices: ["Avoid sharing mutable workspaces.", "Clean before reproducible builds.", "Archive outputs explicitly.", "Monitor agent disk space.", "Do not store long-term artifacts only in workspaces."],
+  exercise: "Run two builds and verify that the second build does not reuse the first build's generated JAR.",
+  interview: ["What is a Jenkins workspace?", "Why can stale workspace files cause false build results?", "When should artifacts be archived before cleanup?"]
+});
+
+addDevMavoxTopic(3, {
+  title: "Jenkins Build Artifacts and Test Reports",
+  overview: "Artifacts are files produced by a build, while test reports describe automated test results. Jenkins can retain and expose both as build evidence.",
+  purpose: "The pipeline needs traceable outputs for later image creation, debugging, release review and audit.",
+  architecture: "Build and test stages → JAR and JUnit XML → Jenkins archive and test publisher → Downstream stages.",
+  workflow: ["Run the build.", "Generate the expected artifact.", "Verify its path.", "Archive the artifact.", "Publish JUnit XML.", "Fingerprint or record metadata.", "Pass the artifact to the next stage."],
+  example: "Jenkins archives the payment-service JAR and publishes Surefire results only after Maven verification succeeds.",
+  commands: ["mvn clean verify", "Get-ChildItem .\\target\\*.jar", "Get-ChildItem .\\target\\surefire-reports\\*.xml"],
+  configuration: "Use archiveArtifacts with an exact artifact pattern and junit with the generated XML path. Configure retention based on release and audit requirements.",
+  failures: ["Artifact pattern matches no files.", "JUnit XML is missing.", "An old artifact is archived.", "A downstream job downloads the wrong build output."],
+  recovery: ["Inspect the workspace and Maven reports.", "Correct the archive pattern.", "Clean stale output before rebuilding.", "Pass an explicit build number or immutable artifact reference downstream."],
+  bestPractices: ["Archive only required outputs.", "Record commit SHA and version.", "Publish test reports even when tests fail where appropriate.", "Use immutable artifact references.", "Set sensible retention."],
+  exercise: "Configure a pipeline to archive a JAR and publish Surefire XML reports.",
+  interview: ["What is the difference between an artifact and a test report?", "What does fingerprinting help track?", "Why should downstream jobs use an exact build artifact?"]
+});
+
+addDevMavoxTopic(3, {
+  title: "Jenkins Pipeline Failure Handling and Notifications",
+  overview: "Pipeline failure handling controls what happens when a stage fails, when cleanup must run and how responsible teams receive actionable notifications.",
+  purpose: "Consistent failure behavior prevents broken builds from silently progressing and helps engineers identify the failing stage quickly.",
+  architecture: "Pipeline stage → Exit status or exception → Failure state → Post actions and cleanup → Notification and investigation.",
+  workflow: ["Define stage boundaries.", "Allow critical command failures to propagate.", "Set timeouts where needed.", "Run cleanup in post actions.", "Publish available reports.", "Notify the responsible team.", "Record the root cause."],
+  example: "If Maven tests fail, the pipeline stops before Docker publication but still publishes test reports and sends a failure notification.",
+  commands: ["mvn clean verify", "git rev-parse HEAD", "sudo journalctl -u jenkins -n 100"],
+  configuration: "Use post conditions such as success, failure, unstable and always. Configure timeout and retry only for operations where retry is safe.",
+  failures: ["A shell error is ignored.", "A notification step fails.", "A retry repeats a non-idempotent deployment.", "Cleanup never executes."],
+  recovery: ["Remove unsafe error suppression.", "Inspect the original stage exception.", "Use retries only for transient operations.", "Place essential cleanup in appropriate post handling."],
+  bestPractices: ["Fail fast on required validation.", "Preserve diagnostic reports.", "Do not hide command exit codes.", "Make notifications actionable.", "Avoid automatic retries for unsafe production changes."],
+  exercise: "Create a pipeline that intentionally fails its test stage, publishes available reports and sends a failure notification.",
+  interview: ["What is the purpose of post always?", "When is retry appropriate?", "Why should a failed test stage block image publication?"]
+});
+
+addDevMavoxTopic(3, {
+  title: "Jenkins Plugin Compatibility and Updates",
+  overview: "Jenkins plugins extend controller and pipeline functionality. Plugins have dependencies and compatibility requirements with the Jenkins core version and one another.",
+  purpose: "Uncontrolled plugin changes can break job configuration, pipeline steps, authentication or controller startup.",
+  architecture: "Jenkins core → Plugin manager → Plugin dependencies → Pipeline and integration features.",
+  workflow: ["Inventory installed plugins.", "Review available updates.", "Check compatibility and dependencies.", "Test updates in a non-production controller.", "Back up configuration.", "Apply approved updates.", "Verify critical jobs."],
+  example: "A Git plugin update is tested against the controller version and a representative payment pipeline before being rolled out.",
+  commands: ["sudo systemctl status jenkins", "sudo journalctl -u jenkins -n 150", "java -version"],
+  configuration: "Manage plugins through the approved Jenkins update process. Pin and document versions where reproducibility or compatibility requires it.",
+  failures: ["Plugin dependency is missing.", "Pipeline step becomes unavailable.", "Controller fails during startup.", "Authentication behavior changes after an update."],
+  recovery: ["Inspect Jenkins startup logs.", "Identify the incompatible plugin.", "Restore the tested plugin set or controller backup.", "Validate critical integrations before reopening builds."],
+  bestPractices: ["Minimize unnecessary plugins.", "Test updates before production.", "Back up before changes.", "Track plugin ownership and purpose.", "Keep Jenkins core and plugins on supported versions."],
+  exercise: "Prepare a plugin update checklist that includes backup, compatibility review, test pipeline and rollback.",
+  interview: ["Why can plugin updates break Jenkins?", "What should be checked before a plugin update?", "Why should unnecessary plugins be removed?"]
+});
+
+addDevMavoxTopic(3, {
+  title: "Jenkins Backup, Restore and Disaster Recovery",
+  overview: "Jenkins stores job definitions, credentials configuration, plugin data and other operational state under JENKINS_HOME. Backups protect this state against accidental loss and infrastructure failure.",
+  purpose: "A tested recovery process reduces downtime and prevents teams from having to recreate critical pipeline configuration manually.",
+  architecture: "Jenkins controller state → Consistent backup → Protected backup storage → Replacement controller → Restore and validation.",
+  workflow: ["Identify JENKINS_HOME.", "Choose a consistent backup method.", "Protect backup files.", "Store copies outside the controller.", "Document restore prerequisites.", "Restore in a test environment.", "Validate jobs, credentials and plugins."],
+  example: "After controller disk failure, the platform team restores the latest verified JENKINS_HOME backup to a replacement server and validates the payment pipeline.",
+  commands: ["sudo systemctl stop jenkins", "sudo tar -czf jenkins-home-backup.tar.gz /var/lib/jenkins", "sudo systemctl start jenkins", "sudo systemctl status jenkins"],
+  configuration: "Use a backup process appropriate to the installation and storage system. Protect encrypted secrets and credential material, preserve compatible plugin versions and document required encryption keys.",
+  failures: ["Backup is incomplete.", "Credential decryption keys are missing.", "Restored plugins are incompatible.", "Backup cannot be accessed during an outage."],
+  recovery: ["Verify backup integrity.", "Restore required secret keys and configuration securely.", "Match compatible Jenkins and plugin versions.", "Run representative jobs before declaring recovery complete."],
+  bestPractices: ["Automate backups.", "Keep protected off-controller copies.", "Restrict backup access.", "Test restores regularly.", "Document recovery objectives and ownership."],
+  exercise: "Write a disaster-recovery checklist for restoring Jenkins configuration and validating a sample pipeline.",
+  interview: ["What is JENKINS_HOME?", "Why is backing up only job XML insufficient?", "Why must Jenkins restore procedures be tested?"]
+});
+
+
 const statusStyles: Record<string, string> = {
   pending: "border-slate-700 bg-slate-900 text-slate-400",
   running: "border-blue-400 bg-blue-500/10 text-blue-300",
@@ -676,9 +1002,708 @@ const statusStyles: Record<string, string> = {
   blocked: "border-amber-500/40 bg-amber-500/10 text-amber-300"
 };
 
+
+// DEVMAVOX_DETAILED_CONTENT_BATCH_1
+// Detailed learning content for Stage 1 and Stage 2.
+// Existing topic titles, stage structure and UI are preserved.
+
+const devMavoxDetailedBatch1: Record<number, any[]> = {
+  1: [
+    {
+      overview: "A Java and Spring Boot application begins with source code organized around business responsibilities. A production service normally separates HTTP request handling, business rules, data access, domain models and external integrations. This separation makes the application easier to test, review, secure and operate. For a payment service, the source code must clearly distinguish payment validation, transaction processing, persistence and communication with external payment providers.",
+      purpose: "The purpose of a well-structured application is to make business behavior predictable and maintainable. When controllers contain database queries, payment rules and external API calls together, a small change can unexpectedly affect several responsibilities. Layering limits this coupling. Developers can modify payment validation without rewriting database access, and automated tests can verify business rules without starting the complete production environment.",
+      architecture: "A typical request follows Client → Spring Security Filter Chain → DispatcherServlet → REST Controller → Service Layer → Repository → Database. The controller validates the HTTP contract and delegates business work. The service applies transaction and business rules. The repository communicates with the database through JPA or JDBC. DTOs define external request and response contracts, while entities represent persisted data. Exception handlers convert internal failures into consistent HTTP responses.",
+      workflow: [
+        "Create a Spring Boot project with the required Java version and dependencies. Confirm that the project contains a build descriptor, source directory and application entry point.",
+        "Create packages for controller, service, repository, entity, DTO and exception handling. Keep each package focused on one responsibility.",
+        "Implement the payment request DTO and validate mandatory fields such as customer ID, amount and currency before business processing.",
+        "Create a service method that checks payment rules, generates a transaction reference and coordinates persistence.",
+        "Implement the repository interface and define database constraints that protect transaction identifiers and other unique values.",
+        "Expose a REST endpoint that accepts the request DTO and returns an appropriate response DTO instead of exposing database entities.",
+        "Add unit tests for valid payments, invalid amounts, duplicate requests and expected business exceptions.",
+        "Run the application locally, send an HTTP request and inspect both the response and application logs before committing."
+      ],
+      example: "A customer submits a payment request to POST /api/payments. PaymentController receives the JSON body and validates its structure. PaymentService checks that the amount is positive, verifies the customer and creates a transaction record. PaymentRepository saves the record. The controller returns HTTP 201 with a transaction reference. If the same idempotency key is submitted again, the service returns the original transaction result instead of charging the customer twice.",
+      commands: [
+        "java -version — verifies the installed Java runtime and compiler version. The output should match the Java version required by the project.",
+        "mvn -version — displays Maven and Java versions, helping identify local build-tool mismatches.",
+        "mvn clean compile — removes previous build output and compiles application source code.",
+        "mvn test — executes unit tests and reports failed test cases.",
+        "mvn spring-boot:run — starts the Spring Boot application using the configured Maven plugin.",
+        "curl -i http://localhost:8080/actuator/health — checks the configured health endpoint when Spring Boot Actuator is enabled."
+      ],
+      configuration: "Example application.yml configuration:\\nserver:\\n  port: 8080\\nspring:\\n  application:\\n    name: payment-service\\n  datasource:\\n    url: ${DB_URL}\\n    username: ${DB_USERNAME}\\n    password: ${DB_PASSWORD}\\nmanagement:\\n  endpoints:\\n    web:\\n      exposure:\\n        include: health,info\\n\\nKeep credentials outside source control. Supply DB_URL, DB_USERNAME and DB_PASSWORD through the local environment or deployment secret manager. Use separate profiles for local, test and production settings. Never commit real database passwords or payment-provider API keys.",
+      failures: [
+        "Application startup fails because the configured Java runtime is older than the project's compiler target. The build log may report an unsupported class-file version or release.",
+        "Spring reports that a bean cannot be found because a required component is outside component scanning or has not been registered.",
+        "The application starts but database requests fail because the JDBC URL, credentials, network route or database schema is incorrect.",
+        "A REST endpoint returns HTTP 400 because request validation rejects missing fields, invalid formats or negative payment amounts.",
+        "A payment is processed twice because the service does not enforce idempotency for repeated client requests."
+      ],
+      recovery: [
+        "Run java -version and mvn -version. Align JAVA_HOME, Maven compiler release and the CI agent's installed JDK.",
+        "Inspect the complete Spring startup exception. Check package placement, component annotations, constructor dependencies and configuration classes.",
+        "Verify DB_URL and connectivity from the application host. Test database credentials securely and inspect the database migration status.",
+        "Inspect the request body and validation response. Correct the DTO constraints and return a clear validation error without exposing internal stack traces.",
+        "Introduce an idempotency key, enforce its uniqueness in persistent storage and make payment processing safe when clients retry after timeouts.",
+        "After the fix, rerun unit tests, integration tests and a controlled API smoke test before promoting the change."
+      ],
+      bestPractices: [
+        "Keep controllers thin. Put business decisions in services so that the same rules can be reused by REST endpoints, scheduled jobs and message consumers.",
+        "Use constructor injection instead of field injection. It makes dependencies explicit and allows unit tests to provide controlled implementations.",
+        "Validate untrusted input at the API boundary and enforce critical business constraints again inside the service layer.",
+        "Use DTOs for external contracts. Avoid returning persistence entities directly because internal database changes should not silently change public APIs.",
+        "Use database transactions for operations that must succeed or fail together. Define transaction boundaries around business operations rather than individual trivial methods.",
+        "Implement idempotency for payment creation and other operations that clients may safely retry.",
+        "Write tests for success paths, invalid input, duplicate requests, dependency failures and transaction rollback behavior.",
+        "Log transaction references and correlation IDs, but never log passwords, access tokens, card security codes or sensitive payment data."
+      ],
+      exercise: [
+        "Create a Spring Boot payment-service project with a health endpoint and a POST /api/payments endpoint.",
+        "Create a request DTO with customerId, amount and currency. Reject missing customer IDs, non-positive amounts and unsupported currencies.",
+        "Implement a service method that generates a transaction reference and returns a response DTO.",
+        "Add unit tests for a valid payment and at least three invalid requests. Confirm that invalid requests do not create payment records.",
+        "Run the application locally and submit one valid request with curl. Record the HTTP status and response body.",
+        "Expected result: the valid request returns HTTP 201 with a transaction reference, invalid requests return HTTP 400, and the application health endpoint reports UP."
+      ],
+      interview: [
+        "Q: Why do Spring Boot applications use controller, service and repository layers? A: They separate HTTP handling, business rules and persistence. This reduces coupling, improves testability and makes changes safer.",
+        "Q: What is dependency injection? A: Spring creates and supplies required objects to a class instead of forcing the class to construct its own dependencies. Constructor injection makes these dependencies visible and testable.",
+        "Q: What is the difference between an entity and a DTO? A: An entity represents persisted data and database mapping. A DTO defines the data accepted or returned through an application interface.",
+        "Q: Why should payment APIs support idempotency? A: Clients and gateways may retry requests after timeouts. An idempotency key prevents the same logical payment from being processed more than once.",
+        "Q: What is the purpose of application.yml? A: It stores externalizable application settings such as server ports, datasource properties, logging levels and management endpoint configuration. Secrets should be injected securely rather than committed."
+      ]
+    },
+    {
+      overview: "Java application quality depends on how source code is divided into classes, interfaces and packages. A maintainable Spring Boot codebase gives each component a clear responsibility and keeps business rules independent from infrastructure details. This is especially important when a payment platform grows from one service into multiple services handling authorization, settlement, refunds and notifications.",
+      purpose: "A clear code structure reduces the time required to understand changes and investigate defects. It helps multiple developers work on separate features without creating unnecessary conflicts. Interfaces and dependency boundaries also allow external systems such as payment gateways, databases and messaging platforms to be replaced or simulated during tests.",
+      architecture: "A practical structure is com.devmavox.payment with api, application, domain, infrastructure and configuration packages. The API package contains controllers and request/response DTOs. The application package coordinates use cases. The domain package contains payment rules and domain objects. Infrastructure contains database and external-provider adapters. Configuration defines framework wiring. Dependencies should point toward business logic rather than allowing domain rules to depend directly on web or database frameworks.",
+      workflow: [
+        "Identify the business capability before creating classes. For example, payment authorization and refund processing should be separate use cases.",
+        "Define the request and response contract for each use case, including validation and error behavior.",
+        "Create a service interface or application use-case class that expresses the business operation clearly.",
+        "Implement business rules in domain classes or dedicated domain services instead of embedding them in controllers.",
+        "Define repository interfaces around the data the use case needs. Keep database-specific implementation details in the infrastructure layer.",
+        "Inject external provider adapters through interfaces so that tests can replace real gateways with controlled fakes.",
+        "Add unit tests around domain rules and service orchestration. Add integration tests for database and HTTP adapter behavior.",
+        "Review package dependencies and ensure that a low-level database class does not become the owner of payment business decisions."
+      ],
+      example: "PaymentService depends on PaymentRepository and PaymentGateway interfaces. The production configuration supplies JpaPaymentRepository and StripePaymentGateway implementations. In a unit test, a fake repository and fake gateway are injected. The test can simulate a gateway timeout and verify that the service records a retryable state without making a real external payment call.",
+      commands: [
+        "Get-ChildItem -Recurse src/main/java — lists Java source files in a PowerShell terminal so package organization can be reviewed.",
+        "Get-ChildItem -Recurse src/test/java — lists test source files and helps identify missing test coverage areas.",
+        "mvn test — verifies that refactoring has not broken existing automated tests.",
+        "mvn dependency:tree — displays transitive dependencies and helps identify unexpected framework or library coupling.",
+        "mvn package — creates the application artifact after compilation and tests complete successfully."
+      ],
+      configuration: "Example package layout:\\nsrc/main/java/com/devmavox/payment/\\n  api/PaymentController.java\\n  api/dto/CreatePaymentRequest.java\\n  application/CreatePaymentService.java\\n  domain/Payment.java\\n  domain/PaymentStatus.java\\n  domain/PaymentRepository.java\\n  infrastructure/persistence/JpaPaymentRepository.java\\n  infrastructure/gateway/HttpPaymentGateway.java\\n  configuration/PaymentConfiguration.java\\n\\nKeep package names lowercase. Prefer constructor-injected interfaces at boundaries. Avoid circular dependencies between packages. Put test doubles and test fixtures under src/test rather than production source.",
+      failures: [
+        "A controller contains payment calculations, database queries and gateway calls, making it difficult to test one responsibility in isolation.",
+        "Two services depend on each other, creating a circular dependency that prevents Spring from constructing the application context.",
+        "A domain class imports web framework or database classes, making business rules difficult to reuse outside the current application.",
+        "A refactoring changes a public DTO field and silently breaks clients that depend on the previous API contract.",
+        "Tests use a real external payment gateway, making the test suite slow, costly and unreliable when the provider is unavailable."
+      ],
+      recovery: [
+        "Move business calculations into a service or domain component and leave the controller responsible for translating HTTP requests and responses.",
+        "Inspect the circular dependency exception. Extract shared behavior into a third component or invert the dependency using an interface.",
+        "Move framework-specific annotations and persistence mappings into infrastructure adapters where practical. Keep core business decisions independent.",
+        "Treat API DTO changes as contract changes. Add compatibility tests and introduce versioning or a backward-compatible migration where required.",
+        "Replace external calls in unit tests with mocks or fakes. Keep a smaller number of controlled integration tests for the actual adapter."
+      ],
+      bestPractices: [
+        "Organize code around business capabilities rather than creating one huge package containing every controller, service and repository.",
+        "Use meaningful names such as AuthorizePaymentService instead of vague names such as CommonManager or UtilityHandler.",
+        "Keep methods focused. Extract complex validation and calculation rules into testable methods or domain components.",
+        "Use interfaces at boundaries where implementations can vary, especially for external gateways, messaging and persistence.",
+        "Avoid unnecessary abstractions. Introduce an interface when it represents a real boundary or improves testing and change isolation.",
+        "Keep API contracts stable and document changes that affect consumers.",
+        "Use code review to detect duplicated rules, hidden side effects, excessive class responsibilities and unsafe dependency direction.",
+        "Measure maintainability with tests and static analysis rather than relying only on package naming conventions."
+      ],
+      exercise: [
+        "Create separate api, application, domain and infrastructure packages in a sample payment-service project.",
+        "Move payment validation from the controller into a service or domain component.",
+        "Define a PaymentRepository interface and provide an in-memory fake implementation for unit tests.",
+        "Write a test that simulates a payment-provider timeout without calling a real external endpoint.",
+        "Inspect the dependency tree and package imports. Confirm that business rules do not directly depend on HTTP controller classes.",
+        "Expected result: the controller contains only request handling, the service owns the payment use case, and tests can run without a real payment gateway."
+      ],
+      interview: [
+        "Q: What is separation of concerns? A: It means each component has a clearly defined responsibility. For example, controllers handle HTTP, services coordinate business operations and repositories handle persistence.",
+        "Q: Why use interfaces for external integrations? A: Interfaces separate the business use case from a specific provider implementation and allow tests to inject fakes or mocks.",
+        "Q: What is a circular dependency in Spring? A: It occurs when bean A requires bean B while bean B also requires bean A. It often indicates unclear responsibilities or dependency direction.",
+        "Q: What is a DTO? A: A Data Transfer Object defines the fields exchanged across an application boundary without exposing internal persistence details.",
+        "Q: Should every class have an interface? A: No. Interfaces are useful at meaningful boundaries where multiple implementations, testing substitutions or independent contracts are needed."
+      ]
+    },
+    {
+      overview: "Application configuration controls how the same Java code behaves in local development, automated testing, staging and production. Spring Boot supports external configuration through properties, YAML files, environment variables, command-line arguments and configuration providers. A reliable application keeps environment-specific values outside the compiled artifact so that one tested JAR can be promoted through multiple environments.",
+      purpose: "External configuration prevents environment settings from becoming hard-coded in source files. It allows operators to change a database endpoint, feature flag or logging level without rebuilding application code. Secure configuration also reduces the chance that credentials are accidentally committed to Git or exposed in build logs.",
+      architecture: "Configuration is resolved from multiple property sources with defined precedence. Packaged application.yml provides safe defaults. Profile-specific files provide environment-specific non-secret settings. Environment variables and deployment configuration override defaults. Secret managers provide sensitive values such as database passwords and API credentials. Spring binds related values into typed configuration classes, which can be validated when the application starts.",
+      workflow: [
+        "Identify which values are application defaults, environment-specific settings and secrets. Do not place all three categories in one committed file.",
+        "Define safe defaults in application.yml, such as application name, server port and non-sensitive feature settings.",
+        "Create profile-specific configuration only when environments genuinely require different non-secret behavior.",
+        "Read deployment-specific values through environment variables or a secret-management integration.",
+        "Bind related properties into a typed configuration class and validate mandatory values during startup.",
+        "Configure the deployment platform to inject the correct environment variables and secrets for the target environment.",
+        "Start the application and verify that required configuration values are present without printing secret values.",
+        "Test the same packaged artifact in a lower environment before promoting it to production."
+      ],
+      example: "The payment-service JAR is built once by Jenkins. In staging, DB_URL points to the staging database and PAYMENT_GATEWAY_URL points to the sandbox provider. In production, the deployment injects production endpoints and credentials through approved secret management. The JAR remains identical; only the runtime configuration changes.",
+      commands: [
+        "mvn spring-boot:run -Dspring-boot.run.profiles=local — starts the application with the local Spring profile when supported by the configured plugin.",
+        "$env:SPRING_PROFILES_ACTIVE='staging' — sets the active Spring profile in the current PowerShell session.",
+        "$env:DB_URL='jdbc:postgresql://localhost:5432/payments' — supplies a datasource URL without embedding it in source code.",
+        "java -jar target/payment-service.jar --spring.profiles.active=staging — starts the packaged application with a selected profile.",
+        "Get-ChildItem Env:SPRING* — inspects Spring-related environment variable names in PowerShell. Avoid printing secret values in shared terminals or logs."
+      ],
+      configuration: "Example application.yml:\\nspring:\\n  application:\\n    name: payment-service\\n  profiles:\\n    default: local\\nserver:\\n  port: ${SERVER_PORT:8080}\\nmanagement:\\n  endpoints:\\n    web:\\n      exposure:\\n        include: health,info\\n\\nExample application-staging.yml:\\nspring:\\n  datasource:\\n    url: ${DB_URL}\\n    username: ${DB_USERNAME}\\n    password: ${DB_PASSWORD}\\npayment:\\n  gateway-url: ${PAYMENT_GATEWAY_URL}\\n\\nUse a secret manager or protected deployment variables for DB_PASSWORD and gateway credentials. Never commit production secrets or enable unrestricted configuration dumps.",
+      failures: [
+        "The application fails during startup because a mandatory environment variable such as DB_URL is missing.",
+        "The staging profile is not active, so the application unexpectedly loads local defaults.",
+        "A password containing special characters is parsed incorrectly because it was placed in an unquoted or incorrectly escaped configuration value.",
+        "A production deployment connects to the staging database because an environment variable or profile was configured incorrectly.",
+        "A diagnostic endpoint exposes sensitive configuration because management endpoints were exposed too broadly."
+      ],
+      recovery: [
+        "Inspect the startup error and identify the exact missing property. Configure it through the deployment environment or secret provider rather than hard-coding it.",
+        "Check SPRING_PROFILES_ACTIVE and the command-line arguments. Confirm that the expected profile-specific file is packaged and loaded.",
+        "Use the deployment platform's supported secret injection mechanism and validate the value format without printing the secret.",
+        "Verify the effective non-secret endpoint and environment identity before enabling traffic. Use separate credentials and access policies for each environment.",
+        "Restrict management endpoint exposure, authentication and network access. Disable configuration endpoints that are not required."
+      ],
+      bestPractices: [
+        "Build one immutable artifact and promote it across environments. Do not rebuild production binaries with different source or dependency versions.",
+        "Keep credentials, tokens and private keys in a secret manager or protected deployment variables.",
+        "Use typed configuration properties with validation for related settings and fail early when required values are missing.",
+        "Keep profile-specific configuration small. Avoid duplicating the entire application.yml in every environment.",
+        "Give each environment separate database credentials, provider credentials and network permissions.",
+        "Do not log secret values or expose them through public health and diagnostic endpoints.",
+        "Document required configuration keys, expected formats and safe defaults for developers and operations teams.",
+        "Test configuration changes in staging and verify the target environment before routing production traffic."
+      ],
+      exercise: [
+        "Create application.yml with a default server port and application name.",
+        "Create application-staging.yml that reads DB_URL, DB_USERNAME and DB_PASSWORD from environment variables.",
+        "Run the application with the staging profile and intentionally omit DB_URL to observe the startup failure.",
+        "Set the missing environment variable and restart the application. Confirm that startup proceeds to the database connection stage.",
+        "Inspect the packaged JAR and verify that no real production password is stored in the repository.",
+        "Expected result: the same JAR can run with different environment settings, and missing mandatory configuration is detected clearly."
+      ],
+      interview: [
+        "Q: Why externalize Spring Boot configuration? A: It allows the same artifact to run in different environments without rebuilding and keeps environment-specific values outside source code.",
+        "Q: What is a Spring profile? A: A profile selects a group of configuration settings for an environment or runtime mode, such as local, staging or production.",
+        "Q: Where should database passwords be stored? A: In a secret manager or protected deployment secret mechanism, not in Git or a committed application.yml file.",
+        "Q: What is configuration property precedence? A: Spring Boot can receive the same property from multiple sources. Higher-precedence sources override lower-precedence defaults according to Spring Boot's configuration rules.",
+        "Q: Why use typed configuration properties? A: They group related settings, support type conversion and validation, and make required configuration easier to maintain."
+      ]
+    }
+  ],
+  2: [
+    {
+      overview: "A pull request is a controlled proposal to merge a developer's branch into a shared target branch. It provides a review boundary where source changes, tests, security checks and design decisions can be evaluated before integration. In a payment application, a pull request may introduce a refund API, modify transaction validation or update a database migration. The change should be understandable, testable and traceable to its requirement.",
+      purpose: "Pull requests reduce the risk of unreviewed code entering a release branch. They provide a permanent record of the reason for a change, the people who reviewed it and the automated checks that passed. Small, focused pull requests are easier to understand and make it simpler to identify the exact change responsible for a regression.",
+      architecture: "Developer workstation → Feature branch → Git remote → Pull request → Required reviewers and status checks → Approved merge → Protected target branch → Jenkins pipeline. Git stores commits and branch references. GitHub stores the pull request discussion, review decisions and check results. CI validates the proposed commit before the target branch is updated.",
+      workflow: [
+        "Update the local target branch before creating work so the feature begins from a known repository state.",
+        "Create a short-lived branch with a name connected to the work item, such as feature/payment-refund-api.",
+        "Implement one logical change and add or update automated tests alongside the source code.",
+        "Run formatting, compilation and relevant tests locally. Inspect the final diff for secrets, generated files and unrelated edits.",
+        "Commit the change with a message that explains the purpose and scope of the modification.",
+        "Push the branch to the remote repository and open a pull request against the correct target branch.",
+        "Complete the pull request description with business context, implementation details, test evidence and deployment or migration risks.",
+        "Wait for required reviewers and CI status checks. Resolve review comments with additional commits rather than hiding unresolved feedback.",
+        "Confirm that the branch is up to date and that required checks still pass after the final change.",
+        "Merge using the repository's approved strategy and verify that the target branch contains the expected commit."
+      ],
+      example: "A developer implements a refund endpoint in feature/payment-refund-api. The pull request links to the refund requirement, describes authorization checks and includes tests for duplicate refund requests. GitHub starts Jenkins checks. Reviewers inspect the service logic and database migration. After approval and successful tests, the branch is merged into main and the merge commit triggers the release pipeline.",
+      commands: [
+        "git status — displays modified, staged and untracked files before committing.",
+        "git switch -c feature/payment-refund-api — creates and switches to a feature branch.",
+        "git diff --check — detects whitespace errors that can make patches harder to review.",
+        "git diff --stat — summarizes the number of changed files and lines.",
+        "git add src/ — stages the intended source changes. Review staged files before committing.",
+        "git commit -m \"Add payment refund endpoint\" — creates a commit with a descriptive message.",
+        "git push -u origin feature/payment-refund-api — publishes the branch and configures its upstream remote.",
+        "git fetch origin; git log --oneline --graph --decorate -12 — refreshes remote references and helps inspect recent branch history."
+      ],
+      configuration: "Example pull request template in .github/pull_request_template.md:\\n## Change summary\\nDescribe the business change and why it is needed.\\n\\n## Implementation\\nList the important code paths and design decisions.\\n\\n## Validation\\n- [ ] Unit tests passed\\n- [ ] Integration tests passed\\n- [ ] Security checks reviewed\\n\\n## Risk and rollback\\nDescribe migration, compatibility and rollback considerations.\\n\\nConfigure branch protection or repository rulesets to require pull requests, required reviewers, successful CI checks and conversation resolution before merging. Apply rules to the actual default and release branches.",
+      failures: [
+        "The pull request targets the wrong base branch, so unrelated commits appear in the change set.",
+        "The branch contains generated files, local configuration or secrets that should not be committed.",
+        "CI reports failure because the feature branch does not compile or its tests depend on missing configuration.",
+        "The pull request becomes difficult to review because it combines unrelated features, formatting changes and large refactors.",
+        "A required reviewer or status check is missing, so the repository correctly blocks the merge."
+      ],
+      recovery: [
+        "Inspect the pull request base and compare branches. Change the base branch only after confirming that the intended target is correct.",
+        "Remove unintended files from the Git index, rotate any exposed credential immediately and add appropriate ignore rules. Removing a secret from the latest commit alone does not invalidate the leaked credential.",
+        "Open the failed CI job, inspect the first meaningful error and reproduce the relevant test locally before pushing a fix.",
+        "Split unrelated work into separate pull requests where possible. Keep each change focused on one reviewable purpose.",
+        "Check the repository ruleset and required-check names. Configure the correct CI workflow and obtain the required approval rather than bypassing protection."
+      ],
+      bestPractices: [
+        "Keep pull requests small and focused on one business change so reviewers can understand the intent and identify defects.",
+        "Use descriptive branch names and commit messages that connect code changes to work items.",
+        "Include test evidence and operational risk in the pull request description, especially for payment, database and authentication changes.",
+        "Require automated checks before merge and make check names stable so branch protection does not accidentally stop enforcing them.",
+        "Protect main and release branches from direct pushes and force pushes by default.",
+        "Assign reviewers based on code ownership and domain knowledge, not only availability.",
+        "Resolve review conversations with an explanation or code change. Do not mark a discussion resolved while the underlying risk remains.",
+        "Never treat approval as proof that the change is safe; review the diff, automated evidence, migration impact and rollback plan."
+      ],
+      exercise: [
+        "Create a feature branch from the latest main branch and implement a small payment validation change.",
+        "Add a unit test that demonstrates the expected behavior and a negative test for invalid input.",
+        "Run git diff --check, mvn test and a source diff review before committing.",
+        "Push the branch and create a pull request with a summary, test evidence and rollback notes.",
+        "Configure a required reviewer and CI status check on a test repository, then verify that an unapproved pull request cannot merge.",
+        "Expected result: the pull request contains only the intended change, required checks pass and the merge is blocked until repository rules are satisfied."
+      ],
+      interview: [
+        "Q: What is a pull request? A: It is a reviewable proposal to merge changes from one branch into another. It records discussion, approvals and automated validation.",
+        "Q: Why should pull requests be small? A: Smaller changes are easier to understand, test and review. They reduce the chance that unrelated defects are hidden in a large diff.",
+        "Q: What is branch protection? A: Repository rules that prevent unsafe updates by requiring reviews, status checks or other conditions before a protected branch can change.",
+        "Q: What is the difference between a base branch and a compare branch? A: The base branch is the target receiving changes; the compare branch contains the proposed commits.",
+        "Q: Why are CI checks required before merge? A: They provide repeatable evidence that the proposed code meets defined build and test conditions before entering the shared branch."
+      ]
+    },
+    {
+      overview: "A code review is a technical inspection of a proposed change before it becomes part of a shared branch. Reviewers examine correctness, readability, security, performance, test coverage and compatibility with existing behavior. CODEOWNERS can automatically request review from people responsible for particular directories. For a payment platform, changes to authorization, transaction state or database migrations should receive review from engineers who understand those risks.",
+      purpose: "Review makes important engineering knowledge visible and catches defects before deployment. It prevents one developer from becoming the only person who understands a critical component. Ownership rules also reduce the chance that sensitive paths are changed without the appropriate technical review.",
+      architecture: "Pull request diff → CODEOWNERS path matching → Reviewer assignment → Inline comments and review decision → Required approval rules → CI status checks → Merge authorization. CODEOWNERS identifies responsible teams or users. Repository rules decide whether approval is mandatory. CI provides machine-generated evidence, while human reviewers evaluate design and business correctness.",
+      workflow: [
+        "Identify the files changed by the pull request and determine which business capabilities they affect.",
+        "Define ownership patterns in the repository's CODEOWNERS file for critical source, infrastructure and deployment paths.",
+        "Open the pull request and verify that GitHub requests the expected owners for the changed files.",
+        "Review the change in small logical sections, following the request path from API entry to business logic and persistence.",
+        "Check whether validation, authorization, error handling, logging and tests match the intended behavior.",
+        "Add specific review comments that explain the risk and suggest a verifiable improvement.",
+        "The author responds by updating the code or explaining the design decision with supporting evidence.",
+        "Re-run CI after changes and confirm that the final diff still contains only the intended work.",
+        "Submit an approval or request changes based on the repository's review policy.",
+        "Verify that required approvals and status checks are satisfied before merge."
+      ],
+      example: "A pull request changes PaymentService and a database migration. CODEOWNERS assigns the payments team for the service and the database platform team for migration files. A reviewer notices that the new refund operation lacks a uniqueness constraint and could process a duplicate request. The author adds an idempotency constraint and a test. CI passes, the reviewers approve, and the change becomes eligible for merge.",
+      commands: [
+        "Get-Content .github/CODEOWNERS — displays the ownership rules in a PowerShell terminal.",
+        "git diff origin/main...HEAD -- src/main/java — reviews Java changes against the target branch.",
+        "git diff --check origin/main...HEAD — checks the proposed change for whitespace errors.",
+        "git log --oneline origin/main..HEAD — lists commits introduced by the feature branch.",
+        "git show --stat --oneline HEAD — summarizes the latest commit for review.",
+        "git status --short — verifies that the working tree does not contain uncommitted changes."
+      ],
+      configuration: "Example .github/CODEOWNERS:\\n# Payment business logic\\n/src/main/java/com/devmavox/payment/** @devmavox/payments-team\\n\\n# Database migrations\\n/src/main/resources/db/migration/** @devmavox/database-team\\n\\n# Kubernetes and Helm deployment files\\n/deploy/** @devmavox/platform-team\\n\\n# CI pipeline definitions\\n/Jenkinsfile @devmavox/devops-team\\n/.github/workflows/** @devmavox/devops-team\\n\\nEnsure the referenced teams exist and have repository access. Configure branch protection to require code-owner approval where appropriate. A CODEOWNERS entry requests ownership review; repository rules determine whether that review is mandatory.",
+      failures: [
+        "CODEOWNERS does not assign a reviewer because the file is in the wrong location, has invalid syntax or references a team without repository access.",
+        "A broad ownership pattern overrides a more specific rule and assigns the wrong team.",
+        "A reviewer approves the pull request without examining a critical migration or security-sensitive change.",
+        "Review comments remain unresolved even though the pull request appears ready to merge.",
+        "The final code changes after approval, but the repository does not require approval of the latest reviewable state."
+      ],
+      recovery: [
+        "Verify that CODEOWNERS is stored in a supported location such as .github/CODEOWNERS and that the team names are valid.",
+        "Review pattern order and specificity. Add explicit rules for critical paths and test assignments with a small pull request.",
+        "Require domain-owner review for payment, security and database changes. Provide reviewers with a clear checklist and sufficient time.",
+        "Inspect the conversation tab and resolve each comment only after the requested change or an agreed technical explanation is recorded.",
+        "Enable dismissal of stale approvals or require approval of the most recent reviewable push when the risk warrants it.",
+        "Re-run the required checks after the final code update and verify the approval state before merging."
+      ],
+      bestPractices: [
+        "Define CODEOWNERS for high-risk application, infrastructure, security and deployment directories.",
+        "Use teams for long-term ownership rather than relying on one person's account.",
+        "Review behavior and risk, not just formatting. Pay attention to transaction boundaries, authorization, data exposure and backward compatibility.",
+        "Ask for evidence when a change claims to fix a production defect, such as a regression test or a reproducible diagnostic result.",
+        "Keep comments actionable and respectful. Explain the impact and provide a concrete direction for resolving the issue.",
+        "Require appropriate domain review for database migrations, security policies and production deployment changes.",
+        "Prevent stale approvals from silently authorizing materially changed code.",
+        "Use automated formatters and linters for mechanical checks so human review can focus on design and correctness."
+      ],
+      exercise: [
+        "Create a CODEOWNERS file that assigns payment source code to a payments team and deployment files to a platform team.",
+        "Open a test pull request that modifies one file in each owned directory.",
+        "Verify that GitHub requests the expected reviewers for the changed paths.",
+        "Add a review comment identifying a missing validation rule and update the code to address it.",
+        "Enable a required approval rule and verify that the pull request cannot merge before the required review is recorded.",
+        "Expected result: ownership is assigned correctly, review feedback is traceable and protected branches enforce the configured approval policy."
+      ],
+      interview: [
+        "Q: What is CODEOWNERS? A: It is a repository file that maps paths to responsible users or teams so GitHub can request reviews from the relevant owners.",
+        "Q: Does CODEOWNERS automatically block every merge? A: No. It identifies owners and requests reviews. Repository branch protection or rulesets must require code-owner approval.",
+        "Q: What should a reviewer check in a payment change? A: Business correctness, authorization, idempotency, transaction handling, data validation, logging safety, tests and migration impact.",
+        "Q: What is a stale approval? A: An approval that was given before later code changes. Repository rules can dismiss stale approvals or require approval of the latest revision.",
+        "Q: Why use team ownership instead of one individual? A: Team ownership provides continuity when people change roles or leave and distributes review responsibility."
+      ]
+    },
+    {
+      overview: "Merging integrates reviewed commits from a feature branch into a target branch. Git supports merge commits, squash merges and rebasing workflows. Each strategy produces a different commit history and affects traceability, rollback and collaboration. Teams should choose a consistent strategy that matches their release and audit requirements rather than selecting a merge option randomly for each pull request.",
+      purpose: "A predictable merge strategy keeps repository history understandable and makes production changes easier to trace. A merge commit preserves branch integration history, squash merge creates one summarized commit for the pull request, and rebase moves commits onto a newer base to create a linear history. The choice affects how teams investigate regressions and identify the change that introduced a defect.",
+      architecture: "Feature branch commits + Target branch history → Merge strategy → Updated target branch reference → CI pipeline trigger → Build artifact linked to resulting commit. A merge commit records the integration point. Squash merge combines the pull request's changes into one commit. Rebase replays commits onto a new base and changes commit IDs. The remote repository applies the selected merge policy.",
+      workflow: [
+        "Confirm the target branch and review the pull request's complete commit list and diff.",
+        "Fetch the latest remote references and check whether the feature branch is behind the target branch.",
+        "Resolve conflicts locally or through the approved repository workflow, then run relevant tests again.",
+        "Choose merge commit when preserving the branch's individual commits and integration point is important.",
+        "Choose squash merge when the team wants one clean commit representing the complete pull request.",
+        "Use rebase to update a feature branch on top of the latest target branch when the team expects linear history.",
+        "Avoid rebasing shared branches that other developers are actively using unless the team has explicitly coordinated the history rewrite.",
+        "Confirm that approvals and status checks apply to the final commit state.",
+        "Merge through the repository's approved controls and verify the resulting target branch history.",
+        "Observe the CI run triggered by the updated target branch and associate the build with the exact resulting commit."
+      ],
+      example: "Three developers' commits implement a payment refund endpoint. The team uses squash merging so the main branch receives one commit named Add payment refund endpoint. The pull request retains the detailed discussion and individual commits, while the main branch history stays concise. Jenkins builds the resulting main commit and records its SHA with the artifact.",
+      commands: [
+        "git fetch origin — refreshes remote branch references before integration.",
+        "git switch feature/payment-refund-api — switches to the feature branch.",
+        "git rebase origin/main — replays feature commits on the latest main branch. Resolve conflicts and rerun tests before pushing.",
+        "git merge --no-ff feature/payment-refund-api — creates a merge commit locally and preserves an explicit branch integration point.",
+        "git log --oneline --graph --decorate --all -20 — visualizes recent branch and merge history.",
+        "git show --no-patch --format=fuller HEAD — inspects the latest commit metadata.",
+        "git push origin feature/payment-refund-api — publishes the updated branch. A rebased branch may require coordination and a safe force-with-lease push if it was already published."
+      ],
+      configuration: "GitHub repository settings should allow only the merge methods approved by the team. For a squash-only policy, enable squash merging and disable merge commits and rebase merging where those alternatives are not permitted. Configure the default squash commit message format and require pull requests for protected branches. Document whether release branches preserve merge commits for audit traceability. Do not rewrite main or a shared release branch.",
+      failures: [
+        "A merge conflict occurs because the feature branch and target branch changed the same lines or incompatible sections.",
+        "A developer rebases a shared branch and invalidates commit references used by other developers.",
+        "The team uses inconsistent merge strategies, making release history difficult to interpret.",
+        "A pull request is merged while its latest CI result is outdated or no longer represents the final commit state.",
+        "A squash merge removes individual feature commit IDs from the target branch history, confusing a workflow that expects those commits to remain directly reachable."
+      ],
+      recovery: [
+        "Fetch the latest target branch and resolve conflicts carefully. Inspect both versions and preserve the intended business behavior rather than blindly accepting one side.",
+        "If a shared branch was rewritten, coordinate with contributors and restore a known reference when necessary. Avoid repeatedly force-pushing without agreement.",
+        "Document one approved merge policy and configure repository settings to enforce it.",
+        "Require fresh status checks for the final commit and rerun CI after conflict resolution or any new push.",
+        "Use the pull request record, commit links and release metadata to trace the original change when squash merging is used.",
+        "If a bad merge reaches the protected branch, use a reviewed revert commit rather than rewriting published production history."
+      ],
+      bestPractices: [
+        "Choose a merge strategy based on the team's history, release and audit requirements, then apply it consistently.",
+        "Use squash merging for focused pull requests when a concise main-branch history is preferred.",
+        "Use merge commits when the branch integration point and individual commit history are important.",
+        "Rebase local or coordinated feature branches to reduce unnecessary merge noise, but never casually rewrite shared protected branches.",
+        "Run tests after resolving conflicts because a conflict-free merge can still introduce incorrect application behavior.",
+        "Keep the pull request record linked to the resulting commit, build and release.",
+        "Use revert commits to undo published changes safely and preserve an auditable history.",
+        "Require final status checks and approvals to match the exact revision being merged."
+      ],
+      exercise: [
+        "Create a feature branch and make two commits that modify separate parts of a sample application.",
+        "Create a second branch that changes a nearby section of the same file and merge it into the target branch.",
+        "Practice resolving a conflict and run the project's tests before completing the merge.",
+        "Compare a merge commit, squash merge and rebase result in a disposable test repository using git log --graph.",
+        "Choose one strategy for a sample team and document why it best supports review, release traceability and rollback.",
+        "Expected result: you can explain how each strategy changes commit history and safely integrate a feature without rewriting shared production history."
+      ],
+      interview: [
+        "Q: What is a merge commit? A: It is a commit with multiple parents that records the integration of one branch into another while preserving branch history.",
+        "Q: What is squash merging? A: It combines the changes from a pull request into one commit on the target branch, creating a concise history.",
+        "Q: What does git rebase do? A: It replays commits onto a different base commit, producing new commit IDs and often a linear history.",
+        "Q: Why is force-pushing a shared branch dangerous? A: It can rewrite commit references other developers depend on, causing lost work or confusing histories.",
+        "Q: How should a production change be reverted? A: Prefer a reviewed revert commit on the protected branch so the rollback is visible and the published history remains intact."
+      ]
+    }
+  ]
+};
+
+for (const stageId of [1, 2]) {
+  const stage = stages.find((item: any) => Number(item.id) === stageId);
+  const detailedTopics = devMavoxDetailedBatch1[stageId];
+
+  if (!stage || !Array.isArray(stage.topics) || stage.topics.length < 3) {
+    throw new Error(`Stage ${stageId} was not found or contains fewer than 3 topics.`);
+  }
+
+  if (detailedTopics.length !== 3) {
+    throw new Error(`Stage ${stageId} detailed topic count is incorrect.`);
+  }
+
+  stage.topics.forEach((topic: any, index: number) => {
+    Object.assign(topic, detailedTopics[index]);
+  });
+}
+
+// END DEVMAVOX_DETAILED_CONTENT_BATCH_1
+
+// DEVMAVOX_BULK_CONTENT_STAGES_3_TO_12
+// Expands existing topics without changing titles, stage IDs or navigation.
+
+const devMavoxBulkProfiles: Record<number, any> = {
+  3: {
+    tool: "Jenkins",
+    focus: ["Webhook and pipeline triggers", "Jenkinsfile and pipeline execution", "Agents, credentials and environment"],
+    architecture: "Jenkins receives an event or scheduled trigger, loads the pipeline definition, allocates an agent, checks out source code, executes stages and publishes results. The controller coordinates jobs while agents perform build work. Keep build execution off the controller in production.",
+    workflow: ["Configure the Git provider webhook with the Jenkins endpoint and secret.", "Create or update a Pipeline job that loads the Jenkinsfile from source control.", "Validate the event payload, branch and repository before starting work.", "Allocate an agent with the required runtime and tools.", "Run checkout, build, test and artifact stages with explicit failure handling.", "Publish test reports and artifacts, then notify the team with the build result."],
+    example: "A developer pushes a payment-service change. GitHub sends a signed webhook to Jenkins. Jenkins starts the multibranch pipeline, checks out the commit, runs Maven tests, builds a Docker image and publishes the result. A failed test stops the release before deployment.",
+    commands: ["java -version", "jenkins-cli -s https://jenkins.example.com/ who-am-i", "curl -I https://jenkins.example.com/github-webhook/", "git ls-remote https://github.com/example/payment-service.git", "mvn -B clean verify"],
+    configuration: "pipeline {\n  agent { label 'linux-build-agent' }\n  options { timestamps(); timeout(time: 30, unit: 'MINUTES') }\n  triggers { pollSCM('') }\n  stages {\n    stage('Checkout') { steps { checkout scm } }\n    stage('Build and Test') { steps { sh 'mvn -B clean verify' } }\n  }\n  post { always { junit '**/target/surefire-reports/*.xml' } }\n}",
+    failures: ["Webhook delivery returns HTTP 403 because the endpoint, CSRF configuration or authentication is incorrect.", "The job does not start because the webhook event type or branch filter does not match.", "A pipeline remains queued because no online agent has the requested label.", "A build fails because the agent has a different JDK, Maven version or missing dependency.", "A secret is unavailable because the credential ID is wrong or its scope is restricted."],
+    recovery: ["Inspect the provider's webhook delivery response and Jenkins system log; correct the endpoint and authentication without exposing the secret.", "Compare the event branch and payload with the job's branch filters; send a test event after correcting the filter.", "Check agent online status, labels, executors and disk capacity; provision or reconnect a suitable agent.", "Run java -version and mvn -version on the actual agent; align its toolchain with the project.", "Verify the credential ID and permissions in Jenkins Credentials; rotate exposed credentials and rerun the job."],
+    bestPractices: ["Keep Jenkinsfiles in version control and review pipeline changes like application code.", "Use dedicated, ephemeral agents for untrusted pull requests and isolate build workloads.", "Store secrets in Jenkins Credentials and use credential bindings; never echo secret values.", "Apply timeouts, timestamps, retry policies only for transient operations, and explicit post actions.", "Archive useful build artifacts and test reports; retain logs according to operational policy."],
+    exercise: ["Create a test repository with a Jenkinsfile and a small Maven project.", "Configure a webhook for push and pull-request events, then inspect delivery responses.", "Run the pipeline on a labeled agent and verify the exact commit SHA in the console log.", "Break a test intentionally and confirm Jenkins marks the run failed and publishes the report.", "Restore the test and verify the next run succeeds without changing the pipeline definition."],
+    interview: ["How does a Jenkins webhook trigger differ from polling? A webhook sends an event when a repository action occurs, reducing delay and unnecessary requests; polling periodically checks for changes.", "Why use Jenkins agents? Agents isolate build execution, provide the required toolchain and allow jobs to scale without overloading the controller.", "How should credentials be handled? Store them in the credentials store, reference IDs in the pipeline and restrict access to trusted jobs."]
+  },
+  4: {
+    tool: "Apache Maven",
+    focus: ["Lifecycle phases and build execution", "POM, dependencies and repositories", "Plugins, testing and reproducible artifacts"],
+    architecture: "Maven reads pom.xml, resolves project coordinates and dependencies, constructs the build lifecycle and invokes plugin goals. The local repository caches downloaded artifacts; configured remote repositories supply dependencies and plugins. A lifecycle phase can invoke several earlier phases in order.",
+    workflow: ["Read the project coordinates and parent POM configuration.", "Resolve dependencies and plugins from local or remote repositories.", "Execute the requested lifecycle phase and all preceding phases.", "Compile source code using the configured Java release.", "Run unit and integration tests and collect reports.", "Package the application and verify the generated artifact and metadata."],
+    example: "A Spring Boot payment service uses Maven to compile Java code, run JUnit tests and package a versioned JAR. Jenkins executes mvn -B clean verify. The pipeline publishes the JAR only when compilation, tests and verification succeed.",
+    commands: ["mvn -version", "mvn help:effective-pom", "mvn dependency:tree", "mvn clean test", "mvn clean verify", "mvn -B clean package", "mvn help:active-profiles"],
+    configuration: "<project>\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>com.example</groupId>\n  <artifactId>payment-service</artifactId>\n  <version>1.0.0</version>\n  <properties>\n    <maven.compiler.release>17</maven.compiler.release>\n    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\n  </properties>\n  <build><plugins>\n    <plugin>\n      <groupId>org.apache.maven.plugins</groupId>\n      <artifactId>maven-compiler-plugin</artifactId>\n      <version>3.13.0</version>\n    </plugin>\n  </plugins></build>\n</project>",
+    failures: ["Dependency resolution fails because the artifact version is unavailable or the repository is unreachable.", "Compilation fails because the configured Java release does not match the JDK installed on the agent.", "Tests are skipped or not discovered because plugin configuration or naming conventions are incorrect.", "A SNAPSHOT dependency changes between builds and produces inconsistent results.", "Packaging fails because a required resource, plugin or generated source is missing."],
+    recovery: ["Inspect the full Maven error and dependency tree; verify coordinates, repository URL, credentials and network access.", "Compare mvn -version on the workstation and CI agent; install the expected JDK and align compiler release settings.", "Inspect Surefire or Failsafe reports and plugin configuration; confirm test naming and lifecycle phase.", "Pin released dependency versions and use controlled repository policies for repeatable builds.", "Run mvn -X only when necessary, identify the failing plugin goal and correct its inputs or version."],
+    bestPractices: ["Use explicit dependency and plugin versions rather than relying on environment defaults.", "Use dependencyManagement to centralize versions across modules.", "Separate unit tests from integration tests and bind them to appropriate lifecycle phases.", "Run clean verify in CI so compilation, tests and verification execute consistently.", "Cache the Maven repository safely in CI, but do not treat a cache as the source of truth.", "Publish checksums, test reports and versioned artifacts; avoid mutable release coordinates."],
+    exercise: ["Create a minimal Maven Java project with explicit groupId, artifactId and version.", "Run mvn help:effective-pom and identify inherited configuration.", "Add a dependency and inspect its transitive dependencies with dependency:tree.", "Add a failing JUnit test and observe the difference between test and verify.", "Build with clean package and inspect the JAR contents and manifest."],
+    interview: ["What is the difference between package and install? Package creates the distributable artifact; install also places it in the local Maven repository for other local projects.", "Why is verify useful in CI? It executes the lifecycle through verification, allowing configured checks and integration-test validations to run.", "What is the purpose of dependencyManagement? It centralizes dependency versions and configuration without automatically adding every managed dependency."]
+  },
+  5: {
+    tool: "JUnit and Integration Tests",
+    focus: ["Unit test design and assertions", "Integration testing with external dependencies", "Test execution, reports and CI quality"],
+    architecture: "Unit tests exercise a small class or method with dependencies isolated through interfaces, fakes or mocks. Integration tests verify real component boundaries such as HTTP endpoints, databases, queues and serialization. The build tool discovers tests, executes them and produces machine-readable reports for CI.",
+    workflow: ["Identify business rules and define expected outcomes before writing tests.", "Create isolated unit tests for normal, boundary and invalid inputs.", "Use controlled test data and mocks only for dependencies outside the unit boundary.", "Start required services for integration tests using dedicated test instances or containers.", "Execute tests in CI and publish reports even when a test fails.", "Investigate flaky tests and ensure cleanup prevents state leaking between runs."],
+    example: "For a payment API, unit tests validate fee calculation and rejected amounts. Integration tests call the application endpoint against a test database and verify that a successful payment is persisted exactly once. CI blocks packaging when required tests fail.",
+    commands: ["mvn -B test", "mvn -B verify", "mvn -Dtest=PaymentServiceTest test", "mvn -DskipTests=false test", "find . -path '*surefire-reports*' -type f"],
+    configuration: "@Test\nvoid rejectsNegativeAmount() {\n  PaymentRequest request = new PaymentRequest(-10);\n  assertThrows(IllegalArgumentException.class,\n      () -> paymentService.create(request));\n}\n\n@Test\nvoid savesSuccessfulPayment() {\n  Payment result = paymentService.create(new PaymentRequest(100));\n  assertEquals(100, result.amount());\n  assertTrue(repository.existsById(result.id()));\n}",
+    failures: ["Tests pass locally but fail in CI because of timezone, locale, JDK or environment differences.", "Integration tests fail because the database or dependent service is not ready when tests start.", "Tests become flaky because they depend on shared state, execution order or real external systems.", "A test suite passes while important business behavior remains untested.", "CI reports no tests because test discovery patterns or plugin configuration are incorrect."],
+    recovery: ["Compare runtime versions and environment variables; make timezone, locale and test configuration explicit.", "Add readiness checks and bounded startup waits; verify the test service endpoint before executing tests.", "Remove shared mutable state, isolate test data and replace uncontrolled external calls with deterministic test doubles.", "Map business requirements to test cases and add boundary, failure and authorization tests.", "Inspect test reports and plugin discovery patterns; confirm test classes and naming conventions."],
+    bestPractices: ["Test observable behavior rather than private implementation details.", "Keep unit tests fast and deterministic; reserve real infrastructure for integration boundaries.", "Use unique test data and clean up created resources after each test.", "Never use production credentials or production customer data in test environments.", "Publish test reports and preserve failure output for diagnosis.", "Track flaky tests and fix or quarantine them with a clear owner and expiry."],
+    exercise: ["Write tests for valid, invalid, minimum and maximum payment amounts.", "Mock a payment gateway timeout and assert the expected error behavior.", "Run an integration test against an isolated test database.", "Intentionally break one assertion and locate the corresponding CI report.", "Run the suite repeatedly to identify hidden ordering or shared-state problems."],
+    interview: ["What is the difference between unit and integration testing? Unit tests isolate a small component; integration tests verify collaboration across real component boundaries.", "When should you mock a dependency? Mock an external boundary when isolation is needed, but retain integration tests to verify the real contract.", "How do you reduce flaky tests? Remove shared state, control time and data, wait for readiness and avoid uncontrolled external dependencies."]
+  },
+  6: {
+    tool: "SonarQube",
+    focus: ["Static analysis and project scanning", "Quality profiles and quality gates", "CI integration and issue remediation"],
+    architecture: "A CI scanner analyzes source code and sends analysis data to the SonarQube server. The server evaluates rules, computes measures and displays issues such as bugs, vulnerabilities, code smells and coverage. A quality gate evaluates configured conditions and reports whether the analysis meets the project's release policy.",
+    workflow: ["Configure the project key and server connection in the CI environment.", "Generate test coverage reports before scanning when coverage import is required.", "Run the scanner using the correct source and test paths.", "Wait for server-side analysis and quality-gate evaluation.", "Review new issues and distinguish new-code findings from existing technical debt.", "Fix or formally review findings before allowing the release to continue."],
+    example: "A payment-service pull request runs Maven tests and generates a JaCoCo report. SonarQube analyzes the changed code, identifies a possible null dereference and evaluates the new-code quality gate. Jenkins blocks promotion until the issue is corrected and the gate passes.",
+    commands: ["mvn -B clean verify", "mvn sonar:sonar -Dsonar.projectKey=payment-service", "curl -u \"$SONAR_TOKEN:\" \"$SONAR_HOST_URL/api/qualitygates/project_status?projectKey=payment-service\"", "curl -u \"$SONAR_TOKEN:\" \"$SONAR_HOST_URL/api/projects/search?projects=payment-service\""],
+    configuration: "sonar.projectKey=payment-service\nsonar.sources=src/main\nsonar.tests=src/test\nsonar.java.binaries=target/classes\nsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml\nsonar.sourceEncoding=UTF-8",
+    failures: ["Scanner cannot connect because the server URL, DNS, TLS certificate or network route is wrong.", "Authentication fails because the token is missing, expired or lacks project permission.", "Analysis completes but coverage is zero because the report was not generated or its path is incorrect.", "The quality gate remains pending because the CI job does not wait for server-side processing.", "Unexpected findings occur because the wrong branch, source path or quality profile was analyzed."],
+    recovery: ["Check DNS, TLS trust, server health and connectivity from the actual CI agent.", "Create or rotate a least-privilege token and inject it through the CI credential store.", "Generate the coverage XML before scanning and verify the configured report path exists.", "Enable quality-gate waiting or poll the analysis task until the server reports a final status.", "Verify project key, branch parameters, source paths and assigned quality profile."],
+    bestPractices: ["Use quality gates focused on new code to prevent new debt while managing legacy findings.", "Keep scanner versions and analysis parameters controlled across CI agents.", "Protect tokens and avoid printing them in command output.", "Review security findings with developers and security owners; do not blindly suppress issues.", "Treat coverage as a measure of tested code, not proof that the code is correct."],
+    exercise: ["Connect a sample Maven project to a test SonarQube project.", "Generate a coverage report and verify that SonarQube imports it.", "Introduce a code smell and locate the rule and remediation guidance.", "Configure a quality gate and make the pipeline wait for its result.", "Correct the issue and verify that the new analysis passes."],
+    interview: ["What does a quality gate do? It evaluates configured conditions and gives the project a pass or fail status.", "Why can coverage show zero? The coverage report may not exist, may be generated after scanning or may be referenced using the wrong path.", "Why focus on new code? It prevents additional technical debt without requiring an immediate rewrite of every legacy issue."]
+  },
+  7: {
+    tool: "Trivy and Dependency Scanning",
+    focus: ["Filesystem and dependency vulnerability scanning", "Container image security scanning", "Policy enforcement and remediation"],
+    architecture: "A scanner examines package manifests, lock files, operating-system packages, container layers and configuration files. It matches detected components against vulnerability databases and reports severity, affected versions and available fixes. CI policies decide which findings block a build; a scan result is evidence, not an automatic proof of exploitability.",
+    workflow: ["Select the scan target: repository, dependency lock file, image or configuration directory.", "Update vulnerability databases and use a controlled scanner version.", "Run the scan with machine-readable output and preserve the report.", "Classify findings by severity, fix availability, exposure and application reachability.", "Upgrade affected packages or rebuild the base image using a fixed version.", "Rescan the exact artifact that will be released and enforce the approved policy."],
+    example: "A payment-service image contains an outdated operating-system library with a critical vulnerability. Trivy scans the built image, reports the package and fixed version, and the pipeline blocks publication. The team updates the base image, rebuilds and rescans the new image digest.",
+    commands: ["trivy version", "trivy fs --scanners vuln,secret,misconfig .", "trivy image --severity HIGH,CRITICAL payment-service:build-123", "trivy image --format json --output trivy-report.json payment-service:build-123", "trivy config ."],
+    configuration: "trivy:\n  scanners:\n    - vuln\n    - secret\n    - misconfig\n  severity:\n    - HIGH\n    - CRITICAL\n  ignore-unfixed: false\n\n# Example CI policy: fail on HIGH or CRITICAL findings\n# after reviewing the organization's approved exception process.",
+    failures: ["The scanner reports no vulnerabilities because its database is stale or the target was not scanned correctly.", "A scan blocks the pipeline because a vulnerable package is inherited from the base image.", "A secret is committed to source control and appears in scan output.", "The pipeline scans a mutable tag but deploys a different image digest.", "An exception hides a real issue because the ignore rule is broad or has no expiry."],
+    recovery: ["Update the scanner database and verify the detected target and scanner version.", "Trace the package to its base image or dependency; upgrade to a fixed release and rebuild.", "Revoke exposed credentials immediately, rotate dependent secrets and remove them from source history where appropriate.", "Tag and scan the exact image digest that will be deployed; pass that digest between pipeline stages.", "Review exceptions with security owners, narrow their scope and assign an expiry and remediation owner."],
+    bestPractices: ["Scan source dependencies, configuration and final container images at appropriate pipeline points.", "Prefer fixed package versions and trusted minimal base images.", "Keep reports and image digests as release evidence.", "Never assume a clean scan means an application is completely secure.", "Use narrow, time-bound exceptions with documented risk acceptance.", "Do not expose secret values in CI logs or reports."],
+    exercise: ["Scan a sample repository and save the JSON report.", "Build a container image and scan the exact image tag and digest.", "Introduce an outdated dependency in a test branch and inspect the finding.", "Upgrade the package and verify the finding is resolved.", "Configure the CI policy to fail on the agreed severity threshold."],
+    interview: ["What is the difference between dependency and image scanning? Dependency scanning inspects application libraries; image scanning also examines operating-system packages and image layers.", "Why scan the final image? The final image contains the actual packages and layers that will run in production.", "Should every finding automatically block a release? Apply a documented risk policy based on severity, fix availability and exposure, with controlled exceptions."]
+  },
+  8: {
+    tool: "Docker",
+    focus: ["Dockerfile and image construction", "Layer caching and build optimization", "Container runtime validation"],
+    architecture: "A Docker build uses a Dockerfile, build context and base image to create immutable image layers. The image is stored in a registry and instantiated as a container with runtime configuration such as ports, environment variables, volumes and resource limits. The container process should run in the foreground and handle termination signals correctly.",
+    workflow: ["Prepare a minimal build context and exclude local secrets and unnecessary files.", "Select a trusted, versioned base image and define deterministic build steps.", "Install dependencies and compile the application in a build stage.", "Copy only runtime artifacts into a smaller final stage when using multi-stage builds.", "Run the image locally with production-like environment and health checks.", "Scan, tag and publish the exact image that passed validation."],
+    example: "A Spring Boot payment service is compiled into a JAR in a Maven build stage. A separate runtime stage copies only the JAR into a small Java runtime image. CI starts the container, checks its health endpoint and publishes the tested image with a commit-specific tag.",
+    commands: ["docker version", "docker build -t payment-service:local .", "docker image inspect payment-service:local", "docker run --rm -p 8080:8080 payment-service:local", "docker logs <container-id>", "docker inspect <container-id>", "docker image history payment-service:local"],
+    configuration: "FROM maven:3.9-eclipse-temurin-17 AS build\nWORKDIR /workspace\nCOPY pom.xml .\nRUN mvn -B dependency:go-offline\nCOPY src ./src\nRUN mvn -B clean package -DskipTests\n\nFROM eclipse-temurin:17-jre\nWORKDIR /app\nCOPY --from=build /workspace/target/*.jar app.jar\nUSER 10001\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"/app/app.jar\"]",
+    failures: ["Docker build fails because required files are excluded by .dockerignore or missing from the build context.", "The image becomes unnecessarily large because build tools and caches remain in the runtime image.", "The container exits immediately because the application process fails or runs as a background daemon.", "The application is unreachable because the port mapping or bind address is incorrect.", "The image works locally but fails in CI because the base image or build architecture differs."],
+    recovery: ["Inspect the build context and .dockerignore; verify required files are copied from the correct directory.", "Use multi-stage builds and inspect image layers to remove build-only tools and unnecessary files.", "Check container logs and exit code; run the application in the foreground and correct startup configuration.", "Inspect exposed and published ports and confirm the application listens on 0.0.0.0 inside the container.", "Pin base image versions and build for the target platform; test the same image digest in CI and deployment."],
+    bestPractices: ["Use multi-stage builds and minimal trusted base images.", "Run as a non-root user and avoid embedding secrets in image layers.", "Use .dockerignore to reduce context size and prevent accidental secret inclusion.", "Pin important image versions and retain immutable image digests.", "Add health checks and graceful shutdown behavior where appropriate.", "Scan the final image and keep build provenance with the artifact."],
+    exercise: ["Write a Dockerfile for a small Java service using a multi-stage build.", "Build the image and inspect its history and size.", "Run it with a port mapping and verify the health endpoint.", "Stop the container and verify that the application handles termination cleanly.", "Rebuild after a source change and compare layer cache behavior."],
+    interview: ["What is a Docker image layer? It is a filesystem change captured as part of an image; reusable layers help caching and distribution.", "Why use multi-stage builds? They separate compilation tools from the runtime image, reducing size and attack surface.", "Why should a container run as non-root? It limits the impact if an application process is compromised."]
+  },
+  9: {
+    tool: "Amazon ECR",
+    focus: ["ECR repository and image publishing", "IAM authentication and permissions", "Image tags, digests and lifecycle"],
+    architecture: "Amazon ECR stores container images in repositories. A CI identity authenticates through AWS IAM and obtains a registry login token before pushing layers and a manifest. Image tags are convenient references, while a digest identifies exact image content and should be used for reliable promotion.",
+    workflow: ["Create or select the ECR repository in the intended AWS account and region.", "Grant the CI identity only the required repository upload and read permissions.", "Authenticate Docker to the registry using the AWS CLI login token.", "Tag the locally tested image with the ECR repository URI.", "Push the image and capture the resulting digest.", "Verify the image in ECR and pass the immutable digest to deployment."],
+    example: "Jenkins builds payment-service:commit-abc123, scans it and logs in to the ECR repository in the production AWS account. It pushes the image, records the returned digest and supplies that digest to the deployment stage so Kubernetes does not accidentally pull a later image using a reused tag.",
+    commands: ["aws sts get-caller-identity", "aws ecr describe-repositories --repository-names payment-service --region ap-south-1", "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.ap-south-1.amazonaws.com", "docker tag payment-service:build-123 <account-id>.dkr.ecr.ap-south-1.amazonaws.com/payment-service:build-123", "docker push <account-id>.dkr.ecr.ap-south-1.amazonaws.com/payment-service:build-123", "aws ecr describe-images --repository-name payment-service --region ap-south-1"],
+    configuration: "REGION=ap-south-1\nACCOUNT_ID=<account-id>\nREPOSITORY=payment-service\nREGISTRY=$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com\nIMAGE_URI=$REGISTRY/$REPOSITORY:$GIT_COMMIT\n\naws ecr get-login-password --region \"$REGION\" |\n  docker login --username AWS --password-stdin \"$REGISTRY\"\ndocker push \"$IMAGE_URI\"",
+    failures: ["Docker login fails because the token is expired or the wrong AWS region is used.", "Push is denied because the CI role lacks repository upload permissions.", "The repository cannot be found because the account ID, region or repository name is incorrect.", "Kubernetes cannot pull the image because the node identity or image pull credentials lack access.", "A reused tag points to a different image than the one validated by CI."],
+    recovery: ["Authenticate again using the correct region and verify the AWS caller identity.", "Review IAM and repository policies for the required upload actions; avoid granting unrestricted access.", "Confirm account, region and repository URI using ECR describe commands.", "Check the EKS node or workload image-pull access path and validate repository permissions.", "Resolve and deploy by digest; record the digest produced by the successful push."],
+    bestPractices: ["Use separate repositories or controlled naming for application images.", "Use IAM roles and short-lived credentials instead of long-lived access keys.", "Enable image scanning and lifecycle policies appropriate to retention requirements.", "Promote the same immutable digest across environments rather than rebuilding for each environment.", "Restrict repository access and audit image publishing identities."],
+    exercise: ["Create a test ECR repository in a non-production account.", "Authenticate using an IAM role and push a uniquely tagged image.", "Inspect the image metadata and capture its digest.", "Attempt a push with insufficient permissions and identify the denied action.", "Deploy the exact digest to a test workload and verify that it can be pulled."],
+    interview: ["Why use ECR? It provides managed private container image storage integrated with AWS IAM and deployment services.", "Why is a digest safer than a tag? A digest identifies exact image content, while a tag can be moved to another image.", "What permissions does CI need? Only the repository actions required to authenticate and upload image layers and manifests."]
+  },
+  10: {
+    tool: "Kubernetes and EKS",
+    focus: ["Deployment, ReplicaSet and Pod reconciliation", "Service networking and health probes", "EKS access, scheduling and rollout operations"],
+    architecture: "A Deployment stores the desired application state and creates ReplicaSets that manage Pods. The scheduler places Pods on eligible nodes; kubelet starts containers and reports status. Services provide stable network access to changing Pods. In EKS, AWS manages the control plane while worker nodes and workloads still require correct networking, IAM and capacity.",
+    workflow: ["Apply a version-controlled Deployment manifest to the intended namespace.", "The API server stores desired state and the Deployment controller creates or updates a ReplicaSet.", "The scheduler assigns Pods to nodes that satisfy resource and placement constraints.", "Kubelet pulls the image, starts containers and executes configured probes.", "A Service routes traffic to Pods matching its selector and readiness state.", "Observe rollout status, events and application metrics before declaring success."],
+    example: "A payment-service release updates the image digest in an EKS Deployment. Kubernetes creates new Pods, waits for readiness probes and gradually replaces old replicas. If new Pods cannot start because of image-pull or configuration errors, rollout status and events identify the failure while healthy replicas continue serving traffic.",
+    commands: ["kubectl get nodes -o wide", "kubectl get pods -n payments -o wide", "kubectl describe pod <pod-name> -n payments", "kubectl get events -n payments --sort-by=.lastTimestamp", "kubectl rollout status deployment/payment-service -n payments", "kubectl rollout history deployment/payment-service -n payments", "kubectl logs deployment/payment-service -n payments --all-pods=true"],
+    configuration: "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: payment-service\n  namespace: payments\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: payment-service\n  template:\n    metadata:\n      labels:\n        app: payment-service\n    spec:\n      containers:\n        - name: app\n          image: <account-id>.dkr.ecr.ap-south-1.amazonaws.com/payment-service@sha256:<digest>\n          ports:\n            - containerPort: 8080\n          readinessProbe:\n            httpGet: { path: /health/ready, port: 8080 }\n            initialDelaySeconds: 10\n            periodSeconds: 5\n          resources:\n            requests: { cpu: 100m, memory: 256Mi }\n            limits: { cpu: 500m, memory: 512Mi }",
+    failures: ["Pods remain Pending because of insufficient CPU or memory, node selectors, taints or unavailable nodes.", "Pods enter ImagePullBackOff because the image URI, digest or registry access is wrong.", "Pods enter CrashLoopBackOff because the application exits or required configuration is missing.", "A Service has no endpoints because selectors do not match Pod labels or Pods are not Ready.", "A rollout stalls because readiness probes fail or new Pods cannot be scheduled."],
+    recovery: ["Describe the Pod and inspect events; compare requests, node capacity, taints and placement rules.", "Verify the exact image reference and ECR access from the worker-node identity.", "Inspect current and previous container logs, exit code, environment configuration and mounted secrets.", "Compare Service selectors with Pod labels and verify readiness and target ports.", "Check rollout status and probe events; restore a known-good revision if the release is unsafe."],
+    bestPractices: ["Use readiness, liveness and startup probes for distinct health purposes.", "Set realistic CPU and memory requests and limits based on observed workload behavior.", "Use immutable image digests and declarative manifests under version control.", "Separate workloads with namespaces, RBAC and network policies where appropriate.", "Use rolling updates with suitable availability settings and verify application-level health.", "Monitor node capacity, Pod restarts, scheduling failures and API events."],
+    exercise: ["Deploy a three-replica test application into a dedicated namespace.", "Expose it through a ClusterIP Service and verify endpoints.", "Change the image to an invalid tag and diagnose ImagePullBackOff.", "Correct the image and perform a rolling update while observing readiness.", "Roll back to the previous revision and verify the application recovers."],
+    interview: ["What is the difference between Deployment and ReplicaSet? Deployment manages rollout history and ReplicaSets; ReplicaSet maintains the requested number of matching Pods.", "Why does a Service need selectors? Selectors identify the Pods that should receive traffic.", "What is the purpose of readiness probes? They determine whether a Pod should receive traffic, independently of whether the container process is running."]
+  },
+  11: {
+    tool: "Helm and Argo CD",
+    focus: ["Helm chart structure and values", "GitOps desired-state reconciliation", "Release promotion, rollback and drift management"],
+    architecture: "Helm packages Kubernetes resources into charts with templates and configurable values. Argo CD watches a Git repository, compares the declared desired state with the live cluster and reconciles differences according to its sync policy. Git is the reviewable source of truth; a successful sync alone does not prove application health.",
+    workflow: ["Maintain chart templates and environment-specific values in version control.", "Validate chart syntax and render manifests before changing a cluster.", "Commit the intended release configuration and obtain review.", "Argo CD detects the Git revision and compares it with live Kubernetes resources.", "Sync the approved revision and observe resource health and application behavior.", "If the release is unhealthy, revert the Git change and reconcile the previous desired state."],
+    example: "The platform team changes the payment-service image digest in the production values file. A reviewed pull request is merged. Argo CD detects the new Git revision, renders the Helm chart and synchronizes the Deployment. The team verifies rollout health and service metrics; if errors increase, it reverts the commit and lets Argo CD restore the prior version.",
+    commands: ["helm lint ./charts/payment-service", "helm template payment-service ./charts/payment-service -f values-prod.yaml", "helm upgrade --install payment-service ./charts/payment-service -n payments -f values-prod.yaml --dry-run", "helm list -n payments", "helm history payment-service -n payments", "argocd app get payment-service", "argocd app diff payment-service", "argocd app sync payment-service"],
+    configuration: "apiVersion: v2\nname: payment-service\nversion: 1.0.0\nappVersion: \"1.0.0\"\ntype: application\n\n# values-prod.yaml\nreplicaCount: 3\nimage:\n  repository: <account-id>.dkr.ecr.ap-south-1.amazonaws.com/payment-service\n  digest: sha256:<digest>\nservice:\n  port: 8080",
+    failures: ["Helm rendering fails because a values key is missing or a template expression has the wrong type.", "Argo CD reports OutOfSync because live resources differ from Git or another controller changed them.", "Sync fails because the Argo CD identity lacks Kubernetes RBAC permissions.", "A sync succeeds but the application remains Degraded because Pods fail readiness or dependencies are unavailable.", "A manual cluster change is overwritten because Git remains the declared desired state."],
+    recovery: ["Run helm lint and helm template with the exact environment values; inspect the rendered manifest before syncing.", "Use Argo CD diff to identify the precise drift and decide whether Git or the cluster should be corrected.", "Review the application destination, service account and Kubernetes RBAC permissions.", "Inspect Pod events, logs, probes and service dependencies; do not equate sync success with healthy service.", "Make approved changes in Git and revert unintended commits instead of relying on manual live edits."],
+    bestPractices: ["Keep chart templates reusable and put environment differences in reviewed values files.", "Pin chart and application versions and deploy immutable image digests.", "Use pull requests and protected branches for production configuration changes.", "Restrict Argo CD project destinations, source repositories and sync permissions.", "Use sync waves or hooks only when ordering is required and document their behavior.", "Monitor both synchronization status and actual application health."],
+    exercise: ["Create a Helm chart for a small application and render its manifests.", "Create separate values files for development and production.", "Connect a test Git repository to an Argo CD application.", "Change the image digest in Git and observe the OutOfSync state and reconciliation.", "Revert the commit and verify the previous desired state is restored."],
+    interview: ["What is GitOps? GitOps uses version-controlled desired state and automated reconciliation to manage deployed infrastructure or applications.", "What does OutOfSync mean? The live cluster differs from the desired manifests at the tracked Git revision.", "Why is Helm useful with Argo CD? Helm provides reusable templating and release configuration while Argo CD manages Git-based reconciliation."]
+  },
+  12: {
+    tool: "Prometheus and Grafana",
+    focus: ["Metrics instrumentation and Prometheus scraping", "PromQL alerts and service-level signals", "Grafana dashboards and incident investigation"],
+    architecture: "Applications and exporters expose metrics over HTTP. Prometheus discovers scrape targets, collects time-series samples and evaluates recording and alerting rules. Alertmanager groups and routes alerts. Grafana queries Prometheus and presents dashboards that help operators correlate traffic, errors, latency and saturation.",
+    workflow: ["Expose application metrics with stable names and useful labels.", "Configure Prometheus scrape targets and verify target health.", "Build PromQL queries for request rate, error ratio and latency percentiles.", "Define alert rules with meaningful thresholds, duration and ownership.", "Connect Grafana to Prometheus and build dashboards around service health.", "Use dashboards, logs and traces together to investigate incidents and validate recovery."],
+    example: "After a payment-service release, the request error ratio rises and p95 latency increases. Prometheus collects the service metrics and fires an alert after the condition persists. Grafana shows that errors began immediately after the deployment. The team correlates the timing with application logs, rolls back the release and confirms that error rate and latency return to normal.",
+    commands: ["promtool check config prometheus.yml", "promtool check rules alerts.yml", "curl -s http://localhost:9090/-/healthy", "curl -s http://localhost:9090/api/v1/targets", "curl -s http://localhost:9090/api/v1/query?query=up", "curl -s http://localhost:9090/api/v1/rules"],
+    configuration: "global:\n  scrape_interval: 15s\n  evaluation_interval: 15s\nscrape_configs:\n  - job_name: payment-service\n    metrics_path: /actuator/prometheus\n    static_configs:\n      - targets: ['payment-service:8080']\n\n# Example alert expression:\n# sum(rate(http_server_requests_seconds_count{status=~\"5..\"}[5m]))\n# / sum(rate(http_server_requests_seconds_count[5m])) > 0.05",
+    failures: ["Prometheus target is DOWN because the endpoint, port, network policy or service discovery configuration is incorrect.", "Metrics are missing because the application does not expose the endpoint or the scrape path is wrong.", "Queries return empty data because metric names, labels or time ranges do not match the stored series.", "Alerts do not fire because the expression, evaluation interval or duration is incorrect.", "Grafana panels show No Data because the data source, query or dashboard variable is misconfigured."],
+    recovery: ["Inspect the Prometheus Targets page and target error; test endpoint reachability from the Prometheus environment.", "Verify application metrics endpoint, authentication and scrape path; inspect the raw metrics response.", "Use the Prometheus expression browser to inspect available metric names and labels before building complex queries.", "Validate alert rules with promtool and inspect active and pending rule state.", "Test the Grafana data source connection and run the panel query directly in Explore."],
+    bestPractices: ["Use service-level indicators such as request rate, error ratio and latency rather than relying only on host CPU.", "Avoid high-cardinality labels such as user IDs, request IDs and unbounded URLs.", "Alert on actionable symptoms and sustained conditions, not every transient metric fluctuation.", "Include ownership, severity, runbook links and clear descriptions in alert annotations.", "Set retention and storage capacity according to metric volume and operational needs.", "Validate dashboards and alerts during normal operation and controlled failure exercises."],
+    exercise: ["Expose a test application's metrics endpoint and confirm it returns Prometheus format.", "Configure a scrape job and verify the target is UP.", "Write PromQL queries for request rate and error ratio.", "Create an alert rule and validate it with promtool.", "Build a Grafana dashboard and simulate a controlled error to verify the alert and visualization."],
+    interview: ["What is Prometheus scraping? Prometheus periodically requests metrics from configured targets and stores samples as time series.", "What is label cardinality? It is the number of distinct label combinations; uncontrolled cardinality increases memory and storage costs.", "Why use Grafana with Prometheus? Prometheus stores and queries metrics, while Grafana provides dashboards and visualization across data sources."]
+  }
+};
+
+const devMavoxRequiredFields = [
+  "overview", "purpose", "architecture", "workflow", "example",
+  "commands", "configuration", "failures", "recovery",
+  "bestPractices", "exercise", "interview"
+];
+
+let devMavoxUpdatedTopics = 0;
+let devMavoxUpdatedSections = 0;
+
+for (const stageId of [3,4,5,6,7,8,9,10,11,12]) {
+  const stage = stages.find((item: any) => Number(item.id) === stageId);
+  const profile = devMavoxBulkProfiles[stageId];
+
+  if (!stage || !Array.isArray(stage.topics) || stage.topics.length < 3) {
+    throw new Error(`Stage ${stageId} must exist and contain exactly 3 topics.`);
+  }
+
+  if (!profile) {
+    throw new Error(`Missing detailed profile for stage ${stageId}.`);
+  }
+
+  stage.topics.forEach((topic: any, index: number) => {
+    const focus = profile.focus[index];
+    const title = topic.title || `Topic ${index + 1}`;
+
+    const details = {
+      overview:
+        `${title} in ${profile.tool} focuses on ${focus}. ` +
+        `In a real delivery pipeline, this area determines how the application moves from a source change to a verified, deployable result. ` +
+        `The team must understand the inputs, execution steps, generated evidence and failure conditions. ` +
+        `Operators should be able to identify which component owns each action and how to prove that the action completed correctly. ` +
+        `This topic connects implementation details with reliability, security and repeatable production delivery.`,
+
+      purpose:
+        `The business purpose of ${title} is to make ${String(focus ?? title ?? "the release process").toLowerCase()} predictable and auditable. ` +
+        `Without this control, teams can release untested changes, lose traceability or discover configuration problems only after deployment. ` +
+        `A controlled implementation reduces manual work, shortens investigation time and provides evidence for release decisions. ` +
+        `For a payment application, the team must be able to connect a source commit to the exact build, validation result and production behavior. ` +
+        `The expected outcome is not merely a green pipeline; it is a repeatable process with clear ownership and measurable results.`,
+
+      architecture:
+        `${profile.architecture} ` +
+        `For the topic '${title}', identify the upstream input, the responsible service or controller, the configuration boundary and the downstream output. ` +
+        `Record the identity used by the component, the network path, the relevant logs and the state that proves completion. ` +
+        `In production, separate control-plane coordination from workload execution and avoid giving one component unnecessary privileges. ` +
+        `The design should also define timeout behavior, retry boundaries, failure reporting and a safe recovery path.`,
+
+      workflow: [
+        `Start with the purpose of '${title}' and identify the exact source, configuration or runtime object being processed.`,
+        `Verify prerequisites such as tool version, identity permissions, network connectivity, required files and target environment.`,
+        `Execute the operation using a version-controlled configuration and capture its input revision or artifact identifier.`,
+        `Inspect the component's status, logs and generated output instead of relying only on the command exit message.`,
+        `Validate the result from the downstream consumer's perspective, including health, permissions and expected application behavior.`,
+        `Record the outcome, evidence and any corrective action so the same procedure can be repeated during an incident.`
+      ],
+
+      example:
+        `${profile.example} ` +
+        `For '${title}', the engineer records the source commit, the configuration revision and the generated artifact identifier. ` +
+        `The team checks the operation's status and verifies the result at the next pipeline boundary. ` +
+        `If validation fails, promotion stops and the failure is investigated before any production change is approved.`,
+
+      commands: profile.commands.concat([
+        `# Inspect the relevant ${profile.tool} configuration and execution output`,
+        `# Capture the exact version, target, status and artifact identifier before promotion`
+      ]),
+
+      configuration:
+        `${profile.configuration}\n\n` +
+        `Operational checks for '${title}':\n` +
+        `- Keep environment-specific values outside reusable application logic.\n` +
+        `- Inject credentials through the approved secret-management mechanism.\n` +
+        `- Pin tool and dependency versions where reproducibility matters.\n` +
+        `- Set explicit timeouts and resource boundaries for long-running operations.\n` +
+        `- Record the source revision and immutable artifact reference used by the release.`,
+
+      failures: profile.failures.concat([
+        `The operation reports success, but the downstream stage receives an unexpected version or incomplete output.`,
+        `A configuration change works in one environment but fails in another because an implicit default differs.`
+      ]),
+
+      recovery: profile.recovery.concat([
+        `Compare the last known-good run with the failed run, including revisions, environment variables, tool versions and permissions.`,
+        `Reproduce the failure in a non-production environment, correct the root cause and rerun validation before promoting the result.`
+      ]),
+
+      bestPractices: profile.bestPractices.concat([
+        `Keep configuration and operational procedures in version control with peer review.`,
+        `Attach logs, test results and artifact identifiers to the pipeline run for later audit and incident investigation.`,
+        `Make recovery reversible and verify application health after every corrective action.`
+      ]),
+
+      exercise: profile.exercise.concat([
+        `Document the expected successful result and at least two failure symptoms for '${title}'.`,
+        `Perform a controlled failure in a test environment, collect evidence, apply recovery and verify the final state.`
+      ]),
+
+      interview: profile.interview.concat([
+        `How would you troubleshoot '${title}' in production? First identify the failed boundary, inspect its status and logs, verify configuration and permissions, compare with a known-good run, then apply a reversible correction and validate downstream behavior.`,
+        `What evidence should be retained? Keep the relevant source revision, configuration version, command output, logs, test or scan reports and immutable artifact reference.`
+      ])
+    };
+
+    for (const field of devMavoxRequiredFields) {
+      if (!(field in details)) {
+        throw new Error(`Missing ${field} for stage ${stageId}, topic ${index + 1}.`);
+      }
+    }
+
+    Object.assign(topic, details);
+    devMavoxUpdatedTopics++;
+    devMavoxUpdatedSections += devMavoxRequiredFields.length;
+  });
+}
+
+if (devMavoxUpdatedTopics !== 40 || devMavoxUpdatedSections !== 480) {
+  throw new Error(`Unexpected result: ${devMavoxUpdatedTopics} topics, ${devMavoxUpdatedSections} sections.`);
+}
+
+console.log("DEVMAVOX BULK CONTENT: STAGES 3-12 COMPLETE: 40 TOPICS, 480 SECTIONS");
+console.log("Stages expanded: 10");
+console.log("Topics expanded: " + devMavoxUpdatedTopics);
+console.log("Subsections populated: " + devMavoxUpdatedSections);
+// END DEVMAVOX_BULK_CONTENT_STAGES_3_TO_12
 export default function CicdPipelineVisualizerPage() {
   const [selectedStage, setSelectedStage] = useState(0);
   const [selectedTopic, setSelectedTopic] = useState(0);
+  const [builderStage, setBuilderStage] = useState(0);
+  const [selectedFailure, setSelectedFailure] = useState(0);
+  const [failureSimulated, setFailureSimulated] = useState(false);
+  const [selectedExtraTopic, setSelectedExtraTopic] = useState(0);
   const [statuses, setStatuses] = useState<string[]>(stages.map(() => "pending"));
   const [logs, setLogs] = useState<string[]>(["Pipeline ready. Select Run Pipeline to begin."]);
   const [artifacts, setArtifacts] = useState<string[]>([]);
@@ -837,6 +1862,66 @@ export default function CicdPipelineVisualizerPage() {
     addLog(`Failure injection armed for Stage ${Number(failureStage) + 1}: ${stages[Number(failureStage)].name}.`);
   };
 
+  const learningModuleKey = activeTab === "fundamentals" ? "fundamentals" : "architecture";
+  const learningModuleTopics = Object.entries(cicdTopicContent[learningModuleKey] ?? {});
+  const selectedExtraTopicData = learningModuleTopics[selectedExtraTopic];
+
+  const failureScenarios = [
+    {
+      name: "Maven Build Failure",
+      stage: "Stage 04 · Maven Build",
+      symptom: "Pipeline stops during compilation or dependency resolution.",
+      log: "[ERROR] Failed to execute goal maven-compiler-plugin\n[ERROR] Compilation failure: cannot find symbol\n[ERROR] BUILD FAILURE",
+      cause: "The source code may contain compilation errors, the configured JDK may not match the project, or a required dependency may be unavailable.",
+      checks: ["java -version", "mvn -version", "mvn dependency:tree", "mvn clean compile"],
+      recovery: ["Verify the Java version configured on the Jenkins agent.", "Fix the reported source-code compilation error.", "Inspect dependency coordinates and repository availability.", "Run mvn clean verify before retrying the pipeline."]
+    },
+    {
+      name: "Unit Test Failure",
+      stage: "Stage 05 · Automated Tests",
+      symptom: "Build compiles successfully but automated tests fail.",
+      log: "[INFO] Tests run: 42, Failures: 2, Errors: 0\n[ERROR] PaymentServiceTest.testInvalidAmount\n[ERROR] expected: 400 but was: 200\n[ERROR] BUILD FAILURE",
+      cause: "Application behavior does not match the expected test result. Incorrect business logic, test data, mocks or environment configuration may be responsible.",
+      checks: ["mvn test", "Get-Content target/surefire-reports/*.txt", "mvn -Dtest=PaymentServiceTest test"],
+      recovery: ["Identify the exact failing assertion.", "Check the payment validation implementation.", "Verify test fixtures and mocked dependencies.", "Rerun the complete test suite after fixing the issue."]
+    },
+    {
+      name: "SonarQube Quality Gate Failure",
+      stage: "Stage 06 · Quality Gate",
+      symptom: "Code analysis completes but the quality gate rejects the pipeline.",
+      log: "[INFO] SonarQube analysis completed\n[ERROR] Quality Gate: FAILED\n[ERROR] New code coverage below required threshold\n[ERROR] Pipeline blocked",
+      cause: "New code may violate configured quality conditions such as test coverage, code smells, reliability ratings or security ratings.",
+      checks: ["Inspect the SonarQube project dashboard.", "Review new-code coverage and uncovered lines.", "Check the quality gate conditions.", "Inspect the Jenkins quality gate task result."],
+      recovery: ["Open the failed quality gate conditions.", "Add or correct automated tests.", "Resolve blocking reliability and security issues.", "Run analysis again and wait for the updated quality gate result."]
+    },
+    {
+      name: "Docker Image Build Failure",
+      stage: "Stage 08 · Docker Build",
+      symptom: "The container image cannot be created by the pipeline.",
+      log: "Step 4/8 : COPY target/payment-service.jar app.jar\nCOPY failed: file not found in build context\nERROR: Docker build failed",
+      cause: "The JAR may not have been generated, the Docker build context may be incorrect, or the Dockerfile may reference an invalid file path.",
+      checks: ["Get-ChildItem target", "Get-Content Dockerfile", "docker version", "docker build --no-cache -t payment-service:debug ."],
+      recovery: ["Run Maven packaging before Docker build.", "Verify the generated JAR filename.", "Check Dockerfile COPY paths and build context.", "Rebuild and inspect the resulting image."]
+    },
+    {
+      name: "ECR Authentication Failure",
+      stage: "Stage 09 · Push to Registry",
+      symptom: "Docker cannot authenticate or push the image to Amazon ECR.",
+      log: "denied: Your authorization token has expired\nERROR: push access denied\nThe repository may not exist or may require authorization",
+      cause: "The IAM identity may lack ECR permissions, the login token may have expired, or the registry URL and AWS region may be incorrect.",
+      checks: ["aws sts get-caller-identity", "aws configure get region", "aws ecr describe-repositories", "aws ecr get-login-password --region ap-south-1"],
+      recovery: ["Confirm the Jenkins AWS role or IAM identity.", "Grant only the required ECR push permissions.", "Authenticate against the correct registry and region.", "Retry the image push and verify its digest in ECR."]
+    },
+    {
+      name: "Kubernetes CrashLoopBackOff",
+      stage: "Stage 10 · Kubernetes Deployment",
+      symptom: "A deployed application container repeatedly starts and exits.",
+      log: "NAME             READY   STATUS\npayment-api      0/1     CrashLoopBackOff\nBack-off restarting failed container",
+      cause: "The application may be exiting during startup because of incorrect environment variables, missing secrets, database connectivity, failed probes or an application exception.",
+      checks: ["kubectl get pods -n production", "kubectl describe pod POD_NAME -n production", "kubectl logs POD_NAME -n production --previous", "kubectl get events -n production --sort-by=.lastTimestamp"],
+      recovery: ["Inspect the previous container logs.", "Check pod events and the exact termination reason.", "Validate ConfigMaps, Secrets and database connectivity.", "Correct the startup or probe configuration and monitor the rollout."]
+    }
+  ];
   const tabs = [
     ["learning", "Learning Center"],
     ["simulator", "Pipeline Simulator"],
@@ -848,7 +1933,11 @@ export default function CicdPipelineVisualizerPage() {
     ["monitoring", "Monitoring Lab"],
     ["security", "Security Lab"],
     ["project", "Payment Project"],
-    ["interview", "Interview Prep"]
+    ["interview", "Interview Prep"],
+    ["architecture-builder", "Interactive Architecture"],
+    ["failure-lab", "Failure Injection Lab"],
+    ["fundamentals", "CI/CD Fundamentals"],
+    ["architecture-library", "Architecture Deep Dive"]
   ];
 
   return (
@@ -917,7 +2006,7 @@ export default function CicdPipelineVisualizerPage() {
 
         <nav className="mb-5 flex gap-2 overflow-x-auto pb-2">
           {tabs.map(([id, label]) => (
-            <button key={id} onClick={() => setActiveTab(id)} className={`shrink-0 rounded-xl border px-4 py-2.5 text-xs font-semibold transition ${activeTab === id ? "border-cyan-400 bg-cyan-500/10 text-cyan-300" : "border-slate-800 bg-slate-900 text-slate-400 hover:text-white"}`}>
+            <button key={id} onClick={() => { setActiveTab(id); setSelectedExtraTopic(0); }} className={`shrink-0 rounded-xl border px-4 py-2.5 text-xs font-semibold transition ${activeTab === id ? "border-cyan-400 bg-cyan-500/10 text-cyan-300" : "border-slate-800 bg-slate-900 text-slate-400 hover:text-white"}`}>
               {label}
             </button>
           ))}
@@ -985,6 +2074,313 @@ export default function CicdPipelineVisualizerPage() {
           </section>
         )}
 
+        {(activeTab === "fundamentals" || activeTab === "architecture-library") && selectedExtraTopicData && (
+          <section className="grid gap-5 lg:grid-cols-[300px_minmax(0,1fr)]">
+
+            <aside className="h-fit rounded-2xl border border-slate-800 bg-[#0c1422] p-4">
+              <div className="mb-4">
+                <div className="text-xs font-bold uppercase tracking-widest text-cyan-400">
+                  {activeTab === "fundamentals" ? "CI/CD FUNDAMENTALS" : "ARCHITECTURE DEEP DIVE"}
+                </div>
+                <h2 className="mt-2 text-lg font-bold">
+                  {learningModuleTopics.length} Learning Lessons
+                </h2>
+                <p className="mt-1 text-xs text-slate-500">
+                  Select a topic to explore its production implementation.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                {learningModuleTopics.map(([title], index) => (
+                  <button
+                    key={title}
+                    onClick={() => setSelectedExtraTopic(index)}
+                    className={`w-full rounded-xl border p-3 text-left text-sm transition ${
+                      selectedExtraTopic === index
+                        ? "border-cyan-500/60 bg-cyan-500/10 text-cyan-200"
+                        : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-600 hover:text-white"
+                    }`}
+                  >
+                    <span className="mr-2 text-xs text-slate-600">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    {title}
+                  </button>
+                ))}
+              </div>
+            </aside>
+
+            <article className="min-w-0 rounded-2xl border border-slate-800 bg-[#0c1422] p-5 md:p-7">
+              <div className="border-b border-slate-800 pb-5">
+                <div className="text-xs font-bold uppercase tracking-widest text-cyan-400">
+                  {activeTab === "fundamentals" ? "CI/CD FUNDAMENTALS" : "PRODUCTION ARCHITECTURE"}
+                </div>
+
+                <h2 className="mt-2 text-2xl font-black">
+                  {selectedExtraTopicData[0]}
+                </h2>
+
+                <p className="mt-2 text-sm text-slate-400">
+                  Detailed concepts, practical implementation and production engineering guidance.
+                </p>
+              </div>
+
+              <div className="mt-6 space-y-6">
+                <LessonSection
+                  title="01 · Concept and Overview"
+                  content={selectedExtraTopicData[1].overview}
+                />
+
+                <LessonSection
+                  title="02 · Purpose and Business Value"
+                  content={selectedExtraTopicData[1].purpose}
+                />
+
+                <LessonSection
+                  title="03 · Production Workflow"
+                  list={selectedExtraTopicData[1].workflow}
+                />
+
+                <LessonSection
+                  title="04 · Real-World Production Example"
+                  content={selectedExtraTopicData[1].productionExample}
+                />
+
+                <div>
+                  <SectionHeading title="05 · Practical Commands" />
+                  <div className="mt-3 space-y-2">
+                    {selectedExtraTopicData[1].commands.map((command, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"
+                      >
+                        <code className="overflow-x-auto text-xs text-emerald-300">
+                          {command}
+                        </code>
+                        <button
+                          onClick={() => navigator.clipboard?.writeText(command)}
+                          className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 hover:text-white"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <LessonSection
+                  title="06 · Failure Checks and Troubleshooting"
+                  list={selectedExtraTopicData[1].failureChecks}
+                />
+
+                <LessonSection
+                  title="07 · Production Best Practices"
+                  list={selectedExtraTopicData[1].bestPractices}
+                />
+              </div>
+
+              <div className="mt-8 flex justify-between gap-3 border-t border-slate-800 pt-5">
+                <button
+                  disabled={selectedExtraTopic === 0}
+                  onClick={() => setSelectedExtraTopic(index => index - 1)}
+                  className="rounded-xl border border-slate-700 px-4 py-2 text-sm text-slate-300 disabled:opacity-30"
+                >
+                  ← Previous Lesson
+                </button>
+
+                <button
+                  disabled={selectedExtraTopic >= learningModuleTopics.length - 1}
+                  onClick={() => setSelectedExtraTopic(index => index + 1)}
+                  className="rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-300 disabled:opacity-30"
+                >
+                  Next Lesson →
+                </button>
+              </div>
+            </article>
+          </section>
+        )}
+        {activeTab === "architecture-builder" && (
+          <section className="space-y-5">
+            <div className="rounded-2xl border border-cyan-500/30 bg-[#0c1422] p-5">
+              <div className="text-xs font-bold uppercase tracking-widest text-cyan-400">Interactive Production Architecture</div>
+              <h2 className="mt-2 text-2xl font-black">End-to-End CI/CD Pipeline</h2>
+              <p className="mt-2 text-sm text-slate-400">Select any component to understand its role, inputs, outputs and production implementation.</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {stages.map((item, index) => (
+                <button
+                  key={item.id}
+                  onClick={() => setBuilderStage(index)}
+                  className={`rounded-xl border p-4 text-left transition ${
+                    builderStage === index
+                      ? "border-cyan-400 bg-cyan-500/10 ring-1 ring-cyan-500/30"
+                      : "border-slate-800 bg-[#0c1422] hover:border-cyan-500/50"
+                  }`}
+                >
+                  <div className="text-2xl">{item.icon}</div>
+                  <div className="mt-2 text-sm font-bold">{item.name}</div>
+                  <div className="mt-1 text-xs text-slate-500">{item.tool}</div>
+                  <div className="mt-3 text-[10px] font-bold uppercase text-cyan-400">Stage {item.id} →</div>
+                </button>
+              ))}
+            </div>
+
+            <div className="rounded-2xl border border-slate-800 bg-[#0c1422] p-5 md:p-7">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs font-bold uppercase tracking-widest text-cyan-400">Selected component · Stage {stages[builderStage].id}/12</div>
+                  <h3 className="mt-2 text-2xl font-black">{stages[builderStage].name}</h3>
+                  <p className="mt-1 text-sm text-slate-400">{stages[builderStage].summary}</p>
+                </div>
+                <span className="text-3xl">{stages[builderStage].icon}</span>
+              </div>
+
+              <div className="mt-6 grid gap-3 md:grid-cols-2">
+                <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+                  <div className="text-xs font-bold uppercase text-slate-500">Input</div>
+                  <p className="mt-2 text-sm text-cyan-200">{stages[builderStage].input}</p>
+                </div>
+                <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+                  <div className="text-xs font-bold uppercase text-slate-500">Output</div>
+                  <p className="mt-2 text-sm text-emerald-300">{stages[builderStage].output}</p>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <h4 className="font-bold">Production workflow</h4>
+                <ol className="mt-3 space-y-3">
+                  {stages[builderStage].topics[0].workflow.map((step, index) => (
+                    <li key={index} className="flex gap-3 rounded-xl border border-slate-800 bg-slate-950 p-3">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-cyan-500/10 text-xs font-bold text-cyan-300">{index + 1}</span>
+                      <span className="text-sm leading-6 text-slate-300">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              <div className="mt-6">
+                <h4 className="font-bold">Related learning topics</h4>
+                <div className="mt-3 grid gap-2 md:grid-cols-3">
+                  {stages[builderStage].topics.map((topic, index) => (
+                    <button
+                      key={topic.title}
+                      onClick={() => {
+                        setSelectedStage(builderStage);
+                        setSelectedTopic(index);
+                        setActiveTab("learning");
+                      }}
+                      className="rounded-xl border border-slate-800 bg-slate-950 p-3 text-left text-sm text-slate-300 hover:border-cyan-500/50"
+                    >
+                      <span className="text-xs text-cyan-400">TOPIC {index + 1}</span>
+                      <div className="mt-1 font-semibold">{topic.title}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-between gap-3 border-t border-slate-800 pt-5">
+                <button
+                  disabled={builderStage === 0}
+                  onClick={() => setBuilderStage(s => s - 1)}
+                  className="rounded-xl border border-slate-700 px-4 py-2 text-sm disabled:opacity-30"
+                >← Previous</button>
+                <button
+                  disabled={builderStage === 11}
+                  onClick={() => setBuilderStage(s => s + 1)}
+                  className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 disabled:opacity-30"
+                >Next Stage →</button>
+              </div>
+            </div>
+          </section>
+        )}
+        {activeTab === "failure-lab" && (
+          <section className="space-y-5">
+            <div className="rounded-2xl border border-red-500/30 bg-[#0c1422] p-5">
+              <div className="text-xs font-bold uppercase tracking-widest text-red-400">Production Incident Training</div>
+              <h2 className="mt-2 text-2xl font-black">Failure Injection & Troubleshooting Lab</h2>
+              <p className="mt-2 text-sm text-slate-400">Practice diagnosing common CI/CD failures using simulated production logs. These scenarios do not modify real infrastructure.</p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {failureScenarios.map((item, index) => (
+                <button
+                  key={item.name}
+                  onClick={() => { setSelectedFailure(index); setFailureSimulated(false); }}
+                  className={`rounded-xl border p-4 text-left transition ${
+                    selectedFailure === index
+                      ? "border-red-400 bg-red-500/10"
+                      : "border-slate-800 bg-[#0c1422] hover:border-red-500/50"
+                  }`}
+                >
+                  <div className="text-xs font-bold text-red-400">INCIDENT {String(index + 1).padStart(2, "0")}</div>
+                  <div className="mt-2 font-bold">{item.name}</div>
+                  <div className="mt-2 text-xs text-slate-500">{item.stage}</div>
+                </button>
+              ))}
+            </div>
+
+            <div className="rounded-2xl border border-slate-800 bg-[#0c1422] p-5 md:p-7">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs font-bold uppercase tracking-widest text-red-400">{failureScenarios[selectedFailure].stage}</div>
+                  <h3 className="mt-2 text-2xl font-black">{failureScenarios[selectedFailure].name}</h3>
+                  <p className="mt-2 text-sm text-slate-400">{failureScenarios[selectedFailure].symptom}</p>
+                </div>
+                <button
+                  onClick={() => setFailureSimulated(true)}
+                  className="rounded-xl bg-red-500 px-4 py-3 text-sm font-bold text-white hover:bg-red-400"
+                >
+                  Simulate Failure
+                </button>
+              </div>
+
+              {failureSimulated ? (
+                <div className="mt-6 rounded-xl border border-red-500/30 bg-[#070d18] p-4">
+                  <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase text-red-400">
+                    <span className="h-2 w-2 rounded-full bg-red-500" />
+                    Simulated incident logs
+                  </div>
+                  <pre className="overflow-x-auto whitespace-pre-wrap text-xs leading-6 text-red-300">{failureScenarios[selectedFailure].log}</pre>
+                </div>
+              ) : (
+                <div className="mt-6 rounded-xl border border-slate-800 bg-slate-950 p-4 text-sm text-slate-400">
+                  Select Simulate Failure to reveal the incident log and begin diagnosis.
+                </div>
+              )}
+
+              <div className="mt-6 grid gap-5 lg:grid-cols-2">
+                <div>
+                  <h4 className="font-bold text-amber-300">Root cause analysis</h4>
+                  <p className="mt-3 text-sm leading-7 text-slate-300">{failureScenarios[selectedFailure].cause}</p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-cyan-300">Diagnostic commands and checks</h4>
+                  <div className="mt-3 space-y-2">
+                    {failureScenarios[selectedFailure].checks.map((command, index) => (
+                      <div key={index} className="flex items-center justify-between gap-2 rounded-lg border border-slate-800 bg-slate-950 p-3">
+                        <code className="overflow-x-auto text-xs text-emerald-300">{command}</code>
+                        <button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 text-xs text-slate-400 hover:text-white">Copy</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+                <h4 className="font-bold text-emerald-300">Recovery procedure</h4>
+                <ol className="mt-3 space-y-3">
+                  {failureScenarios[selectedFailure].recovery.map((step, index) => (
+                    <li key={index} className="flex gap-3 text-sm leading-6 text-slate-300">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-bold text-emerald-300">{index + 1}</span>
+                      {step}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          </section>
+        )}
         {activeTab === "simulator" && (
           <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_370px]">
             <div className="space-y-5">
@@ -1094,7 +2490,7 @@ function LessonSection({ title, content, list }: { title: string; content?: stri
     <section>
       <SectionHeading title={title} />
       {content && <p className="mt-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4 text-sm leading-7 text-slate-300">{content}</p>}
-      {list && <ol className="mt-3 space-y-2">{list.map((item, i) => <li key={i} className="flex gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 text-sm leading-6 text-slate-300"><span className="font-bold text-cyan-400">{String(i + 1).padStart(2, "0")}</span><span>{item}</span></li>)}</ol>}
+      {list && <ol className="mt-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-3">{list.map((item, i) => <li key={i} className="flex gap-3 text-sm leading-7 text-slate-300"><span className="shrink-0 font-bold text-cyan-400">{String(i + 1).padStart(2, "0")}.</span><span>{item}</span></li>)}</ol>}
     </section>
   );
 }
