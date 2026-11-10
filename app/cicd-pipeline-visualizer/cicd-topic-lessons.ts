@@ -1,3 +1,15 @@
+import { stageTwelveLessonOverrides } from "./cicd-stage-12-lessons";
+import { stageElevenLessonOverrides } from "./cicd-stage-11-lessons";
+import { stageTenLessonOverrides } from "./cicd-stage-10-lessons";
+import { stageNineLessonOverrides } from "./cicd-stage-09-lessons";
+import { stageEightLessonOverrides } from "./cicd-stage-08-lessons";
+import { stageSevenLessonOverrides } from "./cicd-stage-07-lessons";
+import { stageSixLessonOverrides } from "./cicd-stage-06-lessons";
+import { stageFiveLessonOverrides } from "./cicd-stage-05-lessons";
+import { stageFourLessonOverrides } from "./cicd-stage-04-lessons";
+import { stageThreeLessonOverrides } from "./cicd-stage-03-lessons";
+import { stageTwoLessonOverrides } from "./cicd-stage-02-lessons";
+import { stageOneLessonOverrides } from "./cicd-stage-01-lessons";
 // Generated CI/CD topic lesson data.
 export type CicdTopicLesson = {
   overview: string;
@@ -10305,6 +10317,30 @@ const lessons: Record<string, CicdTopicLesson> = {
     "exercise": "Create a small practice workflow for Production Hands-on Lab in a non-production project. Identify the required inputs, configuration, permissions, dependencies, and expected outputs. Execute the relevant validation steps, record the results, and deliberately investigate one safe failure condition. Complete the exercise by documenting the root cause, corrective action, and verification evidence. The expected result is a repeatable workflow that another engineer can understand and validate."
   }
 };
+
+Object.assign(lessons, stageOneLessonOverrides);
+
+Object.assign(lessons, stageTwoLessonOverrides);
+
+Object.assign(lessons, stageThreeLessonOverrides);
+
+Object.assign(lessons, stageFourLessonOverrides);
+
+Object.assign(lessons, stageFiveLessonOverrides);
+
+Object.assign(lessons, stageSixLessonOverrides);
+
+Object.assign(lessons, stageSevenLessonOverrides);
+
+Object.assign(lessons, stageEightLessonOverrides);
+
+Object.assign(lessons, stageNineLessonOverrides);
+
+Object.assign(lessons, stageTenLessonOverrides);
+
+Object.assign(lessons, stageElevenLessonOverrides);
+
+Object.assign(lessons, stageTwelveLessonOverrides);
 
 export function getCicdTopicLesson(stageId: number, title: string): CicdTopicLesson | undefined {
   return lessons[String(stageId) + "|" + title];

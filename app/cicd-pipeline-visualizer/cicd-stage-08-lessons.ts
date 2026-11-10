@@ -1,0 +1,378 @@
+import type { CicdTopicLesson } from "./cicd-topic-lessons";
+
+function makeLesson(
+  overview: string,
+  purpose: string,
+  architecture: string,
+  workflow: string[],
+  example: string,
+  commands: string[],
+  configuration: string,
+  failures: string[],
+  recovery: string[],
+  bestPractices: string[],
+  exercise: string
+): CicdTopicLesson {
+  return {
+    overview,
+    purpose,
+    architecture,
+    workflow,
+    example,
+    commands,
+    configuration,
+    failures,
+    recovery,
+    bestPractices,
+    exercise,
+  };
+}
+
+export const stageEightLessonOverrides: Record<string, CicdTopicLesson> = {
+  "8|Docker Fundamentals": makeLesson(
+    "Docker is a container platform used to package an application together with its runtime dependencies. A Docker image is the reusable package, while a container is a running instance of that image. Containers share the host operating system kernel but isolate application processes, filesystems, and networking. This makes application behavior more consistent between developer laptops, CI servers, and production environments.",
+    "Docker helps teams avoid environment-related failures. A Spring Boot payment service may work on one developer machine but fail on another because of different Java versions or missing libraries. Packaging the application with its required runtime in an image gives the team a repeatable deployment artifact.",
+    "The developer writes application code and a Dockerfile. Docker builds an image from the Dockerfile and build context. The image is stored locally or pushed to a registry. A container runtime creates a container from that image. The container runs the application process with configured ports, environment variables, storage, and resource limits.",
+    [
+      "Develop and test the Spring Boot payment service.",
+      "Create a Dockerfile describing the application runtime.",
+      "Build an image using the Docker build context.",
+      "Run a container from the generated image.",
+      "Verify application health and inspect container logs.",
+      "Tag and publish the verified image to a registry."
+    ],
+    "A payment service packaged as payment-service:1.0.0 can run on a developer laptop, a Jenkins build agent, or a Kubernetes worker node without separately installing the application's Java dependencies on each machine.",
+    ["docker version", "docker info", "docker build -t payment-service:1.0.0 .", "docker run -d --name payment-api -p 8080:8080 payment-service:1.0.0", "docker ps", "docker logs payment-api"],
+    "The image tag identifies the packaged application version. The -p option maps a host port to a container port. Application configuration should be supplied through environment variables or mounted configuration rather than hard-coded production credentials inside the image.",
+    ["Docker daemon is not running, so build and run commands cannot connect to the engine.", "The image builds successfully but the container exits because the application configuration is invalid.", "The application listens on a different port from the published container port.", "The image contains an incompatible Java runtime."],
+    ["Start Docker Desktop or the Linux Docker service and verify docker info.", "Inspect docker logs and docker inspect to identify the application startup failure.", "Compare the application's listening port with the container port mapping.", "Use a runtime image compatible with the Java version required by the application."],
+    ["Use versioned image tags instead of relying only on latest.", "Keep secrets outside Docker images.", "Use small and maintained base images.", "Run application processes as a non-root user.", "Build once and promote the same image through environments."],
+    "Create a Dockerfile for a Spring Boot payment service, build payment-service:1.0.0, run it on port 8080, inspect its logs, and explain the difference between an image and a container."
+  ),
+
+  "8|Docker Architecture": makeLesson(
+    "Docker uses a client-server architecture. The Docker CLI is the client, and the Docker daemon manages images, containers, networks, and volumes. The client communicates with the daemon through the Docker API. Modern Docker installations commonly use containerd to manage container lifecycle operations and runc to create containers according to OCI runtime specifications.",
+    "Understanding the architecture helps engineers identify where a Docker operation is failing. A build command, image download, container creation, and network connection involve different parts of the Docker system. Knowing these components makes troubleshooting more accurate.",
+    "The Docker CLI sends an API request to dockerd. The daemon processes the request and coordinates image, network, and volume operations. Containerd manages container lifecycle tasks, while runc creates the isolated container process. Images are stored in the engine's image store, and containers use configured filesystem, network, and runtime settings.",
+    [
+      "Run a Docker CLI command such as docker build or docker run.",
+      "The CLI sends the request to the Docker API endpoint.",
+      "The daemon validates and processes the requested operation.",
+      "The daemon coordinates image, network, and storage resources.",
+      "Containerd and the OCI runtime create and manage the container process.",
+      "The CLI displays the operation result."
+    ],
+    "When Jenkins runs docker run for the payment API, the CLI communicates with the Docker engine. The engine creates the container filesystem, configures networking, and starts the Java process through the container runtime.",
+    ["docker version", "docker info", "docker context ls", "docker ps -a", "docker image ls", "docker system info"],
+    "The Docker client can connect to different Docker contexts. A context selects the Docker endpoint used by the CLI. On Linux this commonly targets the local Unix socket; Docker Desktop on Windows provides an integration layer for the selected Linux engine.",
+    ["The CLI is installed but the daemon is unavailable.", "The active Docker context points to the wrong engine.", "Permission is denied when accessing the Docker socket.", "Container creation fails because the runtime or storage layer has an error."],
+    ["Check both Client and Server sections in docker version.", "Select the intended context with docker context use.", "Verify socket permissions and approved group membership.", "Inspect daemon logs and engine health before retrying container creation."],
+    ["Understand the client, daemon, containerd, and runtime responsibilities.", "Use Docker contexts carefully when multiple engines are configured.", "Avoid exposing the Docker API over an unauthenticated network.", "Grant Docker socket access only to trusted automation and users."],
+    "Run docker version and docker info. Identify the client and server details, inspect the active Docker context, and explain the path taken when Jenkins requests a new payment-service container."
+  ),
+
+  "8|Docker Installation": makeLesson(
+    "Docker installation provides the CLI and a container engine that can build images and run containers. On Windows, Docker Desktop commonly uses WSL 2 for Linux containers. On Linux servers, Docker Engine can be installed using the distribution-supported installation procedure. Installation requirements and commands differ by operating system and version.",
+    "A working Docker installation is required before developers or CI agents can build container images. Verifying the engine early prevents pipeline failures caused by a missing CLI, stopped daemon, incompatible environment, or insufficient permissions.",
+    "A developer installs Docker Desktop with WSL 2 integration or installs Docker Engine on a supported Linux host. The Docker CLI communicates with the running engine. The installation must provide access to the correct container mode, storage, networking, and required permissions.",
+    [
+      "Check the operating system and supported Docker installation method.",
+      "Install Docker Desktop or Docker Engine using official instructions.",
+      "Start the Docker service or Docker Desktop application.",
+      "Open a new terminal and verify the Docker CLI.",
+      "Verify that the client can communicate with the server.",
+      "Run a small test container to validate the installation."
+    ],
+    "A Windows developer enables WSL 2 integration in Docker Desktop and runs docker run hello-world. A Linux Jenkins agent installs and starts Docker Engine, then verifies that its pipeline account can access the approved Docker endpoint.",
+    ["docker --version", "docker version", "docker info", "docker context ls", "docker run --rm hello-world", "systemctl status docker"],
+    "Windows configuration includes Docker Desktop settings and WSL 2 integration. Linux configuration includes the Docker service, daemon configuration, storage location, and access permissions. Do not copy Linux installation commands directly into PowerShell without checking the operating system.",
+    ["Docker CLI is not found in PATH.", "Docker Desktop is installed but its engine has not started.", "WSL 2 integration is disabled or the distribution is unavailable.", "Linux users receive permission denied when connecting to the Docker socket."],
+    ["Restart the terminal and verify PATH.", "Start Docker Desktop and wait for the engine to become ready.", "Check WSL status and enable integration for the intended distribution.", "Verify the socket permissions and approved Docker group membership."],
+    ["Use official installation instructions for the target operating system.", "Keep Docker Desktop and Engine versions supported.", "Verify both client and server versions.", "Do not grant unrestricted Docker access to CI users.", "Validate installation with a disposable test container."],
+    "Install or verify Docker on your development machine. Capture docker version and docker info output, run hello-world, and record any operating-system-specific configuration required."
+  ),
+
+  "8|Dockerfile Instructions": makeLesson(
+    "A Dockerfile is a text file containing instructions used to build a Docker image. Instructions such as FROM, WORKDIR, COPY, RUN, ENV, ARG, USER, ENTRYPOINT, and CMD define the base image, filesystem, build operations, runtime settings, security identity, and application startup behavior.",
+    "A well-written Dockerfile makes application builds repeatable and understandable. It also controls image size, build caching, runtime behavior, and security. The payment service should start consistently without depending on manual commands inside a running container.",
+    "Docker reads the Dockerfile and executes its instructions to produce image layers. FROM selects a base image. RUN executes build-time commands. COPY adds files from the build context. ENV sets runtime environment variables, while ARG provides build-time values. ENTRYPOINT and CMD define the container startup command.",
+    [
+      "Select a maintained Java runtime base image.",
+      "Set a predictable working directory.",
+      "Copy the application artifact into the image.",
+      "Create a dedicated non-root runtime user.",
+      "Configure the application port and runtime settings.",
+      "Define the application startup command.",
+      "Build the image and verify its runtime behavior."
+    ],
+    "A runtime Dockerfile for the payment service can copy target/payment-service.jar into /app/app.jar and start it with java -jar /app/app.jar. The Maven compilation step can be performed in a separate builder stage.",
+    ["docker build -t payment-service:1.0.0 .", "docker image inspect payment-service:1.0.0", "docker run --rm payment-service:1.0.0", "docker history payment-service:1.0.0"],
+    "Example runtime instructions:\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nCOPY --chown=10001:10001 target/payment-service.jar /app/app.jar\nUSER 10001:10001\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"/app/app.jar\"]\nEXPOSE documents the intended listening port; it does not publish that port to the host.",
+    ["COPY fails because the source file is missing from the build context.", "RUN fails because a required package or command is unavailable.", "The container exits because ENTRYPOINT references the wrong JAR path.", "The application cannot write files after switching to a non-root user."],
+    ["Run Maven packaging before the Docker build and verify the JAR path.", "Use a supported base image and install only required build-time tools.", "Correct the application path and verify the JAR exists in the image.", "Create and assign ownership to only the directories the application must write."],
+    ["Use exec form for ENTRYPOINT and CMD.", "Separate build-time ARG values from runtime ENV configuration.", "Avoid embedding credentials in Dockerfile instructions.", "Use non-root execution.", "Keep the runtime image focused on runtime dependencies."],
+    "Write a Dockerfile for the payment-service JAR using a Java 21 runtime, /app as WORKDIR, a non-root USER, EXPOSE 8080, and exec-form ENTRYPOINT. Build and run the image."
+  ),
+
+  "8|Build Context and .dockerignore": makeLesson(
+    "The Docker build context is the set of files sent to the Docker builder for a build. COPY and ADD instructions can access files within this context. A .dockerignore file excludes unnecessary files before the context is sent, reducing transfer size and preventing accidental inclusion of local secrets or development files.",
+    "A clean build context improves build speed, reduces accidental data exposure, and makes Docker builds more predictable. Sending node_modules, Git history, local logs, generated output, or environment files can make a payment-service image build slower and less secure.",
+    "When docker build runs, the CLI or builder prepares the selected context directory. Docker applies .dockerignore rules and makes the remaining files available to the build process. Dockerfile COPY sources are resolved relative to this context, not relative to arbitrary host directories.",
+    [
+      "Choose the project directory as the build context.",
+      "Inspect which files the application actually needs.",
+      "Create a .dockerignore file in the context root.",
+      "Exclude Git metadata, local dependencies, logs, and secrets.",
+      "Run the Docker build using the intended context directory.",
+      "Check COPY paths when a source file cannot be found."
+    ],
+    "For a Maven Spring Boot project, the context may contain pom.xml, src, and the generated target JAR. Local .git data, IDE files, temporary logs, and local credential files should not be sent to the builder.",
+    ["docker build -t payment-service:1.0.0 .", "docker build -f docker/Dockerfile -t payment-service:1.0.0 .", "Get-ChildItem -Force", "Get-Content .dockerignore"],
+    "Example .dockerignore:\n.git\n.gitignore\n.idea\n.vscode\n*.log\n.env\n.env.*\n!.env.example\ntarget/test-classes\nnode_modules\n.DS_Store\nThe exact exclusions must match the project's build process. Do not exclude the JAR if the Dockerfile copies it from target.",
+    ["COPY cannot find a file because the build context points to the wrong directory.", "The context is unexpectedly large due to generated files or dependencies.", "A required artifact is excluded by an overly broad ignore pattern.", "A developer accidentally sends a local secret file in the context."],
+    ["Run docker build from the intended project root and correct the context argument.", "Add unnecessary directories to .dockerignore and rebuild.", "Review ignore patterns and explicitly allow required files where appropriate.", "Remove exposed secrets from the context and rotate credentials if they were disclosed."],
+    ["Keep .dockerignore in the build context root.", "Exclude secrets and local-only files.", "Do not assume Dockerfile location determines build context.", "Keep context small and reproducible.", "Review ignore rules whenever the build structure changes."],
+    "Create a .dockerignore for the payment-service repository. Build using the correct context, verify that the JAR remains available to COPY, and explain why .git and local credentials must be excluded."
+  ),
+
+  "8|Image Layers and Caching": makeLesson(
+    "Docker images are constructed from filesystem layers and image configuration. Many Dockerfile instructions create layers or affect the build cache. Docker can reuse previously generated results when the instruction and its dependent inputs have not changed. Correct instruction ordering can avoid repeating expensive dependency downloads.",
+    "Layer caching reduces CI build time and makes repeated builds more efficient. A payment-service build should not download all Maven dependencies again whenever a developer changes a single Java source file.",
+    "The builder evaluates Dockerfile instructions in order. It checks whether a cached result can be reused. When an instruction or its relevant inputs change, later dependent instructions may need to execute again. The resulting image references its layers and configuration.",
+    [
+      "Identify stable project inputs such as pom.xml.",
+      "Copy dependency descriptors before frequently changing source files.",
+      "Resolve dependencies in an earlier build step.",
+      "Copy application source after dependency preparation.",
+      "Run the Maven package command.",
+      "Change one source file and rebuild to observe cache reuse."
+    ],
+    "In a Maven builder stage, copy pom.xml first and resolve dependencies before copying src. When only PaymentController.java changes, the dependency-resolution layer can remain cached if its inputs have not changed.",
+    ["docker build -t payment-service:1.0.0 .", "docker build --progress=plain -t payment-service:1.0.1 .", "docker history payment-service:1.0.0", "docker image inspect payment-service:1.0.0"],
+    "Example ordering:\nCOPY pom.xml .\nRUN mvn -B dependency:go-offline\nCOPY src ./src\nRUN mvn -B clean package -DskipTests\nA change to pom.xml should invalidate dependency-related work. A change only to application source should not unnecessarily invalidate earlier dependency preparation.",
+    ["Every build downloads dependencies because source files are copied too early.", "A cached layer contains outdated output because required inputs were not declared correctly.", "A broad COPY instruction invalidates cache when unrelated files change.", "Builds differ because external dependencies or base image references are mutable."],
+    ["Move stable dependency descriptors before frequently changing source files.", "Ensure every build output depends on the correct declared inputs.", "Narrow COPY instructions to required files.", "Pin or control dependency and base-image versions where reproducibility is required."],
+    ["Order Dockerfile instructions by change frequency.", "Keep dependency resolution separate from application source copying.", "Use .dockerignore to avoid irrelevant cache invalidation.", "Do not trade correctness for cache reuse.", "Measure build time before and after changing layer order."],
+    "Build the payment-service image twice. Compare the build output, modify one Java source file, rebuild with plain progress, and identify which Maven dependency layers were reused."
+  ),
+
+  "8|BuildKit": makeLesson(
+    "BuildKit is Docker's modern build engine. It supports improved build execution, parallel processing, advanced cache management, secret mounts, SSH mounts, and flexible build outputs. It can make CI builds faster while providing safer ways to access temporary build credentials.",
+    "BuildKit helps Jenkins produce images efficiently without storing private repository credentials inside image layers. A build may need temporary access to a private Maven repository, but that credential must not become part of the final image.",
+    "The Docker CLI invokes the BuildKit builder. The builder processes the Dockerfile, resolves dependencies, manages cache, and executes eligible operations. Secret and SSH mounts provide temporary access during a build instruction without copying the credential into the resulting image layer.",
+    [
+      "Verify that the Docker installation supports BuildKit.",
+      "Prepare the Dockerfile for BuildKit syntax and features.",
+      "Provide required build secrets through the supported secret mechanism.",
+      "Mount the secret only for the instruction that needs it.",
+      "Build the application image and inspect the output.",
+      "Confirm that credentials are absent from image history and final filesystem."
+    ],
+    "A Jenkins build may need a private Maven settings file to download internal payment-service dependencies. BuildKit can mount that file temporarily during dependency resolution instead of copying it into the image.",
+    ["docker buildx version", "docker buildx ls", "docker buildx build --load -t payment-service:1.0.0 .", "docker history payment-service:1.0.0"],
+    "Example Dockerfile instruction:\n# syntax=docker/dockerfile:1\nRUN --mount=type=secret,id=maven_settings,target=/root/.m2/settings.xml mvn -B dependency:go-offline\nExample build:\ndocker build --secret id=maven_settings,src=./settings.xml -t payment-service:1.0.0 .\nUse a protected CI credential file and never commit settings.xml containing passwords.",
+    ["The selected builder does not support the requested BuildKit feature.", "The secret ID used by RUN does not match the ID supplied to docker build.", "The build agent cannot access the secret source file.", "Cache behavior differs between local and CI builders."],
+    ["Select a BuildKit-enabled builder and verify docker buildx ls.", "Match the secret ID and target path in the Dockerfile and build command.", "Check CI credential-file permissions and temporary file availability.", "Use an explicit builder and cache configuration for consistent CI behavior."],
+    ["Use secret mounts instead of ARG or ENV for sensitive values.", "Do not print secrets in build logs.", "Restrict secret access to the build instruction that needs it.", "Use trusted builders and controlled cache storage.", "Verify the final image does not contain private credentials."],
+    "Configure a BuildKit build for the payment service. Mount a temporary Maven settings file as a secret, build the image, and verify that the settings file and password are not present in the final image."
+  ),
+
+  "8|Multi-stage Builds": makeLesson(
+    "A multi-stage Dockerfile uses multiple FROM instructions to separate build-time work from runtime execution. A builder stage can contain Maven, a JDK, source code, and compilation tools. A smaller runtime stage copies only the packaged application and required runtime dependencies.",
+    "Separating build and runtime environments reduces image size and removes unnecessary compilers and build tools from production. The payment-service production container needs the packaged JAR and compatible Java runtime, not the complete Maven build environment.",
+    "The first stage uses a JDK and Maven to resolve dependencies, compile code, run tests, and package the JAR. A later stage starts from a Java runtime image and copies only the JAR from the builder stage. The final image contains the runtime configuration and application artifact.",
+    [
+      "Create a Maven builder stage with a compatible JDK.",
+      "Copy the Maven project files into the builder.",
+      "Resolve dependencies and compile the application.",
+      "Package the payment-service JAR.",
+      "Start a new stage using a Java runtime image.",
+      "Copy the packaged JAR from the builder stage.",
+      "Run the final image and verify the application."
+    ],
+    "The builder stage compiles payment-service.jar using Maven and JDK 21. The runtime stage uses a Java 21 JRE image and copies /workspace/target/payment-service.jar to /app/app.jar.",
+    ["docker build -t payment-service:1.0.0 .", "docker image ls payment-service", "docker history payment-service:1.0.0", "docker run --rm -p 8080:8080 payment-service:1.0.0"],
+    "Example Dockerfile:\nFROM maven:3.9-eclipse-temurin-21 AS builder\nWORKDIR /workspace\nCOPY pom.xml .\nCOPY src ./src\nRUN mvn -B clean package -DskipTests\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nRUN useradd --system --uid 10001 appuser\nCOPY --from=builder --chown=10001:10001 /workspace/target/payment-service.jar /app/app.jar\nUSER 10001:10001\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"/app/app.jar\"]",
+    ["The builder stage cannot download Maven dependencies.", "The runtime COPY source path does not match the actual JAR output.", "The JDK and JRE versions are incompatible with the application.", "The runtime image lacks a required native library or certificate."],
+    ["Verify Maven repository connectivity and dependency configuration.", "Inspect the builder stage output and correct the JAR path.", "Use compatible Java versions for compilation and runtime.", "Add only the runtime dependencies actually required by the application."],
+    ["Use separate builder and runtime stages.", "Keep build tools out of the final image.", "Use compatible and maintained base images.", "Run the final image as a non-root user.", "Test the final stage rather than only testing the builder."],
+    "Create the two-stage Maven Dockerfile for payment-service. Build the JAR in the builder stage, copy it into a Java runtime stage, compare image sizes, and verify the final container starts."
+  ),
+
+  "8|Container Runtime": makeLesson(
+    "A container is an isolated process created from an image. The runtime configures namespaces, resource controls, filesystem access, networking, and the process command. Containers have a lifecycle that includes creation, starting, running, stopping, restarting, and removal. A container is not a virtual machine with its own independent kernel.",
+    "Understanding runtime behavior helps engineers diagnose containers that exit immediately, restart repeatedly, consume too much memory, or fail to handle shutdown correctly. Production payment services must start reliably and terminate gracefully.",
+    "The container engine creates the container configuration and asks the runtime to start the configured process. Linux namespaces isolate views such as process IDs and networking. Control groups account for and limit resource usage. The configured application process is commonly PID 1 inside the container.",
+    [
+      "Create a container from a verified image.",
+      "Inspect its configured command, environment, and resource settings.",
+      "Check whether the container is running or exited.",
+      "Read logs and inspect the container exit information.",
+      "Send a stop signal and observe graceful shutdown.",
+      "Remove disposable containers after validation."
+    ],
+    "The payment API starts as the main Java process in the container. When Docker sends SIGTERM during docker stop, the application should stop accepting new work, finish or safely terminate in-flight requests, and exit within the configured timeout.",
+    ["docker create --name payment-api payment-service:1.0.0", "docker start payment-api", "docker ps -a", "docker logs payment-api", "docker inspect payment-api", "docker stop --time 30 payment-api", "docker rm payment-api"],
+    "Runtime settings include the image, command, environment, port mappings, mounts, restart policy, and resource limits. The application should handle termination signals correctly. Shell-form startup commands can interfere with signal delivery when they introduce an unnecessary shell process.",
+    ["The container exits immediately because its main process finishes or fails.", "The application ignores termination signals and exceeds the stop timeout.", "The container repeatedly restarts due to an application crash.", "The process is killed because it exceeds its memory limit."],
+    ["Inspect State, ExitCode, and error details with docker inspect.", "Use exec-form ENTRYPOINT and implement graceful application shutdown.", "Read logs and correct the underlying startup or dependency failure.", "Review memory usage and limits before increasing resource allocation."],
+    ["Keep the main application process in the foreground.", "Handle SIGTERM and shutdown hooks correctly.", "Set appropriate CPU and memory limits.", "Use restart policies deliberately.", "Avoid using docker exec as a permanent production startup mechanism."],
+    "Run the payment-service container, inspect its process and state, stop it with a 30-second timeout, and verify that the application exits gracefully."
+  ),
+
+  "8|Docker Networking": makeLesson(
+    "Docker networking connects containers to each other and to external systems. Docker provides network drivers such as bridge, host, none, and overlay. A user-defined bridge network provides container-to-container communication and name-based DNS resolution within that network. Published ports allow traffic to enter a container through a host port.",
+    "A payment API may need to communicate with a database, message broker, or other service. Correct network configuration allows these services to communicate without exposing every internal port to the host or internet.",
+    "Docker creates virtual network interfaces and connects containers through a selected network driver. On a user-defined bridge network, containers can resolve one another by container or network alias. Port publishing maps a host port to a container port. Network isolation controls which containers can communicate.",
+    [
+      "Create a dedicated user-defined bridge network.",
+      "Start the payment database on that network.",
+      "Start the payment API on the same network.",
+      "Configure the API to use the database service name.",
+      "Publish only the API port required by the developer or external client.",
+      "Test internal DNS resolution and application connectivity."
+    ],
+    "The payment API connects to a PostgreSQL container using the hostname payment-db and the database port 5432. The API publishes port 8080 for access from the host, while the database port remains internal to the Docker network.",
+    ["docker network create payment-network", "docker network ls", "docker run -d --name payment-db --network payment-network postgres:16", "docker run -d --name payment-api --network payment-network -p 8080:8080 payment-service:1.0.0", "docker network inspect payment-network", "docker port payment-api"],
+    "Configure the application with DB_HOST=payment-db and DB_PORT=5432 using environment variables. The API container and database container must join the same user-defined network. Publishing 8080:8080 exposes the API through the host; it does not automatically expose the database.",
+    ["Containers cannot resolve each other's names because they use separate networks.", "The API connects to localhost instead of the database container name.", "The host port is already allocated to another process.", "The database is not listening or is not ready when the API starts."],
+    ["Attach both containers to the intended user-defined network.", "Use payment-db as the database hostname from the API container.", "Choose an available host port or stop the conflicting service.", "Add application retry logic and a database readiness check."],
+    ["Prefer user-defined bridge networks for application stacks.", "Use service names instead of hard-coded container IP addresses.", "Publish only ports that need external access.", "Keep databases on internal networks where possible.", "Do not confuse EXPOSE with actual host port publishing."],
+    "Create a Docker network for the payment application. Run PostgreSQL and the payment API on it, verify name resolution, and confirm that only the API port is published to the host."
+  ),
+
+  "8|Volumes and Storage": makeLesson(
+    "Containers have a writable layer, but data stored only in that layer is tied to the container lifecycle. Docker volumes and bind mounts provide storage outside the container's writable layer. Named volumes are managed by Docker, bind mounts connect host paths, and tmpfs mounts provide temporary in-memory storage.",
+    "Persistent storage is necessary for data that must survive container replacement. A database must not lose its data when its container is removed. Stateless application containers should generally keep durable business data in external databases or managed storage instead of their writable layer.",
+    "Docker mounts storage into the container filesystem. A named volume is managed by Docker and can be reused by replacement containers. A bind mount maps a host path into a container. A tmpfs mount stores temporary data in memory and is not durable across container removal or host restart.",
+    [
+      "Identify whether application data must persist.",
+      "Create a named volume for database data.",
+      "Mount the volume at the database data directory.",
+      "Start the database and write test data.",
+      "Remove and recreate the database container using the same volume.",
+      "Verify that the stored data remains available.",
+      "Back up important data using an approved database-aware process."
+    ],
+    "The payment database stores PostgreSQL data in a named volume called payment-db-data. Replacing the database container while reusing that volume preserves the database files, provided the volume is not deleted and the database storage format remains compatible.",
+    ["docker volume create payment-db-data", "docker volume ls", "docker run -d --name payment-db -v payment-db-data:/var/lib/postgresql/data postgres:16", "docker inspect payment-db", "docker volume inspect payment-db-data", "docker rm -f payment-db"],
+    "Named volume example: -v payment-db-data:/var/lib/postgresql/data. Bind mount example: -v ${PWD}/config:/app/config:ro. Read-only mounts can protect configuration files. Database backups should use PostgreSQL-aware backup procedures rather than assuming a live filesystem copy is always consistent.",
+    ["The container cannot write to a mounted directory because of ownership or permissions.", "The application writes to the container layer instead of the intended volume.", "A bind mount points to the wrong host directory.", "An operator removes a volume and loses its persistent data."],
+    ["Inspect mount configuration with docker inspect.", "Correct directory ownership and permissions for the container user.", "Verify the resolved host path and container mount destination.", "Restore data from a verified backup if a volume was deleted."],
+    ["Use named volumes for Docker-managed persistent data.", "Use bind mounts carefully and prefer read-only mounts for configuration.", "Back up and test database restoration.", "Do not store durable business data only in a container writable layer.", "Never run docker volume prune without checking which volumes are unused and important."],
+    "Create a named volume for PostgreSQL, insert sample payment data, remove the database container, recreate it with the same volume, and verify that the data remains."
+  ),
+
+  "8|Docker Security": makeLesson(
+    "Docker security protects the host, container image, application process, credentials, and network boundaries. Containers share the host kernel, so unsafe privileges or exposed daemon access can create serious risk. Security controls include minimal base images, non-root users, read-only filesystems, restricted capabilities, secret management, vulnerability scanning, and resource limits.",
+    "A payment service handles sensitive business operations. Its container should not run with unnecessary privileges or contain credentials and build tools that increase the attack surface. Security must be considered during image creation and runtime deployment.",
+    "Security controls apply across the image supply chain and runtime. The Dockerfile determines the base image and user. The builder controls dependency and secret handling. Runtime options control filesystem access, capabilities, privilege escalation, and resource limits. Registry scanning and image provenance support deployment decisions.",
+    [
+      "Select a maintained and trusted base image.",
+      "Scan the application image for known vulnerabilities.",
+      "Create a dedicated non-root runtime user.",
+      "Remove unnecessary packages and build tools from the runtime image.",
+      "Use read-only filesystems and restricted capabilities where compatible.",
+      "Supply secrets through an approved runtime secret mechanism.",
+      "Apply resource limits and review container permissions."
+    ],
+    "The payment API runs as UID 10001, uses a minimal Java runtime image, receives database credentials at runtime, and does not require privileged mode or host filesystem access.",
+    ["docker image inspect payment-service:1.0.0", "docker run --rm --read-only --cap-drop=ALL --security-opt=no-new-privileges payment-service:1.0.0", "docker run -d --name payment-api --memory=512m --cpus=1 payment-service:1.0.0", "docker inspect payment-api", "docker history payment-service:1.0.0"],
+    "Example hardening options include --read-only, --cap-drop=ALL, --security-opt=no-new-privileges, --memory=512m, and --cpus=1. Validate compatibility before applying restrictions. Use a writable tmpfs mount only for application paths that genuinely require temporary writes.",
+    ["The application fails because it expects root privileges.", "A read-only filesystem prevents required temporary file creation.", "A missing capability breaks a required application operation.", "Credentials are exposed through image layers, build arguments, or logs."],
+    ["Identify the exact filesystem path or permission required and grant only that access.", "Provide a controlled tmpfs mount for required temporary files.", "Add back only the specific capability proven necessary.", "Rotate exposed credentials and rebuild the image without the secret."],
+    ["Never use privileged mode as a routine workaround.", "Run as a non-root user.", "Keep secrets outside image layers and source control.", "Scan and patch base images and application dependencies.", "Apply least privilege to networks, mounts, and Linux capabilities."],
+    "Harden the payment-service container. Run it as a non-root user with a read-only root filesystem, dropped capabilities, no-new-privileges, and resource limits. Identify which application paths need writable storage."
+  ),
+
+  "8|Image Tagging and Digests": makeLesson(
+    "An image tag is a human-readable reference such as payment-service:1.2.0. Tags can be moved to point to different image content, so a tag alone is not a guaranteed immutable identity. A digest is a content-addressed identifier for a specific image manifest. Deploying by digest provides stronger artifact identity.",
+    "Production teams must know exactly which image was tested and approved. Promoting the same digest from testing to staging and production avoids accidentally rebuilding different content under the same version tag.",
+    "An image reference includes a registry, repository, and optional tag or digest. The registry resolves the reference to image manifest content. A digest identifies that manifest by its content hash. Multi-platform images may use an image index that references platform-specific manifests.",
+    [
+      "Build the payment-service image.",
+      "Apply a meaningful release tag.",
+      "Inspect the image and record its repository and tag.",
+      "Push the image to the approved registry.",
+      "Retrieve the registry digest after push.",
+      "Record the digest in release metadata.",
+      "Promote the same digest to the next environment."
+    ],
+    "A release may use the tag 123456789012.dkr.ecr.ap-south-1.amazonaws.com/payment-service:1.2.0. After push, the pipeline records the returned sha256 digest and deploys the exact digest in the Kubernetes manifest.",
+    ["docker image ls", "docker image inspect payment-service:1.2.0", "docker image tag payment-service:1.0.0 payment-service:1.2.0", "docker image inspect --format '{{index .RepoDigests 0}}' payment-service:1.2.0", "docker manifest inspect payment-service:1.2.0"],
+    "Use a release tag such as 1.2.0 or a unique CI build identifier. Use registry/repository@sha256:digest for immutable deployment references. A local image may not have a RepoDigest until it has been pushed to a registry.",
+    ["A mutable tag points to a newer image than the one originally tested.", "The pipeline cannot find a RepoDigest because the image has not been pushed.", "The deployment references a digest for the wrong architecture or release.", "A tag is overwritten by another CI job."],
+    ["Compare the registry digest with the digest recorded during the approved push.", "Push the image and retrieve its registry digest.", "Verify the image platform and release metadata.", "Use unique tags and registry immutability controls where supported."],
+    ["Do not treat latest as a release identity.", "Record image digests in deployment metadata.", "Promote the same artifact instead of rebuilding for each environment.", "Keep build number, source commit, and image digest connected.", "Verify the target platform when using multi-architecture images."],
+    "Build and tag payment-service:1.2.0, push it to a test registry, retrieve its digest, and write a deployment reference using repository@sha256:digest."
+  ),
+
+  "8|Registry Integration": makeLesson(
+    "A container registry stores and distributes Docker images. It may be a public registry, a private company registry, or a cloud service such as Amazon ECR. Developers and CI systems authenticate to the registry, tag images using the registry repository name, and push or pull image content.",
+    "A production pipeline needs a trusted location for built images. Jenkins should publish the tested payment-service image to a private registry so deployment systems can retrieve the same artifact without rebuilding the application.",
+    "The CI pipeline builds an image locally or through a remote builder. It authenticates using a scoped registry identity, tags the image with the registry and repository path, and pushes the manifest and layers. A deployment environment authenticates independently and pulls the required image.",
+    [
+      "Create the target repository in the selected registry.",
+      "Obtain a short-lived or approved registry authentication token.",
+      "Authenticate without placing passwords in source control.",
+      "Tag the local image with the full registry repository path.",
+      "Push the image and verify the registry result.",
+      "Retrieve the immutable digest.",
+      "Test pulling the published image using deployment credentials."
+    ],
+    "For Amazon ECR, Jenkins obtains an authorization token using an IAM role, logs in to the registry, tags the payment-service image with the account, region, and repository, and pushes the image. The pipeline records the resulting digest for deployment.",
+    ["aws sts get-caller-identity", "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 123456789012.dkr.ecr.ap-south-1.amazonaws.com", "docker tag payment-service:1.0.0 123456789012.dkr.ecr.ap-south-1.amazonaws.com/payment-service:1.0.0", "docker push 123456789012.dkr.ecr.ap-south-1.amazonaws.com/payment-service:1.0.0", "docker pull 123456789012.dkr.ecr.ap-south-1.amazonaws.com/payment-service:1.0.0"],
+    "Replace the example AWS account ID, region, and repository with the actual environment values. The CI identity needs only the required repository permissions. Avoid embedding registry passwords in Jenkinsfiles or command-line arguments that can be exposed in logs.",
+    ["Registry login fails because the token is expired or the identity lacks permission.", "Push fails because the repository does not exist.", "The image is tagged with an incorrect registry hostname or region.", "The CI agent cannot reach the registry endpoint."],
+    ["Refresh the registry token and verify the active AWS identity.", "Create the repository or correct the repository name.", "Compare the registry URI, account ID, region, and image tag.", "Check DNS, network egress, proxy configuration, and registry service health."],
+    ["Use IAM roles or short-lived credentials for CI authentication.", "Grant only the required push and pull permissions.", "Never commit registry passwords.", "Record the digest returned by the registry.", "Test image pull access using the identity that will deploy it."],
+    "Configure a private ECR repository for payment-service. Authenticate from a CI-style environment, tag and push a test image, retrieve its digest, and verify that a separate pull identity can download it."
+  ),
+
+  "8|Troubleshooting": makeLesson(
+    "Docker troubleshooting is a structured process for identifying whether a failure belongs to the CLI, daemon, build context, Dockerfile, image, runtime, network, storage, or registry. Engineers should collect evidence before changing configuration. The first visible error is not always the root cause.",
+    "A failed Docker build or stopped container can block the complete CI/CD pipeline. A repeatable troubleshooting method reduces recovery time and prevents unsafe workarounds such as privileged containers, deleting important volumes, or disabling security controls.",
+    "Start with the exact command and timestamp. Check Docker client and daemon connectivity, then inspect build output, image metadata, container state, logs, mounts, networks, and registry access. Compare the failing build with a known-good commit or environment to isolate the change.",
+    [
+      "Capture the failed command and complete error output.",
+      "Verify Docker client and daemon connectivity.",
+      "Determine whether the failure occurred during build, run, network, storage, or push.",
+      "Inspect the affected image and container metadata.",
+      "Collect logs and resource information.",
+      "Test one evidence-based correction at a time.",
+      "Rebuild and verify the complete application workflow."
+    ],
+    "If the payment API container exits with code 1, inspect docker ps -a, docker logs, and docker inspect before rebuilding. The evidence may show a missing database URL rather than a Docker engine problem.",
+    ["docker version", "docker info", "docker ps -a", "docker logs payment-api", "docker inspect payment-api", "docker events --since 30m", "docker system df", "docker network ls", "docker volume ls"],
+    "Keep a troubleshooting record containing the failed command, image tag and digest, container ID, exit code, relevant logs, recent configuration changes, and recovery action. Do not delete containers, images, or volumes until their diagnostic and data value is understood.",
+    ["Cannot connect to the Docker daemon.", "Docker build fails at COPY because a file is missing.", "Container exits immediately or enters a restart loop.", "Port publishing fails because the host port is occupied.", "Registry push fails due to authentication or repository permissions.", "The host runs out of disk space."],
+    ["Start or repair the Docker engine and verify the active context.", "Correct the build context or COPY source path.", "Inspect application logs, environment variables, and exit status.", "Select an available host port and verify the mapping.", "Refresh credentials and check registry permissions.", "Inspect docker system df and clean only confirmed unused resources."],
+    ["Collect evidence before cleanup or restart.", "Use logs and inspect output instead of guessing.", "Protect named volumes and production data.", "Avoid disabling security to make a build pass.", "Document the root cause and prevention action."],
+    "Simulate a payment-service container failure using an incorrect environment variable. Diagnose it with docker ps, docker logs, and docker inspect, correct the configuration, and verify recovery."
+  ),
+
+  "8|Production Hands-on Lab": makeLesson(
+    "This lab combines Docker image creation, multi-stage Maven packaging, build context control, runtime security, container networking, health verification, tagging, and registry publishing. The objective is to create a repeatable production-style image for the Spring Boot payment service.",
+    "The CI/CD pipeline needs one tested and identifiable container artifact. This lab demonstrates how source code becomes a secure image that can be stored in a registry and promoted through environments without rebuilding it.",
+    "The Maven builder stage compiles and packages the payment service. The runtime stage contains only the Java runtime and application JAR. Docker builds the image from a controlled context. The container runs as a non-root user, exposes the application port, and receives environment-specific configuration at runtime. The verified image is then tagged and published.",
+    [
+      "Confirm that Maven tests and packaging succeed.",
+      "Create and review the production Dockerfile.",
+      "Create .dockerignore and remove unnecessary build context files.",
+      "Build the multi-stage Docker image.",
+      "Inspect image layers, user, and exposed ports.",
+      "Run the container with environment configuration and resource limits.",
+      "Verify health endpoint, application logs, and graceful shutdown.",
+      "Scan the image and remediate unacceptable vulnerabilities.",
+      "Tag the approved image and push it to the private registry.",
+      "Record the registry digest and deployment artifact metadata."
+    ],
+    "The payment-service release is built from a specific Git commit. Jenkins runs Maven tests, builds the Docker image, verifies the container, performs security scanning, and pushes the approved image to ECR. The deployment manifest references the recorded image digest.",
+    ["mvn clean verify", "docker build -t payment-service:1.0.0 .", "docker image inspect payment-service:1.0.0", "docker run -d --name payment-api -p 8080:8080 --memory=512m --cpus=1 payment-service:1.0.0", "docker logs payment-api", "docker inspect payment-api", "docker stop --time 30 payment-api", "docker rm payment-api"],
+    "Production Dockerfile:\nFROM maven:3.9-eclipse-temurin-21 AS builder\nWORKDIR /workspace\nCOPY pom.xml .\nCOPY src ./src\nRUN mvn -B clean package -DskipTests\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nRUN useradd --system --uid 10001 appuser\nCOPY --from=builder --chown=10001:10001 /workspace/target/payment-service.jar /app/app.jar\nUSER 10001:10001\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"/app/app.jar\"]\nAdjust the JAR path, health endpoint, Java version, and runtime write paths to match the real application. Do not publish an image until tests and security checks pass.",
+    ["Maven packaging fails before the Docker image can be built.", "The multi-stage COPY instruction cannot find the generated JAR.", "The application starts but its health endpoint fails.", "The non-root user cannot access a required application directory.", "The image scan reports a critical vulnerability.", "The registry rejects the push because of incorrect permissions."],
+    ["Resolve Maven test and package failures before the Docker build.", "Inspect the builder output and correct the generated JAR path.", "Check application configuration, dependencies, and health endpoint behavior.", "Grant ownership only to the required writable directories.", "Update vulnerable dependencies or base images and rescan.", "Verify registry identity, repository path, and scoped permissions."],
+    ["Build from a controlled source commit.", "Use multi-stage builds and a minimal runtime image.", "Exclude secrets and unnecessary files from the build context.", "Run as non-root with restricted runtime permissions.", "Verify health and graceful shutdown.", "Scan before publishing and record the immutable digest.", "Promote the same approved image through environments."],
+    "Complete the payment-service container release. Build and run the image, verify its health endpoint and logs, stop it gracefully, scan it, push it to a private registry, and record the final image digest."
+  )
+};
