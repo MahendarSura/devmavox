@@ -1,335 +1,350 @@
-const makeLesson = (
-  overview: string,
-  purpose: string,
-  architecture: string,
-  workflow: string[],
-  example: string,
-  commands: string[],
-  configuration: string,
-  failures: string[],
-  recovery: string[],
-  bestPractices: string[],
-  exercise: string
-) => ({
-  overview,
-  purpose,
-  architecture,
-  workflow,
-  example,
-  commands,
-  configuration,
-  failures,
-  recovery,
-  bestPractices,
-  exercise,
+export type KubernetesSection = {
+  title: string;
+  content: string;
+  code?: string;
+  practicalNotes?: string[];
+};
+
+export type KubernetesLesson = {
+  title: string;
+  description: string;
+  sections: KubernetesSection[];
+  exercise: string;
+};
+
+const section = (
+  title: string,
+  content: string,
+  code?: string,
+  practicalNotes?: string[]
+): KubernetesSection => ({
+  title,
+  content,
+  ...(code ? { code } : {}),
+  ...(practicalNotes ? { practicalNotes } : {})
 });
 
-export const stageTenLessonOverrides = {
-  "10|Kubernetes Fundamentals": makeLesson(
-    "Kubernetes is a container orchestration platform that manages containerized applications across a cluster of machines. It automates scheduling, scaling, service discovery, health monitoring, and application recovery.",
-    "Instead of manually starting containers on individual servers, teams declare the desired application state. Kubernetes continuously works to make the actual cluster state match that declaration.",
-    "A Kubernetes cluster contains a control plane and worker nodes. The API server accepts requests, etcd stores cluster state, the scheduler selects nodes, and kubelets run workloads through a container runtime. Controllers continuously reconcile resources.",
-    ["Package the Spring Boot payment service as a container image.", "Create Kubernetes Deployment and Service manifests.", "Submit manifests to the API server.", "Allow the scheduler to place pods on worker nodes.", "Expose the application through a Service or Ingress.", "Monitor health and desired versus actual replicas."],
-    "A payment-service Deployment requests three replicas. Kubernetes schedules three pods, monitors them, and replaces a failed pod to maintain the desired replica count.",
-    ["kubectl version --client", "kubectl cluster-info", "kubectl get nodes", "kubectl get pods -A", "kubectl apply -f payment-deployment.yaml", "kubectl get deployment payment-service"],
-    "Kubernetes manifests are declarative YAML files. A Deployment specifies pod templates and replica count, while a Service provides a stable network endpoint for matching pods.",
-    ["kubectl cannot connect to the API server.", "Pods remain Pending because resources are unavailable.", "Pods enter CrashLoopBackOff.", "Service selectors do not match pod labels."],
-    ["Check kubeconfig and API endpoint connectivity.", "Inspect pod events and node capacity.", "Read container logs and verify application startup.", "Compare Service selectors with pod labels."],
-    ["Store manifests in version control.", "Use readiness and liveness probes.", "Define CPU and memory requests and limits.", "Use rolling updates and controlled rollbacks.", "Monitor cluster and application health."],
-    "Deploy a three-replica payment-service application and verify its pods, Deployment status, Service endpoint, and recovery behavior."
-  ),
+export const stageTenLessonOverrides: Record<string, KubernetesLesson> = {
+  "Kubernetes Fundamentals": {
+    title: "Kubernetes Fundamentals",
+    description: "Understand container orchestration, desired state, reconciliation, and the Kubernetes resources used to operate production applications.",
+    sections: [
+      section("What Kubernetes Solves", "Kubernetes orchestrates containers across a cluster of machines. It schedules workloads, restarts failed containers, maintains replica counts, provides service discovery, and coordinates application rollouts. It does not automatically make an application highly available: replicas, topology, storage, probes, and capacity must be designed correctly."),
+      section("Declarative Desired State", "Operators describe the state they want through Kubernetes API objects. Controllers continuously compare actual state with desired state and take corrective action. For example, a Deployment requesting three replicas causes the ReplicaSet controller to create Pods until three suitable replicas exist."),
+      section("Core Workload and Network Resources", "Pods are the smallest schedulable workload units. Deployments manage stateless replicas and rollouts. StatefulSets provide stable identities for stateful workloads. Services provide stable network endpoints, while ConfigMaps and Secrets supply configuration."),
+      section("Cluster Interaction with kubectl", "kubectl communicates with the Kubernetes API server using the active kubeconfig context. Always verify the current context before applying changes, especially when a workstation has development, staging, and production clusters configured.", "kubectl config get-contexts\nkubectl config current-context\nkubectl get nodes\nkubectl get namespaces\nkubectl get pods -A"),
+      section("Desired State in a Deployment", "A Deployment manifest records the requested replica count, container image, labels, ports, and rollout strategy. Store manifests in version control so production changes can be reviewed and reproduced.", "kubectl apply -f deployment.yaml\nkubectl get deployments\nkubectl rollout status deployment/payment-api\nkubectl describe deployment payment-api"),
+      section("Operational Boundaries", "Kubernetes manages infrastructure-level workload state, but application correctness remains the responsibility of the application and its delivery process. Database migrations, backward-compatible APIs, graceful shutdown, and external dependency health need separate engineering controls.")
+    ],
+    exercise: "Deploy a sample stateless application with three replicas. Inspect its Pods and Deployment, delete one Pod, and observe how Kubernetes restores the desired replica count. Record the commands and explain which controller performed the recovery."
+  },
 
-  "10|Kubernetes Architecture": makeLesson(
-    "Kubernetes architecture separates cluster management from application execution. The control plane makes scheduling and state decisions, while worker nodes execute application pods.",
-    "Understanding the architecture helps engineers identify whether a failure belongs to API access, scheduling, node execution, networking, or storage.",
-    "The API server is the main entry point. etcd stores cluster data. Scheduler assigns unscheduled pods to nodes. Controller manager runs reconciliation controllers. Worker nodes contain kubelet, a container runtime, and networking components.",
-    ["Send a resource request using kubectl.", "API server authenticates, authorizes, and validates the request.", "The desired state is stored in etcd.", "Controllers observe the new resource.", "Scheduler assigns pods to eligible nodes.", "Kubelet starts containers and reports status."],
-    "When a developer applies a payment-service Deployment, the API server stores the desired replica count and controllers create ReplicaSets and pods.",
-    ["kubectl cluster-info", "kubectl get componentstatuses", "kubectl get nodes -o wide", "kubectl get pods -n kube-system", "kubectl get events -A --sort-by=.metadata.creationTimestamp"],
-    "Control-plane components may be managed by the Kubernetes provider. In EKS, AWS operates the managed control plane while customers manage worker capacity, workloads, and cluster configuration.",
-    ["API server is unavailable.", "Scheduler cannot place pods.", "Worker node is NotReady.", "Control-plane and node versions are incompatible."],
-    ["Check API endpoint health and access.", "Inspect scheduler and controller events where accessible.", "Check node conditions and kubelet health.", "Review cluster version compatibility and recent changes."],
-    ["Understand control-plane and worker responsibilities.", "Avoid direct changes to managed control-plane components.", "Monitor node conditions and Kubernetes events.", "Maintain supported version compatibility."],
-    "Draw the request flow from kubectl to API server, etcd, scheduler, kubelet, and the running payment-service container."
-  ),
+  "Kubernetes Architecture": {
+    title: "Kubernetes Architecture",
+    description: "Explore the control plane, worker-node components, API communication, controllers, and the reconciliation model.",
+    sections: [
+      section("Control Plane and Data Plane", "The control plane exposes the Kubernetes API and makes cluster-level decisions. Worker nodes provide compute capacity and run application Pods. Separating these responsibilities helps operators understand whether a failure affects cluster management, workload execution, or both."),
+      section("API-driven Architecture", "Most Kubernetes operations are API operations. kubectl, controllers, operators, and automation clients submit requests to the API server. Authentication, authorization, admission control, validation, and persistence determine whether an object change is accepted."),
+      section("Controller Reconciliation", "Controllers watch API objects and reconcile observed state toward desired state. A Deployment controller creates or updates ReplicaSets; a ReplicaSet controller maintains Pod replicas. Reconciliation is continuous, so a successful API request does not necessarily mean the workload is already healthy."),
+      section("Node-level Components", "The kubelet manages Pods assigned to its node. The container runtime starts and stops containers. kube-proxy or the cluster networking implementation helps implement Service traffic behavior. Node health and resource pressure influence workload scheduling and eviction."),
+      section("Architecture Inspection", "Use cluster and node inspection commands to understand the environment before troubleshooting. Component visibility varies between managed and self-managed Kubernetes installations.", "kubectl get nodes -o wide\nkubectl get pods -n kube-system -o wide\nkubectl get componentstatuses\nkubectl cluster-info"),
+      section("Failure Domains", "A control-plane outage can prevent new API changes while existing containers may continue running. A worker-node failure affects workloads placed on that node. A network or DNS failure can make healthy Pods unreachable. Diagnose the failure domain before restarting components.")
+    ],
+    exercise: "Draw a request path from kubectl to the API server, persistence layer, scheduler, kubelet, and container runtime. Explain what happens when a Deployment is scaled from two replicas to four."
+  },
 
-  "10|EKS Architecture": makeLesson(
-    "Amazon Elastic Kubernetes Service (EKS) is AWS's managed Kubernetes service. AWS operates the Kubernetes control plane, while customers configure worker nodes, networking, identity, storage, and application workloads.",
-    "EKS reduces the operational burden of maintaining control-plane servers and integrates Kubernetes with AWS networking, IAM, load balancing, storage, and monitoring services.",
-    "An EKS cluster has an AWS-managed control plane and customer-managed data-plane capacity. Worker capacity can use managed node groups, self-managed nodes, or Fargate profiles. VPC networking connects nodes and pods.",
-    ["Create or select an AWS VPC with appropriate subnets.", "Create an EKS cluster and control-plane endpoint.", "Configure node groups or Fargate profiles.", "Configure IAM access and the kubeconfig context.", "Deploy application workloads.", "Integrate load balancing, storage, and monitoring."],
-    "A Spring Boot payment service runs on an EKS managed node group. The cluster control plane is managed by AWS, while the team manages Deployment manifests, resource limits, and application releases.",
-    ["aws eks list-clusters --region ap-south-1", "aws eks describe-cluster --name devmavox-eks --region ap-south-1", "aws eks update-kubeconfig --region ap-south-1 --name devmavox-eks", "kubectl get nodes -o wide", "kubectl get pods -A"],
-    "Cluster configuration includes VPC, subnet selection, endpoint access, IAM roles, Kubernetes version, node capacity, and add-ons. Replace example cluster names and regions with your environment values.",
-    ["Unable to connect after creating the cluster.", "Node group remains unhealthy.", "IAM authentication succeeds but Kubernetes authorization fails.", "Nodes cannot join because of subnet or security-group configuration."],
-    ["Inspect EKS cluster and node-group status.", "Verify AWS identity and kubeconfig context.", "Check cluster endpoint access and VPC networking.", "Review node role, access entries, and required permissions."],
-    ["Use private subnets for worker nodes where appropriate.", "Enable control-plane logging according to policy.", "Use managed node groups where suitable.", "Plan cluster upgrades and add-on compatibility.", "Use IAM roles rather than static credentials."],
-    "Connect to an EKS cluster, inspect its control plane and node groups, and deploy the payment-service workload."
-  ),
+  "EKS Architecture": {
+    title: "EKS Architecture",
+    description: "Understand Amazon EKS managed control planes, worker capacity options, AWS integrations, and cluster connectivity.",
+    sections: [
+      section("Managed Kubernetes Control Plane", "Amazon EKS operates the Kubernetes control plane across AWS-managed infrastructure. AWS manages control-plane availability and maintenance responsibilities, while the customer remains responsible for worker capacity, workloads, access policies, networking, and application operations."),
+      section("EKS Cluster Building Blocks", "An EKS environment includes a cluster control plane, Kubernetes API endpoint, VPC networking, worker nodes or serverless compute, cluster identity, and integrations such as IAM, load balancing, storage, and observability."),
+      section("Worker Capacity Choices", "Managed node groups simplify EC2 worker provisioning and lifecycle management. Self-managed nodes provide more direct control but require more operational ownership. Fargate runs eligible Pods without customer-managed worker nodes. Select capacity based on workload requirements, DaemonSet needs, privileged access, and cost."),
+      section("VPC and Subnet Design", "EKS networking depends on VPC subnets, route tables, security groups, and the Amazon VPC CNI. Place cluster resources across appropriate Availability Zones. Private worker subnets commonly use controlled outbound connectivity through NAT or VPC endpoints."),
+      section("AWS Identity Integration", "IAM controls AWS API permissions. Kubernetes RBAC controls Kubernetes API permissions. EKS access entries or configured identity mappings connect IAM identities to Kubernetes access. Avoid assuming that an IAM policy alone grants unrestricted Kubernetes permissions."),
+      section("Inspecting an EKS Cluster", "Use AWS CLI to inspect cluster status, endpoint configuration, version, and node groups. Confirm the AWS account and region before making changes.", "aws sts get-caller-identity\naws eks list-clusters --region ap-south-1\naws eks describe-cluster --name production-eks --region ap-south-1\naws eks list-nodegroups --cluster-name production-eks --region ap-south-1"),
+      section("Production EKS Design", "Use multiple Availability Zones, private worker subnets where appropriate, restricted API access, managed node-group update planning, cluster logging, workload autoscaling, and tested recovery procedures. Plan Kubernetes and add-on version compatibility before upgrades.")
+    ],
+    exercise: "Inspect an existing EKS cluster using AWS CLI. Document its Kubernetes version, endpoint access settings, VPC, subnet configuration, and node groups. Produce a simple architecture diagram showing the control plane and worker networking."
+  },
 
-  "10|Control Plane Components": makeLesson(
-    "The Kubernetes control plane manages cluster state and coordinates workload placement. Its main components are API server, etcd, scheduler, and controller manager.",
-    "When a Deployment is created or scaled, control-plane components process the request, store desired state, schedule pods, and continuously reconcile actual state.",
-    "The API server exposes the Kubernetes API. etcd stores cluster data. The scheduler selects nodes for pending pods. Controller manager runs controllers such as Deployment, Node, and ReplicaSet controllers. In EKS, AWS manages these control-plane components.",
-    ["Submit a Deployment manifest.", "API server validates and accepts the request.", "Desired state is persisted.", "Deployment controller creates a ReplicaSet.", "ReplicaSet controller creates pods.", "Scheduler assigns eligible nodes and kubelets start containers."],
-    "Changing payment-service replicas from two to four causes controllers to create additional pods and the scheduler to place them on available nodes.",
-    ["kubectl get deployments", "kubectl get replicasets", "kubectl get pods -o wide", "kubectl get events -A --sort-by=.metadata.creationTimestamp", "aws eks describe-cluster --name devmavox-eks --region ap-south-1"],
-    "Customers cannot directly administer the managed EKS control-plane hosts. They interact through Kubernetes APIs and supported EKS configuration and logging features.",
-    ["Deployment changes are not reflected in pods.", "API requests time out.", "Pods remain unscheduled.", "Controllers repeatedly report reconciliation errors."],
-    ["Inspect API response and resource events.", "Compare desired and actual replica counts.", "Check available node resources and scheduling constraints.", "Review EKS control-plane logs when enabled."],
-    ["Understand which component owns each action.", "Use supported APIs rather than modifying managed control-plane hosts.", "Monitor API availability and scheduling events.", "Keep resource specifications valid."],
-    "Trace how a change to payment-service replica count moves through the Deployment controller, ReplicaSet controller, scheduler, and kubelet."
-  ),
+  "Control Plane Components": {
+    title: "Control Plane Components",
+    description: "Learn how the API server, scheduler, controller manager, and cluster state services coordinate Kubernetes operations.",
+    sections: [
+      section("API Server Responsibilities", "The API server is the front door to the Kubernetes control plane. It authenticates clients, authorizes requests, applies admission policies, validates objects, and coordinates persistence. A successful API response confirms acceptance, not application readiness."),
+      section("Scheduler Responsibilities", "The scheduler evaluates unscheduled Pods and selects suitable nodes based on resource requests, constraints, affinity, taints, tolerations, and topology requirements. A Pod that cannot fit any node remains Pending with scheduling events explaining the reason."),
+      section("Controller Manager", "The controller manager runs reconciliation controllers that maintain resources such as Deployments, ReplicaSets, Nodes, and Jobs. Controllers react to observed state changes and repeatedly attempt to satisfy desired state."),
+      section("Cluster State and etcd", "etcd is the consistent key-value store used by Kubernetes to persist cluster state. In EKS, AWS operates the managed control-plane infrastructure. Customers should still protect workload manifests, configuration, and recovery procedures in version control and backups."),
+      section("Control Plane Observability", "In managed EKS, control-plane component access differs from a self-managed cluster. Enable supported EKS control-plane logs and use CloudWatch, Kubernetes events, and API metrics available to the environment.", "aws eks update-cluster-config --name production-eks --region ap-south-1 --logging '{\"clusterLogging\":[{\"types\":[\"api\",\"audit\",\"authenticator\",\"controllerManager\",\"scheduler\"],\"enabled\":true}]}'\nkubectl get events -A --sort-by=.metadata.creationTimestamp"),
+      section("Control Plane Failure Symptoms", "API timeouts, authentication failures, admission webhook timeouts, and delayed reconciliation can have different causes. Check endpoint reachability, IAM authentication, control-plane logs, webhook availability, and AWS service health before changing workloads.")
+    ],
+    exercise: "Enable the appropriate EKS control-plane log types in a test cluster. Generate a harmless Deployment update and locate the corresponding API or audit activity. Explain which control-plane component is responsible for each observed action."
+  },
 
-  "10|Worker Nodes": makeLesson(
-    "Worker nodes are the compute machines where Kubernetes schedules and runs application pods. In EKS, worker capacity commonly comes from managed node groups, self-managed nodes, or Fargate.",
-    "A cluster needs healthy worker capacity to run application containers. Node health, available resources, networking, and runtime configuration directly affect workload availability.",
-    "Each traditional worker node runs kubelet, a container runtime, and networking components. The node registers with the API server and reports conditions, capacity, and pod status.",
-    ["Provision worker nodes in suitable subnets.", "Allow nodes to authenticate and join the cluster.", "Verify node readiness.", "Schedule payment-service pods.", "Monitor CPU, memory, disk, and network pressure.", "Replace or scale unhealthy capacity."],
-    "A managed node group provides three EC2 worker nodes. Kubernetes spreads payment-service replicas across the available nodes according to scheduling rules.",
-    ["kubectl get nodes -o wide", "kubectl describe node NODE_NAME", "kubectl get pods -A -o wide", "aws eks list-nodegroups --cluster-name devmavox-eks --region ap-south-1", "aws eks describe-nodegroup --cluster-name devmavox-eks --nodegroup-name workers --region ap-south-1"],
-    "Node groups require appropriate instance types, subnets, security groups, IAM node roles, and compatible AMIs. Use actual node names and node-group names in commands.",
-    ["Node remains NotReady.", "Node does not join the cluster.", "DiskPressure or MemoryPressure appears.", "Pods cannot be scheduled due to insufficient capacity."],
-    ["Inspect node conditions and events.", "Check node-group health and EC2 instance status.", "Verify IAM permissions, network routes, and cluster access.", "Scale or replace unhealthy nodes after checking workload disruption."],
-    ["Use multiple nodes and appropriate availability zones.", "Set resource requests and limits.", "Monitor node pressure and capacity.", "Plan safe node replacement and upgrades."],
-    "Inspect all worker nodes in an EKS cluster and identify their instance type, readiness, pod count, and resource pressure."
-  ),
+  "Worker Nodes": {
+    title: "Worker Nodes",
+    description: "Operate Kubernetes compute nodes, understand node lifecycle, and diagnose readiness and resource-pressure conditions.",
+    sections: [
+      section("Worker Node Responsibilities", "Worker nodes provide CPU, memory, storage, and network capacity for Pods. The kubelet registers the node and manages assigned workloads. The container runtime executes containers, while node networking enables Pod and Service communication."),
+      section("Node Registration and Readiness", "A node must register with the cluster and report healthy conditions before it can reliably host workloads. NotReady can result from kubelet failures, networking problems, disk pressure, memory pressure, or cloud infrastructure issues.", "kubectl get nodes -o wide\nkubectl describe node <node-name>\nkubectl get events -A --sort-by=.metadata.creationTimestamp"),
+      section("Managed Node Groups", "EKS managed node groups coordinate EC2 Auto Scaling infrastructure and Kubernetes node lifecycle. Node-group configuration includes instance types, scaling settings, subnets, AMI release versions, and update behavior. Verify Pod disruption and spare capacity before updates."),
+      section("Node Labels and Scheduling", "Labels describe node characteristics such as workload class, architecture, or storage capability. nodeSelector and node affinity constrain placement. Use labels consistently and avoid relying on accidental node names for workload placement.", "kubectl label nodes <node-name> workload=payments\nkubectl get nodes --show-labels"),
+      section("Drain and Maintenance", "Draining marks a node unschedulable and evicts eligible Pods so maintenance can proceed. PodDisruptionBudgets can limit voluntary disruptions. DaemonSet Pods and certain unmanaged Pods require special consideration.", "kubectl cordon <node-name>\nkubectl drain <node-name> --ignore-daemonsets --delete-emptydir-data\nkubectl uncordon <node-name>"),
+      section("Node Capacity and Scaling", "Monitor allocatable CPU and memory, Pod density, ephemeral storage, and actual workload consumption. Cluster autoscaling mechanisms can add nodes when Pods cannot schedule, but they cannot solve every constraint such as incompatible instance types or unavailable subnet IPs.")
+    ],
+    exercise: "In a non-production cluster, inspect node conditions and allocatable resources. Cordon and drain a worker node with a safe workload, verify replacement Pods become healthy, and uncordon the node after maintenance."
+  },
 
-  "10|API Server and etcd": makeLesson(
-    "The Kubernetes API server is the central interface for cluster operations. etcd is the consistent key-value store that holds Kubernetes cluster state and configuration.",
-    "Every kubectl operation communicates with the API server. Reliable API access and durable cluster state are essential for deployments, scheduling, and recovery.",
-    "The API server authenticates and authorizes requests, validates resources, and coordinates persistence. etcd stores objects such as Deployments, Services, Secrets, and cluster metadata. In EKS, AWS manages the control-plane etcd service.",
-    ["Configure kubectl with the correct cluster context.", "Send a request to the API server.", "Authenticate and authorize the caller.", "Validate the requested Kubernetes object.", "Persist accepted state through the control-plane storage layer.", "Return resource status to the client."],
-    "A developer applies a payment-service Deployment YAML. The API server validates the manifest and stores the accepted desired state, after which controllers reconcile the workload.",
-    ["kubectl config current-context", "kubectl cluster-info", "kubectl get --raw=/readyz", "kubectl get --raw=/livez", "kubectl get deployments -A"],
-    "Do not attempt direct etcd administration in an EKS managed control plane. Use supported Kubernetes APIs, AWS control-plane logging, and managed service recovery procedures.",
-    ["The API server endpoint cannot be reached.", "kubectl reports unauthorized or forbidden.", "API requests time out.", "Resource changes are rejected by validation."],
-    ["Verify kubeconfig endpoint and context.", "Check IAM authentication and Kubernetes authorization.", "Check network access to the cluster endpoint.", "Read API validation errors and correct the manifest."],
-    ["Protect API access with least-privilege permissions.", "Enable suitable EKS control-plane audit logs.", "Avoid exposing cluster endpoints unnecessarily.", "Use backups and provider-supported recovery practices."],
-    "Use kubectl to inspect API readiness and explain why application developers should interact with etcd through the Kubernetes API rather than directly."
-  ),
+  "API Server and etcd": {
+    title: "API Server and etcd",
+    description: "Understand Kubernetes API requests, object persistence, resource versions, and safe state-management practices.",
+    sections: [
+      section("Kubernetes API Resources", "Kubernetes exposes versioned API resources such as Pods, Deployments, Services, and ConfigMaps. Each object has metadata, a specification describing desired state, and status describing observed state. API discovery reveals supported resource types and versions."),
+      section("Request Processing", "A client sends an authenticated API request. The API server performs authorization and admission checks, validates the object, and coordinates persistence. Controllers then observe changes and reconcile dependent resources."),
+      section("etcd Persistence Model", "etcd stores Kubernetes cluster data with consistency guarantees. In self-managed clusters, etcd health, quorum, backups, and restore procedures are critical control-plane responsibilities. In EKS, AWS manages the underlying control-plane etcd service."),
+      section("Object Versions and Concurrency", "Kubernetes resourceVersion supports change tracking and optimistic concurrency. A stale update can be rejected because another actor changed the object. Re-read the current object and apply a deliberate patch rather than blindly repeating an outdated replacement."),
+      section("Inspect API Resources", "Use API discovery, explain, and raw API inspection to understand schemas and object fields.", "kubectl api-resources\nkubectl api-versions\nkubectl explain deployment.spec\nkubectl get deployment payment-api -o yaml\nkubectl get --raw /version"),
+      section("Safe State Changes", "Prefer declarative manifests and reviewed changes. Avoid direct etcd edits in normal operations. Store critical manifests outside the cluster and document recovery dependencies such as secrets, persistent volumes, external databases, and IAM configuration.")
+    ],
+    exercise: "Inspect a Deployment's YAML and resourceVersion. Update one replica field using a declarative manifest, retrieve the object again, and explain how the API server and Deployment controller process the change."
+  },
 
-  "10|Scheduler and Kubelet": makeLesson(
-    "The scheduler assigns pending pods to suitable worker nodes. Kubelet runs on each node and ensures the containers described by assigned pod specifications are running.",
-    "Scheduling determines where workloads run, while kubelet turns the assigned pod specification into actual containers and reports their status to the control plane.",
-    "The scheduler evaluates resource requests, node selectors, affinity, taints, tolerations, and other constraints. Kubelet communicates with the API server and container runtime to create and monitor pod containers.",
-    ["Create a pod through a Deployment.", "Scheduler evaluates eligible nodes.", "Scheduler binds the pod to a selected node.", "Kubelet observes the assigned pod.", "Kubelet asks the container runtime to start containers.", "Kubelet reports readiness and container status."],
-    "A payment-service pod requests 500m CPU and 512Mi memory. The scheduler chooses a node with sufficient allocatable resources, and kubelet starts the container.",
-    ["kubectl get pods -o wide", "kubectl describe pod POD_NAME", "kubectl describe node NODE_NAME", "kubectl get events --sort-by=.metadata.creationTimestamp", "kubectl get pods -n kube-system"],
-    "Use requests to influence scheduling and limits to constrain resource consumption. Node affinity, taints, and tolerations should be designed intentionally.",
-    ["Pod remains Pending with FailedScheduling.", "Container does not start on the selected node.", "Kubelet reports image or runtime errors.", "Pod is assigned but never becomes Ready."],
-    ["Inspect scheduling events and resource requests.", "Check node labels, taints, and available capacity.", "Inspect kubelet-related node events and container runtime status through approved access.", "Check image access, volumes, and container logs."],
-    ["Set realistic resource requests.", "Avoid unnecessary node constraints.", "Monitor kubelet and node health.", "Use readiness probes to control traffic."],
-    "Create a pod with CPU and memory requests, inspect which node receives it, and explain the scheduler and kubelet responsibilities."
-  ),
+  "Scheduler and Kubelet": {
+    title: "Scheduler and Kubelet",
+    description: "Understand Pod placement decisions and the node agent's role in preparing and maintaining containers.",
+    sections: [
+      section("Scheduling Lifecycle", "A newly created Pod without a node assignment enters the scheduling queue. The scheduler filters nodes that cannot satisfy requirements, scores feasible nodes, and binds the Pod to a selected node."),
+      section("Scheduling Constraints", "Resource requests, node selectors, affinity, anti-affinity, topology spread, taints, and tolerations influence placement. Overly strict constraints can leave Pods Pending even when the cluster appears to have free CPU."),
+      section("Kubelet Responsibilities", "The kubelet watches Pods assigned to its node, prepares volumes, asks the container runtime to create containers, executes probes, and reports Pod and node status to the API server."),
+      section("Diagnosing Pending Pods", "Describe the Pod and inspect events before changing node capacity. FailedScheduling messages often identify insufficient CPU, insufficient memory, untolerated taints, node affinity conflicts, or volume topology constraints.", "kubectl describe pod <pod-name> -n production\nkubectl get events -n production --sort-by=.metadata.creationTimestamp\nkubectl get nodes"),
+      section("Diagnosing Container Startup", "If a Pod is scheduled but containers do not start, inspect image pull events, volume mount errors, runtime conditions, security context, and node health. A scheduling success does not guarantee a successful container startup."),
+      section("Placement Design Example", "Separate latency-sensitive payment workloads from batch processing using node labels and affinity. Combine placement rules with topology spread so replicas are not unnecessarily concentrated on a single failure domain.")
+    ],
+    exercise: "Create a Pod with a nodeSelector that matches no node. Inspect its scheduling events, add a suitable label to a test node, and observe scheduling. Explain the scheduler and kubelet responsibilities."
+  },
 
-  "10|Pods": makeLesson(
-    "A Pod is the smallest deployable unit in Kubernetes. It contains one or more closely related containers that share networking and can share mounted storage.",
-    "Applications run inside pods rather than being scheduled as individual standalone containers. Deployments manage pod replicas and replace pods when required.",
-    "A pod receives a cluster network identity and contains containers with shared localhost networking. Pod specifications define images, ports, environment variables, volumes, security context, and health probes.",
-    ["Build and publish the payment-service image.", "Define a pod template in a Deployment.", "Apply the Deployment manifest.", "Inspect created pods and their node placement.", "Read logs and pod events.", "Test readiness and application connectivity."],
-    "A payment-service pod runs one Spring Boot application container. It exposes port 8080 and uses a readiness probe to determine when it can receive traffic.",
-    ["kubectl get pods -n default -o wide", "kubectl describe pod POD_NAME", "kubectl logs POD_NAME", "kubectl logs POD_NAME --previous", "kubectl exec -it POD_NAME -- sh", "kubectl get pod POD_NAME -o yaml"],
-    "A pod manifest defines apiVersion, kind, metadata, and spec. In production, use Deployments for stateless application replicas instead of manually managing individual pods.",
-    ["Pending due to scheduling constraints.", "ImagePullBackOff due to image access problems.", "CrashLoopBackOff due to application startup failure.", "Container is Running but pod is not Ready."],
-    ["Inspect describe output and events.", "Check image URI, registry access, and pull permissions.", "Review current and previous container logs.", "Validate environment variables, probes, and application dependencies."],
-    ["Use Deployments for replicated applications.", "Configure health probes.", "Avoid storing persistent application data in the writable container layer.", "Set resource requests and limits.", "Use non-root containers where possible."],
-    "Deploy a payment-service pod, inspect its status and logs, and deliberately diagnose a failed readiness probe."
-  ),
+  "Pods": {
+    title: "Pods",
+    description: "Create and operate Pods, understand container sharing, lifecycle, probes, and ephemeral workload behavior.",
+    sections: [
+      section("Pod as the Workload Unit", "A Pod groups one or more tightly coupled containers that share a network namespace and can share mounted volumes. Containers in the same Pod communicate through localhost and are scheduled together onto one node."),
+      section("Pod Lifecycle", "Pods progress through lifecycle phases such as Pending, Running, Succeeded, Failed, and Unknown. These phases summarize Pod state; individual container states provide more precise information about waiting, running, and terminated containers."),
+      section("Multi-container Patterns", "Sidecars support tightly coupled tasks such as log forwarding, proxying, or configuration refresh. Init containers complete setup before application containers start. Avoid adding containers to a Pod when independent scaling and deployment are required."),
+      section("Pod Manifest and Labels", "Pod manifests define containers, images, ports, environment variables, resources, volumes, and security settings. Labels connect Pods to higher-level controllers and Services.", "kubectl run debug-shell --image=busybox:1.36 --restart=Never -- sleep 3600\nkubectl get pod debug-shell -o wide\nkubectl describe pod debug-shell\nkubectl delete pod debug-shell"),
+      section("Container Logs and Execution", "Use logs to inspect application output and exec only when an interactive shell is necessary and permitted. For a restarted container, use previous logs to inspect the prior termination.", "kubectl logs <pod-name> -n production\nkubectl logs <pod-name> -c <container-name> --previous\nkubectl exec -it <pod-name> -n production -- sh"),
+      section("Pod Reliability", "Do not rely on manually created Pods for production replica management. Use Deployments, StatefulSets, or Jobs. Configure graceful termination, resource requests, probes, and appropriate disruption handling.")
+    ],
+    exercise: "Create a Pod manifest with labels, a resource request, and a container port. Inspect its status and logs, execute a read-only diagnostic command, and delete the Pod."
+  },
 
-  "10|Deployments and ReplicaSets": makeLesson(
-    "A Deployment manages stateless application rollouts and desired replica counts. It creates and manages ReplicaSets, which maintain the requested number of matching pods.",
-    "Deployments provide controlled updates, scaling, rollout status, and rollback capabilities without manually deleting and recreating application pods.",
-    "The Deployment controller creates a ReplicaSet for a pod template. The ReplicaSet controller maintains the replica count. When the pod template changes, a new ReplicaSet is created and the Deployment performs the configured rollout strategy.",
-    ["Create a Deployment manifest with image and replica count.", "Apply the manifest to the cluster.", "Observe the ReplicaSet and pods.", "Change the image to a new release.", "Monitor rollout progress.", "Rollback if the release fails."],
-    "The payment-service Deployment runs three replicas. A new image version is rolled out gradually, and the previous ReplicaSet remains available for a possible rollback.",
-    ["kubectl apply -f payment-deployment.yaml", "kubectl get deployments", "kubectl get replicasets", "kubectl rollout status deployment/payment-service", "kubectl set image deployment/payment-service payment-service=123456789012.dkr.ecr.ap-south-1.amazonaws.com/payment-service:1.4.1", "kubectl rollout history deployment/payment-service", "kubectl rollout undo deployment/payment-service"],
-    "Set replicas, selector, pod-template labels, image, rollout strategy, and revision history appropriately. The Deployment selector must match labels in its pod template.",
-    ["Deployment reports unavailable replicas.", "Rollout gets stuck waiting for readiness.", "Selector does not match pod labels.", "New image causes application startup failures."],
-    ["Inspect Deployment conditions and ReplicaSets.", "Read pod events and application logs.", "Verify image and probe configuration.", "Rollback to the last healthy revision when required."],
-    ["Use rolling updates for stateless workloads.", "Configure readiness probes and rollout limits.", "Use immutable image tags or digests.", "Keep rollout history according to operational needs."],
-    "Deploy three payment-service replicas, update the container image, monitor the rollout, and perform a controlled rollback."
-  ),
+  "Deployments and ReplicaSets": {
+    title: "Deployments and ReplicaSets",
+    description: "Manage stateless application replicas, rollout strategies, scaling, and declarative release updates.",
+    sections: [
+      section("Deployment Responsibilities", "A Deployment manages ReplicaSets and provides declarative updates for stateless applications. It maintains the requested replica count and records rollout history. A ReplicaSet ensures that the required number of matching Pods exists."),
+      section("Selector and Template Relationship", "The Deployment selector must match the labels in its Pod template. Incorrect or overlapping selectors can cause ownership conflicts. Treat selectors as stable identifiers and avoid changing them casually after creation."),
+      section("Replica Management", "Scaling changes the desired replica count. The ReplicaSet controller creates or removes Pods to match that count. Capacity, quota, Pod scheduling constraints, and readiness determine whether the requested replicas become available.", "kubectl scale deployment payment-api --replicas=4 -n production\nkubectl get deployment payment-api -n production\nkubectl get rs -n production\nkubectl get pods -n production -l app=payment-api"),
+      section("Rolling Update Strategy", "RollingUpdate gradually replaces old Pods with new Pods according to maxSurge and maxUnavailable. Readiness probes determine when new replicas are considered available. Set strategy values based on application capacity and availability requirements."),
+      section("Release Inspection", "Use rollout status, history, and describe to verify deployment progress. Inspect the ReplicaSets and Pod images to confirm that the intended version is running.", "kubectl rollout status deployment/payment-api -n production\nkubectl rollout history deployment/payment-api -n production\nkubectl describe deployment payment-api -n production"),
+      section("Production Deployment Practices", "Use immutable image tags or digests, resource requests, readiness probes, disruption budgets, and progressive delivery where needed. Ensure the application supports overlapping old and new versions during a rolling update.")
+    ],
+    exercise: "Deploy a sample application with two replicas. Update its image to a new version, watch the rollout, inspect old and new ReplicaSets, and verify that all available replicas use the intended image."
+  },
 
-  "10|Services and Service Discovery": makeLesson(
-    "A Kubernetes Service provides a stable network endpoint for a changing group of pods. It selects pods using labels and supports communication between application components.",
-    "Pod IP addresses can change during restarts and deployments. Services provide a stable DNS name and virtual IP so clients do not need to track individual pod addresses.",
-    "A ClusterIP Service routes traffic to matching pod endpoints. Other common types include NodePort and LoadBalancer. CoreDNS provides service-name resolution inside the cluster.",
-    ["Label payment-service pods consistently.", "Create a Service with a matching selector.", "Verify the Service ClusterIP and endpoints.", "Resolve its DNS name from another pod.", "Send a test request to the application.", "Inspect endpoint changes during pod replacement."],
-    "The payment API Service exposes port 80 and forwards traffic to payment-service pods listening on targetPort 8080.",
-    ["kubectl get services", "kubectl describe service payment-service", "kubectl get endpoints payment-service", "kubectl get endpointslices", "kubectl run dns-test --image=busybox:1.36 --restart=Never --command -- sleep 3600", "kubectl exec dns-test -- nslookup payment-service", "kubectl delete pod dns-test"],
-    "Service selectors must match pod labels. Define port, targetPort, protocol, and type carefully. A LoadBalancer Service can provision an external AWS load balancer depending on the installed integration.",
-    ["Service has no endpoints.", "DNS lookup fails.", "Service forwards to the wrong container port.", "Traffic reaches only unhealthy pods because readiness is incorrect."],
-    ["Compare Service selectors with pod labels.", "Inspect EndpointSlices and pod readiness.", "Check CoreDNS health and DNS configuration.", "Validate targetPort against the application listening port."],
-    ["Use stable Service names for internal communication.", "Avoid hardcoding pod IP addresses.", "Use readiness probes to manage eligible endpoints.", "Restrict externally exposed Services."],
-    "Create an internal payment-service Service and verify that another pod can resolve its DNS name and reach port 80."
-  ),
+  "Services and Service Discovery": {
+    title: "Services and Service Discovery",
+    description: "Provide stable network endpoints for dynamic Pods using ClusterIP, NodePort, LoadBalancer, and DNS.",
+    sections: [
+      section("Why Services Are Needed", "Pod IP addresses can change when Pods are recreated. A Service provides a stable virtual endpoint and selects backend Pods using labels. Clients can use the Service name instead of tracking individual Pod addresses."),
+      section("ClusterIP Service", "ClusterIP exposes an application inside the cluster and is the common choice for internal service-to-service communication. Kubernetes DNS creates a stable name for the Service within its namespace."),
+      section("NodePort and LoadBalancer", "NodePort exposes a port on eligible nodes. LoadBalancer requests an external load balancer integration, commonly through the cloud provider or AWS Load Balancer Controller in EKS. Choose exposure deliberately and restrict public access."),
+      section("Selectors and Endpoints", "A Service selector must match the intended Pod labels. If endpoints are empty, check selector labels, Pod readiness, namespace, and target port. EndpointSlice resources show the backend addresses associated with a Service.", "kubectl get svc -n production\nkubectl get endpoints -n production\nkubectl get endpointslices -n production\nkubectl describe service payment-api -n production"),
+      section("Cluster DNS Resolution", "CoreDNS provides cluster DNS. A Service can generally be reached by its short name inside the same namespace or by a fully qualified service DNS name across namespaces. DNS failures require checking CoreDNS health and Pod DNS configuration."),
+      section("Service Port Mapping", "port is the Service-facing port; targetPort is the destination port on the selected Pod. A mismatch can produce connection failures even when the Service has healthy endpoints. Verify application listening addresses and container ports.")
+    ],
+    exercise: "Deploy two application replicas and expose them using a ClusterIP Service. Resolve the Service DNS name from a temporary diagnostic Pod and verify traffic reaches the backend replicas."
+  },
 
-  "10|ConfigMaps and Secrets": makeLesson(
-    "ConfigMaps store non-confidential configuration, while Kubernetes Secrets are intended for sensitive values such as passwords, tokens, and certificates.",
-    "Separating configuration from container images allows the same payment-service image to run in development, staging, and production with environment-specific settings.",
-    "ConfigMaps and Secrets can be exposed to pods as environment variables or mounted files. Kubernetes stores these objects in the API data store; Secret data is base64 encoded, not automatically encrypted merely because it is encoded.",
-    ["Create a ConfigMap for non-sensitive application settings.", "Create a Secret using a secure process.", "Reference both objects from the Deployment.", "Roll out the updated pod template.", "Verify the application receives the expected configuration.", "Rotate sensitive values when required."],
-    "The payment-service uses a ConfigMap for application profile and a Secret for a database password. The image contains neither environment-specific value.",
-    ["kubectl create configmap payment-config --from-literal=SPRING_PROFILES_ACTIVE=production", "kubectl create secret generic payment-db --from-literal=DB_PASSWORD='REPLACE_WITH_SECURE_VALUE'", "kubectl describe configmap payment-config", "kubectl describe secret payment-db", "kubectl get pods"],
-    "Do not commit real secrets into Git or terminal history. Use an approved secret manager integration, encryption at rest, and least-privilege RBAC. Environment variables from Secrets may require pod recreation to consume updates.",
-    ["Pod reports missing ConfigMap or Secret.", "Environment variable is empty or incorrect.", "Application continues using an old secret value.", "Secret is exposed in logs or source control."],
-    ["Verify object names and namespace.", "Inspect Deployment references and pod events.", "Restart or roll out pods when required to load changed values.", "Rotate exposed credentials and review access."],
-    ["Use ConfigMaps only for non-sensitive data.", "Restrict Secret access with RBAC.", "Enable encryption at rest and consider external secret management.", "Never print secret values in diagnostic output."],
-    "Create a payment-service ConfigMap and Secret, reference them in a Deployment, and explain how you would rotate the database credential safely."
-  ),
+  "ConfigMaps and Secrets": {
+    title: "ConfigMaps and Secrets",
+    description: "Manage application configuration and sensitive values while understanding mounting, environment injection, and security boundaries.",
+    sections: [
+      section("Configuration Separation", "ConfigMaps store non-sensitive configuration separately from container images. Secrets store sensitive values such as credentials and tokens. Keeping configuration outside images makes deployments portable across environments."),
+      section("ConfigMap Delivery Methods", "Applications can consume ConfigMaps as environment variables, command arguments, or mounted files. Environment variables are generally fixed when the container starts; mounted files may update eventually, depending on how they are consumed."),
+      section("Secret Delivery Methods", "Secrets can be exposed as environment variables or mounted files. Base64 encoding in a Secret manifest is not encryption. Restrict access through RBAC and configure appropriate encryption at rest and external secret-management integrations."),
+      section("Create and Inspect Configuration", "Avoid printing real credentials in terminal output or committing them to Git. Use placeholder values in examples and secure deployment pipelines for production secret injection.", "kubectl create configmap payment-config --from-literal=APP_MODE=production -n production\nkubectl get configmap payment-config -n production -o yaml\nkubectl create secret generic payment-db --from-literal=DB_PASSWORD='REPLACE_ME' -n production"),
+      section("Mounted Configuration", "Mount configuration files at explicit paths and ensure application file permissions are appropriate. Applications should validate required keys at startup and handle configuration changes safely."),
+      section("Configuration Change Rollouts", "Updating a ConfigMap does not automatically restart Pods using environment variables. Use a controlled rollout or checksum-based Pod template change when configuration updates must trigger application restarts. Rotate secrets using a documented procedure.")
+    ],
+    exercise: "Create a ConfigMap and a test Secret with non-sensitive placeholder values. Mount each into a sample Pod, verify the application can read them, then remove the resources and document the RBAC permissions required."
+  },
 
-  "10|Health Probes": makeLesson(
-    "Kubernetes health probes allow kubelet to evaluate container health. Liveness probes detect containers that should be restarted, readiness probes control traffic eligibility, and startup probes protect slow-starting applications.",
-    "Correct probes prevent traffic from reaching an application before it is ready and help recover from processes that become unhealthy after startup.",
-    "Kubelet executes configured HTTP, TCP, or command checks. A failed liveness probe can restart a container. A failed readiness probe removes the pod from ready Service endpoints. Startup probes delay other probe checks until startup succeeds.",
-    ["Identify reliable health endpoints in the Spring Boot application.", "Configure a startup probe for slow initialization.", "Configure readiness to represent traffic readiness.", "Configure liveness to detect unrecoverable process health.", "Deploy and inspect probe status.", "Test behavior during startup and failure."],
-    "The payment-service exposes /actuator/health/readiness and /actuator/health/liveness. Kubernetes uses these endpoints to decide when to send traffic and when to restart the container.",
-    ["kubectl describe pod POD_NAME", "kubectl get pods -w", "kubectl get deployment payment-service -o yaml", "kubectl logs POD_NAME"],
-    "Set initialDelaySeconds, periodSeconds, timeoutSeconds, failureThreshold, and successThreshold based on real application startup and response behavior. Do not make liveness depend on a temporary external database outage unless restarting the process is appropriate.",
-    ["Readiness probe fails continuously.", "Liveness probe causes repeated restarts.", "Startup probe threshold is too short.", "Health endpoint returns an authentication error."],
-    ["Check probe path, port, protocol, and response status.", "Compare configured thresholds with actual startup time.", "Review application health endpoint behavior.", "Separate readiness checks from liveness checks."],
-    ["Use startup probes for slow applications.", "Keep liveness checks lightweight.", "Do not report ready before critical initialization completes.", "Test probe behavior during real deployment conditions."],
-    "Configure startup, readiness, and liveness probes for a Spring Boot payment-service and verify the resulting pod conditions."
-  ),
+  "Health Probes": {
+    title: "Health Probes",
+    description: "Configure startup, readiness, and liveness probes to control application startup, traffic eligibility, and recovery.",
+    sections: [
+      section("Probe Types and Intent", "Startup probes protect slow-starting applications from premature liveness failures. Readiness probes determine whether a Pod should receive Service traffic. Liveness probes detect an application that should be restarted."),
+      section("Readiness Probe Design", "Readiness should verify that the application can safely serve requests. It may check local initialization and essential dependencies, but avoid making transient downstream failures remove every application replica from service without careful design."),
+      section("Liveness Probe Design", "Liveness should detect a process that cannot recover without restart. Do not make liveness depend on external databases or APIs unless restarting the application is genuinely the correct recovery action."),
+      section("Startup Probe Tuning", "A startup probe allows an application a defined startup window. Its failure threshold multiplied by its period provides an approximate maximum startup allowance. Configure values based on measured startup behavior, not guesswork."),
+      section("HTTP Probe Example", "Probe paths and ports must match the application's actual listener. An HTTP endpoint returning an unexpected status code causes probe failure. Use named ports where that improves clarity.", "startupProbe:\n  httpGet:\n    path: /health/startup\n    port: 8080\n  periodSeconds: 10\n  failureThreshold: 30\nreadinessProbe:\n  httpGet:\n    path: /health/ready\n    port: 8080\n  periodSeconds: 5\nlivenessProbe:\n  httpGet:\n    path: /health/live\n    port: 8080\n  periodSeconds: 10\n  failureThreshold: 3"),
+      section("Probe Failure Diagnosis", "Inspect Pod events, container restarts, probe configuration, application logs, and endpoint behavior. Connection refused may indicate a wrong port or listener binding. Timeout may indicate a slow endpoint or overloaded application.", "kubectl describe pod <pod-name> -n production\nkubectl logs <pod-name> -n production --previous\nkubectl get pods -n production -o wide"),
+      section("Production Probe Practices", "Use separate endpoints when startup, readiness, and liveness have different meanings. Set realistic timeouts and thresholds. Test probes under slow startup, CPU pressure, dependency degradation, and rolling deployments.")
+    ],
+    exercise: "Add startup, readiness, and liveness probes to a sample Deployment. Simulate a readiness failure and observe Service endpoint behavior. Explain why a readiness failure should not automatically restart the container."
+  },
 
-  "10|Requests and Limits": makeLesson(
-    "Kubernetes resource requests describe the minimum CPU and memory capacity a container needs for scheduling. Limits define maximum resource consumption enforced by the container runtime and kernel mechanisms.",
-    "Correct resource values improve scheduling, reduce noisy-neighbor problems, and protect nodes from uncontrolled application resource consumption.",
-    "The scheduler considers requests when selecting nodes. CPU limits constrain CPU usage through throttling. Memory limits can cause a container to be terminated with an OOMKilled status if it exceeds its limit.",
-    ["Measure application CPU and memory usage.", "Define realistic container requests.", "Set appropriate CPU and memory limits.", "Deploy the updated workload.", "Inspect pod resource configuration.", "Monitor throttling, memory pressure, and restarts."],
-    "The payment-service container requests 250m CPU and 512Mi memory, with a CPU limit of 1 core and memory limit of 1Gi as an initial example to be validated against real workload measurements.",
-    ["kubectl describe pod POD_NAME", "kubectl top pods", "kubectl top nodes", "kubectl get pod POD_NAME -o yaml", "kubectl get events --sort-by=.metadata.creationTimestamp"],
-    "CPU quantities such as 500m represent half a CPU core. Memory quantities such as 512Mi use binary units. Values must be tuned using load tests and production observations.",
-    ["Pending pods due to insufficient requested resources.", "OOMKilled containers.", "High CPU throttling.", "Node memory pressure caused by overcommitment."],
-    ["Inspect requests, limits, and node allocatable capacity.", "Review previous container termination reason.", "Measure actual resource usage under representative load.", "Adjust requests and limits based on evidence."],
-    ["Set requests and limits for application containers.", "Use metrics to tune values.", "Avoid arbitrarily large requests.", "Load-test before production capacity changes."],
-    "Configure CPU and memory requests and limits for payment-service, then identify the difference between Pending and OOMKilled symptoms."
-  ),
+  "Requests and Limits": {
+    title: "Requests and Limits",
+    description: "Control workload resource scheduling and runtime consumption with CPU, memory, and ephemeral storage settings.",
+    sections: [
+      section("Requests Versus Limits", "Requests represent resources Kubernetes uses when scheduling Pods and calculating resource allocation. Limits cap resource usage at runtime. A missing request can make scheduling and capacity planning unpredictable, especially in shared production clusters."),
+      section("CPU Resource Behavior", "CPU requests influence scheduling and relative CPU allocation under contention. CPU limits can throttle a container when it exceeds its allowed CPU quota. CPU is measured in cores or millicores; 500m represents half a CPU core."),
+      section("Memory Resource Behavior", "Memory limits are enforced differently from CPU limits. A container exceeding its memory limit can be terminated with an OOMKilled reason. Set memory requests and limits using measured working-set behavior and realistic peak demand."),
+      section("Resource Configuration", "Define resource values per container. A Pod's scheduling requirement is affected by its containers and init-container resource requirements. Include sidecars in capacity calculations.", "resources:\n  requests:\n    cpu: 250m\n    memory: 256Mi\n  limits:\n    cpu: '1'\n    memory: 512Mi"),
+      section("Resource Diagnosis", "Inspect Pod resource configuration, node allocatable capacity, metrics, and termination reasons. Pending Pods may indicate insufficient requested resources; OOMKilled indicates memory pressure or an undersized limit.", "kubectl describe pod <pod-name> -n production\nkubectl top pods -n production\nkubectl top nodes\nkubectl describe node <node-name>"),
+      section("Namespace Quotas and Defaults", "ResourceQuota limits aggregate namespace consumption. LimitRange can provide default requests and limits or constrain individual workloads. These controls help prevent one team from consuming unbounded shared capacity."),
+      section("Right-sizing Workloads", "Use historical CPU and memory metrics, load tests, peak traffic, and restart data to right-size resources. Avoid blindly copying requests from another application. Revisit settings after major traffic or runtime changes.")
+    ],
+    exercise: "Deploy a test application with explicit CPU and memory requests and limits. Inspect its resource configuration and metrics, then explain how an insufficient request differs from a memory limit violation."
+  },
 
-  "10|Namespaces and RBAC": makeLesson(
-    "Namespaces logically separate Kubernetes resources within a cluster. Role-Based Access Control (RBAC) controls which users, groups, and service accounts can perform actions on resources.",
-    "Namespaces support environment and team separation, while RBAC prevents users and automation from accessing resources beyond their responsibilities.",
-    "A Namespace scopes namespaced resources. Roles and RoleBindings grant permissions within a namespace. ClusterRoles and ClusterRoleBindings grant cluster-wide or reusable permissions. Authentication identifies a principal; RBAC authorizes API actions.",
-    ["Create a namespace for payment workloads.", "Create a service account for an automation component.", "Define the minimum required Role.", "Bind the Role to the service account.", "Inspect effective permissions.", "Test allowed and denied operations."],
-    "A deployment automation service account can update Deployments in the payments namespace but cannot read Secrets or modify resources in unrelated namespaces.",
-    ["kubectl create namespace payments", "kubectl get namespaces", "kubectl create serviceaccount payment-deployer -n payments", "kubectl get roles,rolebindings -n payments", "kubectl auth can-i get pods -n payments --as=system:serviceaccount:payments:payment-deployer"],
-    "Use explicit apiGroups, resources, verbs, and namespace scope. Avoid granting cluster-admin to application service accounts or CI pipelines.",
-    ["Forbidden errors during deployment.", "RoleBinding references the wrong service account.", "Automation can access more resources than required.", "Namespace mismatch causes resource lookup failures."],
-    ["Check the caller identity and namespace.", "Inspect Role, ClusterRole, and binding subjects.", "Use kubectl auth can-i to test permissions.", "Grant only the missing required verb and resource."],
-    ["Follow least privilege.", "Use dedicated service accounts.", "Separate namespaces according to ownership and policy.", "Review RBAC changes and audit access."],
-    "Create a payments namespace and a read-only service account role, then verify which Kubernetes actions are allowed and denied."
-  ),
+  "Namespaces and RBAC": {
+    title: "Namespaces and RBAC",
+    description: "Separate cluster resources and implement least-privilege access using Roles, ClusterRoles, and bindings.",
+    sections: [
+      section("Namespace Isolation", "Namespaces provide logical grouping for namespaced resources and support team, environment, and application boundaries. They do not provide complete network or security isolation by themselves."),
+      section("RBAC Authorization Model", "Kubernetes RBAC grants permissions through Roles or ClusterRoles and assigns them through RoleBindings or ClusterRoleBindings. Permissions are additive; RBAC does not provide explicit deny rules."),
+      section("Role and RoleBinding", "A Role defines permissions within one namespace. A RoleBinding grants those permissions to a user, group, or ServiceAccount in that namespace. Prefer namespace-scoped access when cluster-wide permissions are unnecessary."),
+      section("Least-Privilege Example", "This example grants read-only access to Pods in the production namespace. Expand permissions only when a documented workflow requires additional resources or verbs.", "apiVersion: rbac.authorization.k8s.io/v1\nkind: Role\nmetadata:\n  name: pod-reader\n  namespace: production\nrules:\n- apiGroups: ['']\n  resources: ['pods']\n  verbs: ['get', 'list', 'watch']\n---\napiVersion: rbac.authorization.k8s.io/v1\nkind: RoleBinding\nmetadata:\n  name: pod-reader-binding\n  namespace: production\nsubjects:\n- kind: ServiceAccount\n  name: support-reader\n  namespace: production\nroleRef:\n  apiGroup: rbac.authorization.k8s.io\n  kind: Role\n  name: pod-reader"),
+      section("Permission Verification", "Use auth can-i to test effective permissions. Inspect bindings and roles to identify where access is granted. In EKS, also verify the IAM identity and its mapping or access entry.", "kubectl auth can-i list pods -n production\nkubectl auth can-i create deployments -n production\nkubectl get roles,rolebindings -n production\nkubectl get clusterroles,clusterrolebindings"),
+      section("ServiceAccount Security", "Use dedicated ServiceAccounts for workloads that call the Kubernetes API. Avoid granting the default ServiceAccount broad permissions. Disable automatic token mounting when a workload does not need Kubernetes API access."),
+      section("EKS Access Governance", "Combine IAM identity controls with Kubernetes RBAC. Review EKS access entries, access policies, namespace bindings, and audit logs. Remove obsolete access and periodically verify that automation identities retain only required permissions.")
+    ],
+    exercise: "Create a namespace, a ServiceAccount, and a Role that allows listing Pods only. Bind the role, verify allowed and denied operations with kubectl auth can-i, and explain why a ClusterRoleBinding would be broader."
+  },
 
-  "10|Ingress and Load Balancing": makeLesson(
-    "Ingress defines HTTP and HTTPS routing rules for services inside a Kubernetes cluster. An Ingress controller or compatible gateway implementation processes those rules and connects external traffic to application Services.",
-    "Ingress provides a controlled entry point for application traffic, including host-based routing, path routing, TLS termination, and integration with cloud load balancers.",
-    "An Ingress resource describes routing intent. A controller such as the AWS Load Balancer Controller watches resources and provisions or configures AWS load-balancing infrastructure according to its configuration.",
-    ["Install and configure a supported Ingress controller.", "Create a Kubernetes Service for payment-service.", "Define host and path routing rules.", "Configure DNS and TLS where required.", "Apply the Ingress resource.", "Test the external endpoint and backend routing."],
-    "Requests to payments.example.com/api are routed through an AWS Application Load Balancer to the payment-service Service and its ready pods.",
-    ["kubectl get ingress -A", "kubectl describe ingress payment-ingress", "kubectl get services -n payments", "kubectl get pods -n kube-system", "kubectl get events -A --sort-by=.metadata.creationTimestamp"],
-    "Ingress behavior depends on the installed controller and its annotations or Gateway API support. In EKS, verify controller IAM permissions, subnet discovery, security groups, target type, and health-check configuration.",
-    ["Ingress has no address.", "Load balancer provisioning fails.", "Target groups show unhealthy targets.", "DNS resolves but requests return 404 or 502."],
-    ["Check controller pods and logs.", "Inspect Ingress events and controller permissions.", "Verify subnet tags, security groups, and target health.", "Check Service endpoints, health-check path, and DNS records."],
-    ["Use HTTPS and managed certificates.", "Restrict public exposure to required services.", "Use health checks that reflect application readiness.", "Keep controller versions and configuration supported."],
-    "Expose payment-service through an EKS Ingress implementation and trace a request from DNS to load balancer, Service, and pod."
-  ),
+  "Ingress and Load Balancing": {
+    title: "Ingress and Load Balancing",
+    description: "Expose HTTP and HTTPS workloads using Ingress resources and the AWS Load Balancer Controller.",
+    sections: [
+      section("Ingress Resource Purpose", "Ingress defines HTTP and HTTPS routing rules from external clients to Kubernetes Services. An Ingress resource requires an Ingress controller to implement those rules; creating the object alone does not create a functioning load balancer."),
+      section("AWS Load Balancer Controller", "In EKS, the AWS Load Balancer Controller can provision and manage Application Load Balancers for supported Ingress resources and Network Load Balancers for supported Service configurations. Its IAM permissions, subnet discovery, and controller health are essential."),
+      section("Ingress Routing Rules", "Host-based and path-based rules route requests to backend Services. The backend Service must exist and expose the expected port. DNS records must point clients to the provisioned load balancer."),
+      section("Example Ingress", "This example illustrates an ALB-backed Ingress. Confirm that the controller is installed and that the referenced Service and certificate configuration exist before applying it.", "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: payment-ingress\n  namespace: production\n  annotations:\n    alb.ingress.kubernetes.io/scheme: internet-facing\n    alb.ingress.kubernetes.io/target-type: ip\nspec:\n  ingressClassName: alb\n  rules:\n  - host: payments.example.com\n    http:\n      paths:\n      - path: /\n        pathType: Prefix\n        backend:\n          service:\n            name: payment-api\n            port:\n              number: 80"),
+      section("TLS and Certificate Handling", "Terminate HTTPS at the selected load balancer using a correctly provisioned certificate. Verify certificate domain coverage, renewal, listener configuration, and backend protocol. Do not place private certificate keys in ordinary ConfigMaps."),
+      section("Load Balancer Troubleshooting", "Check Ingress events, controller logs, subnet tags, security groups, IAM permissions, target health, Service endpoints, and application readiness. A provisioned ALB with unhealthy targets usually requires investigation beyond DNS.", "kubectl describe ingress payment-ingress -n production\nkubectl get svc,endpoints -n production\nkubectl logs -n kube-system deployment/aws-load-balancer-controller"),
+      section("Exposure and Cost Controls", "Choose internal or internet-facing schemes intentionally. Restrict listener access, use appropriate WAF and security controls where required, and remove unused load balancer resources. Account for cross-zone traffic and load balancer hourly and capacity costs.")
+    ],
+    exercise: "In a test EKS environment, expose a sample Service through an ALB-backed Ingress. Verify DNS, listener configuration, target health, and HTTPS behavior. Document the controller and IAM prerequisites."
+  },
 
-  "10|Networking and CNI": makeLesson(
-    "Kubernetes networking connects pods, Services, nodes, and external systems. In Amazon EKS, the Amazon VPC CNI commonly assigns pod IP addresses from VPC networking resources.",
-    "Correct networking is essential for pod-to-pod communication, service discovery, external access, and communication with AWS resources.",
-    "The CNI plugin configures pod network interfaces. The VPC CNI allocates VPC addresses to pods based on available subnet and ENI capacity. Kubernetes Services provide virtual service addresses, while network policies or security controls restrict traffic.",
-    ["Inspect node and pod IP addresses.", "Verify the VPC CNI add-on health.", "Check subnet IP availability.", "Test pod-to-pod and Service communication.", "Inspect routes, security groups, and network policies.", "Monitor IP allocation during scale-out."],
-    "When payment-service scales from three to twenty pods, the VPC CNI must have sufficient IP capacity in the worker subnets for new pod network interfaces.",
-    ["kubectl get pods -o wide", "kubectl get nodes -o wide", "kubectl get pods -n kube-system", "kubectl describe daemonset aws-node -n kube-system", "aws eks describe-addon --cluster-name devmavox-eks --addon-name vpc-cni --region ap-south-1", "kubectl get events -A --sort-by=.metadata.creationTimestamp"],
-    "EKS networking depends on VPC CIDR planning, subnet sizes, ENI limits, CNI configuration, security groups, routes, and DNS. Use supported EKS add-on management for CNI updates.",
-    ["FailedCreatePodSandBox.", "Pods cannot obtain IP addresses.", "Pod-to-pod traffic times out.", "Insufficient subnet IP capacity.", "VPC CNI daemon pods are unhealthy."],
-    ["Inspect aws-node pods and logs.", "Check free subnet addresses and ENI capacity.", "Review security groups, route tables, and network policies.", "Validate CNI version and configuration."],
-    ["Plan sufficient pod IP capacity.", "Spread nodes across appropriate subnets and availability zones.", "Monitor CNI health and subnet utilization.", "Test network changes before production rollout."],
-    "Inspect the VPC CNI on an EKS cluster and diagnose a scenario where new payment-service pods cannot obtain IP addresses."
-  ),
+  "Networking and CNI": {
+    title: "Networking and CNI",
+    description: "Understand Pod networking, the Amazon VPC CNI, IP allocation, network policies, and connectivity troubleshooting.",
+    sections: [
+      section("Kubernetes Networking Model", "Kubernetes expects Pods to communicate using Pod IP connectivity and Services to provide stable virtual endpoints. The actual implementation depends on the cluster network plugin and cloud integration."),
+      section("Amazon VPC CNI", "The Amazon VPC CNI assigns VPC network addresses to Pods using ENIs and available subnet IP capacity. Pod density and address availability depend on instance type, CNI configuration, and networking mode."),
+      section("Subnet IP Exhaustion", "A cluster can have available EC2 compute but still fail to schedule Pods because subnet IP addresses or ENI capacity are exhausted. Monitor subnet free addresses and CNI allocation behavior before increasing workload replicas."),
+      section("Network Policy", "NetworkPolicy resources express Pod traffic rules, but enforcement depends on a compatible network policy implementation and configuration. Do not assume a policy object provides protection unless the installed networking stack enforces it."),
+      section("DNS and Connectivity Checks", "Separate DNS resolution failures from routing, security-group, NetworkPolicy, and application-listener failures. Test from the same namespace and network location as the affected workload.", "kubectl get pods -n kube-system\nkubectl get nodes -o wide\nkubectl get networkpolicies -A\nkubectl run netcheck --image=busybox:1.36 -it --rm --restart=Never -- nslookup kubernetes.default"),
+      section("CNI Troubleshooting", "Inspect VPC CNI DaemonSet health, node events, CNI logs, subnet capacity, ENI limits, and security groups. A Pod sandbox creation failure can point to CNI or IP allocation issues rather than an application image problem."),
+      section("Production Network Design", "Plan VPC CIDR size, subnet distribution, Pod density, security groups, routing, DNS, and network policy before large-scale deployment. Monitor IP consumption and validate connectivity across Availability Zones and external dependencies.")
+    ],
+    exercise: "Inspect the VPC CNI Pods and node networking configuration in a test EKS cluster. Check subnet free IP capacity and perform DNS and Service connectivity tests from a diagnostic Pod."
+  },
 
-  "10|Persistent Storage": makeLesson(
-    "Kubernetes persistent storage allows application data to survive pod replacement. PersistentVolumes represent storage resources, PersistentVolumeClaims request storage, and StorageClasses define dynamic provisioning behavior.",
-    "Container filesystems are temporary. Databases and stateful applications need storage that remains available across pod restarts and rescheduling.",
-    "A PVC requests storage from a StorageClass. A provisioner creates or selects a PersistentVolume and binds it to the claim. In EKS, the EBS CSI driver can provision Amazon EBS volumes for supported workloads.",
-    ["Install or verify the required CSI driver.", "Create a StorageClass or use an approved one.", "Create a PersistentVolumeClaim.", "Mount the claim in the workload.", "Write and verify test data.", "Test pod replacement and storage reattachment."],
-    "A payment database uses a PVC backed by an EBS volume. When its pod is rescheduled to a compatible node, the volume can be attached again subject to availability-zone and access-mode constraints.",
-    ["kubectl get storageclass", "kubectl get pvc -A", "kubectl get pv", "kubectl describe pvc payment-data", "kubectl get pods -n payments", "kubectl describe pod POD_NAME"],
-    "Select volume size, access mode, filesystem, StorageClass, reclaim policy, and availability-zone behavior carefully. EBS volumes are typically zonal block storage and do not behave like shared multi-node filesystems.",
-    ["PVC remains Pending.", "EBS volume cannot attach to the selected node.", "CSI driver is unhealthy.", "Data is lost because the wrong reclaim policy was used."],
-    ["Inspect PVC events and StorageClass configuration.", "Verify CSI controller and node plugin health.", "Check volume availability zone and attachment limits.", "Review reclaim policy and backup recovery options."],
-    ["Use persistent storage for stateful data.", "Back up important data and test restores.", "Understand access modes and zone constraints.", "Use suitable reclaim policies and encryption."],
-    "Create an EBS-backed PVC for a sample stateful payment component and verify that data remains after pod replacement."
-  ),
+  "Persistent Storage": {
+    title: "Persistent Storage",
+    description: "Provision durable volumes with PersistentVolumes, PersistentVolumeClaims, StorageClasses, and the EBS CSI driver.",
+    sections: [
+      section("Ephemeral and Persistent Data", "Container writable layers and emptyDir volumes are not substitutes for durable application storage. PersistentVolumes provide storage whose lifecycle can outlive an individual Pod, subject to the underlying storage and reclaim configuration."),
+      section("PV and PVC Relationship", "A PersistentVolume represents storage capacity available to the cluster. A PersistentVolumeClaim requests storage with a required size and access mode. Kubernetes binds a suitable volume or dynamically provisions one through a StorageClass."),
+      section("StorageClass and Dynamic Provisioning", "StorageClasses define provisioner and parameters for dynamic volume creation. In EKS, the Amazon EBS CSI driver provisions EBS volumes for supported workloads. Verify driver installation and IAM permissions."),
+      section("EBS-backed Claim Example", "This example requests a small volume using a StorageClass named gp3. Confirm that the class exists and that the selected topology supports the workload.", "apiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: payment-data\n  namespace: production\nspec:\n  accessModes:\n  - ReadWriteOnce\n  storageClassName: gp3\n  resources:\n    requests:\n      storage: 20Gi"),
+      section("Mounting Storage in a Pod", "Reference a PVC from a Pod or workload template and mount it at the application's data directory. Ensure file ownership, permissions, filesystem behavior, and application shutdown procedures are compatible with the volume."),
+      section("Volume Lifecycle and Access Modes", "ReadWriteOnce commonly restricts a volume to read-write attachment by one node, not necessarily one Pod. Reclaim policies determine what happens to a PV after claim deletion. Stateful workloads need deliberate backup and restore plans."),
+      section("Storage Troubleshooting", "PVC Pending may indicate a missing StorageClass, unavailable CSI driver, topology mismatch, or capacity issue. Multi-Attach errors can occur when an EBS volume is still attached elsewhere. Inspect PVC events, PV details, CSI controller logs, and node attachment state.")
+    ],
+    exercise: "Install or verify the EBS CSI driver in a test EKS cluster. Create a PVC, mount it into a Pod, write a test file, recreate the Pod, and verify the data remains available."
+  },
 
-  "10|Horizontal Pod Autoscaling": makeLesson(
-    "Horizontal Pod Autoscaling (HPA) automatically adjusts the number of pod replicas based on observed metrics such as CPU or memory utilization.",
-    "HPA helps an application respond to changing demand without requiring operators to manually change replica counts for every traffic increase.",
-    "The HPA controller periodically reads metrics from the Kubernetes metrics API and compares current usage with target values. It updates the target Deployment or ReplicaSet replica count within configured minimum and maximum limits.",
-    ["Install and verify a metrics provider.", "Set CPU and memory requests on containers.", "Create an HPA for payment-service.", "Generate representative workload.", "Observe metric values and replica changes.", "Verify scale-down behavior after load decreases."],
-    "The payment-service HPA maintains between two and ten replicas and targets average CPU utilization of 60 percent, provided the metrics provider reports usable data.",
-    ["kubectl top pods", "kubectl top nodes", "kubectl autoscale deployment payment-service --cpu-percent=60 --min=2 --max=10", "kubectl get hpa", "kubectl describe hpa payment-service", "kubectl get deployment payment-service -w"],
-    "CPU utilization targets are calculated relative to requested CPU. HPA requires resource requests for utilization-based scaling. Production configurations should also consider stabilization windows and scaling behavior.",
-    ["HPA displays unknown metrics.", "Replicas do not increase under load.", "Pods cannot schedule after scaling.", "Scaling oscillates rapidly."],
-    ["Check metrics-server or the configured metrics adapter.", "Verify resource requests and HPA target references.", "Inspect HPA events and node capacity.", "Tune thresholds and stabilization behavior."],
-    ["Load-test scaling policies.", "Set realistic minimum and maximum replicas.", "Ensure cluster capacity can support scale-out.", "Use custom metrics when CPU alone does not represent demand."],
-    "Configure an HPA for payment-service, generate test load, and observe how Kubernetes adjusts replicas."
-  ),
+  "Horizontal Pod Autoscaling": {
+    title: "Horizontal Pod Autoscaling",
+    description: "Scale application replicas using observed resource or custom metrics and understand the metrics pipeline.",
+    sections: [
+      section("HPA Purpose", "Horizontal Pod Autoscaler adjusts the replica count of a scalable workload based on observed metrics. It can react to CPU, memory, or supported custom and external metrics, but it does not create worker-node capacity by itself."),
+      section("Metrics Server Dependency", "Resource-based HPA commonly relies on the Kubernetes Metrics Server. If metrics are unavailable, HPA may show unknown values and cannot calculate the desired replica count. Verify the metrics API before debugging the workload."),
+      section("CPU Utilization Target", "CPU utilization is calculated relative to requested CPU. If CPU requests are missing, utilization-based scaling may not behave as expected. Set meaningful requests and validate the target under realistic traffic."),
+      section("HPA Manifest", "The autoscaler targets a scalable resource and defines minimum and maximum replicas plus metric targets. Configure scale behavior to reduce oscillation and avoid excessive rapid scale changes.", "apiVersion: autoscaling/v2\nkind: HorizontalPodAutoscaler\nmetadata:\n  name: payment-api\n  namespace: production\nspec:\n  scaleTargetRef:\n    apiVersion: apps/v1\n    kind: Deployment\n    name: payment-api\n  minReplicas: 2\n  maxReplicas: 10\n  metrics:\n  - type: Resource\n    resource:\n      name: cpu\n      target:\n        type: Utilization\n        averageUtilization: 65"),
+      section("HPA Observation", "Inspect current metrics, desired replicas, minimum and maximum limits, and HPA events. If desired replicas increase but Pods remain Pending, investigate node capacity and cluster autoscaling.", "kubectl get hpa -n production\nkubectl describe hpa payment-api -n production\nkubectl top pods -n production\nkubectl get deployment payment-api -n production"),
+      section("Scaling Interaction", "HPA changes workload replica count. Cluster autoscaling may add nodes when those replicas cannot fit. These systems have different inputs and delays, so test end-to-end scaling from incoming load to available application capacity."),
+      section("Production Autoscaling Practices", "Use realistic resource requests, suitable metric targets, scale stabilization, adequate minimum replicas, and load testing. Monitor scale events and downstream capacity such as database connections, queue throughput, and external API quotas.")
+    ],
+    exercise: "Configure an HPA for a test Deployment. Generate controlled CPU load, observe replica changes, and explain what happens when the desired replicas exceed available worker capacity."
+  },
 
-  "10|Rolling Updates and Rollbacks": makeLesson(
-    "Rolling updates replace old application pods with new pods gradually. Rollbacks restore a previous Deployment revision when the new release causes failures.",
-    "Controlled releases reduce downtime and provide a recovery path when a new payment-service version fails health checks or introduces unexpected behavior.",
-    "Deployment rollout strategy controls maxSurge and maxUnavailable. Kubernetes creates pods from the new ReplicaSet, waits for readiness, and scales down old replicas as the rollout progresses.",
-    ["Publish a new immutable application image.", "Update the Deployment image reference.", "Monitor rollout status and available replicas.", "Run smoke tests against the updated application.", "Rollback if health or business checks fail.", "Record release and rollback evidence."],
-    "Version 1.4.1 of payment-service is deployed gradually. If readiness checks fail, the operator restores the last healthy Deployment revision.",
-    ["kubectl rollout status deployment/payment-service", "kubectl rollout history deployment/payment-service", "kubectl set image deployment/payment-service payment-service=123456789012.dkr.ecr.ap-south-1.amazonaws.com/payment-service:1.4.1", "kubectl rollout undo deployment/payment-service", "kubectl rollout status deployment/payment-service"],
-    "Use a rollingUpdate strategy with deliberate maxSurge and maxUnavailable values. Keep enough capacity for temporary overlap and use readiness probes to prevent premature traffic routing.",
-    ["Rollout remains stuck.", "New pods fail readiness checks.", "Insufficient cluster capacity prevents surge pods.", "Rollback does not restore an external database schema change."],
-    ["Inspect rollout status and Deployment conditions.", "Check new pod events and logs.", "Verify capacity and image availability.", "Rollback the application revision and separately handle incompatible data changes."],
-    ["Use backward-compatible database migrations.", "Deploy immutable image references.", "Run smoke tests after rollout.", "Keep a tested rollback procedure and release history."],
-    "Release a new payment-service version using a rolling update, detect a failed readiness probe, and perform a rollback."
-  ),
+  "Rolling Updates and Rollbacks": {
+    title: "Rolling Updates and Rollbacks",
+    description: "Release new application versions safely and recover from unhealthy deployments.",
+    sections: [
+      section("Rolling Update Mechanics", "A Deployment creates a new ReplicaSet and gradually shifts replicas from the old version to the new version. Readiness determines whether new Pods are available. Strategy settings control how many Pods can be added or unavailable during the rollout."),
+      section("Release Preconditions", "Validate image availability, configuration compatibility, resource capacity, readiness probes, database migration safety, and rollback compatibility before deployment. A healthy Pod does not guarantee that the application is functionally correct."),
+      section("Controlled Image Update", "Update the Deployment image through a reviewed manifest or controlled patch. Prefer immutable image tags or digests so the release can be identified and reproduced.", "kubectl set image deployment/payment-api payment-api=123456789012.dkr.ecr.ap-south-1.amazonaws.com/payment-api:v2 -n production\nkubectl rollout status deployment/payment-api -n production"),
+      section("Rollout History", "Deployment revision history records changes to the Pod template. Inspect history and the relevant revision before rollback. Revision history is not a replacement for source control or a complete release record.", "kubectl rollout history deployment/payment-api -n production\nkubectl rollout history deployment/payment-api --revision=2 -n production"),
+      section("Rollback Procedure", "Rollback restores a previous Deployment revision. Verify that the previous image and configuration remain available and that database changes are backward compatible. After rollback, verify Pod readiness and application behavior.", "kubectl rollout undo deployment/payment-api -n production\nkubectl rollout status deployment/payment-api -n production\nkubectl get pods -n production -l app=payment-api"),
+      section("Paused and Failed Rollouts", "A rollout can stall because new Pods fail readiness, cannot pull images, lack resources, or fail admission policies. Inspect Deployment conditions, ReplicaSets, Pod events, and application logs before deciding whether to pause, fix forward, or roll back."),
+      section("Production Release Controls", "Use deployment approvals, health checks, progressive traffic shifting, automated smoke tests, and release observability. For critical systems, consider canary or blue-green delivery rather than relying only on a standard rolling update.")
+    ],
+    exercise: "Deploy version one of a sample application, update it to a deliberately unhealthy test version, identify the rollout failure, roll back to the previous revision, and verify the healthy version is restored."
+  },
 
-  "10|EKS Cluster Operations": makeLesson(
-    "EKS cluster operations cover day-to-day management of cluster access, node groups, add-ons, upgrades, scaling, logging, and operational health.",
-    "A production EKS cluster needs routine maintenance and controlled changes to remain secure, available, and compatible with Kubernetes workloads.",
-    "Operators use the AWS EKS API for cluster and node-group management and Kubernetes APIs for workloads. Managed add-ons provide components such as VPC CNI, CoreDNS, and kube-proxy.",
-    ["Inspect cluster and node-group status.", "Verify Kubernetes version and add-on versions.", "Review node capacity and cluster events.", "Check control-plane logging and access.", "Plan add-on and Kubernetes upgrades.", "Validate workloads after each change."],
-    "Before upgrading the payment-service production cluster, the team reviews deprecated APIs, node-group compatibility, add-on versions, and workload disruption requirements.",
-    ["aws eks list-clusters --region ap-south-1", "aws eks describe-cluster --name devmavox-eks --region ap-south-1", "aws eks list-nodegroups --cluster-name devmavox-eks --region ap-south-1", "aws eks list-addons --cluster-name devmavox-eks --region ap-south-1", "kubectl get nodes", "kubectl get pods -A"],
-    "Use a maintenance plan for cluster version upgrades, add-on upgrades, node AMI replacement, access changes, and backup verification. Follow the supported EKS version and add-on compatibility guidance.",
-    ["Node group update fails.", "Add-on becomes degraded after upgrade.", "Cluster access is lost after IAM changes.", "Workloads become unavailable during node replacement."],
-    ["Inspect EKS cluster and node-group update status.", "Check add-on health and Kubernetes events.", "Verify IAM access entries and kubeconfig.", "Use a controlled node replacement strategy and validate application availability."],
-    ["Automate repeatable infrastructure changes.", "Maintain a cluster inventory and upgrade calendar.", "Test upgrades in a non-production cluster.", "Monitor workloads throughout maintenance."],
-    "Prepare an EKS maintenance checklist covering cluster version, node groups, add-ons, IAM access, workload health, and post-upgrade verification."
-  ),
+  "EKS Cluster Operations": {
+    title: "EKS Cluster Operations",
+    description: "Manage EKS cluster access, versions, node groups, add-ons, upgrades, and operational readiness.",
+    sections: [
+      section("Cluster Context and Account Safety", "Before any operation, verify AWS account identity, region, cluster name, and kubectl context. A correct command against the wrong production account can cause a serious incident.", "aws sts get-caller-identity\naws configure list\nkubectl config current-context\naws eks list-clusters --region ap-south-1"),
+      section("Cluster Version Lifecycle", "EKS Kubernetes versions have support lifecycles. Plan upgrades by checking version skew, deprecated APIs, add-on compatibility, workload disruption, and node AMI support. Do not upgrade production without a tested compatibility plan."),
+      section("Managed Add-ons", "EKS add-ons such as VPC CNI, CoreDNS, and kube-proxy have version compatibility requirements. Review recommended versions and configuration overrides before updating. Validate networking and DNS after an add-on change."),
+      section("Node Group Updates", "Managed node-group updates replace or update worker instances according to update settings. Review PodDisruptionBudgets, spare capacity, node selectors, and stateful storage behavior before beginning an update.", "aws eks describe-nodegroup --cluster-name production-eks --nodegroup-name general-workers --region ap-south-1\naws eks update-nodegroup-version --cluster-name production-eks --nodegroup-name general-workers --region ap-south-1"),
+      section("Access and Endpoint Operations", "Review public and private endpoint access, allowed CIDRs, IAM identities, access entries, and RBAC. For private endpoint access, ensure operator networks have correct routing and DNS resolution."),
+      section("Cluster Health Checks", "Review node readiness, system Pods, workload availability, events, API connectivity, and AWS resource status. Monitor subnet IP capacity, node utilization, failed scheduling, and storage provisioning.", "kubectl get nodes\nkubectl get pods -A\nkubectl get events -A --sort-by=.metadata.creationTimestamp\nkubectl get pvc -A"),
+      section("Upgrade and Change Runbook", "Use a staged process: review release notes, test in non-production, back up manifests and critical data, validate add-ons, upgrade control plane, update node groups, verify workloads, and retain a recovery plan. EKS control-plane upgrades are not a substitute for application-level validation.")
+    ],
+    exercise: "Prepare an EKS upgrade runbook for a test cluster. Record the current version, add-on versions, node groups, deprecated API checks, PodDisruptionBudgets, and post-upgrade validation commands."
+  },
 
-  "10|Troubleshooting": makeLesson(
-    "Kubernetes troubleshooting is a structured process for locating failures across API access, scheduling, containers, networking, storage, identity, and application health.",
-    "A pod status alone rarely explains the complete problem. Engineers must combine resource descriptions, events, logs, metrics, and dependency checks to find the actual root cause.",
-    "Start at the affected workload and follow its dependencies: Deployment, ReplicaSet, Pod, Node, Service, Ingress, ConfigMap, Secret, PVC, and external AWS resources. Use timestamps to correlate events and logs.",
-    ["Identify the affected namespace and workload.", "Check Deployment and pod status.", "Describe unhealthy pods and read events.", "Inspect current and previous container logs.", "Verify Service endpoints and DNS.", "Check node capacity, storage, IAM, and network dependencies.", "Apply the smallest safe recovery action and verify."],
-    "A payment-service rollout reports unavailable replicas. The engineer discovers ImagePullBackOff, checks the ECR image URI and node permissions, corrects the image access issue, and confirms the rollout completes.",
-    ["kubectl get deployments,pods,services -n payments", "kubectl describe pod POD_NAME -n payments", "kubectl logs POD_NAME -n payments", "kubectl logs POD_NAME -n payments --previous", "kubectl get events -n payments --sort-by=.metadata.creationTimestamp", "kubectl get nodes", "kubectl get endpointslices -n payments", "kubectl top pods -n payments"],
-    "Collect evidence before changing resources. Avoid deleting pods, nodes, or persistent volume claims without understanding the controller, disruption, and data implications.",
-    ["Pending: inspect scheduling events and resource requests.", "CrashLoopBackOff: inspect current and previous logs and probe configuration.", "ImagePullBackOff: verify image reference, ECR permissions, and network access.", "Service unreachable: inspect selectors, endpoints, DNS, and network rules.", "PVC Pending: inspect StorageClass and CSI events.", "Node NotReady: inspect node conditions and infrastructure health."],
-    ["Identify the failing layer using events and logs.", "Correct the specific configuration or permission.", "Use rollout restart only when appropriate.", "Rollback a bad release when service health is affected.", "Verify pod readiness, endpoint registration, and application behavior after recovery."],
-    ["Follow evidence before assumptions.", "Use read-only commands first.", "Preserve logs and timestamps for incident review.", "Avoid broad permissions and destructive fixes.", "Document root cause and preventive action."],
-    "Troubleshoot a payment-service incident with Pending pods, failed image pulls, and missing Service endpoints. Document evidence, root cause, recovery, and prevention."
-  ),
+  "Troubleshooting": {
+    title: "Troubleshooting",
+    description: "Use a structured diagnostic process for Kubernetes and EKS failures instead of making random configuration changes.",
+    sections: [
+      section("Start with Scope and Impact", "Identify affected applications, namespaces, nodes, Availability Zones, and customer impact. Determine whether the issue began after a deployment, node update, configuration change, or infrastructure event. Preserve timestamps and evidence."),
+      section("Pending Pods", "Inspect scheduling events, resource requests, node taints, affinity, quota, PVC binding, and subnet IP capacity. Do not immediately increase node count until the actual scheduling constraint is understood.", "kubectl get pods -A --field-selector=status.phase=Pending\nkubectl describe pod <pod-name> -n <namespace>\nkubectl get events -A --sort-by=.metadata.creationTimestamp"),
+      section("CrashLoopBackOff and ImagePullBackOff", "CrashLoopBackOff usually indicates repeated container termination. Inspect current and previous logs, exit code, probes, configuration, and resource limits. ImagePullBackOff requires checking image name, tag, registry authentication, network access, and pull permissions.", "kubectl logs <pod-name> -n <namespace> --previous\nkubectl describe pod <pod-name> -n <namespace>\nkubectl get pod <pod-name> -n <namespace> -o jsonpath='{.status.containerStatuses[*].state}'"),
+      section("Service and Ingress Failures", "Check Service selectors, EndpointSlices, Pod readiness, target ports, DNS, Ingress controller health, load balancer target health, security groups, and routing. Test each network hop independently."),
+      section("Node and CNI Failures", "NotReady nodes, failed Pod sandbox creation, and IP allocation errors may indicate kubelet, runtime, CNI, subnet, ENI, or node pressure problems. Compare affected nodes and inspect system DaemonSets."),
+      section("Storage Failures", "PVC Pending, mount errors, and volume attachment conflicts require checking StorageClass, CSI controller and node Pods, topology, access mode, and underlying storage state. Avoid deleting claims or volumes during investigation."),
+      section("Recovery and Verification", "Apply the smallest safe corrective change, monitor recovery, and verify user-facing functionality. Capture before-and-after evidence and record the root cause, contributing conditions, and preventive actions.")
+    ],
+    exercise: "Use a non-production cluster to investigate three controlled failures: an unschedulable Pod, an incorrect Service selector, and a failing readiness probe. For each, record symptoms, evidence, root cause, fix, and verification."
+  },
 
-  "10|Production Hands-on Lab": makeLesson(
-    "This lab deploys a production-style Spring Boot payment service on Amazon EKS using ECR images, Kubernetes Deployments, Services, configuration, probes, resource limits, and autoscaling.",
-    "The lab connects the earlier CI/CD stages into a real deployment workflow: a tested image is published to ECR and then deployed to a Kubernetes cluster with health and availability controls.",
-    "Jenkins publishes an immutable image to ECR. EKS worker nodes pull it using IAM permissions. Kubernetes Deployments maintain replicas, Services provide stable access, probes control readiness, and HPA adjusts capacity based on metrics.",
-    ["Confirm the EKS cluster and worker nodes are healthy.", "Verify the payment-service image exists in ECR.", "Configure namespace, ConfigMap, and Secret references.", "Create Deployment with resource requests and health probes.", "Create an internal Service and external routing where required.", "Verify pod readiness and application connectivity.", "Configure HPA and observe scaling.", "Perform a rolling update and validate rollback readiness."],
-    "Jenkins builds payment-service, publishes image git-a82f91c to ECR, and updates the EKS Deployment. Three healthy replicas serve traffic through a Service, while monitoring confirms application health.",
-    ["aws eks update-kubeconfig --region ap-south-1 --name devmavox-eks", "kubectl get nodes -o wide", "kubectl create namespace payments", "kubectl apply -f payment-config.yaml", "kubectl apply -f payment-secret-reference.yaml", "kubectl apply -f payment-deployment.yaml", "kubectl apply -f payment-service.yaml", "kubectl rollout status deployment/payment-service -n payments", "kubectl get pods,svc -n payments", "kubectl describe hpa payment-service -n payments"],
-    "Replace sample account IDs, regions, cluster names, image tags, and resource values. Store real credentials in an approved secret manager. Confirm ECR pull access, VPC CNI capacity, subnet routing, and load-balancer controller requirements before exposing traffic.",
-    ["EKS API endpoint is unreachable.", "Worker nodes are NotReady.", "ImagePullBackOff prevents pod startup.", "Readiness probes prevent traffic routing.", "Service has no endpoints.", "HPA cannot read metrics.", "PVC remains Pending.", "Ingress or load balancer targets are unhealthy."],
-    ["Verify AWS identity, kubeconfig, and endpoint access.", "Check node-group health and node conditions.", "Correct ECR repository permissions and image reference.", "Fix health endpoints and probe thresholds.", "Match Service selectors with ready pod labels.", "Repair metrics or storage add-on configuration.", "Inspect load balancer controller events and target health."],
-    ["Use immutable image tags or digests.", "Set requests, limits, and health probes.", "Use RBAC and managed secrets.", "Keep workloads distributed across available nodes.", "Test rollouts and rollback procedures.", "Monitor logs, metrics, events, and service-level indicators.", "Document deployment and recovery steps."],
-    "Deploy the payment-service image from ECR to EKS, expose it through a Service, verify all replicas are healthy, test a rolling update, and document how to recover from an image pull or readiness failure."
-  ),
+  "Production Hands-on Lab": {
+    title: "Production Hands-on Lab",
+    description: "Build a production-style EKS application deployment with secure configuration, networking, storage, scaling, and operational validation.",
+    sections: [
+      section("Lab Architecture and Prerequisites", "Build a test environment with an EKS cluster, worker capacity across Availability Zones, an application image in ECR, a namespace, and a deployment pipeline. Use a non-production AWS account and budget controls."),
+      section("Namespace and Workload Identity", "Create a dedicated application namespace and ServiceAccount. Apply least-privilege RBAC and workload IAM permissions where required. Keep application identity separate from human operator access."),
+      section("Application Deployment", "Deploy the application with multiple replicas, immutable image reference, resource requests and limits, readiness and liveness probes, and a controlled rolling update strategy. Store manifests in version control."),
+      section("Configuration and Secrets", "Create non-sensitive configuration using ConfigMaps. Use a secure secret-management method for credentials. Validate that sensitive values are not committed to Git, printed in build logs, or exposed through unnecessary environment inspection."),
+      section("Service and External Access", "Expose the application internally with a ClusterIP Service. If external access is required, configure an Ingress through the AWS Load Balancer Controller with appropriate scheme, security controls, DNS, and TLS."),
+      section("Storage and Persistence", "If the application needs persistent data, configure an EBS CSI-backed PVC with suitable access mode and StorageClass. Validate data persistence across Pod recreation and document backup and restore requirements."),
+      section("Autoscaling and Resilience", "Configure an HPA using a supported metric, validate node capacity, and test Pod replacement. Consider PodDisruptionBudgets and topology spread to reduce the impact of voluntary disruptions and node failures."),
+      section("Observability and Incident Validation", "Collect application logs, Kubernetes events, node metrics, and relevant EKS control-plane logs. Create alerts for unavailable replicas, repeated restarts, resource pressure, and failed scheduling."),
+      section("Release, Rollback, and Evidence", "Deploy a new application version, verify rollout health, introduce a controlled test failure, and perform a rollback. Capture commands, manifests, events, and validation results as a repeatable operational runbook."),
+      section("Production Readiness Review", "Review IAM, RBAC, network exposure, encryption, image scanning, resource sizing, storage recovery, availability, monitoring, cost, and ownership. A production-ready cluster requires documented operational responsibility, not just successful Pod creation.")
+    ],
+    exercise: "Complete the end-to-end EKS lab: deploy a multi-replica application from ECR, configure RBAC and secure configuration, expose it through a Service and optional Ingress, add probes and resource controls, configure HPA, test Pod recovery, perform a rolling update and rollback, and submit a production-readiness report."
+  }
 };

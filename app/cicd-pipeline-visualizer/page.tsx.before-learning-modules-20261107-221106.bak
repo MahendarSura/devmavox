@@ -1,0 +1,1111 @@
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
+
+type Topic = {
+  title: string;
+  overview: string;
+  purpose: string;
+  architecture: string;
+  workflow: string[];
+  example: string;
+  commands: string[];
+  configuration: string;
+  failures: string[];
+  recovery: string[];
+  bestPractices: string[];
+  exercise: string;
+  interview: string[];
+};
+
+type Stage = {
+  id: number;
+  name: string;
+  tool: string;
+  icon: string;
+  summary: string;
+  input: string;
+  output: string;
+  topics: Topic[];
+};
+
+const stages: Stage[] = [
+  {
+    id: 1, name: "Developer Code", tool: "Java / Spring Boot", icon: "💻",
+    summary: "Developer implements and locally validates the payment application.",
+    input: "Payment feature requirements",
+    output: "Application source code",
+    topics: [
+      {
+        title: "Java and Spring Boot Payment Application",
+        overview: "A Spring Boot application exposes REST APIs that handle payment requests. The developer writes business logic, validates incoming requests, communicates with payment services and returns a response.",
+        purpose: "A structured application separates API controllers, business services, repositories and configuration. This makes payment processing easier to test, maintain and deploy.",
+        architecture: "Client → PaymentController → PaymentService → PaymentRepository → Database. External payment gateways are integrated through service interfaces.",
+        workflow: ["Create a Spring Boot project.", "Create the payment API controller.", "Implement payment validation in the service layer.", "Add repository and persistence logic.", "Write unit tests.", "Build locally and commit the changes."],
+        example: "A developer adds POST /api/payments. The service validates the amount, creates a payment record and returns a transaction reference. Sensitive card data must never be logged.",
+        commands: ["java -version", "mvn -version", "mvn clean test", "mvn clean package"],
+        configuration: "Typical project structure: src/main/java/com/devmavox/payment/controller, service, repository and model. Environment-specific values belong in application.yml or environment variables, not hard-coded secrets.",
+        failures: ["Java version does not match the project.", "Missing Maven dependencies.", "Unit tests fail.", "Application configuration is missing."],
+        recovery: ["Check java -version and JAVA_HOME.", "Inspect Maven dependency errors.", "Run the failing test individually.", "Validate application.yml and required environment variables."],
+        bestPractices: ["Use feature branches.", "Keep business logic out of controllers.", "Validate payment amounts and request fields.", "Never commit credentials.", "Write unit tests for payment logic."],
+        exercise: "Create a payment endpoint, validate a positive amount, write a unit test and package the application using Maven.",
+        interview: ["Why is Spring Boot used for microservices?", "What is the difference between a controller and a service?", "Why should secrets not be committed to Git?"]
+      },
+      {
+        title: "Project Structure and Dependencies",
+        overview: "A Maven-based Spring Boot project organizes source code, resources, tests and dependencies into predictable directories.",
+        purpose: "Consistent project structure allows developers and CI servers to build the same application reliably.",
+        architecture: "pom.xml defines dependencies and build plugins. src/main contains application code; src/test contains automated tests; target contains generated build output.",
+        workflow: ["Create the Maven project.", "Define groupId, artifactId and version.", "Add Spring Boot dependencies.", "Create source and test packages.", "Validate the dependency tree."],
+        example: "The payment service uses Spring Web for REST endpoints, Spring Data JPA for persistence and JUnit for tests.",
+        commands: ["mvn validate", "mvn dependency:tree", "mvn help:effective-pom", "mvn clean"],
+        configuration: "The pom.xml should define the Java version, Spring Boot parent or BOM, application dependencies and required build plugins.",
+        failures: ["Dependency version conflict.", "Incorrect artifact coordinates.", "Unsupported Java compiler version."],
+        recovery: ["Inspect dependency:tree.", "Correct groupId and artifactId.", "Align the compiler release with the installed JDK."],
+        bestPractices: ["Pin important dependency versions through a BOM.", "Avoid unnecessary dependencies.", "Keep tests in src/test.", "Review dependency changes."],
+        exercise: "Add a Spring Web dependency and inspect the resolved dependency tree.",
+        interview: ["What is a Maven dependency?", "What is the purpose of pom.xml?", "What is the target directory?"]
+      },
+      {
+        title: "Git Feature Branch and Commit",
+        overview: "Git tracks source-code changes. Feature branches isolate work until it is reviewed and merged into the shared integration branch.",
+        purpose: "Branch-based development reduces accidental changes to production-ready code and creates a reviewable history.",
+        architecture: "Developer workstation → Local Git repository → Remote GitHub repository → Pull request.",
+        workflow: ["Update the main branch.", "Create a feature branch.", "Modify payment code.", "Run local tests.", "Commit the changes.", "Push the branch to GitHub."],
+        example: "A developer creates feature/payment-validation, implements validation and pushes the branch for review.",
+        commands: ["git status", "git switch main", "git pull origin main", "git switch -c feature/payment-validation", "git add .", "git commit -m \"Add payment validation\"", "git push -u origin feature/payment-validation"],
+        configuration: "Use .gitignore for target/, IDE metadata, local environment files and generated artifacts. Do not ignore source files or required build configuration.",
+        failures: ["Push rejected because remote contains new commits.", "Wrong branch receives a commit.", "Secrets accidentally staged."],
+        recovery: ["Fetch and rebase or merge remote changes.", "Check git branch before committing.", "Remove secrets from the commit and rotate exposed credentials."],
+        bestPractices: ["Use descriptive commit messages.", "Keep commits focused.", "Review git diff before committing.", "Never commit credentials."],
+        exercise: "Create a feature branch, change one Java file, commit it and push it to a remote repository.",
+        interview: ["What is a Git branch?", "What is the difference between fetch and pull?", "What does git push -u do?"]
+      }
+    ]
+  },
+  {
+    id: 2, name: "Pull Request & Merge", tool: "GitHub", icon: "🔀",
+    summary: "Changes are reviewed, validated and merged into the protected integration branch.",
+    input: "Developer feature branch",
+    output: "Reviewed source code on main",
+    topics: [
+      {
+        title: "Pull Request Lifecycle",
+        overview: "A pull request proposes merging one branch into another. GitHub displays the code changes and coordinates reviews, automated checks and merge decisions.",
+        purpose: "Pull requests provide traceability, peer review and a controlled integration point before CI/CD builds the application.",
+        architecture: "Feature branch → Pull request → Reviewers and status checks → Approved merge → Main branch.",
+        workflow: ["Push the feature branch.", "Open a pull request against main.", "Describe the change and testing.", "Review the diff.", "Resolve comments.", "Wait for required checks.", "Merge using the approved strategy."],
+        example: "A payment validation change requires one reviewer and successful CI status checks before it can enter main.",
+        commands: ["git fetch origin", "git diff origin/main...HEAD", "git status", "git log --oneline --graph --all"],
+        configuration: "Configure repository branch protection or rulesets to require pull requests, reviewer approval and successful status checks.",
+        failures: ["Merge conflict.", "Required review is missing.", "Status check fails.", "Pull request targets the wrong branch."],
+        recovery: ["Update the feature branch with main.", "Resolve conflicts and push again.", "Fix failing checks.", "Correct the base branch before merging."],
+        bestPractices: ["Keep pull requests small.", "Explain business impact.", "Require review for sensitive payment logic.", "Protect main.", "Use meaningful review comments."],
+        exercise: "Open a pull request, request a review, inspect a diff and merge after checks pass.",
+        interview: ["What is a pull request?", "What is branch protection?", "What is the difference between merge and rebase?"]
+      },
+      {
+        title: "Branching Strategy",
+        overview: "A branching strategy defines how teams create, maintain and integrate branches during application development.",
+        purpose: "A consistent strategy prevents conflicting release practices and makes it clear which code is eligible for deployment.",
+        architecture: "main contains releasable code; feature branches contain work; release or hotfix branches can be used when the team's release model requires them.",
+        workflow: ["Agree on branch naming.", "Create a feature branch from the approved base.", "Keep it updated.", "Submit a pull request.", "Merge after required validation.", "Tag releases when appropriate."],
+        example: "feature/payment-refund is merged into main only after payment tests and reviewer approval.",
+        commands: ["git branch --all", "git switch -c feature/payment-refund", "git fetch origin", "git rebase origin/main"],
+        configuration: "Document branch naming, merge strategy, protected branches and release tagging in the repository contribution guide.",
+        failures: ["Long-lived branches diverge.", "Changes are merged into the wrong branch.", "Release tags point to unexpected commits."],
+        recovery: ["Update branches frequently.", "Verify the target branch.", "Inspect commit history before creating release tags."],
+        bestPractices: ["Prefer short-lived feature branches.", "Automate required checks.", "Use protected release branches where needed.", "Document hotfix procedures."],
+        exercise: "Create a feature branch, rebase it on main and inspect the resulting history.",
+        interview: ["What is trunk-based development?", "Why should feature branches be short-lived?", "What is a hotfix branch?"]
+      },
+      {
+        title: "GitHub Webhooks",
+        overview: "A webhook sends an HTTP event notification from GitHub to an external system when configured repository activity occurs.",
+        purpose: "Jenkins can receive a push or pull-request event and start a pipeline without continuously polling GitHub.",
+        architecture: "GitHub event → Webhook HTTP POST → Jenkins endpoint → Event validation → Pipeline trigger.",
+        workflow: ["Configure the webhook endpoint.", "Select required event types.", "Configure a shared secret where supported.", "Send a test event.", "Verify Jenkins receives the event.", "Confirm the intended job starts."],
+        example: "A push to the payment application's main branch triggers the Jenkins pipeline.",
+        commands: ["curl -I https://jenkins.example.com/github-webhook/"],
+        configuration: "Configure the GitHub webhook URL to the Jenkins GitHub webhook endpoint and select only the events required by the pipeline. Protect the endpoint and use HTTPS.",
+        failures: ["Webhook returns HTTP errors.", "Firewall blocks the request.", "Incorrect event types are selected.", "Jenkins receives the event but no job starts."],
+        recovery: ["Inspect GitHub delivery details.", "Check Jenkins endpoint reachability.", "Verify job repository and branch configuration.", "Inspect Jenkins logs and webhook plugin configuration."],
+        bestPractices: ["Use HTTPS.", "Restrict network access appropriately.", "Validate webhook signatures or shared secrets.", "Monitor failed deliveries."],
+        exercise: "Configure a test webhook and verify that a repository push reaches Jenkins.",
+        interview: ["What is a webhook?", "Why use webhooks instead of polling?", "How do you troubleshoot failed webhook delivery?"]
+      }
+    ]
+  },
+  {
+    id: 3, name: "Pipeline Trigger", tool: "Jenkins", icon: "⚙️",
+    summary: "Jenkins receives the repository event and starts the automated pipeline.",
+    input: "Merged GitHub commit",
+    output: "Pipeline execution",
+    topics: [
+      {
+        title: "Jenkins Architecture",
+        overview: "Jenkins is an automation server. Its controller coordinates jobs and agents execute build workloads.",
+        purpose: "It automates repeatable build, test, scan and deployment activities after code changes.",
+        architecture: "GitHub webhook → Jenkins controller → Queue → Jenkins agent → Workspace → Pipeline result.",
+        workflow: ["Install and secure Jenkins.", "Configure agents.", "Install required plugins.", "Connect the repository.", "Create a Pipeline job.", "Run and inspect a build."],
+        example: "The controller schedules a payment-service build on a Linux agent with Java and Maven installed.",
+        commands: ["java -version", "mvn -version", "sudo systemctl status jenkins", "sudo journalctl -u jenkins -n 100"],
+        configuration: "Configure Jenkins controller URL, agent labels, repository credentials and build permissions. Avoid running untrusted build code with controller privileges.",
+        failures: ["Agent is offline.", "Build remains queued.", "Plugin dependency is incompatible.", "Workspace permissions prevent execution."],
+        recovery: ["Reconnect the agent.", "Inspect executor availability.", "Review plugin compatibility.", "Correct workspace ownership and permissions."],
+        bestPractices: ["Use agents for builds.", "Manage credentials securely.", "Back up JENKINS_HOME.", "Keep plugins updated after testing.", "Apply least privilege."],
+        exercise: "Create a Pipeline job and run it on an agent labelled linux.",
+        interview: ["What is a Jenkins controller?", "What is an agent?", "What is an executor?"]
+      },
+      {
+        title: "Jenkinsfile and Declarative Pipeline",
+        overview: "A Jenkinsfile stores pipeline-as-code in the source repository. Declarative Pipeline defines stages, agents, options and post-build behavior.",
+        purpose: "Pipeline-as-code provides reviewability, version control and repeatable CI execution.",
+        architecture: "Jenkins job → Jenkinsfile checkout → Declarative stages → Agent execution → Reports and artifacts.",
+        workflow: ["Create Jenkinsfile in repository root.", "Select an agent.", "Define stages.", "Add environment and credentials safely.", "Add post actions.", "Commit and run."],
+        example: "The payment pipeline checks out source, runs Maven tests, scans code, builds an image and deploys to a test cluster.",
+        commands: ["git checkout main", "git ls-files Jenkinsfile", "mvn clean verify"],
+        configuration: "pipeline { agent any; stages { stage('Build') { steps { sh 'mvn clean package' } } } }",
+        failures: ["Jenkinsfile syntax error.", "Wrong agent label.", "Missing credentials binding.", "Shell command exits non-zero."],
+        recovery: ["Use Pipeline syntax validation.", "Check agent labels.", "Create the required credential ID.", "Read console output and fix the failing command."],
+        bestPractices: ["Keep Jenkinsfile in source control.", "Use shared libraries for reusable logic.", "Use credential IDs rather than hard-coded secrets.", "Archive useful reports."],
+        exercise: "Create a Jenkinsfile with Checkout, Build and Test stages.",
+        interview: ["What is a Jenkinsfile?", "Declarative versus Scripted Pipeline?", "What does post always do?"]
+      },
+      {
+        title: "Jenkins Credentials and Agents",
+        overview: "Jenkins credentials store sensitive values centrally. Agents provide isolated execution environments for pipeline steps.",
+        purpose: "Secure credential handling and agent separation reduce exposure and improve build scalability.",
+        architecture: "Credential store → Credential ID binding → Pipeline step. Controller → Agent connection → Workspace and executor.",
+        workflow: ["Create a credential with a clear ID.", "Restrict access to trusted jobs.", "Configure an agent label.", "Bind credentials only where needed.", "Run a test build."],
+        example: "A deployment stage uses a scoped registry credential to authenticate to Amazon ECR.",
+        commands: ["sudo systemctl status jenkins", "sudo journalctl -u jenkins -f"],
+        configuration: "Use withCredentials in a limited scope. Configure agent labels such as linux, java17 or docker where appropriate.",
+        failures: ["Credential ID not found.", "Agent disconnected.", "Agent lacks Docker access.", "Secret appears in console output."],
+        recovery: ["Verify credential ID and scope.", "Reconnect the agent.", "Configure required permissions securely.", "Rotate exposed secrets and mask sensitive output."],
+        bestPractices: ["Use least-privilege credentials.", "Never print secrets.", "Use ephemeral agents where practical.", "Separate build and deployment permissions."],
+        exercise: "Create a scoped credential and use it in a test pipeline without printing its value.",
+        interview: ["How does Jenkins store credentials?", "Why use agents?", "What is an agent label?"]
+      }
+    ]
+  },
+  {
+    id: 4, name: "Maven Build", tool: "Apache Maven", icon: "📦",
+    summary: "Maven resolves dependencies, compiles Java code and packages the application.",
+    input: "Java source code",
+    output: "Versioned JAR artifact",
+    topics: [
+      {
+        title: "Maven Lifecycle",
+        overview: "Maven provides standard build lifecycles. The package phase compiles and tests the project before creating the configured package.",
+        purpose: "A standard lifecycle makes local and CI builds consistent and repeatable.",
+        architecture: "pom.xml → Dependency resolution → Resources → Compile → Test → Package → target artifact.",
+        workflow: ["Validate the POM.", "Resolve dependencies.", "Compile source code.", "Run tests.", "Package the JAR.", "Archive the artifact in Jenkins."],
+        example: "Jenkins runs mvn clean verify and archives target/payment-service-1.0.0.jar.",
+        commands: ["mvn validate", "mvn clean compile", "mvn test", "mvn package", "mvn clean verify"],
+        configuration: "Set groupId, artifactId, version, Java compiler release and build plugins in pom.xml. Keep dependency versions controlled.",
+        failures: ["Dependency cannot be downloaded.", "Compilation error.", "Test failure.", "Incorrect JAR name or missing artifact."],
+        recovery: ["Check repository access and proxy settings.", "Fix compilation errors.", "Inspect Surefire reports.", "Check finalName and packaging configuration."],
+        bestPractices: ["Use reproducible dependency versions.", "Run verify in CI.", "Cache Maven dependencies carefully.", "Archive build outputs with commit metadata."],
+        exercise: "Build a JAR using Maven and verify its presence in the target directory.",
+        interview: ["What is the Maven lifecycle?", "What is the difference between package and install?", "What is a SNAPSHOT version?"]
+      },
+      {
+        title: "pom.xml and Dependency Management",
+        overview: "pom.xml describes the Maven project, its dependencies, plugins and build configuration.",
+        purpose: "Central dependency management prevents inconsistent library versions across developer and CI environments.",
+        architecture: "Project POM → Parent or BOM → Direct dependencies → Transitive dependencies → Maven repository.",
+        workflow: ["Declare project coordinates.", "Import or inherit dependency management.", "Add required dependencies.", "Inspect transitive dependencies.", "Build and test."],
+        example: "The payment service uses Spring Boot dependency management so compatible Spring libraries are selected together.",
+        commands: ["mvn help:effective-pom", "mvn dependency:tree", "mvn dependency:analyze"],
+        configuration: "Use dependencyManagement for centrally controlled versions. Add dependencies only when the application requires them.",
+        failures: ["Version convergence problems.", "Artifact not found.", "Repository authentication failure."],
+        recovery: ["Inspect dependency tree.", "Correct repository configuration.", "Verify artifact coordinates and credentials."],
+        bestPractices: ["Use a BOM where appropriate.", "Avoid dynamic versions.", "Review transitive dependencies.", "Keep repository credentials outside source control."],
+        exercise: "Inspect the dependency tree and identify one transitive dependency.",
+        interview: ["What is a transitive dependency?", "What is dependencyManagement?", "What is the effective POM?"]
+      },
+      {
+        title: "JAR Artifact and Build Reports",
+        overview: "A JAR is a packaged Java application or library. Build reports provide evidence about tests and build execution.",
+        purpose: "The pipeline needs a known build output that later stages can scan, package and deploy.",
+        architecture: "Maven package → target/*.jar → Jenkins archive → Docker build context.",
+        workflow: ["Run the Maven package phase.", "Check the target directory.", "Inspect the JAR metadata.", "Archive the exact artifact.", "Pass the artifact to the image build."],
+        example: "The Docker build consumes payment-service-1.0.0.jar produced by the successful Maven build.",
+        commands: ["ls -lh target/*.jar", "jar tf target/payment-service-1.0.0.jar", "sha256sum target/*.jar"],
+        configuration: "Configure Jenkins archiveArtifacts with the exact JAR pattern and fingerprint artifacts when traceability is required.",
+        failures: ["No JAR generated.", "Wrong artifact version selected.", "Old artifact reused from workspace."],
+        recovery: ["Check Maven package result.", "Verify POM version and artifact path.", "Clean the workspace or use isolated build directories."],
+        bestPractices: ["Use immutable artifact names.", "Record checksums.", "Do not rebuild different binaries for later environments.", "Retain build metadata."],
+        exercise: "Build a JAR, calculate its SHA-256 checksum and archive it in Jenkins.",
+        interview: ["What is a JAR?", "Why archive CI artifacts?", "Why should the same artifact move between environments?"]
+      }
+    ]
+  },
+  {
+    id: 5, name: "Automated Tests", tool: "JUnit / Integration Tests", icon: "🧪",
+    summary: "Automated tests verify payment application behavior before release.",
+    input: "Compiled application",
+    output: "Test reports and test result",
+    topics: [
+      {
+        title: "JUnit Unit Testing",
+        overview: "Unit tests validate small pieces of application behavior independently, commonly at the service or utility layer.",
+        purpose: "They detect regressions early and provide fast feedback before packaging and deployment.",
+        architecture: "JUnit test → PaymentService → Mock dependencies → Assertions → Test report.",
+        workflow: ["Identify business rules.", "Create test cases.", "Mock external dependencies.", "Execute tests.", "Review reports.", "Fix failures before continuing."],
+        example: "A unit test verifies that a negative payment amount is rejected and no payment record is created.",
+        commands: ["mvn -Dtest=PaymentServiceTest test", "mvn test", "mvn clean verify"],
+        configuration: "Use JUnit Jupiter and suitable mocking libraries. Keep test classes under src/test/java.",
+        failures: ["Assertion failure.", "Mock setup is incorrect.", "Test is flaky.", "Test is skipped unexpectedly."],
+        recovery: ["Inspect assertion details.", "Correct test setup.", "Remove timing dependencies.", "Review Surefire configuration."],
+        bestPractices: ["Test success and failure paths.", "Keep tests isolated.", "Avoid dependence on production services.", "Use descriptive test names."],
+        exercise: "Write unit tests for valid amount, zero amount and negative amount payment requests.",
+        interview: ["What is unit testing?", "What is a mock?", "What is an assertion?"]
+      },
+      {
+        title: "Integration Testing",
+        overview: "Integration tests verify that multiple application components work together, such as REST endpoints, persistence and service integration.",
+        purpose: "They catch configuration and integration problems that isolated unit tests cannot detect.",
+        architecture: "HTTP request → Spring application context → Service → Test database or container → Response assertion.",
+        workflow: ["Start the test context.", "Configure test dependencies.", "Send a request.", "Validate response and persistence.", "Clean test data.", "Publish results."],
+        example: "A payment API integration test submits a payment and verifies the stored transaction status.",
+        commands: ["mvn -Dtest=PaymentControllerIT test", "mvn verify"],
+        configuration: "Use a dedicated test profile and isolated database. Never point integration tests at production data.",
+        failures: ["Database connection refused.", "Port conflict.", "Test data collision.", "Application context fails to start."],
+        recovery: ["Verify test database availability.", "Use dynamic ports where suitable.", "Isolate test data.", "Inspect Spring context startup errors."],
+        bestPractices: ["Use disposable test infrastructure.", "Avoid shared mutable test data.", "Separate unit and integration test reports.", "Clean up resources."],
+        exercise: "Create an integration test that calls the payment endpoint and checks its response.",
+        interview: ["Unit test versus integration test?", "What is a test profile?", "Why isolate test data?"]
+      },
+      {
+        title: "Test Reports and Coverage",
+        overview: "Test reports show passed, failed and skipped tests. Coverage estimates which code paths were exercised by tests.",
+        purpose: "Reports make quality evidence visible to developers and release reviewers.",
+        architecture: "Test execution → JUnit XML → Jenkins test report → Coverage report → Quality decision.",
+        workflow: ["Run tests.", "Generate JUnit XML.", "Publish test results.", "Generate coverage.", "Review failures and uncovered code.", "Correct problems."],
+        example: "Jenkins publishes Surefire test results and JaCoCo coverage for the payment service.",
+        commands: ["mvn test", "mvn jacoco:report", "mvn clean verify"],
+        configuration: "Configure Jenkins junit for the generated XML report path and publish coverage reports using the project's configured coverage plugin.",
+        failures: ["No report files found.", "Coverage report is missing.", "Tests pass locally but fail in CI."],
+        recovery: ["Check report paths.", "Verify plugin execution.", "Compare Java and environment versions.", "Inspect CI test logs."],
+        bestPractices: ["Treat test failures as pipeline failures.", "Use coverage as evidence, not the only quality measure.", "Review skipped tests.", "Keep reports accessible."],
+        exercise: "Publish a JUnit report in Jenkins and inspect a failed test.",
+        interview: ["What is code coverage?", "What is JaCoCo?", "How does Jenkins publish JUnit reports?"]
+      }
+    ]
+  },
+  {
+    id: 6, name: "Quality Gate", tool: "SonarQube", icon: "🔍",
+    summary: "Static analysis checks bugs, vulnerabilities, code smells and quality conditions.",
+    input: "Source code and test reports",
+    output: "Quality gate decision",
+    topics: [
+      {
+        title: "SonarQube Static Code Analysis",
+        overview: "SonarQube analyzes source code and reports maintainability issues, reliability problems, security findings and other quality measures.",
+        purpose: "It provides automated code-quality feedback before an application is promoted toward release.",
+        architecture: "Jenkins scanner → SonarQube server → Analysis processing → Project dashboard → Quality gate.",
+        workflow: ["Configure the project key.", "Provide scanner configuration.", "Run analysis.", "Wait for processing.", "Review issues.", "Evaluate the quality gate."],
+        example: "The payment service is analyzed after tests, and new critical reliability issues prevent promotion.",
+        commands: ["mvn sonar:sonar -Dsonar.projectKey=payment-service", "mvn clean verify"],
+        configuration: "Configure the SonarQube server URL and provide the analysis token through Jenkins credentials. Define project key and source settings.",
+        failures: ["Scanner cannot reach server.", "Authentication fails.", "Analysis reports no source files.", "Quality gate fails."],
+        recovery: ["Check server connectivity.", "Verify token permissions.", "Correct source paths.", "Review gate conditions and fix reported issues."],
+        bestPractices: ["Protect analysis tokens.", "Use consistent project keys.", "Focus on new-code quality.", "Review security findings with developers."],
+        exercise: "Run SonarQube analysis and inspect one bug, one code smell and the quality gate result.",
+        interview: ["What is static code analysis?", "What is a quality gate?", "What is a code smell?"]
+      },
+      {
+        title: "Quality Profiles and Quality Gates",
+        overview: "Quality profiles define active analysis rules. Quality gates evaluate project metrics against release conditions.",
+        purpose: "They make quality expectations consistent and enforceable across teams.",
+        architecture: "Language rules → Quality profile → Project analysis → Gate conditions → Pass or fail.",
+        workflow: ["Choose language profile.", "Review active rules.", "Define gate conditions.", "Associate the gate with the project.", "Run analysis.", "Review gate status."],
+        example: "A payment project requires no new blocker issues and enforces agreed coverage and duplication conditions.",
+        commands: ["mvn sonar:sonar -Dsonar.projectKey=payment-service"],
+        configuration: "Manage profiles and gates in SonarQube. Select thresholds based on the team's engineering policy rather than copying arbitrary values.",
+        failures: ["Wrong quality profile assigned.", "Gate threshold is unrealistic.", "New issue violates a required condition."],
+        recovery: ["Verify project profile assignment.", "Review gate conditions.", "Fix the underlying issue and rerun analysis."],
+        bestPractices: ["Keep gates meaningful.", "Review rule changes.", "Apply consistent policies.", "Avoid weakening gates just to make builds pass."],
+        exercise: "Inspect a project's quality gate and identify which condition caused a failure.",
+        interview: ["Quality profile versus quality gate?", "What is new-code analysis?", "How do you enforce a quality gate in Jenkins?"]
+      },
+      {
+        title: "Jenkins Quality Gate Integration",
+        overview: "Jenkins can wait for SonarQube's analysis result and stop the pipeline when the configured quality gate fails.",
+        purpose: "A successful scanner upload alone does not prove the project passed its quality policy.",
+        architecture: "Jenkins scanner step → SonarQube compute engine → Webhook callback → waitForQualityGate → Continue or fail.",
+        workflow: ["Configure SonarQube server in Jenkins.", "Set webhook to Jenkins.", "Run scanner analysis.", "Wait for gate result.", "Abort on failure.", "Continue only when accepted."],
+        example: "A payment service build cannot proceed to Docker image creation until SonarQube reports an acceptable gate.",
+        commands: ["mvn sonar:sonar -Dsonar.projectKey=payment-service"],
+        configuration: "Use Jenkins withSonarQubeEnv and waitForQualityGate in the Jenkinsfile. Configure the SonarQube webhook to the Jenkins webhook endpoint.",
+        failures: ["Webhook is not delivered.", "Pipeline waits indefinitely.", "Gate status is ERROR or failed."],
+        recovery: ["Inspect webhook delivery.", "Check Jenkins and SonarQube logs.", "Verify project analysis ID and server configuration.", "Fix gate findings."],
+        bestPractices: ["Use a timeout around gate waiting.", "Fail closed when policy cannot be evaluated.", "Keep tokens in credentials.", "Make gate results visible."],
+        exercise: "Add a quality gate wait step to a test Jenkins pipeline.",
+        interview: ["Why is waitForQualityGate used?", "What happens when the gate fails?", "Why is a webhook required?"]
+      }
+    ]
+  },
+  {
+    id: 7, name: "Security Scanning", tool: "Trivy / Dependency Scanning", icon: "🛡️",
+    summary: "Dependencies, source configuration and container risks are checked before image publication.",
+    input: "Application dependencies and source",
+    output: "Security scan decision",
+    topics: [
+      {
+        title: "Dependency Vulnerability Scanning",
+        overview: "Dependency scanning identifies known vulnerabilities in third-party libraries used by the payment application.",
+        purpose: "An application can contain vulnerable libraries even when its own source code has no obvious security issue.",
+        architecture: "pom.xml and dependency tree → Scanner database → CVE matching → Severity report → Policy decision.",
+        workflow: ["Resolve dependencies.", "Run the dependency scanner.", "Review CVEs.", "Identify affected versions.", "Upgrade or mitigate.", "Repeat the scan."],
+        example: "A vulnerable logging dependency is detected in the payment service and upgraded to a supported fixed version.",
+        commands: ["mvn dependency:tree", "mvn versions:display-dependency-updates"],
+        configuration: "Use a dependency scanner such as OWASP Dependency-Check or an approved software composition analysis tool. Define severity thresholds in organizational policy.",
+        failures: ["Scanner database is unavailable.", "False positive finding.", "No report generated.", "Critical CVE is detected."],
+        recovery: ["Check scanner database connectivity.", "Validate affected dependency versions.", "Document reviewed false positives.", "Upgrade or remove vulnerable dependencies."],
+        bestPractices: ["Scan every build.", "Prioritize exploitable critical findings.", "Track exceptions with expiry.", "Keep dependency inventories."],
+        exercise: "Inspect the payment application's dependency tree and document one vulnerable or outdated dependency.",
+        interview: ["What is a CVE?", "What is SCA?", "How do transitive dependencies create risk?"]
+      },
+      {
+        title: "Trivy Filesystem and Image Scanning",
+        overview: "Trivy scans filesystems, dependencies and container images for known vulnerabilities and selected security misconfigurations.",
+        purpose: "Scanning before publication reduces the chance of promoting an image with unacceptable known vulnerabilities.",
+        architecture: "Source and build files → Trivy filesystem scan → Container image → Trivy image scan → Report and policy.",
+        workflow: ["Install or invoke Trivy.", "Scan repository files.", "Build the image in the controlled pipeline.", "Scan the image.", "Review severity and fix availability.", "Block or approve based on policy."],
+        example: "The payment image is scanned before it is pushed to ECR. A critical finding blocks publication until it is resolved or formally accepted.",
+        commands: ["trivy fs --scanners vuln,misconfig .", "trivy image payment-service:1.0.0", "trivy image --severity HIGH,CRITICAL --exit-code 1 payment-service:1.0.0"],
+        configuration: "Use an approved Trivy version and vulnerability database source. Define ignore rules narrowly, with documented owners and expiry dates.",
+        failures: ["Image cannot be found.", "Database download fails.", "Scan exits non-zero.", "Unexpected findings appear after base-image update."],
+        recovery: ["Verify image tag and local registry access.", "Check database connectivity.", "Inspect the report.", "Update affected packages or base image."],
+        bestPractices: ["Scan the final image.", "Use minimal base images.", "Set severity policy.", "Keep scan reports as pipeline evidence."],
+        exercise: "Scan a test container image and identify its highest-severity vulnerability.",
+        interview: ["What does Trivy scan?", "Why scan the final image?", "How can a scan fail a Jenkins stage?"]
+      },
+      {
+        title: "Secrets and Security Policy",
+        overview: "Secret scanning looks for credentials accidentally committed to source code. Security policy defines how findings affect release decisions.",
+        purpose: "Leaked credentials can provide direct access to cloud accounts, registries, databases and production services.",
+        architecture: "Repository scan → Secret detection → Credential validation and rotation → Security policy → Release decision.",
+        workflow: ["Scan repository history and current files.", "Identify exposed credentials.", "Revoke and rotate them.", "Remove secret material safely.", "Add secret-management controls.", "Re-scan."],
+        example: "A developer accidentally commits an AWS access key. The key is disabled and replaced; simply deleting the line is not sufficient.",
+        commands: ["git grep -n -I -E 'AKIA[0-9A-Z]{16}'", "git status --short"],
+        configuration: "Use an approved secret scanner and secret manager. Inject runtime secrets through secure platform mechanisms rather than source files.",
+        failures: ["Credential appears in a commit.", "Secret scanner blocks the build.", "Runtime application cannot retrieve its secret."],
+        recovery: ["Revoke exposed credentials immediately.", "Rotate dependent services.", "Review repository history and access logs.", "Correct secret-manager permissions."],
+        bestPractices: ["Never store secrets in Git.", "Use short-lived credentials.", "Apply least privilege.", "Rotate exposed secrets immediately."],
+        exercise: "Review a sample repository for accidental credentials and describe the safe rotation process.",
+        interview: ["Why is deleting a secret from the latest commit not enough?", "What is secret rotation?", "What is least privilege?"]
+      }
+    ]
+  },
+  {
+    id: 8, name: "Docker Build", tool: "Docker", icon: "🐳",
+    summary: "The tested JAR is packaged into a versioned container image.",
+    input: "Verified JAR artifact",
+    output: "Versioned Docker image",
+    topics: [
+      {
+        title: "Dockerfile and Image Layers",
+        overview: "A Dockerfile describes how to assemble an image. Docker builds layers from instructions and stores the resulting image for container execution.",
+        purpose: "Container images package the application and runtime dependencies into a consistent deployment unit.",
+        architecture: "JAR artifact → Dockerfile → Build context → Image layers → Versioned image.",
+        workflow: ["Prepare the build context.", "Copy the verified JAR.", "Select a supported runtime base image.", "Build the image.", "Inspect image metadata.", "Run a local smoke test."],
+        example: "The payment-service JAR is copied into a Java runtime image and tagged with the Git commit identifier.",
+        commands: ["docker build -t payment-service:1.0.0 .", "docker images", "docker inspect payment-service:1.0.0", "docker run --rm -p 8080:8080 payment-service:1.0.0"],
+        configuration: "Use a Dockerfile with a supported Java runtime, a non-root user where possible, an explicit JAR path and an appropriate entrypoint.",
+        failures: ["Docker daemon is unavailable.", "JAR is missing from build context.", "Image build fails on dependency download.", "Container exits immediately."],
+        recovery: ["Check Docker daemon status.", "Verify artifact path and .dockerignore.", "Inspect build output.", "Read container logs and check application startup configuration."],
+        bestPractices: ["Use multi-stage builds when compiling inside Docker.", "Keep images small.", "Run as non-root.", "Pin base image versions.", "Avoid copying secrets into images."],
+        exercise: "Build an image from the payment JAR and run it locally.",
+        interview: ["What is a Docker image layer?", "Image versus container?", "What is a build context?"]
+      },
+      {
+        title: "Multi-stage Docker Build",
+        overview: "A multi-stage Dockerfile uses separate build and runtime stages so the final image contains only the runtime components required by the application.",
+        purpose: "It reduces image size and avoids carrying build tools into production containers.",
+        architecture: "Build stage with JDK and Maven → JAR output → Runtime stage with JRE → Final image.",
+        workflow: ["Create a build stage.", "Copy source and POM.", "Build the JAR.", "Create a runtime stage.", "Copy only the JAR.", "Build and inspect final image."],
+        example: "Maven compiles the payment application in the builder stage; a smaller Java runtime image executes the resulting JAR.",
+        commands: ["docker build -t payment-service:optimized .", "docker history payment-service:optimized", "docker image inspect payment-service:optimized"],
+        configuration: "Use FROM ... AS builder followed by a runtime FROM. Copy only the required artifact from the builder stage.",
+        failures: ["Wrong artifact path in COPY --from.", "Builder uses incompatible Java version.", "Runtime image lacks required files."],
+        recovery: ["Check builder output path.", "Align build and runtime Java versions.", "Inspect final image filesystem and startup logs."],
+        bestPractices: ["Use trusted minimal runtime images.", "Keep build and runtime versions compatible.", "Use .dockerignore.", "Scan the final image."],
+        exercise: "Convert a single-stage Dockerfile into a multi-stage build and compare image sizes.",
+        interview: ["What is a multi-stage build?", "Why separate JDK and runtime images?", "What does COPY --from do?"]
+      },
+      {
+        title: "Image Tags and Container Runtime",
+        overview: "An image tag identifies a named image reference. A container is a running or stopped instance created from an image.",
+        purpose: "Immutable, traceable tags connect deployed workloads to the source revision that produced them.",
+        architecture: "Git commit → Image build → Version or commit tag → Container runtime → Application process.",
+        workflow: ["Generate a unique tag.", "Build the image.", "Run a smoke test.", "Record the image digest.", "Pass the exact image reference to the registry stage."],
+        example: "The pipeline tags the payment image with the short Git SHA and release version rather than relying only on latest.",
+        commands: ["docker tag payment-service:1.0.0 payment-service:git-a1b2c3d", "docker run -d --name payment-test -p 8080:8080 payment-service:git-a1b2c3d", "docker logs payment-test", "docker rm -f payment-test"],
+        configuration: "Use a consistent image naming convention containing application name, version and commit identifier. Record the digest after push.",
+        failures: ["Tag points to an old image.", "Container port is not exposed.", "Application health check fails."],
+        recovery: ["Verify image ID and digest.", "Check port mapping.", "Inspect container logs and application configuration."],
+        bestPractices: ["Avoid mutable latest for production releases.", "Use immutable tags.", "Track image digests.", "Perform smoke tests before publishing."],
+        exercise: "Tag an image with a Git SHA and verify the running container uses that image.",
+        interview: ["What is the difference between an image tag and digest?", "Why avoid latest in production?", "How do you inspect container logs?"]
+      }
+    ]
+  },
+  {
+    id: 9, name: "Push to Registry", tool: "Amazon ECR", icon: "☁️",
+    summary: "The container image is authenticated, tagged and pushed to Amazon Elastic Container Registry.",
+    input: "Validated Docker image",
+    output: "ECR image URI and digest",
+    topics: [
+      {
+        title: "ECR Repository and Image Lifecycle",
+        overview: "Amazon ECR is a managed container image registry. It stores images that deployment platforms such as EKS can pull.",
+        purpose: "A central registry makes versioned images available to build agents and deployment environments.",
+        architecture: "Jenkins agent → AWS authentication → ECR repository → Image manifest and layers → EKS image pull.",
+        workflow: ["Create an ECR repository.", "Authenticate Docker to ECR.", "Tag the image with the registry URI.", "Push the image.", "Record the digest.", "Verify the repository image."],
+        example: "The payment-service:git-a1b2c3d image is pushed to the team's ECR repository in the approved AWS region.",
+        commands: ["aws sts get-caller-identity", "aws ecr describe-repositories --region ap-south-1", "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com"],
+        configuration: "Create an ECR repository and configure IAM permissions for the pipeline identity. Use the actual AWS account ID and region from the environment.",
+        failures: ["AccessDeniedException.", "Repository does not exist.", "Docker authentication fails.", "Image push is denied."],
+        recovery: ["Verify the AWS identity.", "Check repository name and region.", "Validate ECR upload and download permissions.", "Refresh registry authentication."],
+        bestPractices: ["Use IAM roles where possible.", "Enable image scanning.", "Use lifecycle policies.", "Keep production images immutable where supported.", "Record image digests."],
+        exercise: "Authenticate to a test ECR repository and push a tagged sample image.",
+        interview: ["What is Amazon ECR?", "How does Docker authenticate to ECR?", "Which IAM permissions are needed for image push?"]
+      },
+      {
+        title: "ECR Authentication and IAM",
+        overview: "ECR access is controlled through AWS IAM permissions and registry authentication. The Docker client uses a temporary authorization token.",
+        purpose: "The build pipeline must have enough permission to push images without receiving broad administrative access.",
+        architecture: "Jenkins workload identity → AWS STS or role credentials → ECR authorization token → Docker registry API.",
+        workflow: ["Assume or obtain the approved AWS identity.", "Verify the caller.", "Request ECR login password.", "Authenticate Docker.", "Push the image.", "Review CloudTrail activity."],
+        example: "A Jenkins agent assumes a deployment role that can push only to the payment-service repository.",
+        commands: ["aws sts get-caller-identity", "aws ecr get-login-password --region ap-south-1"],
+        configuration: "Use a scoped IAM role and trust relationship. Avoid long-lived access keys in Jenkins when workload identity or role assumption is available.",
+        failures: ["Expired credentials.", "Incorrect role trust policy.", "Missing ecr:PutImage permission.", "Wrong account or region."],
+        recovery: ["Refresh credentials.", "Correct the trust relationship.", "Review required ECR actions.", "Verify registry URI and region."],
+        bestPractices: ["Apply least privilege.", "Use temporary credentials.", "Separate push and pull roles.", "Audit registry access."],
+        exercise: "Inspect the AWS caller identity and explain which role should be used for ECR push.",
+        interview: ["What is an IAM role?", "What is an ECR authorization token?", "Why use temporary credentials?"]
+      },
+      {
+        title: "ECR Scanning and Lifecycle Policies",
+        overview: "ECR scanning can identify vulnerabilities in stored images. Lifecycle policies can expire old images according to repository retention rules.",
+        purpose: "Scanning provides registry-level visibility and lifecycle policies control storage growth.",
+        architecture: "Image push → ECR scan → Findings → Security review. Repository images → Lifecycle policy → Expiration.",
+        workflow: ["Enable the approved scanning mode.", "Push an image.", "Inspect scan findings.", "Remediate vulnerable packages.", "Define retention rules.", "Verify lifecycle behavior in a test repository."],
+        example: "Old development tags are expired after the agreed retention period while approved release images remain available.",
+        commands: ["aws ecr describe-images --repository-name payment-service --region ap-south-1", "aws ecr describe-image-scan-findings --repository-name payment-service --image-id imageTag=1.0.0 --region ap-south-1"],
+        configuration: "Configure repository scanning and lifecycle rules based on environment retention requirements. Validate lifecycle policies before applying them to production repositories.",
+        failures: ["Scan findings are not available yet.", "Lifecycle policy expires a required image.", "Repository permissions prevent inspection."],
+        recovery: ["Wait for scan completion and inspect status.", "Correct lifecycle selection rules.", "Restore or republish an approved image if required."],
+        bestPractices: ["Retain deployed release images.", "Review scan findings.", "Test lifecycle rules.", "Keep image provenance and digest records."],
+        exercise: "Inspect ECR image metadata and create a sample retention policy in a non-production repository.",
+        interview: ["What is an ECR lifecycle policy?", "How do you inspect image scan findings?", "Why retain deployed image versions?"]
+      }
+    ]
+  },
+  {
+    id: 10, name: "Kubernetes Deployment", tool: "Kubernetes / EKS", icon: "☸️",
+    summary: "EKS pulls the approved image and runs the payment application as Kubernetes workloads.",
+    input: "ECR image URI",
+    output: "Running Kubernetes workload",
+    topics: [
+      {
+        title: "EKS Cluster and Worker Nodes",
+        overview: "Amazon EKS is a managed Kubernetes service. Kubernetes schedules containers into Pods on available worker nodes.",
+        purpose: "EKS provides a managed control plane and integrates Kubernetes workloads with AWS infrastructure.",
+        architecture: "kubectl → EKS API server → Scheduler and controllers → Worker nodes → Pods.",
+        workflow: ["Create or select an EKS cluster.", "Configure AWS access.", "Update kubeconfig.", "Verify nodes.", "Deploy a workload.", "Check Pod status."],
+        example: "The payment service runs as multiple Pods in the payment namespace on an EKS cluster.",
+        commands: ["aws eks update-kubeconfig --region ap-south-1 --name payment-eks", "kubectl cluster-info", "kubectl get nodes -o wide", "kubectl get pods -A"],
+        configuration: "Use approved EKS access entries or authentication configuration, IAM roles and Kubernetes RBAC. Keep cluster and node versions compatible.",
+        failures: ["Unable to connect to cluster endpoint.", "Nodes are NotReady.", "Access denied.", "Pods remain Pending."],
+        recovery: ["Check endpoint networking and kubeconfig.", "Inspect node conditions.", "Validate IAM and RBAC.", "Inspect scheduling events and resource requests."],
+        bestPractices: ["Use private networking where appropriate.", "Apply RBAC.", "Use managed node groups or approved compute.", "Patch cluster components.", "Monitor node capacity."],
+        exercise: "Connect to a test EKS cluster and inspect nodes, namespaces and Pods.",
+        interview: ["What is EKS?", "What is the Kubernetes control plane?", "What is a worker node?"]
+      },
+      {
+        title: "Deployment, ReplicaSet and Pods",
+        overview: "A Deployment declares the desired application state. Kubernetes creates ReplicaSets and Pods to maintain the requested number of replicas.",
+        purpose: "Deployments provide declarative rollout and recovery behavior for stateless applications.",
+        architecture: "Deployment → ReplicaSet → Pods → Container image from ECR.",
+        workflow: ["Create a Deployment manifest.", "Set the ECR image URI.", "Configure replicas and probes.", "Apply the manifest.", "Watch rollout.", "Inspect Pods and events."],
+        example: "The payment Deployment runs three replicas using the exact ECR image digest approved by CI.",
+        commands: ["kubectl apply -f deployment.yaml", "kubectl rollout status deployment/payment-service -n payments", "kubectl get deployment,pods -n payments", "kubectl describe pod POD_NAME -n payments"],
+        configuration: "Define namespace, image, replicas, resource requests and limits, readiness and liveness probes, and a service account.",
+        failures: ["ImagePullBackOff.", "CrashLoopBackOff.", "Insufficient CPU or memory.", "Readiness probe fails."],
+        recovery: ["Check image URI and ECR pull permissions.", "Inspect container logs.", "Review node capacity and resource settings.", "Correct application health endpoint and probe configuration."],
+        bestPractices: ["Use resource requests and limits.", "Configure health probes.", "Use non-root containers.", "Roll out gradually.", "Keep manifests in Git."],
+        exercise: "Deploy a sample payment workload and observe its rollout status.",
+        interview: ["Deployment versus Pod?", "What is a ReplicaSet?", "What causes ImagePullBackOff?"]
+      },
+      {
+        title: "Services, ConfigMaps and Secrets",
+        overview: "A Service provides stable network access to Pods. ConfigMaps store non-sensitive configuration, while Secrets hold sensitive configuration data.",
+        purpose: "These Kubernetes objects separate application configuration and service discovery from container images.",
+        architecture: "Client → Service → Pod. Deployment → ConfigMap or Secret → Container environment or mounted files.",
+        workflow: ["Create a namespace.", "Create a ConfigMap.", "Create or reference a Secret securely.", "Create a Service.", "Validate connectivity.", "Check access permissions."],
+        example: "The payment service reads a non-sensitive feature flag from a ConfigMap and retrieves database credentials through an approved secret-management integration.",
+        commands: ["kubectl get services -n payments", "kubectl get configmaps -n payments", "kubectl describe service payment-service -n payments", "kubectl get endpoints payment-service -n payments"],
+        configuration: "Use ClusterIP for internal communication unless another exposure pattern is required. Restrict Secret access with RBAC and encryption controls.",
+        failures: ["Service has no endpoints.", "Wrong selector labels.", "ConfigMap key is missing.", "Secret access is denied."],
+        recovery: ["Compare Service selectors with Pod labels.", "Check readiness status.", "Validate key names.", "Review service account and RBAC permissions."],
+        bestPractices: ["Keep secrets out of Git.", "Use least-privilege RBAC.", "Use namespaces.", "Avoid exposing internal services unnecessarily."],
+        exercise: "Create a ConfigMap and ClusterIP Service for a sample application.",
+        interview: ["Service versus Ingress?", "ConfigMap versus Secret?", "What is a ClusterIP service?"]
+      }
+    ]
+  },
+  {
+    id: 11, name: "Release Management", tool: "Helm / Argo CD", icon: "🚀",
+    summary: "Helm packages Kubernetes resources and Argo CD reconciles the cluster with Git.",
+    input: "Approved deployment manifests and image",
+    output: "Managed application release",
+    topics: [
+      {
+        title: "Helm Charts and Values",
+        overview: "Helm packages Kubernetes resources into reusable charts. Values files provide environment-specific configuration.",
+        purpose: "Helm reduces duplicated YAML and makes application releases easier to configure and version.",
+        architecture: "Chart templates + values.yaml → Helm rendering → Kubernetes manifests → Release revision.",
+        workflow: ["Create chart structure.", "Define templates.", "Add default values.", "Create environment values.", "Render manifests.", "Install or upgrade the release."],
+        example: "The same payment-service chart deploys to staging and production with different replica counts and resource settings.",
+        commands: ["helm create payment-service", "helm lint ./payment-service", "helm template payment-service ./payment-service -f values-staging.yaml", "helm upgrade --install payment-service ./payment-service -n payments --create-namespace"],
+        configuration: "Keep image repository, tag, replica count, service settings and resources in values files. Do not place plain-text production credentials in chart values.",
+        failures: ["Template rendering error.", "Invalid Kubernetes manifest.", "Upgrade times out.", "Incorrect values override."],
+        recovery: ["Run helm lint and helm template.", "Validate rendered YAML.", "Inspect Helm status and Kubernetes events.", "Correct the environment values."],
+        bestPractices: ["Version charts.", "Separate environment values.", "Validate templates in CI.", "Keep secrets external.", "Review rendered manifests."],
+        exercise: "Create a Helm chart for the payment service and render its staging manifests.",
+        interview: ["What is a Helm chart?", "What is values.yaml?", "What does helm upgrade --install do?"]
+      },
+      {
+        title: "Argo CD GitOps Workflow",
+        overview: "Argo CD continuously compares the desired Kubernetes configuration stored in Git with the live cluster state.",
+        purpose: "GitOps makes Git the reviewed source of truth for application deployment configuration.",
+        architecture: "Git repository → Argo CD application → Desired manifests → Live Kubernetes resources → Sync status.",
+        workflow: ["Store deployment configuration in Git.", "Create an Argo CD Application.", "Configure repository and destination.", "Review diff.", "Sync approved changes.", "Verify health and sync status."],
+        example: "A pull request updates the payment image tag in the deployment repository. After merge, Argo CD detects the new desired state.",
+        commands: ["argocd app list", "argocd app get payment-service", "argocd app diff payment-service", "argocd app sync payment-service"],
+        configuration: "Configure repository credentials, destination cluster, namespace and sync policy. Protect production sync permissions.",
+        failures: ["Application is OutOfSync.", "Repository authentication fails.", "Manifest generation fails.", "Resources are unhealthy."],
+        recovery: ["Inspect application diff.", "Correct repository access.", "Review rendering errors.", "Inspect workload events and health checks."],
+        bestPractices: ["Review Git changes before production sync.", "Use separate environment paths.", "Protect deployment repositories.", "Monitor drift.", "Control automated pruning."],
+        exercise: "Connect a test Argo CD application to a Git repository and inspect its sync status.",
+        interview: ["What is GitOps?", "What is OutOfSync?", "What is the difference between sync and refresh?"]
+      },
+      {
+        title: "Release Rollback and Revision History",
+        overview: "Release management tracks deployed versions and provides a controlled path to restore a known-good application version.",
+        purpose: "A failed release must be recoverable without guessing which image or configuration was previously running.",
+        architecture: "Release revision → Deployment state → Health validation → Rollback decision → Previous known-good revision.",
+        workflow: ["Record the release revision.", "Deploy the new version.", "Validate health.", "Detect a failed rollout.", "Select the known-good revision.", "Rollback and verify."],
+        example: "A payment release introduces startup failures. The team restores the previous healthy Helm revision and verifies the payment API.",
+        commands: ["helm history payment-service -n payments", "helm rollback payment-service 2 -n payments", "kubectl rollout history deployment/payment-service -n payments", "kubectl rollout undo deployment/payment-service -n payments"],
+        configuration: "Retain release history and image references. Ensure rollback artifacts and configuration remain available.",
+        failures: ["Previous image has been deleted.", "Rollback restores incompatible configuration.", "Database schema change is not backward-compatible."],
+        recovery: ["Retain known-good images.", "Validate schema compatibility.", "Use backward-compatible migrations.", "Run smoke tests after rollback."],
+        bestPractices: ["Define rollback criteria.", "Preserve immutable image references.", "Test rollback procedures.", "Coordinate application and database changes."],
+        exercise: "Deploy two test Helm revisions and rollback to the earlier revision.",
+        interview: ["How does Helm rollback work?", "What is a Kubernetes rollout undo?", "Why must database migrations be backward-compatible?"]
+      }
+    ]
+  },
+  {
+    id: 12, name: "Production Monitoring", tool: "Prometheus / Grafana", icon: "📊",
+    summary: "Metrics, dashboards and alerts confirm the deployed payment service is healthy.",
+    input: "Running EKS application",
+    output: "Production health and operational feedback",
+    topics: [
+      {
+        title: "Prometheus Metrics and Scraping",
+        overview: "Prometheus collects time-series metrics by scraping configured HTTP endpoints at defined intervals.",
+        purpose: "Metrics help teams understand application availability, latency, throughput and resource consumption.",
+        architecture: "Payment application /metrics → Prometheus scrape configuration → Time-series database → PromQL queries.",
+        workflow: ["Expose application metrics.", "Configure scrape targets.", "Verify target health.", "Query metrics.", "Create alert rules.", "Review trends."],
+        example: "The payment service exposes request count, request duration and JVM metrics for Prometheus.",
+        commands: ["kubectl get pods -n monitoring", "kubectl get services -n monitoring", "kubectl port-forward svc/prometheus-server 9090:80 -n monitoring"],
+        configuration: "Configure scrape targets or approved Kubernetes service discovery. Restrict metric endpoints to trusted monitoring networks.",
+        failures: ["Target is DOWN.", "Metrics endpoint returns errors.", "Service discovery misses Pods.", "Metric labels create excessive cardinality."],
+        recovery: ["Check target URL and network access.", "Inspect application metrics endpoint.", "Validate scrape annotations or monitor selectors.", "Reduce unbounded labels."],
+        bestPractices: ["Monitor service-level indicators.", "Use meaningful labels.", "Avoid sensitive metric labels.", "Set practical scrape intervals.", "Retain useful historical data."],
+        exercise: "Expose a sample application metric and query it in Prometheus.",
+        interview: ["What is Prometheus?", "What is a scrape target?", "What is PromQL?"]
+      },
+      {
+        title: "Grafana Dashboards",
+        overview: "Grafana visualizes metrics and other observability data through dashboards, panels and queries.",
+        purpose: "Dashboards help engineers quickly understand application behavior and investigate production incidents.",
+        architecture: "Prometheus data source → PromQL query → Grafana panel → Dashboard → Engineer.",
+        workflow: ["Add Prometheus data source.", "Create a dashboard.", "Add request and latency panels.", "Add error-rate panels.", "Set useful time ranges.", "Share dashboards with the operations team."],
+        example: "The payment dashboard shows request rate, error percentage, p95 latency, Pod restarts and CPU usage.",
+        commands: ["kubectl get pods -n monitoring", "kubectl port-forward svc/grafana 3000:80 -n monitoring"],
+        configuration: "Provision dashboards and data sources through controlled configuration where practical. Use access controls and avoid exposing Grafana publicly without protection.",
+        failures: ["No data displayed.", "Data source connection fails.", "PromQL query returns empty results.", "Dashboard uses incorrect labels."],
+        recovery: ["Verify Prometheus data source.", "Check target scrape status.", "Validate metric names and labels.", "Inspect query time range."],
+        bestPractices: ["Build dashboards around operational questions.", "Show service-level indicators.", "Use consistent units.", "Control dashboard permissions."],
+        exercise: "Create a dashboard with request rate, error rate and latency panels.",
+        interview: ["What is a Grafana data source?", "What is a dashboard panel?", "Why monitor p95 latency?"]
+      },
+      {
+        title: "Alerts, SLOs and Incident Response",
+        overview: "Alerting detects conditions that require investigation. Service-level objectives define measurable reliability targets for a service.",
+        purpose: "Monitoring should help teams detect customer impact and respond before failures become prolonged incidents.",
+        architecture: "Application metrics → Prometheus rules → Alertmanager → Notification channel → Incident response.",
+        workflow: ["Define service-level indicators.", "Set realistic SLO targets.", "Create alert rules.", "Route notifications.", "Investigate the incident.", "Record root cause and corrective actions."],
+        example: "A sustained payment API error-rate increase triggers an alert. The on-call engineer checks the dashboard, recent deployment and Pod logs.",
+        commands: ["kubectl get pods -n payments", "kubectl describe deployment payment-service -n payments", "kubectl logs deployment/payment-service -n payments --tail=100", "kubectl get events -n payments --sort-by=.lastTimestamp"],
+        configuration: "Define Prometheus alert rules for service availability, latency and error rate. Route alerts to approved notification systems with ownership and severity.",
+        failures: ["Alert never fires.", "Too many noisy alerts.", "Notification receiver is unavailable.", "SLO burn rate increases after deployment."],
+        recovery: ["Test rule expressions.", "Tune thresholds and grouping.", "Verify Alertmanager routing.", "Correlate metrics with deployment events and logs."],
+        bestPractices: ["Alert on user impact.", "Use actionable alerts.", "Define on-call ownership.", "Review incidents and error budgets.", "Validate health after rollback."],
+        exercise: "Create a test alert for elevated payment API errors and document the response steps.",
+        interview: ["What is an SLI?", "What is an SLO?", "What is an error budget?", "How do you investigate a production alert?"]
+      }
+    ]
+  }
+];
+
+const statusStyles: Record<string, string> = {
+  pending: "border-slate-700 bg-slate-900 text-slate-400",
+  running: "border-blue-400 bg-blue-500/10 text-blue-300",
+  success: "border-emerald-500/50 bg-emerald-500/10 text-emerald-300",
+  failed: "border-red-500/50 bg-red-500/10 text-red-300",
+  blocked: "border-amber-500/40 bg-amber-500/10 text-amber-300"
+};
+
+export default function CicdPipelineVisualizerPage() {
+  const [selectedStage, setSelectedStage] = useState(0);
+  const [selectedTopic, setSelectedTopic] = useState(0);
+  const [statuses, setStatuses] = useState<string[]>(stages.map(() => "pending"));
+  const [logs, setLogs] = useState<string[]>(["Pipeline ready. Select Run Pipeline to begin."]);
+  const [artifacts, setArtifacts] = useState<string[]>([]);
+  const [running, setRunning] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [completed, setCompleted] = useState(false);
+  const [failureStage, setFailureStage] = useState("none");
+  const [activeTab, setActiveTab] = useState("learning");
+  const [runNumber, setRunNumber] = useState(0);
+  const [durations, setDurations] = useState<number[]>([]);
+  const stopRef = useRef(false);
+  const pauseRef = useRef(false);
+  const runningRef = useRef(false);
+
+  const stage = stages[selectedStage];
+  const topic = stage.topics[selectedTopic] ?? stage.topics[0];
+  const successCount = statuses.filter(s => s === "success").length;
+  const failedCount = statuses.filter(s => s === "failed").length;
+  const progress = Math.round((successCount / stages.length) * 100);
+
+  useEffect(() => {
+    pauseRef.current = paused;
+  }, [paused]);
+
+  const addLog = (message: string) => {
+    setLogs(old => [`[${new Date().toLocaleTimeString()}] ${message}`, ...old].slice(0, 100));
+  };
+
+  const wait = async (ms: number) => {
+    let elapsed = 0;
+    while (elapsed < ms) {
+      if (stopRef.current) return false;
+      if (!pauseRef.current) elapsed += 100;
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    return !stopRef.current;
+  };
+
+  const runPipeline = async (startAt = 0) => {
+    if (runningRef.current) return;
+    runningRef.current = true;
+    stopRef.current = false;
+    setRunning(true);
+    setPaused(false);
+    setCompleted(false);
+    setRunNumber(n => n + 1);
+
+    for (let i = startAt; i < stages.length; i++) {
+      if (stopRef.current) break;
+
+      setSelectedStage(i);
+      setSelectedTopic(0);
+      setStatuses(old => old.map((s, index) => index < i ? s : index === i ? "running" : "pending"));
+      addLog(`Stage ${i + 1}: ${stages[i].name} started.`);
+
+      const start = Date.now();
+      const shouldFail = failureStage === String(i);
+
+      const continued = await wait(shouldFail ? 1300 : 1100);
+      if (!continued) break;
+
+      if (shouldFail) {
+        setStatuses(old => old.map((s, index) => index === i ? "failed" : index > i ? "blocked" : s));
+        setDurations(old => [...old, Date.now() - start]);
+        addLog(`ERROR: ${stages[i].name} failed. Downstream stages blocked.`);
+        addLog(`Pipeline stopped. Fix the issue and retry from this stage.`);
+        break;
+      }
+
+      setStatuses(old => old.map((s, index) => index === i ? "success" : s));
+      setDurations(old => [...old, Date.now() - start]);
+
+      if (i === 3) {
+        setArtifacts(old => old.includes("payment-service.jar") ? old : [...old, "payment-service.jar"]);
+        addLog("Artifact created: payment-service.jar");
+      }
+      if (i === 7) {
+        setArtifacts(old => old.includes("payment-service:git-a1b2c3d") ? old : [...old, "payment-service:git-a1b2c3d"]);
+        addLog("Docker image created: payment-service:git-a1b2c3d");
+      }
+      if (i === 8) {
+        setArtifacts(old => old.includes("ECR image URI") ? old : [...old, "ECR image URI"]);
+        addLog("Image pushed to Amazon ECR. Digest recorded.");
+      }
+      if (i === 9) {
+        setArtifacts(old => old.includes("EKS Deployment") ? old : [...old, "EKS Deployment"]);
+        addLog("Kubernetes workload deployed to EKS.");
+      }
+      if (i === 11) addLog("Production health checks passed. Monitoring is active.");
+
+      addLog(`Stage ${i + 1}: ${stages[i].name} completed successfully.`);
+    }
+
+    const finalStatuses = statuses;
+    runningRef.current = false;
+    setRunning(false);
+    setPaused(false);
+
+    if (!stopRef.current) {
+      setStatuses(current => {
+        const allDone = current.every(s => s === "success");
+        if (allDone) {
+          setCompleted(true);
+          addLog("PIPELINE SUCCESS: All 12 stages completed.");
+        }
+        return current;
+      });
+    }
+  };
+
+  const pausePipeline = () => {
+    pauseRef.current = true;
+    setPaused(true);
+    addLog("Pipeline paused.");
+  };
+
+  const resumePipeline = () => {
+    pauseRef.current = false;
+    setPaused(false);
+    addLog("Pipeline resumed.");
+  };
+
+  const resetPipeline = () => {
+    stopRef.current = true;
+    pauseRef.current = false;
+    runningRef.current = false;
+    setRunning(false);
+    setPaused(false);
+    setCompleted(false);
+    setStatuses(stages.map(() => "pending"));
+    setArtifacts([]);
+    setDurations([]);
+    setLogs(["Pipeline reset. Ready for a new execution."]);
+  };
+
+  const retryPipeline = () => {
+    const failedIndex = statuses.findIndex(s => s === "failed");
+    if (failedIndex < 0) {
+      addLog("No failed stage to retry. Inject a failure or run the pipeline first.");
+      return;
+    }
+    setStatuses(old => old.map((s, index) => index >= failedIndex ? "pending" : s));
+    addLog(`Retry requested from ${stages[failedIndex].name}.`);
+    setTimeout(() => runPipeline(failedIndex), 100);
+  };
+
+  const injectFailure = () => {
+    if (running) {
+      addLog("Stop or reset the current run before changing failure injection.");
+      return;
+    }
+    if (failureStage === "none") {
+      addLog("Select a stage from Failure Injection before running.");
+      return;
+    }
+    addLog(`Failure injection armed for Stage ${Number(failureStage) + 1}: ${stages[Number(failureStage)].name}.`);
+  };
+
+  const tabs = [
+    ["learning", "Learning Center"],
+    ["simulator", "Pipeline Simulator"],
+    ["architecture", "Architecture"],
+    ["config", "Configuration Library"],
+    ["troubleshooting", "Troubleshooting"],
+    ["deployment", "Deployment Strategies"],
+    ["rollback", "Rollback Lab"],
+    ["monitoring", "Monitoring Lab"],
+    ["security", "Security Lab"],
+    ["project", "Payment Project"],
+    ["interview", "Interview Prep"]
+  ];
+
+  return (
+    <main className="min-h-screen bg-[#070b14] text-slate-100">
+      <div className="mx-auto max-w-[1600px] px-4 py-6 md:px-7">
+        <header className="mb-6 rounded-3xl border border-slate-800 bg-gradient-to-br from-[#111c32] via-[#101827] to-[#0b1220] p-6 md:p-8">
+          <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
+            <div>
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-semibold text-cyan-300">
+                DEVOPS ENGINEERING LAB <span>•</span> END-TO-END CI/CD
+              </div>
+              <h1 className="text-3xl font-black tracking-tight md:text-4xl">CI/CD Pipeline Visualizer</h1>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-400 md:text-base">
+                Learn and simulate a production-style Java payment application delivery pipeline —
+                from developer commit to Kubernetes deployment and production monitoring.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <Metric label="Pipeline stages" value="12" />
+              <Metric label="Completed" value={`${successCount}/12`} />
+              <Metric label="Progress" value={`${progress}%`} />
+              <Metric label="Failed stages" value={`${failedCount}`} />
+            </div>
+          </div>
+          <div className="mt-6 h-2 overflow-hidden rounded-full bg-slate-800">
+            <div className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-emerald-400 transition-all duration-500" style={{ width: `${progress}%` }} />
+          </div>
+          <div className="mt-2 flex justify-between text-xs text-slate-500">
+            <span>Source code</span><span>Production health</span>
+          </div>
+        </header>
+
+        <section className="mb-6 rounded-2xl border border-slate-800 bg-[#0c1422] p-4">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 className="text-lg font-bold">12-Stage CI/CD Pipeline</h2>
+              <p className="text-xs text-slate-500">Select any stage to explore its lessons and implementation.</p>
+            </div>
+            <span className="rounded-lg border border-slate-700 px-3 py-1 text-xs text-slate-400">LEFT → RIGHT FLOW</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
+            {stages.map((item, index) => (
+              <button
+                key={item.id}
+                onClick={() => { setSelectedStage(index); setSelectedTopic(0); setActiveTab("learning"); }}
+                className={`relative rounded-xl border p-3 text-left transition hover:-translate-y-0.5 hover:border-cyan-500/60 ${
+                  selectedStage === index ? "border-cyan-400 bg-cyan-500/10 ring-1 ring-cyan-500/30" : statusStyles[statuses[index]]
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xl">{item.icon}</span>
+                  <span className="text-[10px] font-bold">STAGE {String(item.id).padStart(2, "0")}</span>
+                </div>
+                <div className="mt-2 text-sm font-bold">{item.name}</div>
+                <div className="mt-1 text-[11px] text-slate-500">{item.tool}</div>
+                <div className="mt-3 text-[10px] font-semibold uppercase tracking-wide">
+                  {statuses[index] === "success" ? "✓ Completed" : statuses[index] === "running" ? "● Running" : statuses[index] === "failed" ? "✕ Failed" : statuses[index] === "blocked" ? "⊘ Blocked" : "○ Pending"}
+                </div>
+              </button>
+            ))}
+          </div>
+          <div className="mt-4 flex flex-wrap gap-3 text-[11px] text-slate-500">
+            <span>🟢 Success</span><span>🔵 Running</span><span>🔴 Failed</span><span>🟠 Blocked</span><span>⚪ Pending</span>
+          </div>
+        </section>
+
+        <nav className="mb-5 flex gap-2 overflow-x-auto pb-2">
+          {tabs.map(([id, label]) => (
+            <button key={id} onClick={() => setActiveTab(id)} className={`shrink-0 rounded-xl border px-4 py-2.5 text-xs font-semibold transition ${activeTab === id ? "border-cyan-400 bg-cyan-500/10 text-cyan-300" : "border-slate-800 bg-slate-900 text-slate-400 hover:text-white"}`}>
+              {label}
+            </button>
+          ))}
+        </nav>
+
+        {activeTab === "learning" && (
+          <section className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
+            <aside className="h-fit rounded-2xl border border-slate-800 bg-[#0c1422] p-4">
+              <div className="mb-4">
+                <div className="text-xs font-bold uppercase tracking-widest text-cyan-400">Course navigation</div>
+                <h3 className="mt-2 text-lg font-bold">{stage.name}</h3>
+                <p className="mt-1 text-xs text-slate-500">{stage.tool}</p>
+              </div>
+              <div className="space-y-2">
+                {stage.topics.map((item, index) => (
+                  <button key={item.title} onClick={() => setSelectedTopic(index)} className={`w-full rounded-xl border p-3 text-left text-sm transition ${selectedTopic === index ? "border-cyan-500/60 bg-cyan-500/10 text-cyan-200" : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-600 hover:text-white"}`}>
+                    <span className="mr-2 text-xs text-slate-600">{String(index + 1).padStart(2, "0")}</span>{item.title}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950 p-3">
+                <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Stage input</div>
+                <p className="mt-1 text-xs text-slate-300">{stage.input}</p>
+                <div className="mt-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">Stage output</div>
+                <p className="mt-1 text-xs text-emerald-300">{stage.output}</p>
+              </div>
+            </aside>
+
+            <article className="min-w-0 rounded-2xl border border-slate-800 bg-[#0c1422] p-5 md:p-7">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-5">
+                <div>
+                  <div className="text-xs font-bold uppercase tracking-widest text-cyan-400">Stage {stage.id} / 12 · {stage.tool}</div>
+                  <h2 className="mt-2 text-2xl font-black">{topic.title}</h2>
+                  <p className="mt-2 text-sm text-slate-400">{stage.summary}</p>
+                </div>
+                <span className={`rounded-full border px-3 py-1 text-xs font-bold ${statusStyles[statuses[selectedStage]]}`}>{statuses[selectedStage].toUpperCase()}</span>
+              </div>
+
+              <div className="mt-6 space-y-6">
+                <LessonSection title="01 · Concept and Definition" content={topic.overview} />
+                <LessonSection title="02 · Purpose and Business Value" content={topic.purpose} />
+                <LessonSection title="03 · Architecture" content={topic.architecture} />
+                <LessonSection title="04 · Production Workflow" list={topic.workflow} />
+                <LessonSection title="05 · Real Payment Application Example" content={topic.example} />
+                <div>
+                  <SectionHeading title="06 · Practical Commands" />
+                  <div className="mt-3 space-y-2">
+                    {topic.commands.map((command, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"><code className="overflow-x-auto text-xs text-emerald-300">{command}</code><button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 hover:text-white">Copy</button></div>)}
+                  </div>
+                </div>
+                <LessonSection title="07 · Configuration Example" content={topic.configuration} />
+                <LessonSection title="08 · Common Failures" list={topic.failures} />
+                <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
+                <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
+                <LessonSection title="11 · Hands-on Exercise" content={topic.exercise} />
+                <LessonSection title="12 · Interview Questions" list={topic.interview} />
+              </div>
+
+              <div className="mt-8 flex flex-wrap justify-between gap-3 border-t border-slate-800 pt-5">
+                <button disabled={selectedStage === 0} onClick={() => { setSelectedStage(s => s - 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm text-slate-300 disabled:opacity-30">← Previous stage</button>
+                <button onClick={() => setActiveTab("simulator")} className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 hover:bg-cyan-400">Open simulator →</button>
+                <button disabled={selectedStage === 11} onClick={() => { setSelectedStage(s => s + 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm text-slate-300 disabled:opacity-30">Next stage →</button>
+              </div>
+            </article>
+          </section>
+        )}
+
+        {activeTab === "simulator" && (
+          <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_370px]">
+            <div className="space-y-5">
+              <div className="rounded-2xl border border-slate-800 bg-[#0c1422] p-5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div><h2 className="text-xl font-black">Pipeline Execution Simulator</h2><p className="mt-1 text-xs text-slate-500">Frontend simulation of a CI/CD execution. It does not connect to real AWS, Jenkins or EKS infrastructure.</p></div>
+                  <span className={`rounded-full border px-3 py-1 text-xs ${completed ? "border-emerald-500/50 text-emerald-300" : failedCount ? "border-red-500/50 text-red-300" : "border-slate-700 text-slate-400"}`}>{completed ? "SUCCESS" : failedCount ? "FAILED" : running ? paused ? "PAUSED" : "RUNNING" : "READY"}</span>
+                </div>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <button disabled={running} onClick={() => runPipeline(0)} className="rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-bold text-slate-950 disabled:opacity-40">▶ Run Pipeline</button>
+                  <button disabled={!running || paused} onClick={pausePipeline} className="rounded-xl border border-slate-700 px-4 py-2.5 text-sm disabled:opacity-40">Ⅱ Pause</button>
+                  <button disabled={!running || !paused} onClick={resumePipeline} className="rounded-xl border border-slate-700 px-4 py-2.5 text-sm disabled:opacity-40">▶ Resume</button>
+                  <button onClick={resetPipeline} className="rounded-xl border border-slate-700 px-4 py-2.5 text-sm">↻ Reset</button>
+                  <button disabled={running || failedCount === 0} onClick={retryPipeline} className="rounded-xl border border-amber-500/40 px-4 py-2.5 text-sm text-amber-300 disabled:opacity-40">Retry failed stage</button>
+                </div>
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  <Metric label="Run number" value={`#${runNumber}`} />
+                  <Metric label="Successful stages" value={`${successCount}/12`} />
+                  <Metric label="Pipeline progress" value={`${progress}%`} />
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-800 bg-[#0c1422] p-5">
+                <h3 className="font-bold">Execution stages</h3>
+                <div className="mt-4 space-y-2">
+                  {stages.map((item, index) => (
+                    <button key={item.id} onClick={() => { setSelectedStage(index); setSelectedTopic(0); }} className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left ${statusStyles[statuses[index]]}`}>
+                      <span className="text-lg">{item.icon}</span>
+                      <span className="min-w-0 flex-1"><span className="block text-sm font-bold">{item.id}. {item.name}</span><span className="block truncate text-[11px] opacity-70">{item.tool}</span></span>
+                      <span className="text-[10px] font-bold">{statuses[index].toUpperCase()}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-800 bg-[#0c1422] p-5">
+                <h3 className="font-bold">Pipeline execution logs</h3>
+                <div className="mt-3 max-h-80 space-y-2 overflow-y-auto rounded-xl bg-[#050911] p-4 font-mono text-xs">
+                  {logs.map((log, i) => <div key={i} className={log.includes("ERROR") || log.includes("FAILED") ? "text-red-300" : log.includes("success") || log.includes("SUCCESS") ? "text-emerald-300" : "text-slate-400"}>{log}</div>)}
+                </div>
+              </div>
+            </div>
+
+            <aside className="space-y-5">
+              <div className="rounded-2xl border border-slate-800 bg-[#0c1422] p-5">
+                <h3 className="font-bold">Failure Injection Lab</h3>
+                <p className="mt-2 text-xs leading-5 text-slate-500">Choose a stage. When the pipeline reaches it, the simulator will fail that stage and block every downstream stage.</p>
+                <select value={failureStage} onChange={e => setFailureStage(e.target.value)} disabled={running} className="mt-4 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 text-sm text-white">
+                  <option value="none">No injected failure</option>
+                  {stages.map((s, i) => <option key={s.id} value={String(i)}>Stage {s.id}: {s.name}</option>)}
+                </select>
+                <button onClick={injectFailure} disabled={running} className="mt-3 w-full rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm font-bold text-red-300 disabled:opacity-40">Arm failure injection</button>
+              </div>
+              <div className="rounded-2xl border border-slate-800 bg-[#0c1422] p-5">
+                <h3 className="font-bold">Artifact tracking</h3>
+                <p className="mt-1 text-xs text-slate-500">Artifacts created during successful stages.</p>
+                <div className="mt-4 space-y-2">
+                  {["payment-service.jar", "payment-service:git-a1b2c3d", "ECR image URI", "EKS Deployment"].map((item, i) => (
+                    <div key={item} className={`rounded-xl border p-3 text-xs ${artifacts.includes(item) ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300" : "border-slate-800 bg-slate-950 text-slate-600"}`}>
+                      <span className="mr-2">{artifacts.includes(item) ? "✓" : "○"}</span>{item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-slate-800 bg-[#0c1422] p-5">
+                <h3 className="font-bold">Pipeline rules</h3>
+                <ul className="mt-3 space-y-2 text-xs leading-5 text-slate-400">
+                  <li>• A failed stage blocks downstream stages.</li>
+                  <li>• A retry starts from the failed stage.</li>
+                  <li>• Artifacts are recorded after successful stages.</li>
+                  <li>• Reset clears the simulated execution.</li>
+                  <li>• This is a learning simulator, not a live deployment.</li>
+                </ul>
+              </div>
+            </aside>
+          </section>
+        )}
+
+        {activeTab === "architecture" && <InfoLab title="End-to-End Architecture Explorer" description="The complete payment delivery architecture connects developer source control, CI automation, quality and security validation, artifact storage, Kubernetes deployment and production observability." items={["Developer workstation → GitHub repository", "GitHub webhook → Jenkins controller and agents", "Maven → JAR artifact → automated test reports", "SonarQube quality gate → security scanners", "Docker build → Amazon ECR image repository", "Amazon EKS → Kubernetes Deployments, Services and Pods", "Helm release configuration → Argo CD GitOps reconciliation", "Prometheus metrics → Grafana dashboards → Alertmanager"]} />}
+        {activeTab === "config" && <InfoLab title="Configuration Library" description="Core configuration files used across the 12-stage payment application pipeline." items={["Jenkinsfile — pipeline stages, agent, tools, credentials, post actions and artifact archiving.", "pom.xml — Java version, Spring Boot dependencies, Maven plugins and test configuration.", "Dockerfile — multi-stage build, runtime image, non-root user and application entrypoint.", ".dockerignore — excludes target output, Git metadata, IDE files and local secrets.", "deployment.yaml — EKS Deployment, image reference, replicas, resources and probes.", "service.yaml — stable Kubernetes service and Pod selector.", "values.yaml — Helm chart defaults for image, replica count, resources and service.", "Argo CD Application — Git repository, path, destination cluster and sync policy.", "prometheus-rules.yaml — service availability, error-rate and latency alerts."]} />}
+        {activeTab === "troubleshooting" && <InfoLab title="Production Troubleshooting Center" description="Follow the evidence-first incident workflow. Identify the failing layer before changing configuration." items={["GitHub webhook not triggering Jenkins — inspect delivery response, endpoint access and job configuration.", "Jenkins agent offline — inspect agent connectivity, labels, executors and workspace permissions.", "Maven build failure — inspect compiler output, dependency resolution and test reports.", "SonarQube gate failure — inspect analysis status, webhook delivery and gate conditions.", "Trivy scan failure — inspect image reference, scanner database and vulnerability report.", "Docker build failure — inspect build context, Dockerfile instructions and artifact path.", "ECR push denied — verify AWS identity, region, repository URI and IAM permissions.", "Pod ImagePullBackOff — inspect image tag, ECR repository and node pull permissions.", "CrashLoopBackOff — inspect previous container logs, events, probes and application configuration.", "Argo CD OutOfSync — inspect Git revision, manifest diff, sync status and live drift.", "High API latency — correlate Prometheus metrics, application logs and recent deployment changes."]} />}
+        {activeTab === "deployment" && <InfoLab title="Deployment Strategy Lab" description="Choose a rollout strategy according to risk, traffic control and rollback requirements." items={["Rolling Update — progressively replaces old Pods with new Pods. Configure maxSurge and maxUnavailable.", "Blue-Green — deploy a separate environment and switch traffic after validation. Keep the previous environment available for rollback.", "Canary — send a small portion of traffic to the new version, monitor metrics and gradually increase traffic.", "Readiness probes — prevent traffic from reaching containers that are not ready.", "Rollout status — use kubectl rollout status and inspect Deployment conditions.", "Release validation — verify payment API health, latency, error rate and dependency connectivity."]} />}
+        {activeTab === "rollback" && <InfoLab title="Rollback Practice Lab" description="Rollback must restore a known-good application version and configuration. Database changes require a compatible migration strategy." items={["Identify the failed release using deployment history.", "Capture the current Pod status, events and application logs.", "Select the previous known-good Helm revision or image digest.", "Run helm rollback or kubectl rollout undo in the approved environment.", "Wait for rollout completion and check Pod readiness.", "Run payment API smoke tests.", "Confirm error rate and latency return to expected levels.", "Record incident cause and preventive action."]} />}
+        {activeTab === "monitoring" && <InfoLab title="Production Monitoring Lab" description="Use service-level signals to validate a deployment and identify customer-impacting incidents." items={["Availability — percentage of successful health checks and requests.", "Latency — p50, p95 and p99 response-time trends.", "Traffic — request volume and payment transaction throughput.", "Errors — HTTP 5xx rate, failed transactions and dependency errors.", "Saturation — CPU, memory, Pod capacity and database connection usage.", "Prometheus — scrape application and Kubernetes metrics.", "Grafana — create dashboards for payment request rate, latency and errors.", "Alertmanager — route actionable alerts to the responsible team."]} />}
+        {activeTab === "security" && <InfoLab title="DevSecOps Security Lab" description="Security validation is integrated into the delivery pipeline rather than postponed until production." items={["Dependency scanning — identify vulnerable third-party packages.", "Secret scanning — detect accidentally committed credentials.", "SonarQube — analyze bugs, vulnerabilities and maintainability issues.", "Trivy filesystem scan — inspect source dependencies and configuration.", "Trivy image scan — inspect the final container image.", "IAM least privilege — restrict Jenkins push and deployment permissions.", "Container hardening — use minimal images, non-root users and controlled capabilities.", "Kubernetes security — apply RBAC, network policies and secret-management controls.", "Exception management — document owner, reason, compensating control and expiry."]} />}
+        {activeTab === "project" && <InfoLab title="Complete Hands-on Payment Application" description="Use this project as a practical learning path. Each milestone corresponds to the 12 pipeline stages." items={["Build a Java Spring Boot payment REST API.", "Create a GitHub repository and feature branch workflow.", "Configure pull request review and branch protection.", "Connect GitHub webhooks to Jenkins.", "Create a Jenkinsfile and Maven build.", "Write JUnit unit and integration tests.", "Configure SonarQube quality gate.", "Add dependency and Trivy security scans.", "Build a versioned Docker image.", "Create an ECR repository and push the image.", "Deploy to EKS using Kubernetes and Helm.", "Connect Argo CD and GitOps deployment configuration.", "Create Prometheus metrics and Grafana dashboards.", "Practice a failed rollout, rollback and production health validation."]} />}
+        {activeTab === "interview" && <InfoLab title="CI/CD Interview Preparation" description="Use these questions to explain the complete delivery lifecycle from source code to production." items={["Explain the complete CI/CD workflow from a developer commit to production.", "What is the difference between continuous integration, delivery and deployment?", "How does a GitHub webhook trigger Jenkins?", "Explain Jenkins controller, agents, executors and workspaces.", "What is the difference between Maven package and verify?", "How do JUnit reports become visible in Jenkins?", "What is a SonarQube quality gate and how is it enforced?", "How do dependency and container image scans differ?", "What is the difference between a Docker image tag and digest?", "How does Jenkins authenticate to Amazon ECR?", "Explain EKS, Deployment, ReplicaSet, Pod and Service.", "How do readiness and liveness probes differ?", "What is Helm and how does Helm rollback work?", "Explain Argo CD sync, drift detection and GitOps.", "How do Prometheus and Grafana work together?", "How would you investigate a production payment API failure?"]} />}
+
+        <footer className="mt-8 border-t border-slate-800 py-5 text-center text-xs text-slate-600">
+          DevMavox · CI/CD Pipeline Visualizer · Educational simulation — connect real infrastructure separately for live deployments.
+        </footer>
+      </div>
+    </main>
+  );
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-3"><div className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">{label}</div><div className="mt-1 text-xl font-black text-white">{value}</div></div>;
+}
+
+function SectionHeading({ title }: { title: string }) {
+  return <h3 className="text-sm font-bold text-cyan-300">{title}</h3>;
+}
+
+function LessonSection({ title, content, list }: { title: string; content?: string; list?: string[] }) {
+  return (
+    <section>
+      <SectionHeading title={title} />
+      {content && <p className="mt-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4 text-sm leading-7 text-slate-300">{content}</p>}
+      {list && <ol className="mt-3 space-y-2">{list.map((item, i) => <li key={i} className="flex gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 text-sm leading-6 text-slate-300"><span className="font-bold text-cyan-400">{String(i + 1).padStart(2, "0")}</span><span>{item}</span></li>)}</ol>}
+    </section>
+  );
+}
+
+function InfoLab({ title, description, items }: { title: string; description: string; items: string[] }) {
+  return (
+    <section className="rounded-2xl border border-slate-800 bg-[#0c1422] p-5 md:p-7">
+      <div className="mb-6 border-b border-slate-800 pb-5"><div className="text-xs font-bold uppercase tracking-widest text-cyan-400">DevMavox practical lab</div><h2 className="mt-2 text-2xl font-black">{title}</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">{description}</p></div>
+      <div className="grid gap-3 md:grid-cols-2">
+        {items.map((item, i) => <div key={i} className="rounded-xl border border-slate-800 bg-slate-950/60 p-4"><div className="mb-2 text-xs font-bold text-cyan-400">MODULE {String(i + 1).padStart(2, "0")}</div><p className="text-sm leading-6 text-slate-300">{item}</p></div>)}
+      </div>
+    </section>
+  );
+}

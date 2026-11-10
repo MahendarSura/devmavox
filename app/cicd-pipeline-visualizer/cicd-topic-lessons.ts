@@ -10318,32 +10318,121 @@ const lessons: Record<string, CicdTopicLesson> = {
   }
 };
 
-Object.assign(lessons, stageOneLessonOverrides);
+function convertLatestLesson(rawLesson: unknown): CicdTopicLesson {
+  const item = rawLesson as Record<string, unknown>;
 
-Object.assign(lessons, stageTwoLessonOverrides);
+  if (!Array.isArray(item.sections)) {
+    return rawLesson as CicdTopicLesson;
+  }
 
-Object.assign(lessons, stageThreeLessonOverrides);
+  const sections = item.sections as Array<{
+    title: string;
+    content: string;
+    code?: string;
+    practicalNotes?: string[];
+  }>;
 
-Object.assign(lessons, stageFourLessonOverrides);
+  const textFor = (pattern: RegExp): string =>
+    sections
+      .filter((section) => pattern.test(section.title))
+      .map((section) => `${section.title}\n${section.content}`)
+      .join("\n\n");
 
-Object.assign(lessons, stageFiveLessonOverrides);
+  const allContent = sections
+    .map((section) => `${section.title}\n${section.content}`)
+    .join("\n\n");
 
-Object.assign(lessons, stageSixLessonOverrides);
+  const codeContent = sections
+    .filter((section) => section.code)
+    .map((section) => `${section.title}\n${section.code}`)
+    .join("\n\n");
 
-Object.assign(lessons, stageSevenLessonOverrides);
+  const practicalNotes = sections.flatMap(
+    (section) => section.practicalNotes ?? []
+  );
 
-Object.assign(lessons, stageEightLessonOverrides);
+  const description =
+    typeof item.description === "string" ? item.description : "";
 
-Object.assign(lessons, stageNineLessonOverrides);
+  const exercise =
+    typeof item.exercise === "string" ? item.exercise : "";
 
-Object.assign(lessons, stageTenLessonOverrides);
+  return {
+    overview: description || sections[0]?.content || allContent,
+    purpose: textFor(/purpose|why|business value/i) || allContent,
+    architecture: textFor(/architecture|component|design|structure/i) || allContent,
+    workflow: sections.map(
+      (section) => `${section.title}: ${section.content}`
+    ),
+    example: allContent,
+    commands: sections
+      .filter((section) => section.code)
+      .flatMap((section) => (section.code ?? "").split("\n"))
+      .map((line) => line.trim())
+      .filter(Boolean),
+    configuration: codeContent || allContent,
+    failures: [
+      textFor(/failure|error|troubleshoot|problem|risk/i) || allContent
+    ],
+    recovery: [
+      textFor(/recovery|remediation|resolution|rollback/i) || allContent
+    ],
+    bestPractices: [
+      textFor(/best practice|production|security|operational|monitoring/i) || allContent,
+      ...practicalNotes
+    ],
+    exercise: exercise || "Review the lesson sections and complete the practical implementation steps."
+  };
+}
 
-Object.assign(lessons, stageElevenLessonOverrides);
+function mergeStageOverrides(
+  stageId: number,
+  overrides: Record<string, unknown>
+): number {
+  let merged = 0;
 
-Object.assign(lessons, stageTwelveLessonOverrides);
+  for (const [rawKey, rawLesson] of Object.entries(overrides)) {
+    if (!rawLesson || typeof rawLesson !== "object") continue;
+
+    const separator = rawKey.indexOf("|");
+    const topicTitle = (
+      separator >= 0 ? rawKey.slice(separator + 1) : rawKey
+    ).trim();
+
+    if (!topicTitle) continue;
+
+    lessons[`${stageId}|${topicTitle}`] =
+      convertLatestLesson(rawLesson);
+
+    merged++;
+  }
+
+  return merged;
+}
+
+export const stageOverrideCounts = [
+  mergeStageOverrides(1, stageOneLessonOverrides),
+  mergeStageOverrides(2, stageTwoLessonOverrides),
+  mergeStageOverrides(3, stageThreeLessonOverrides),
+  mergeStageOverrides(4, stageFourLessonOverrides),
+  mergeStageOverrides(5, stageFiveLessonOverrides),
+  mergeStageOverrides(6, stageSixLessonOverrides),
+  mergeStageOverrides(7, stageSevenLessonOverrides),
+  mergeStageOverrides(8, stageEightLessonOverrides),
+  mergeStageOverrides(9, stageNineLessonOverrides),
+  mergeStageOverrides(10, stageTenLessonOverrides),
+  mergeStageOverrides(11, stageElevenLessonOverrides),
+  mergeStageOverrides(12, stageTwelveLessonOverrides)
+];
+
+export const stageOverrideTotal = stageOverrideCounts.reduce(
+  (total, count) => total + count,
+  0
+);
 
 export function getCicdTopicLesson(stageId: number, title: string): CicdTopicLesson | undefined {
   return lessons[String(stageId) + "|" + title];
 }
 
 export const cicdTopicLessonCount = Object.keys(lessons).length;
+

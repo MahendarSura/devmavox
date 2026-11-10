@@ -14,727 +14,234 @@ function makeLesson(
   exercise: string
 ): CicdTopicLesson {
   return {
-    overview,
-    purpose,
-    architecture,
-    workflow,
-    example,
-    commands,
-    configuration,
-    failures,
-    recovery,
-    bestPractices,
-    exercise
+    overview, purpose, architecture, workflow, example,
+    commands, configuration, failures, recovery,
+    bestPractices, exercise
   };
 }
 
 export const stageFiveLessonOverrides: Record<string, CicdTopicLesson> = {
-
   "5|Testing Fundamentals": makeLesson(
-    "Software testing checks whether an application behaves according to its requirements. In a Java Spring Boot application, tests can validate individual methods, interactions between components and complete application behavior. Automated tests run repeatedly without requiring a person to manually verify every operation.",
-    "Testing catches defects before they reach production. In a CI/CD pipeline, automated tests provide evidence that a payment-service change is safe enough to continue to quality scanning, packaging and deployment.",
-    "Developer change → test source code → test framework → application code execution → assertions → test result and report → CI pipeline decision.",
-    [
-      "Understand the business requirement and expected behavior.",
-      "Identify the component or workflow that needs validation.",
-      "Write a test with clear input data and expected output.",
-      "Execute the test using Maven.",
-      "Inspect assertions and failure messages.",
-      "Publish test reports from the CI pipeline.",
-      "Block promotion when required tests fail."
-    ],
-    "A payment-service must reject a payment with a negative amount. A unit test supplies -100 as input and verifies that the service returns a validation error rather than creating a payment record.",
-    [
-      "mvn test",
-      "mvn clean test",
-      "mvn verify",
-      "mvn -Dtest=PaymentServiceTest test",
-      "Get-ChildItem .\\target\\surefire-reports"
-    ],
-    "Store Java tests under src/test/java and test resources under src/test/resources. Use JUnit 5 for test execution and assertions. Configure Maven Surefire to discover unit tests and publish the generated reports in Jenkins.",
-    [
-      "A test does not cover an important business rule.",
-      "An assertion checks the wrong expected value.",
-      "Tests pass locally but fail in the CI environment.",
-      "Tests depend on execution order or shared state.",
-      "A pipeline ignores test failures and continues."
-    ],
-    [
-      "Read the failing test name and assertion message.",
-      "Reproduce the failure with the same Maven command.",
-      "Compare test data, environment variables and Java versions.",
-      "Remove hidden dependencies between tests.",
-      "Verify that Maven returns a non-zero exit code for failures."
-    ],
-    [
-      "Write tests for business behavior, not implementation details alone.",
-      "Keep tests independent and repeatable.",
-      "Use meaningful test names and assertions.",
-      "Run tests automatically on every pull request.",
-      "Treat unexplained test failures as release blockers."
-    ],
-    "Write tests for successful payment creation, negative payment amount and missing customer ID. Run mvn test and explain what each assertion proves."
+    "Software testing verifies that application behavior matches business requirements. In a DevOps pipeline, automated tests provide fast feedback before code reaches production. A payment application should test calculations, service interactions, database behavior, API contracts, and complete user journeys.",
+    "Testing reduces production defects, protects business transactions, and gives developers confidence to change code. Unit tests detect logic defects quickly, integration tests validate component communication, and end-to-end tests verify important user workflows.",
+    "A typical Java Spring Boot testing architecture contains JUnit 5 as the test framework, Mockito for dependency isolation, Spring Test for application integration, Testcontainers for real infrastructure dependencies, JaCoCo for coverage, Maven Surefire and Failsafe for execution, and Jenkins for pipeline reporting.",
+    ["Developer writes code and tests", "Maven compiles application and test sources", "Unit tests execute using Surefire", "Integration tests execute using Failsafe", "Coverage is collected using JaCoCo", "Jenkins publishes reports and evaluates quality gates", "Only validated artifacts continue toward deployment"],
+    "For a payment service, test that a payment of 500 rupees with a 2 percent fee produces the expected total. Also test invalid amounts, insufficient balance, duplicate payment requests, and gateway failures.",
+    ["mvn clean test", "mvn clean verify", "mvn -Dtest=PaymentServiceTest test", "mvn -DskipTests package"],
+    "Use separate test source directories: src/main/java for application code and src/test/java for tests. Keep test dependencies in Maven test scope. Configure Surefire for unit tests and Failsafe for integration tests.",
+    ["Tests are not discovered because naming conventions are incorrect", "Tests pass locally but fail in CI due to environment differences", "Tests depend on execution order", "External services make test execution unreliable"],
+    ["Use standard test class naming such as PaymentServiceTest", "Run mvn clean test locally", "Remove shared mutable test state", "Use controlled test configuration and deterministic test data"],
+    ["Prefer a balanced test pyramid", "Keep unit tests fast and isolated", "Test business-critical payment paths", "Avoid depending on production services", "Run automated tests on every pull request", "Publish test reports and preserve failure evidence"],
+    "Create a test strategy for a payment application. Identify at least five unit tests, three integration tests, and two end-to-end scenarios. Explain which pipeline stage should execute each test."
   ),
 
   "5|JUnit 5 Architecture": makeLesson(
-    "JUnit 5 is a Java testing platform with three main parts: JUnit Platform, JUnit Jupiter and JUnit Vintage. The Platform provides the test execution infrastructure, Jupiter provides the programming model for modern tests, and Vintage supports older JUnit 3 and JUnit 4 tests when configured.",
-    "Understanding JUnit architecture helps engineers configure Maven test execution correctly and diagnose problems involving test engines, test discovery and incompatible test dependencies.",
-    "Maven Surefire → JUnit Platform launcher → selected test engine → test class and lifecycle callbacks → assertions → execution results.",
-    [
-      "Add the appropriate JUnit Jupiter dependency.",
-      "Confirm that Maven Surefire supports the configured JUnit Platform setup.",
-      "Create a test class under src/test/java.",
-      "Annotate test methods with @Test.",
-      "Run the test through Maven.",
-      "Inspect the test engine and execution report."
-    ],
-    "The payment-service uses JUnit Jupiter to test PaymentService. Surefire discovers the test class and delegates execution through the JUnit Platform so test results appear in the Maven report.",
-    [
-      "mvn dependency:tree -Dincludes=org.junit",
-      "mvn test",
-      "mvn -Dtest=PaymentServiceTest test",
-      "mvn help:effective-pom",
-      "mvn dependency:tree -Dincludes=org.junit.platform"
-    ],
-    "Use a consistent JUnit Jupiter version, preferably managed through a compatible Spring Boot dependency set. Include the test starter when using Spring Boot. Avoid mixing incompatible JUnit Platform, Jupiter and Vintage versions.",
-    [
-      "Maven reports that no tests were found.",
-      "A required JUnit test engine is missing.",
-      "JUnit dependency versions conflict.",
-      "Old JUnit tests are not discovered by the configured engine."
-    ],
-    [
-      "Inspect the resolved JUnit dependency tree.",
-      "Check test class naming and source directory placement.",
-      "Verify Surefire and JUnit Platform compatibility.",
-      "Add Vintage only when legacy JUnit tests genuinely require it.",
-      "Run one test class explicitly and inspect the report."
-    ],
-    [
-      "Use JUnit Jupiter for new test development.",
-      "Keep test engine versions compatible.",
-      "Avoid unnecessary legacy test engines.",
-      "Use Maven dependency management for consistent versions.",
-      "Verify test discovery in CI after framework upgrades."
-    ],
-    "Create a JUnit 5 test class with two test methods. Run it through Maven and identify how Surefire, the JUnit Platform and the Jupiter engine participate in execution."
+    "JUnit 5 is a Java testing ecosystem built around the JUnit Platform. It separates test discovery and execution from the programming model used to write tests. JUnit Jupiter provides the modern annotations and APIs used in most new Java projects.",
+    "Understanding its architecture helps troubleshoot missing tests, configure Maven correctly, and select compatible test engines. It also helps teams migrate older JUnit 4 tests without confusing the different APIs.",
+    "JUnit Platform is the foundation. The Platform Launcher starts test execution, Test Engines discover and run tests, Jupiter is the modern programming model, and Vintage supports legacy JUnit 3 and 4 tests when configured.",
+    ["Add JUnit Jupiter dependency", "Maven resolves the testing libraries", "Surefire starts the JUnit Platform provider", "The Platform discovers available engines", "Jupiter discovers annotated test methods", "The engine executes tests and returns results"],
+    "A PaymentServiceTest class uses org.junit.jupiter.api.Test. Maven Surefire discovers the class and Jupiter executes its test methods.",
+    ["mvn dependency:tree", "mvn -Dtest=PaymentServiceTest test", "mvn test", "mvn help:effective-pom"],
+    "Use junit-jupiter for modern tests and a compatible Maven Surefire version. Add junit-vintage-engine only when legacy JUnit 4 tests must run on the JUnit Platform.",
+    ["No tests found because the JUnit engine is missing", "JUnit 4 annotations are mixed with Jupiter imports", "Dependency versions conflict", "Old Surefire configuration does not discover tests"],
+    ["Inspect test dependencies with mvn dependency:tree", "Confirm imports use org.junit.jupiter.api", "Align JUnit and Surefire versions", "Run a single test class to isolate discovery problems"],
+    ["Prefer JUnit Jupiter for new tests", "Avoid mixing JUnit generations without a migration plan", "Use dependency management to align versions", "Keep test framework versions consistent in CI"],
+    "Create a Maven project with JUnit Jupiter. Write one passing test and one intentionally failing test. Inspect the Surefire report and identify which JUnit engine executed the tests."
   ),
 
   "5|Test Annotations": makeLesson(
-    "JUnit 5 annotations describe test methods, test lifecycle callbacks, disabled tests, parameterized tests and test grouping. Common annotations include @Test, @BeforeEach, @AfterEach, @BeforeAll, @AfterAll, @Disabled, @DisplayName and @Nested.",
-    "Annotations make test behavior explicit and reduce repeated setup code. Correct lifecycle usage helps tests initialize required data and release resources without affecting other test cases.",
-    "JUnit test class → lifecycle callbacks → annotated test method → assertions → cleanup callbacks → test result.",
-    [
-      "Create a test class using the JUnit Jupiter API.",
-      "Use @Test for individual test cases.",
-      "Use @BeforeEach for per-test setup.",
-      "Use @AfterEach to release per-test resources.",
-      "Use @BeforeAll and @AfterAll for class-level setup and cleanup.",
-      "Use @DisplayName to make reports understandable.",
-      "Run tests and inspect execution order."
-    ],
-    "A PaymentServiceTest creates a fresh service fixture before each test. A temporary test resource is cleaned up afterward so one payment test cannot influence another.",
-    [
-      "mvn -Dtest=PaymentServiceTest test",
-      "mvn test",
-      "mvn -Dtest=PaymentServiceTest#shouldRejectNegativeAmount test"
-    ],
-    "Import annotations from org.junit.jupiter.api. Use static lifecycle methods for @BeforeAll and @AfterAll unless the test instance lifecycle is configured differently. Avoid using @Disabled to hide unresolved production defects.",
-    [
-      "A lifecycle method is not executed because its signature is invalid.",
-      "Shared setup causes one test to affect another.",
-      "A disabled test is accidentally committed without explanation.",
-      "A cleanup callback fails and hides the original test failure."
-    ],
-    [
-      "Check annotation imports and lifecycle method signatures.",
-      "Review whether setup should run once per class or before every test.",
-      "Move mutable test state into per-test fixtures.",
-      "Inspect cleanup exceptions separately from the original failure.",
-      "Re-enable disabled tests after resolving the documented issue."
-    ],
-    [
-      "Use lifecycle callbacks only for genuine shared setup.",
-      "Keep each test independent.",
-      "Give test methods descriptive names.",
-      "Document temporarily disabled tests with a reason.",
-      "Always clean up external resources created by tests."
-    ],
-    "Create a test class with @BeforeEach, @AfterEach, @Test and @DisplayName. Add two payment tests and verify that setup runs separately for each test."
+    "JUnit annotations tell the testing framework which methods are tests and how test setup, cleanup, grouping, and execution should work. Correct annotation usage makes test intent clear and reduces duplicated setup code.",
+    "Annotations allow teams to organize tests, prepare fixtures, reuse lifecycle methods, and selectively run test groups in local development and CI pipelines.",
+    "JUnit Jupiter uses @Test for test methods, @BeforeEach and @AfterEach for per-test setup and cleanup, @BeforeAll and @AfterAll for class-level lifecycle, @Nested for grouped tests, @Tag for classification, and @Disabled to temporarily disable a test.",
+    ["Create a test class", "Annotate executable test methods with @Test", "Prepare independent test data with @BeforeEach", "Release resources with @AfterEach", "Group related scenarios using @Nested", "Classify tests using @Tag", "Execute selected tests through Maven"],
+    "A PaymentServiceTest uses @BeforeEach to create a service and test fixture. Separate @Test methods verify successful payments and rejected invalid amounts.",
+    ["mvn test", "mvn -Dtest=PaymentServiceTest test", "mvn -Dgroups=unit test"],
+    "Import annotations from org.junit.jupiter.api. Use @BeforeAll and @AfterAll as static methods by default, unless the class uses the per-class test instance lifecycle.",
+    ["Tests do not run because @Test comes from the wrong package", "Shared setup creates state that leaks between tests", "Disabled tests are forgotten", "Incorrect lifecycle configuration causes static method errors"],
+    ["Correct the annotation imports", "Move per-test setup into @BeforeEach", "Review cleanup methods", "Track disabled tests and define an owner and removal date"],
+    ["Use lifecycle annotations only for genuine shared setup", "Keep test methods independent", "Use descriptive @DisplayName values", "Use tags consistently for unit and integration tests", "Do not disable failing tests permanently to make CI green"],
+    "Write a test class with @BeforeEach, @AfterEach, @Test, @Nested, and @DisplayName. Demonstrate how the lifecycle methods execute around two payment test cases."
   ),
 
   "5|Assertions": makeLesson(
-    "Assertions compare actual application behavior with expected results. JUnit 5 provides assertions such as assertEquals, assertTrue, assertFalse, assertNull, assertNotNull, assertThrows and assertAll. A failed assertion marks the test as failed and provides diagnostic information.",
-    "Assertions turn business requirements into executable checks. A payment test should not merely execute a method; it must verify the returned result, important state changes and expected exceptions.",
-    "Test input → application method → actual result or exception → JUnit assertion → pass or failure report.",
-    [
-      "Choose a business behavior to validate.",
-      "Prepare the required test input.",
-      "Execute the application method.",
-      "Capture the returned value or exception.",
-      "Write assertions for expected behavior.",
-      "Run the test and inspect failure messages."
-    ],
-    "A payment calculation test supplies an amount of 500 and a fee of 10. It asserts that the calculated total is 510. A separate test uses assertThrows to verify that a negative amount is rejected.",
-    [
-      "mvn -Dtest=PaymentCalculationTest test",
-      "mvn test",
-      "mvn -Dtest=PaymentValidationTest test"
-    ],
-    "Import assertions from org.junit.jupiter.api.Assertions. Prefer expected-versus-actual assertions with meaningful messages when they improve diagnosis. Use assertAll when several independent checks should be reported together.",
-    [
-      "An assertion checks an unrelated or incorrect value.",
-      "A test passes because it contains no meaningful assertions.",
-      "An exception is expected but the test does not verify its type.",
-      "Floating-point calculations fail because of precision assumptions."
-    ],
-    [
-      "Read the assertion's expected and actual values.",
-      "Verify the test input and business requirement.",
-      "Use BigDecimal for financial calculations where decimal precision matters.",
-      "Use assertThrows to validate expected exceptions.",
-      "Add assertions for important side effects and rerun the test."
-    ],
-    [
-      "Assert business outcomes, not just method execution.",
-      "Use precise assertions for financial values.",
-      "Check exception types and important messages.",
-      "Avoid assertions that depend on unstable timestamps or random IDs.",
-      "Keep assertion failures easy to understand."
-    ],
-    "Write assertions for payment total calculation, invalid payment amount and missing customer data. Introduce one incorrect expected value and inspect the failure report."
+    "Assertions compare actual application behavior with expected results. A test fails when an assertion detects a mismatch. Good assertions explain exactly which business rule or response contract is incorrect.",
+    "Assertions turn test execution into meaningful validation. They protect payment amounts, customer balances, API status codes, validation rules, and exception behavior from accidental changes.",
+    "JUnit Jupiter provides equality, boolean, null, identity, exception, timeout, and grouped assertions. assertAll evaluates multiple assertions together, while assertThrows verifies expected exceptions.",
+    ["Arrange the input and expected result", "Execute the application method", "Capture the actual result", "Assert the expected value", "Use exception assertions for invalid operations", "Review assertion messages in the test report"],
+    "When a payment of 500 rupees has a 10 rupee processing fee, assert that the calculated total is 510. For a negative amount, assert that the service throws IllegalArgumentException.",
+    ["mvn -Dtest=PaymentCalculationTest test", "mvn test"],
+    "Use org.junit.jupiter.api.Assertions static imports where appropriate. Prefer assertEquals(expected, actual) and provide a useful message for complicated business validations.",
+    ["Expected and actual values are supplied in the wrong order", "Assertions check only that a result is non-null", "Floating-point calculations cause precision mismatches", "Exception assertions accept the wrong exception type"],
+    ["Correct expected and actual argument order", "Assert important business values rather than only object existence", "Use BigDecimal for monetary calculations", "Assert the exact exception type and relevant message when required"],
+    ["Use precise assertions", "Avoid meaningless assertTrue(true)", "Use assertAll for related independent checks", "Compare monetary values using appropriate precision", "Make failure messages understandable to developers"],
+    "Write assertions for payment total, transaction status, generated transaction ID, invalid amount, and insufficient balance. Include one assertAll block and one assertThrows assertion."
   ),
 
   "5|Test Lifecycle": makeLesson(
-    "The JUnit test lifecycle defines when a test instance is created and when setup, test execution and cleanup callbacks run. The default lifecycle creates a new test instance for each test method. JUnit also supports a per-class lifecycle when explicitly configured.",
-    "Lifecycle management prevents shared data, open connections and temporary resources from leaking between tests. It is especially important when testing services that use databases, files or external resources.",
-    "Test engine creates instance → BeforeAll → BeforeEach → test method → AfterEach → AfterAll → final result.",
-    [
-      "Choose the test instance lifecycle.",
-      "Prepare class-level resources when required.",
-      "Initialize test-specific state before each method.",
-      "Execute the test and assertions.",
-      "Release per-test resources.",
-      "Release class-level resources after all tests.",
-      "Verify repeated execution produces the same results."
-    ],
-    "A payment repository integration test starts a database container once for the test class and creates a fresh payment record before each test. Cleanup prevents records from affecting later test cases.",
-    [
-      "mvn -Dtest=PaymentRepositoryTest test",
-      "mvn test",
-      "mvn -Dtest=PaymentRepositoryTest -DtestInstanceLifecycle=per_class test"
-    ],
-    "Use @BeforeAll and @AfterAll for class-level resources and @BeforeEach and @AfterEach for per-test setup and cleanup. If using @TestInstance(TestInstance.Lifecycle.PER_CLASS), understand that mutable fields can be shared across methods.",
-    [
-      "One test passes alone but fails when the full suite runs.",
-      "A shared mutable field retains data between tests.",
-      "Database or file resources remain open after execution.",
-      "A lifecycle callback uses an unsupported method signature."
-    ],
-    [
-      "Run the failing test alone and then with the complete suite.",
-      "Inspect mutable fields and shared static state.",
-      "Move test-specific state into @BeforeEach.",
-      "Close resources in cleanup callbacks or managed resource scopes.",
-      "Repeat the suite to confirm deterministic behavior."
-    ],
-    [
-      "Prefer independent test instances.",
-      "Keep mutable state local to each test.",
-      "Close database, file and network resources.",
-      "Use class-level initialization only when it improves test performance safely.",
-      "Avoid relying on test execution order."
-    ],
-    "Create two tests that use a shared test fixture. Demonstrate the difference between per-method and per-class lifecycle behavior and ensure cleanup runs after each test."
+    "The JUnit test lifecycle defines when test objects are created, when setup runs, when test methods execute, and when resources are released. Lifecycle management is important when tests use databases, temporary files, containers, or shared fixtures.",
+    "Correct lifecycle handling prevents test contamination, resource leaks, order dependency, and inconsistent results between local execution and Jenkins.",
+    "JUnit Jupiter normally creates a new test instance for each test method. @BeforeEach and @AfterEach execute around every test, while @BeforeAll and @AfterAll execute once per test class. Extensions provide reusable lifecycle integrations.",
+    ["JUnit discovers the test class", "The test instance is created", "BeforeAll runs once", "BeforeEach prepares the individual test", "The test method executes", "AfterEach cleans up", "AfterAll performs class-level cleanup"],
+    "A database integration test starts required resources before execution and closes connections or temporary resources after the test. Each test receives isolated test data.",
+    ["mvn -Dtest=PaymentServiceTest test", "mvn test"],
+    "Use @TestInstance(TestInstance.Lifecycle.PER_METHOD) for the default isolated instance behavior. Choose PER_CLASS only when shared instance state is intentional and safely managed.",
+    ["Mutable state is shared between tests", "Cleanup does not execute after resource creation fails", "Static setup methods use incorrect signatures", "Tests depend on a particular execution order"],
+    ["Reset mutable state before each test", "Use try-with-resources for closeable resources", "Use extension-managed resources where suitable", "Remove order dependencies and verify isolated execution"],
+    ["Prefer independent test instances", "Always clean up external resources", "Avoid storing test results in static mutable fields", "Do not depend on test execution order", "Use extensions for reusable resource management"],
+    "Create two tests that use the same service class. Add lifecycle logging to @BeforeAll, @BeforeEach, @AfterEach, and @AfterAll. Run the class and document the observed order."
   ),
 
   "5|Parameterized Tests": makeLesson(
-    "Parameterized tests execute the same test logic with multiple input values. JUnit 5 supports sources such as @ValueSource, @CsvSource, @MethodSource, @NullSource and @EnumSource. Each supplied argument set produces a separate test invocation.",
-    "Parameterized tests reduce duplicated test code and make it easier to verify boundary values, validation rules and combinations of payment inputs consistently.",
-    "Argument source → parameterized test invocation → application behavior → assertion for each input set → individual execution results.",
-    [
-      "Identify a behavior that must be tested with multiple inputs.",
-      "Choose a suitable JUnit argument source.",
-      "Define test parameters and expected results.",
-      "Execute the parameterized test.",
-      "Inspect each invocation in the test report.",
-      "Add boundary and invalid input cases."
-    ],
-    "The payment amount validator accepts positive amounts and rejects zero or negative values. A @CsvSource test supplies several amounts and expected validation results using the same test method.",
-    [
-      "mvn -Dtest=PaymentValidationTest test",
-      "mvn test"
-    ],
-    "Use @ParameterizedTest and the appropriate source annotation. Include the required JUnit parameterized-test support through the selected JUnit dependency setup. Use @MethodSource when test cases need richer Java objects.",
-    [
-      "The parameterized test is not discovered.",
-      "The supplied arguments do not match method parameter types.",
-      "A CSV value is parsed incorrectly.",
-      "A test case has an invalid expected result."
-    ],
-    [
-      "Check the parameterized-test dependency and imports.",
-      "Compare source argument count and test method parameters.",
-      "Inspect CSV quoting, delimiters and conversion behavior.",
-      "Verify each expected result against the business requirement.",
-      "Run the individual parameterized class and inspect every invocation."
-    ],
-    [
-      "Use descriptive argument names when possible.",
-      "Include boundary and invalid values.",
-      "Keep test data readable.",
-      "Use MethodSource for complex scenarios.",
-      "Avoid creating one enormous parameterized test that mixes unrelated behavior."
-    ],
-    "Write a parameterized payment amount validation test with positive, zero and negative values. Include at least five inputs and verify each invocation separately."
+    "Parameterized tests execute the same test logic with multiple input values. They reduce duplicated test methods and make it easier to verify boundary values, invalid inputs, and different business scenarios.",
+    "A payment system must handle many amounts, currencies, fee rates, and validation conditions. Parameterized tests verify these cases consistently while keeping the test suite maintainable.",
+    "JUnit Jupiter parameterized tests use @ParameterizedTest with sources such as @ValueSource, @CsvSource, @MethodSource, and @EnumSource. Arguments are supplied to the test method for each invocation.",
+    ["Add the JUnit parameterized-test dependency", "Mark a method with @ParameterizedTest", "Select an argument source", "Define parameters in the test method", "Execute each input case", "Inspect individual invocation results"],
+    "A payment validator is tested with amounts 1, 100, and 500 using @ValueSource. A @CsvSource test checks amount and expected fee combinations.",
+    ["mvn -Dtest=PaymentValidationTest test", "mvn test"],
+    "Use org.junit.jupiter.params.ParameterizedTest and org.junit.jupiter.params.provider imports. Add junit-jupiter-params when it is not already included through the selected JUnit dependency.",
+    ["Parameterized tests are not discovered because the params library is missing", "Input types do not match method parameters", "CSV values are incorrectly quoted", "Method source has an invalid signature"],
+    ["Inspect Maven dependencies", "Correct argument types and source definitions", "Use valid CSV syntax", "Ensure method sources are accessible and return supported argument streams"],
+    ["Use parameterized tests for repeated input-driven behavior", "Include boundary and invalid values", "Keep test names descriptive", "Avoid putting unrelated business scenarios into one parameterized method"],
+    "Create a parameterized payment validation test with valid amounts, zero, negative amounts, and a maximum allowed amount. Use @CsvSource to verify expected processing fees."
   ),
 
   "5|Mockito Fundamentals": makeLesson(
-    "Mockito is a Java mocking framework used to create test doubles for dependencies. It allows a test to control dependency responses and verify interactions without calling real databases, payment gateways or other external systems.",
-    "Mockito helps unit tests focus on the behavior of the class under test. A PaymentService can be tested with a mocked PaymentRepository so the test does not require a running database.",
-    "JUnit test → Mockito creates mock dependency → test injects mock into service → service executes → mock returns configured response → assertions and interaction verification.",
-    [
-      "Identify dependencies used by the class under test.",
-      "Create mock objects for external collaborators.",
-      "Configure expected dependency responses.",
-      "Inject mocks into the service.",
-      "Execute the service method.",
-      "Assert returned behavior and verify required interactions."
-    ],
-    "The payment service calls PaymentRepository to save a transaction. A Mockito test returns a controlled saved-payment object from the repository mock and verifies that save was called once.",
-    [
-      "mvn -Dtest=PaymentServiceTest test",
-      "mvn test",
-      "mvn dependency:tree -Dincludes=org.mockito"
-    ],
-    "Use Mockito through a compatible Mockito dependency or Spring Boot test starter. JUnit 5 tests can use MockitoExtension with @ExtendWith(MockitoExtension.class), @Mock and @InjectMocks.",
-    [
-      "Mockito cannot create a mock because the dependency is missing.",
-      "The service uses a real dependency instead of the intended mock.",
-      "A test expects a method call that never occurred.",
-      "A mock is configured with an argument that does not match the actual call."
-    ],
-    [
-      "Check Mockito dependencies and JUnit extension configuration.",
-      "Verify that the service receives the mocked collaborator.",
-      "Inspect method arguments and configured stubbing.",
-      "Use argument matchers consistently when matching multiple parameters.",
-      "Verify only meaningful interactions required by the business behavior."
-    ],
-    [
-      "Mock external collaborators, not every internal method.",
-      "Keep unit tests independent from real infrastructure.",
-      "Use clear stubbing and verification.",
-      "Avoid excessive interaction verification.",
-      "Do not confuse a mocked unit test with an integration test."
-    ],
-    "Create a PaymentService unit test using a mocked PaymentRepository. Configure a save response, execute the service and verify the repository interaction."
+    "Mockito is a Java mocking framework that creates test doubles for dependencies. It allows a service to be tested without calling real databases, payment gateways, email services, or other external systems.",
+    "Mockito makes unit tests fast and predictable. It helps isolate business logic and verify how a service communicates with its collaborators.",
+    "A test creates mocks for dependencies, configures behavior using when and thenReturn, invokes the class under test, and verifies interactions using verify. MockitoExtension integrates Mockito with JUnit Jupiter.",
+    ["Add Mockito test dependencies", "Create mock dependencies", "Inject mocks into the service", "Stub dependency responses", "Invoke the service method", "Assert the returned result", "Verify required interactions"],
+    "Mock PaymentGateway to return APPROVED. Invoke PaymentService.processPayment and verify that the gateway received the expected amount and transaction request.",
+    ["mvn -Dtest=PaymentServiceTest test", "mvn test"],
+    "Use mockito-junit-jupiter with @ExtendWith(MockitoExtension.class), @Mock, and @InjectMocks. Keep Mockito dependencies in test scope.",
+    ["A mock is not injected into the service", "Stubbing uses incorrect argument matchers", "Tests verify implementation details instead of behavior", "A spy invokes an unexpected real method"],
+    ["Enable MockitoExtension or initialize mocks correctly", "Use consistent matchers for all arguments in a call", "Verify business-relevant interactions", "Use a mock instead of a spy unless real behavior is required"],
+    ["Mock external boundaries, not every internal object", "Keep stubbing minimal", "Avoid excessive interaction verification", "Use descriptive test names", "Do not use mocks as a substitute for integration testing"],
+    "Create a PaymentService unit test with a mocked gateway. Test an approved payment, a declined payment, and a gateway exception. Verify the expected interactions."
   ),
 
   "5|Mocking Dependencies": makeLesson(
-    "Mocking dependencies means replacing a real collaborator with a controlled test double. Mockito can define returned values, exceptions and behavior for specific method calls. This allows tests to simulate success, validation failures, timeouts and unavailable downstream systems.",
-    "Payment applications depend on databases, notification systems and external gateways. Mocking these dependencies makes unit tests fast and predictable while allowing engineers to test how the service responds to different dependency outcomes.",
-    "Test fixture → mocked repository or gateway → configured response or exception → service method → error handling and result assertions.",
-    [
-      "Identify the dependency boundary being tested.",
-      "Create a mock for that dependency.",
-      "Configure normal and failure responses.",
-      "Execute the service operation.",
-      "Assert the service result and error handling.",
-      "Verify that the expected dependency call occurred."
-    ],
-    "A payment gateway mock returns APPROVED for one test and throws a timeout exception for another. The PaymentService must return a successful result in the first case and a controlled failure in the second.",
-    [
-      "mvn -Dtest=PaymentGatewayServiceTest test",
-      "mvn test"
-    ],
-    "Use Mockito when(...).thenReturn(...) for return values and when(...).thenThrow(...) for exceptions. Use doReturn or doThrow where appropriate for void methods or special spy scenarios. Keep test fixtures focused on the dependency contract.",
-    [
-      "A mock returns null because no behavior was configured.",
-      "A timeout scenario is not tested.",
-      "A mock is not injected into the service.",
-      "Over-mocking hides defects in the class under test."
-    ],
-    [
-      "Inspect the configured stubbing for the actual method arguments.",
-      "Confirm constructor or field injection receives the mock.",
-      "Add explicit success, exception and boundary scenarios.",
-      "Keep real business logic in the service under test.",
-      "Use integration tests to verify real dependency wiring separately."
-    ],
-    [
-      "Mock external systems at clear boundaries.",
-      "Test both success and failure responses.",
-      "Avoid mocking simple value objects.",
-      "Keep stubbing close to the test that needs it.",
-      "Verify observable behavior rather than internal implementation details."
-    ],
-    "Mock a payment gateway with approved, declined and timeout responses. Write three tests and verify how PaymentService handles each outcome."
+    "Dependency mocking replaces collaborators with controlled test objects. This lets a test focus on one class while controlling repository results, gateway responses, notification failures, and other dependency behavior.",
+    "Controlled dependencies make failure scenarios reproducible without relying on external infrastructure. They are especially useful for testing payment services and error-handling branches.",
+    "The service under test receives mocked repositories, gateways, or clients. Mockito stubbing defines return values or exceptions, ArgumentCaptor captures calls, and verification confirms required interactions.",
+    ["Identify the dependency boundary", "Create the required mock", "Configure expected dependency behavior", "Invoke the target service", "Assert business outcomes", "Capture arguments if needed", "Verify relevant interactions"],
+    "Mock PaymentRepository to return an existing transaction and verify that a duplicate payment is rejected without invoking PaymentGateway again.",
+    ["mvn -Dtest=PaymentServiceDependencyTest test", "mvn test"],
+    "Use when(...).thenReturn(...), when(...).thenThrow(...), doReturn(...) for suitable spy cases, and ArgumentCaptor for inspecting complex requests.",
+    ["Unnecessary stubbing makes tests difficult to understand", "Mocks return null unexpectedly", "Argument matchers are mixed with raw arguments", "The test verifies calls that are not part of the contract"],
+    ["Stub only the behavior needed by the scenario", "Provide explicit default behavior where appropriate", "Use eq or other matchers consistently", "Capture and inspect request objects when values matter"],
+    ["Mock external boundaries rather than internal implementation details", "Keep each test scenario focused", "Test both success and failure responses", "Avoid brittle verification of call order unless order is a business requirement"],
+    "Mock a payment repository and payment gateway. Test a successful payment, duplicate transaction, gateway timeout, and repository failure. Use ArgumentCaptor to inspect the gateway request."
   ),
 
   "5|Service Unit Testing": makeLesson(
-    "Service unit testing validates business logic in a service class without starting the complete Spring application or requiring real infrastructure. Dependencies such as repositories and gateways are replaced with controlled mocks, while the service's actual methods execute.",
-    "Service tests provide fast feedback on business rules. Payment amount validation, fee calculation, transaction state changes and duplicate-payment handling should be tested before changes reach integration testing.",
-    "JUnit test → real PaymentService instance → mocked repository and gateway → business logic execution → result and interaction assertions.",
-    [
-      "Identify the service method and its business rules.",
-      "List the service's external dependencies.",
-      "Create mocks for those dependencies.",
-      "Construct or inject the real service.",
-      "Execute success, invalid-input and dependency-failure scenarios.",
-      "Assert return values, exceptions and required interactions."
-    ],
-    "PaymentService calculates a transaction fee and saves the payment. A unit test mocks the repository, supplies a payment amount and verifies the calculated total and saved status.",
-    [
-      "mvn -Dtest=PaymentServiceTest test",
-      "mvn test",
-      "mvn -Dtest=PaymentServiceTest#shouldCalculatePaymentFee test"
-    ],
-    "Use JUnit Jupiter with MockitoExtension. Prefer constructor injection in production service classes because it makes dependencies explicit and simplifies unit-test construction. Use BigDecimal for monetary calculations.",
-    [
-      "A service test accidentally connects to a real database.",
-      "The test verifies only that a method returned without an exception.",
-      "Mocked repository behavior does not match the service's actual call.",
-      "Financial calculations fail due to floating-point precision."
-    ],
-    [
-      "Check whether the test starts Spring or creates real infrastructure unnecessarily.",
-      "Inspect service dependencies and replace external collaborators with mocks.",
-      "Assert important business results and state transitions.",
-      "Use BigDecimal and explicit rounding rules for money.",
-      "Run the test independently and as part of the full suite."
-    ],
-    [
-      "Test one business behavior per test where practical.",
-      "Keep the service real and mock its external dependencies.",
-      "Cover success, invalid input and dependency failures.",
-      "Avoid database access in pure unit tests.",
-      "Use meaningful test names and business-focused assertions."
-    ],
-    "Write PaymentService unit tests for successful payment, duplicate payment, invalid amount and gateway timeout. Verify the service result and repository interactions."
+    "Service unit testing validates business rules implemented in the application service layer. It checks calculations, decisions, validation, and dependency coordination without starting the full Spring application.",
+    "Service tests protect the core business behavior independently of HTTP, database, and infrastructure layers. They provide fast feedback when developers modify payment or transaction logic.",
+    "A service receives repositories, gateways, and other collaborators through dependency injection. JUnit executes the service method while Mockito controls dependency responses. Assertions validate the service result and side effects.",
+    ["Identify a service method and its business rules", "List success and failure scenarios", "Mock external collaborators", "Arrange test data", "Execute the service method", "Assert results and exceptions", "Verify required collaborator calls"],
+    "PaymentService.processPayment validates the amount, checks the customer balance, calls the payment gateway, stores the transaction, and returns a transaction response. Unit tests cover each decision branch.",
+    ["mvn -Dtest=PaymentServiceTest test", "mvn -Dtest=*ServiceTest test", "mvn test"],
+    "Keep service tests in src/test/java. Use constructor injection in production services so dependencies can be supplied explicitly in tests. Use BigDecimal for monetary values.",
+    ["Business validation branches are not tested", "Mocks hide incorrect service assumptions", "Tests use shared mutable fixtures", "Money comparisons use unsafe floating-point values"],
+    ["Add tests for each meaningful business decision", "Use realistic but isolated test data", "Use BigDecimal assertions", "Test duplicate requests and dependency failures", "Keep tests independent of Spring when testing pure service logic"],
+    ["Cover success, validation, and failure paths", "Test idempotency where required", "Avoid starting the application context for simple unit tests", "Assert business outcomes rather than private method calls"],
+    "Implement service unit tests for payment approval, insufficient balance, invalid amount, duplicate transaction, and gateway timeout. Ensure each test controls its dependencies."
   ),
 
   "5|Controller Testing": makeLesson(
-    "Controller testing validates HTTP endpoints, request mapping, input validation, response status codes and JSON payloads. Spring MVC tests can use MockMvc to exercise controller behavior without starting a real web server.",
-    "Controller tests catch API contract defects before deployment. They verify that clients receive the expected HTTP response when payment requests are valid, malformed, unauthorized or refer to missing resources.",
-    "Mock HTTP request → Spring MVC dispatcher → controller → service dependency → HTTP response → status, headers and JSON assertions.",
-    [
-      "Identify the controller endpoint and HTTP method.",
-      "Prepare valid and invalid request payloads.",
-      "Use MockMvc to submit the request.",
-      "Mock service behavior where the test focuses on the controller.",
-      "Assert HTTP status, response fields and validation errors.",
-      "Run controller tests through Maven."
-    ],
-    "A POST /api/payments endpoint accepts a valid payment request and returns HTTP 201. A request with a negative amount returns HTTP 400 with a validation error response.",
-    [
-      "mvn -Dtest=PaymentControllerTest test",
-      "mvn test"
-    ],
-    "Use @WebMvcTest for focused MVC slice tests and @AutoConfigureMockMvc where appropriate. Use MockMvc request builders and JSONPath assertions. Mock the service layer when testing controller behavior in isolation.",
-    [
-      "The endpoint returns an unexpected HTTP status.",
-      "Request JSON cannot be deserialized.",
-      "Validation annotations are not applied.",
-      "The test loads unrelated application configuration and fails.",
-      "The controller response contract changes unexpectedly."
-    ],
-    [
-      "Inspect the MockMvc response status, body and headers.",
-      "Verify request DTO field names and JSON types.",
-      "Check validation annotations and controller advice.",
-      "Use the correct Spring test slice for the intended test scope.",
-      "Compare response JSON with the API contract."
-    ],
-    [
-      "Test successful and invalid request paths.",
-      "Verify HTTP status and response structure.",
-      "Keep controller tests focused on HTTP behavior.",
-      "Test exception-to-response mapping.",
-      "Avoid relying on a real external payment gateway in controller slice tests."
-    ],
-    "Write MockMvc tests for payment creation, invalid amount and missing payment ID. Verify HTTP status codes and important JSON response fields."
+    "Controller testing verifies the HTTP contract exposed by Spring MVC controllers. It checks routes, request binding, validation, response status, JSON fields, security behavior, and exception mapping.",
+    "Controller tests protect API compatibility for frontend applications, mobile clients, and other services. They catch regressions in request validation and response formats before deployment.",
+    "MockMvc sends simulated HTTP requests through Spring MVC. Controller tests can use standalone setup or Spring test slices such as @WebMvcTest. Service dependencies are mocked when the test focuses on the web layer.",
+    ["Create a controller test", "Configure MockMvc or @WebMvcTest", "Mock service dependencies", "Send an HTTP request", "Assert status and response content", "Verify validation and error behavior"],
+    "POST /api/payments receives a JSON payment request. The controller test verifies HTTP 201 for an approved payment and HTTP 400 for an invalid amount.",
+    ["mvn -Dtest=PaymentControllerTest test", "mvn test"],
+    "Use @WebMvcTest(PaymentController.class), @AutoConfigureMockMvc where appropriate, and MockMvc request builders. Use JSONPath or response content matchers for response assertions.",
+    ["Controller dependencies are not mocked", "JSON request fields do not match DTO properties", "Validation is not activated", "Security filters reject test requests", "Exception handlers return unexpected status codes"],
+    ["Load the appropriate MVC test slice", "Check DTO field names and serialization", "Include validation configuration", "Configure test authentication or CSRF where needed", "Verify controller advice behavior"],
+    ["Test successful and rejected requests", "Assert status, headers, and response body", "Test validation and authorization", "Keep controller tests focused on HTTP behavior", "Avoid testing service business rules again in every controller test"],
+    "Create MockMvc tests for payment creation, payment lookup, invalid request body, unauthorized access, and a service exception. Assert status codes and JSON response fields."
   ),
 
   "5|Spring Boot Integration Testing": makeLesson(
-    "Spring Boot integration testing verifies that multiple application components work together using Spring's application context. Unlike isolated unit tests, integration tests can validate dependency injection, repositories, transactions, configuration and application wiring.",
-    "A service may pass unit tests while failing when Spring creates its real beans or connects to a database. Integration testing catches these wiring and infrastructure problems before deployment.",
-    "JUnit test → Spring TestContext → application configuration and dependency injection → real or controlled infrastructure → component interaction → assertions.",
-    [
-      "Choose the application context required by the test.",
-      "Use @SpringBootTest when full application wiring is necessary.",
-      "Configure test properties and infrastructure.",
-      "Execute the application workflow.",
-      "Assert component behavior and persisted results.",
-      "Clean up test data and inspect reports."
-    ],
-    "A payment integration test starts the Spring application context, submits a payment through the service and verifies that the transaction is stored correctly by the configured repository.",
-    [
-      "mvn -Dtest=PaymentIntegrationTest test",
-      "mvn verify",
-      "mvn -Dtest=PaymentIntegrationTest -Dspring.profiles.active=test test"
-    ],
-    "Use @SpringBootTest for full-context tests and @ActiveProfiles(\"test\") for test-specific configuration. Configure database connection properties through safe test configuration. Use transactional rollback when appropriate, but verify behavior that depends on actual commit semantics separately.",
-    [
-      "Spring application context fails to start.",
-      "A required bean is missing or ambiguous.",
-      "Database connection settings point to an unavailable service.",
-      "Test data leaks between executions.",
-      "A test passes with mocks but fails with actual component wiring."
-    ],
-    [
-      "Inspect the first Spring context startup exception.",
-      "Check bean definitions, profiles and conditional configuration.",
-      "Verify database availability and test connection properties.",
-      "Clean test data or use controlled transaction rollback.",
-      "Rerun the integration test with the same environment used in CI."
-    ],
-    [
-      "Use full application context only when required.",
-      "Keep test configuration separate from production secrets.",
-      "Make test infrastructure reproducible.",
-      "Control test data and cleanup.",
-      "Run integration tests in CI before artifact promotion."
-    ],
-    "Create a Spring Boot integration test for payment creation. Start the application context, save a payment using the real repository and verify the persisted record."
+    "Spring Boot integration testing validates how multiple application components work together using Spring configuration and dependency injection. It can include repositories, services, controllers, serialization, transactions, and application properties.",
+    "Integration tests find defects that isolated unit tests cannot detect, such as incorrect bean wiring, repository query problems, transaction configuration, and serialization mismatches.",
+    "SpringBootTest loads an application context. Test slices such as @DataJpaTest and @WebMvcTest load focused parts of the application. Test profiles and configured test databases keep test execution isolated from production.",
+    ["Choose the integration boundary", "Select SpringBootTest or a focused test slice", "Configure test properties and profile", "Start the required Spring context", "Execute component interactions", "Assert persisted or returned behavior", "Clean up test data"],
+    "A payment integration test starts the Spring context, saves a payment through PaymentService, reads it through PaymentRepository, and verifies the persisted transaction state.",
+    ["mvn -Dtest=PaymentIntegrationTest test", "mvn -Dtest=PaymentRepositoryTest test", "mvn verify"],
+    "Use @SpringBootTest for full-context scenarios and @DataJpaTest for repository tests. Configure application-test.yml and activate the test profile with @ActiveProfiles(\"test\").",
+    ["Application context fails because a bean is missing", "Tests accidentally connect to a development database", "Context startup makes the suite slow", "Database state leaks between tests"],
+    ["Inspect the first Spring context exception", "Use an isolated test database", "Select the narrowest useful test slice", "Reset or roll back test data safely", "Review active profiles and connection properties"],
+    ["Do not point automated tests at production databases", "Use full-context tests only where integration value justifies the cost", "Keep test profiles separate", "Make data setup deterministic", "Use transaction boundaries intentionally"],
+    "Create a Spring Boot integration test that saves and retrieves a payment using the real repository and test database. Verify persistence, transaction status, and rollback behavior."
   ),
 
   "5|Testcontainers": makeLesson(
-    "Testcontainers is a Java library that starts disposable containerized dependencies for automated tests. It can provide real databases, message brokers and other services during test execution. The container is started for the test and stopped afterward according to the configured lifecycle.",
-    "Testcontainers reduces differences between local and CI integration tests. Instead of relying on a developer-installed database, a payment-service test can start a known database image and validate real repository behavior.",
-    "JUnit test → Testcontainers lifecycle → Docker runtime → disposable database container → Spring application connection → integration assertions → container cleanup.",
-    [
-      "Confirm Docker is available on the test machine or CI agent.",
-      "Add the required Testcontainers modules and JUnit integration.",
-      "Declare a database container with an approved image.",
-      "Start the container and expose its connection details to Spring.",
-      "Run repository and integration tests.",
-      "Verify cleanup and inspect container logs when failures occur."
-    ],
-    "The payment-service uses a PostgreSQL Testcontainer for repository integration tests. The test obtains the temporary database URL and credentials from the container instead of using a developer's permanent database.",
-    [
-      "docker version",
-      "docker ps",
-      "mvn -Dtest=PaymentRepositoryIT test",
-      "mvn verify",
-      "docker images"
-    ],
-    "Add Testcontainers JUnit Jupiter and the database module with compatible versions. Configure container lifecycle using supported JUnit integration or Spring Boot service connections. Pin container image versions and never use production credentials in tests.",
-    [
-      "Docker daemon is unavailable to the test process.",
-      "The container image cannot be pulled.",
-      "The database starts but the application connects before it is ready.",
-      "CI agents lack permission to access the Docker socket.",
-      "Tests leak containers or consume excessive resources."
-    ],
-    [
-      "Check Docker daemon connectivity and agent permissions.",
-      "Verify image registry access and the selected image tag.",
-      "Use container readiness checks rather than fixed sleep delays.",
-      "Inspect container logs and mapped ports.",
-      "Review lifecycle cleanup and CI resource limits."
-    ],
-    [
-      "Use pinned and trusted container images.",
-      "Use readiness checks for dependent services.",
-      "Keep test containers isolated from production systems.",
-      "Ensure cleanup occurs after execution.",
-      "Configure CI agents with controlled container runtime access."
-    ],
-    "Create a PostgreSQL Testcontainer for a payment repository test. Run the test locally and in a CI-like environment, verify database connectivity and confirm that the temporary container is cleaned up."
+    "Testcontainers is a testing library that starts disposable infrastructure containers for automated tests. It allows developers to test against real database engines, message brokers, and other services without maintaining shared test servers.",
+    "Using real dependencies improves confidence in SQL behavior, database compatibility, and infrastructure integration. It reduces differences between developer machines and CI environments.",
+    "A JUnit test declares a container, Testcontainers starts the Docker image, Spring receives its connection details, the test executes against the containerized service, and the container is stopped or reused according to configuration.",
+    ["Install Docker or a compatible container runtime", "Add the Testcontainers dependencies", "Declare the required container image", "Wait for the service to become ready", "Supply dynamic connection properties", "Run integration tests", "Clean up container resources"],
+    "A PaymentRepository integration test starts a PostgreSQL container, configures Spring datasource properties from the container, and verifies payment persistence against PostgreSQL.",
+    ["docker version", "docker ps", "mvn -Dtest=PaymentRepositoryContainerTest test", "mvn verify"],
+    "Use testcontainers-junit-jupiter and the database-specific Testcontainers module. Configure @Container and @Testcontainers, or use Spring-managed container lifecycle patterns.",
+    ["Docker daemon is unavailable in Jenkins", "Container startup exceeds wait timeout", "Spring connects before the database is ready", "Image pull fails because of registry access", "Tests leave resources running"],
+    ["Verify Docker availability on the agent", "Inspect container logs and wait strategy", "Use dynamic properties for mapped ports", "Check registry credentials and image availability", "Use managed lifecycle and cleanup"],
+    ["Pin container image versions", "Never use production data in test containers", "Use realistic database engines for important repository tests", "Configure CI agents with container support", "Keep container startup time visible in pipeline reports"],
+    "Create a PostgreSQL Testcontainer and run a Spring repository test against it. Configure dynamic datasource properties and verify that Jenkins can execute the test on a Docker-enabled agent."
   ),
 
   "5|Code Coverage": makeLesson(
-    "Code coverage measures which parts of application code are executed by tests. JaCoCo is commonly used with Maven to collect coverage data and generate reports. Coverage can include instruction, line, branch and method metrics.",
-    "Coverage helps teams identify untested code paths, especially critical payment validation and error-handling logic. It is a diagnostic measurement, not proof that tests are correct or that every business requirement is validated.",
-    "Test execution → JaCoCo instrumentation or agent → execution data → report generation → coverage metrics → quality gate evaluation.",
-    [
-      "Configure JaCoCo in the Maven build.",
-      "Run unit and integration tests as intended.",
-      "Generate the coverage report.",
-      "Inspect line and branch coverage.",
-      "Identify important uncovered business paths.",
-      "Add meaningful tests and regenerate the report."
-    ],
-    "A payment-service has high line coverage but lacks a test for gateway timeout handling. The team reviews branch coverage and adds a test for the timeout path instead of focusing only on the overall percentage.",
-    [
-      "mvn clean test",
-      "mvn verify",
-      "mvn jacoco:report",
-      "Get-ChildItem .\\target\\site\\jacoco",
-      "Get-Content .\\target\\site\\jacoco\\index.html -TotalCount 5"
-    ],
-    "Configure JaCoCo prepare-agent and report goals with a compatible plugin version. Ensure test execution produces coverage data before report generation. Configure exclusions carefully and document why generated or non-business code is excluded.",
-    [
-      "Coverage report is missing because tests did not execute.",
-      "JaCoCo execution data file is empty or unavailable.",
-      "Coverage is unexpectedly low after a code change.",
-      "Exclusions hide important application code.",
-      "A coverage threshold fails in the CI quality gate."
-    ],
-    [
-      "Check JaCoCo plugin execution and generated execution data.",
-      "Confirm that tests ran in the same build that generates the report.",
-      "Inspect source and class inclusion settings.",
-      "Review exclusions and restore important business classes.",
-      "Add tests for meaningful uncovered branches and regenerate the report."
-    ],
-    [
-      "Use coverage to guide test improvement, not as the only quality measure.",
-      "Prioritize critical business and error-handling paths.",
-      "Review branch coverage for conditional logic.",
-      "Keep exclusions narrow and documented.",
-      "Publish coverage reports with CI build evidence."
-    ],
-    "Configure JaCoCo for the payment-service. Generate a report, identify an uncovered payment validation branch and write a test that exercises it."
+    "Code coverage measures which parts of application code are executed by automated tests. JaCoCo collects coverage data and generates reports that help teams identify untested lines and branches.",
+    "Coverage analysis highlights areas that may need additional tests. It supports quality gates, but a high percentage alone does not prove that business behavior is tested correctly.",
+    "JaCoCo instruments Java execution, records covered instructions and branches, and generates reports. Maven can enforce minimum thresholds, while Jenkins publishes coverage information for review.",
+    ["Add the JaCoCo Maven plugin", "Run tests with coverage instrumentation", "Generate the coverage report", "Review line and branch metrics", "Identify important uncovered behavior", "Configure a quality threshold", "Publish results in CI"],
+    "PaymentService has a conditional branch for approved and declined payments. Coverage analysis identifies whether both outcomes execute during automated tests.",
+    ["mvn clean test", "mvn jacoco:report", "mvn verify", "mvn jacoco:check"],
+    "Configure jacoco:prepare-agent and jacoco:report in Maven. Configure jacoco:check with suitable minimums for the project and bind verification to the appropriate build phase.",
+    ["Coverage report is missing because tests did not execute", "JaCoCo plugin configuration is incorrect", "Generated classes are excluded unexpectedly", "Coverage threshold fails unexpectedly"],
+    ["Inspect target/jacoco.exec and Maven logs", "Verify plugin execution phases", "Review include and exclude patterns", "Open the HTML report and inspect uncovered branches", "Add meaningful tests rather than weakening the threshold immediately"],
+    ["Measure branch coverage for important decision logic", "Set realistic thresholds and improve them gradually", "Exclude only justified generated code", "Do not write meaningless tests solely to increase percentages", "Review critical business paths separately"],
+    "Configure JaCoCo for a Spring Boot payment service. Generate the HTML report, identify an uncovered branch, add a test for it, and configure a minimum coverage check."
   ),
 
   "5|Test Reports": makeLesson(
-    "Test reports provide evidence about which tests executed, passed, failed or were skipped. Maven Surefire and Failsafe generate machine-readable and human-readable reports. CI systems can publish these reports so developers can inspect failures without searching through the entire build console.",
-    "Reports make test quality visible to developers and release reviewers. They help identify recurring failures, flaky tests and missing test execution in a CI pipeline.",
-    "Maven test plugins → test execution → XML and text reports → Jenkins report publisher → build result and developer investigation.",
-    [
-      "Run the required Maven test lifecycle.",
-      "Locate Surefire and Failsafe report directories.",
-      "Inspect XML and text report files.",
-      "Configure Jenkins to publish JUnit-compatible XML reports.",
-      "Review failed and skipped test counts.",
-      "Retain reports for failed builds and release evidence."
-    ],
-    "Jenkins runs mvn clean verify for payment-service and publishes target/surefire-reports/*.xml and target/failsafe-reports/*.xml. Developers can open the failed test report directly from the build page.",
-    [
-      "mvn clean test",
-      "mvn verify",
-      "Get-ChildItem .\\target\\surefire-reports",
-      "Get-ChildItem .\\target\\failsafe-reports",
-      "Get-ChildItem .\\target -Recurse -Filter TEST-*.xml"
-    ],
-    "Configure Jenkins JUnit report publishing with the generated XML report paths. Ensure the pipeline preserves reports even when Maven fails. Use allowEmptyResults only when an empty report set is an intentional and separately validated condition.",
-    [
-      "Jenkins reports that no test result files were found.",
-      "Maven fails before report generation.",
-      "A report path does not match the workspace structure.",
-      "Test reports are deleted before Jenkins archives them.",
-      "Skipped tests are mistaken for successful tests."
-    ],
-    [
-      "Check whether Maven reached the test execution phase.",
-      "Locate the actual XML report directories.",
-      "Correct the Jenkins report pattern to match the workspace.",
-      "Publish reports in a post-build action that runs after failure.",
-      "Review passed, failed and skipped counts separately."
-    ],
-    [
-      "Publish both unit and integration test reports.",
-      "Retain reports for failed builds.",
-      "Do not hide missing reports with broad empty-result settings.",
-      "Track repeated failures and flaky tests.",
-      "Use report evidence during release approval."
-    ],
-    "Configure a Jenkins pipeline to run Maven tests and publish Surefire and Failsafe XML reports. Cause one test failure and verify that the failed report remains available."
+    "Test reports record automated test execution results, including passed tests, failed tests, skipped tests, execution time, and failure details. Maven and Jenkins use these reports to make pipeline results understandable.",
+    "Reports help developers diagnose regressions, identify flaky tests, compare test outcomes between builds, and provide evidence for release decisions.",
+    "Maven Surefire normally executes unit tests and creates XML reports under target/surefire-reports. Failsafe executes integration tests and creates reports under target/failsafe-reports. Jenkins can publish JUnit-compatible XML files.",
+    ["Execute Maven unit tests", "Generate Surefire XML reports", "Execute integration tests through Failsafe", "Generate Failsafe reports", "Collect XML files in Jenkins", "Publish test results", "Review failures and trends"],
+    "A Jenkins pipeline runs mvn clean verify and publishes target/surefire-reports/*.xml and target/failsafe-reports/*.xml so the team can inspect payment test failures.",
+    ["mvn clean test", "mvn clean verify", "Get-ChildItem target -Recurse -Filter '*.xml'"],
+    "Configure Maven Surefire and Failsafe plugins. In Jenkins use the JUnit publisher with the appropriate XML file patterns and preserve reports as build artifacts where required.",
+    ["Jenkins reports no test results because the glob is incorrect", "Maven fails before generating reports", "Old reports are accidentally reused", "A test failure is hidden by an incorrect pipeline condition"],
+    ["Run mvn clean verify to remove stale output", "Check the actual XML report directories", "Correct the Jenkins report pattern", "Ensure report publishing runs even when tests fail"],
+    ["Publish test reports on every relevant build", "Keep failure output available to developers", "Separate unit and integration test reports", "Avoid publishing stale reports", "Track recurring failures and flaky tests"],
+    "Configure Surefire and Failsafe in a Maven project. Run unit and integration tests, then create a Jenkins pipeline step that publishes both XML report directories."
   ),
 
   "5|Flaky Test Troubleshooting": makeLesson(
-    "A flaky test produces different results without a relevant code change. It may pass in one execution and fail in another because of timing assumptions, shared state, concurrency, external services, random data or environment differences.",
-    "Flaky tests reduce confidence in CI results and delay releases. Teams must identify the underlying source of nondeterminism instead of repeatedly rerunning tests until they pass.",
-    "Test execution → nondeterministic condition → inconsistent assertion result → evidence collection → root cause isolation → deterministic correction.",
-    [
-      "Record the failing test name and complete stack trace.",
-      "Check whether the failure is reproducible locally.",
-      "Repeat the test in isolation and with the full suite.",
-      "Inspect shared state, timing and external dependencies.",
-      "Capture logs and test data around the failure.",
-      "Correct the nondeterministic behavior and rerun repeatedly."
-    ],
-    "A payment integration test expects a notification within 100 milliseconds. On a busy Jenkins agent the notification arrives later, causing intermittent failures. The team replaces the fixed timing assumption with a bounded condition-based wait.",
-    [
-      "mvn -Dtest=PaymentNotificationTest test",
-      "mvn -Dtest=PaymentNotificationTest -Dsurefire.rerunFailingTestsCount=3 test",
-      "mvn clean verify",
-      "mvn -Dtest=PaymentNotificationTest -DforkCount=1 test"
-    ],
-    "Configure deterministic test data, controlled time and reliable resource lifecycle. Use retries only as temporary diagnostic evidence, not as a permanent replacement for fixing the root cause. Configure timeouts that reflect realistic system behavior.",
-    [
-      "Tests fail only when the full suite runs.",
-      "A test depends on another test's database record.",
-      "Timing-based assertions fail on slower CI agents.",
-      "Concurrent tests modify shared resources.",
-      "Random test data makes failures difficult to reproduce."
-    ],
-    [
-      "Run the failing test repeatedly and capture each result.",
-      "Compare isolated execution with full-suite execution.",
-      "Replace fixed sleeps with condition-based waits.",
-      "Use unique test data and isolate shared resources.",
-      "Control clocks, randomness and external service responses.",
-      "Remove temporary retries after the underlying issue is fixed."
-    ],
-    [
-      "Make tests independent and deterministic.",
-      "Avoid fixed sleeps for synchronization.",
-      "Use stable test data and controlled clocks.",
-      "Isolate concurrent test resources.",
-      "Track flaky tests and assign permanent fixes."
-    ],
-    "Create a controlled timing-related flaky test in a test branch. Reproduce its inconsistent behavior, replace the fixed wait with a condition-based approach and demonstrate stable repeated execution."
+    "A flaky test produces different results when the code has not changed. It may pass on one run and fail on another because of timing, concurrency, shared state, external services, or nondeterministic test data.",
+    "Flaky tests reduce trust in CI pipelines and can hide genuine defects. Teams must identify root causes instead of repeatedly rerunning failures without investigation.",
+    "A flaky test investigation collects build logs, test history, execution timing, thread behavior, external dependency status, and environment details. Repeated isolated runs help reproduce the failure and narrow the cause.",
+    ["Identify the intermittent test failure", "Capture the exact CI build and environment", "Rerun the individual test to measure reproducibility", "Inspect shared state and timing assumptions", "Check concurrency and external dependencies", "Implement a deterministic fix", "Run the test repeatedly and in the full suite"],
+    "A payment test fails randomly because it uses the current system time and expects an exact timestamp. Inject a fixed Clock into the service and use a deterministic test time.",
+    ["mvn -Dtest=FlakyPaymentTest test", "mvn -Dtest=FlakyPaymentTest -Dsurefire.rerunFailingTestsCount=3 test", "mvn clean verify"],
+    "Use deterministic fixtures, injected clocks, controlled executors, isolated databases, and explicit timeouts. Use rerun support only as diagnostic evidence, not as the permanent fix.",
+    ["Tests depend on the current time", "Parallel tests share mutable data", "Thread scheduling changes the result", "External APIs or databases are unstable", "Tests rely on execution order"],
+    ["Repeat the failing test in isolation", "Remove shared mutable state", "Inject Clock instead of calling system time directly", "Use unique test data and controlled cleanup", "Inspect thread dumps and external service logs when necessary"],
+    ["Do not accept repeated retries as a permanent solution", "Keep tests deterministic", "Avoid arbitrary sleeps", "Isolate parallel test data", "Track flaky tests with ownership and resolution deadlines", "Quarantine only with a documented plan"],
+    "Create a deliberately flaky test that depends on timing. Diagnose why it fails intermittently, replace the timing dependency with deterministic control, and demonstrate repeated stable execution."
   ),
 
   "5|Production Hands-on Lab": makeLesson(
-    "This lab builds a complete automated testing workflow for a Spring Boot payment-service. It combines JUnit 5, Mockito, service and controller tests, integration testing, Testcontainers, JaCoCo coverage and Maven test reporting.",
-    "A production CI pipeline must prove that application behavior is validated before quality scanning and packaging. The lab demonstrates how different test layers provide evidence and how failures block unsafe changes.",
-    "Git pull request → Jenkins checkout → Maven toolchain → JUnit unit tests → Mockito service tests → MockMvc controller tests → Spring integration tests → Testcontainers database → JaCoCo report → Surefire and Failsafe reports → pipeline decision.",
-    [
-      "Prepare the payment-service repository and test dependencies.",
-      "Create JUnit tests for payment validation and fee calculation.",
-      "Mock repository and gateway dependencies with Mockito.",
-      "Test REST endpoints using MockMvc.",
-      "Create Spring Boot integration tests for repository behavior.",
-      "Start a disposable database with Testcontainers.",
-      "Configure JaCoCo and inspect coverage.",
-      "Configure Surefire and Failsafe report generation.",
-      "Publish test reports in Jenkins.",
-      "Introduce a controlled failing test and verify that the pipeline stops.",
-      "Fix the defect and produce a successful test report."
-    ],
-    "A pull request changes payment fee calculation. Jenkins runs service unit tests, controller tests and database integration tests. A negative-amount regression test fails the pipeline. The developer fixes the validation logic, reruns the complete suite and attaches test and coverage reports to the build.",
-    [
-      "mvn -version",
-      "docker version",
-      "mvn dependency:tree",
-      "mvn clean test",
-      "mvn verify",
-      "mvn jacoco:report",
-      "Get-ChildItem .\\target\\surefire-reports",
-      "Get-ChildItem .\\target\\failsafe-reports",
-      "Get-ChildItem .\\target\\site\\jacoco"
-    ],
-    "Keep test dependencies version-compatible and use Maven profiles only for non-secret test configuration. Configure JUnit Jupiter, Mockito, Spring Boot Test, Testcontainers and JaCoCo as required. Jenkins should publish XML reports and preserve failure evidence. Never use production payment credentials or production databases in automated tests.",
-    [
-      "JUnit tests are not discovered because test dependencies or naming conventions are incorrect.",
-      "Mockito tests accidentally call real external services.",
-      "Spring application context fails due to invalid test configuration.",
-      "Testcontainers cannot access Docker on the CI agent.",
-      "Coverage data or test reports are missing.",
-      "Flaky tests create inconsistent pipeline results."
-    ],
-    [
-      "Verify Java and Maven versions on the Jenkins agent.",
-      "Inspect dependency:tree and test plugin configuration.",
-      "Run the failing test class independently.",
-      "Check mock injection and Spring test context errors.",
-      "Verify Docker access, image availability and container readiness.",
-      "Inspect Surefire, Failsafe and JaCoCo output directories.",
-      "Fix the root cause and rerun mvn clean verify."
-    ],
-    [
-      "Keep unit, controller and integration tests at appropriate test boundaries.",
-      "Use deterministic test data and isolated infrastructure.",
-      "Use Testcontainers for reproducible integration dependencies.",
-      "Publish reports and coverage evidence.",
-      "Block pipeline progression when required tests fail.",
-      "Do not hide failures through skipped tests or permanent retries.",
-      "Keep production credentials and customer data out of test environments."
-    ],
-    "Complete the payment-service testing pipeline. Demonstrate JUnit assertions, Mockito dependency isolation, MockMvc endpoint validation, Spring integration testing, Testcontainers database execution, JaCoCo coverage and Jenkins report publishing. Introduce a controlled regression, prove the pipeline fails, fix it and produce a successful final test report."
+    "This lab combines the testing practices used in a production-oriented Java payment application. You will build unit tests, mock external dependencies, run Spring integration tests, validate database behavior, measure coverage, and publish reports through Jenkins.",
+    "The lab demonstrates how automated testing protects a business-critical application before deployment. It connects developer testing practices with CI quality gates and release confidence.",
+    "The sample application contains PaymentController, PaymentService, PaymentRepository, and PaymentGateway. JUnit and Mockito validate service logic, MockMvc validates HTTP behavior, Spring Boot tests validate wiring, Testcontainers provides PostgreSQL, JaCoCo measures coverage, and Jenkins orchestrates execution.",
+    ["Create a Spring Boot payment application", "Implement payment validation and service logic", "Write JUnit unit tests", "Mock the payment gateway with Mockito", "Test the controller with MockMvc", "Run repository tests using Testcontainers", "Generate JaCoCo coverage reports", "Publish Surefire and Failsafe results in Jenkins", "Fail the pipeline when mandatory quality checks fail"],
+    "A pull request changes payment fee calculation. Jenkins compiles the application, executes unit tests, runs integration tests against PostgreSQL, generates coverage, publishes reports, and blocks the pipeline if required checks fail.",
+    ["mvn clean compile", "mvn clean test", "mvn -Dtest=PaymentServiceTest test", "mvn verify", "mvn jacoco:report", "docker ps"],
+    "Create a Jenkinsfile with checkout, compile, unit-test, integration-test, coverage, and report-publication stages. Keep secrets outside source control and configure Docker access for Testcontainers.",
+    ["Unit tests pass but integration tests fail due to database configuration", "Testcontainers cannot access Docker on the Jenkins agent", "Coverage gate fails because important branches are uncovered", "Jenkins cannot locate XML reports", "Payment gateway mock is configured incorrectly"],
+    ["Inspect the first failing test and its report", "Verify test profile and datasource configuration", "Check Docker availability and container logs", "Review JaCoCo HTML report and add meaningful tests", "Correct Jenkins report paths", "Validate mock stubbing and captured request data"],
+    ["Run the same verification command locally and in CI", "Keep unit and integration tests separate", "Use isolated test databases", "Publish reports even after test failure", "Protect credentials", "Use meaningful quality gates", "Do not deploy when mandatory tests fail"],
+    "Build the complete payment testing pipeline. Demonstrate successful payment, rejected payment, duplicate request, gateway timeout, controller validation, PostgreSQL persistence, coverage reporting, and Jenkins test publication. Record the evidence for every pipeline stage."
   )
 };

@@ -1,818 +1,662 @@
-import type { CicdTopicLesson } from "./cicd-topic-lessons";
+export type TrivySection = {
+  title: string;
+  content: string;
+  code?: string;
+  practicalNotes?: string[];
+};
 
-function makeLesson(
-  overview: string,
-  purpose: string,
-  architecture: string,
-  workflow: string[],
-  example: string,
-  commands: string[],
-  configuration: string,
-  failures: string[],
-  recovery: string[],
-  bestPractices: string[],
-  exercise: string
-): CicdTopicLesson {
-  return {
-    overview,
-    purpose,
-    architecture,
-    workflow,
-    example,
-    commands,
-    configuration,
-    failures,
-    recovery,
-    bestPractices,
-    exercise
-  };
-}
+export type TrivyLesson = {
+  title: string;
+  description: string;
+  sections: TrivySection[];
+  exercise: string;
+};
 
-export const stageSevenLessonOverrides: Record<string, CicdTopicLesson> = {
+export const stageSevenLessonOverrides: Record<string, TrivyLesson> = {
+  "Trivy Fundamentals": {
+    title: "Trivy Fundamentals",
+    description: "Learn how Trivy scans repositories, container images, dependencies, infrastructure configuration, Kubernetes resources, and secrets for security risks.",
+    sections: [
+      {
+        title: "What Trivy Is and How It Works",
+        content: "Trivy is an open-source security scanner used to detect vulnerabilities, misconfigurations, exposed secrets, and software components in development and deployment artifacts. It supports multiple scan targets including container images, filesystems, Git repositories, and Kubernetes configurations."
+      },
+      {
+        title: "Trivy Scanner Capabilities",
+        content: "The main scanning areas include vulnerability scanning, misconfiguration scanning, secret detection, and Software Bill of Materials generation. Each scanner examines a different type of risk. Vulnerability scanning identifies known weaknesses in software packages, while configuration scanning evaluates security-related settings."
+      },
+      {
+        title: "Trivy Architecture and Scan Flow",
+        content: "The Trivy client identifies the scan target, detects operating systems and package managers, loads relevant vulnerability or rule data, analyzes discovered components, and produces findings. Results can be displayed in terminal output or exported into machine-readable formats for CI systems."
+      },
+      {
+        title: "Security Findings and Risk Context",
+        content: "A finding may represent a vulnerable library, an insecure configuration, a leaked credential, or an inventory component. Severity alone does not establish exploitability. Teams should consider exposure, runtime usage, available fixes, application context, and business impact."
+      },
+      {
+        title: "Trivy in a DevSecOps Workflow",
+        content: "A typical workflow scans source dependencies before packaging, scans the resulting image before publishing, and optionally scans Kubernetes manifests before deployment. CI pipelines can fail on selected findings and publish reports for engineering and security teams."
+      },
+      {
+        title: "Essential Trivy Commands",
+        code: "trivy --version\ntrivy image nginx:latest\ntrivy fs .\ntrivy repo .\ntrivy config ./kubernetes/\ntrivy image --format json --output report.json nginx:latest",
+        content: "These commands demonstrate version inspection, image scanning, local filesystem scanning, repository scanning, configuration scanning, and JSON report generation. Run scans against approved targets and review the resulting findings."
+      },
+      {
+        title: "Report Formats and Automation",
+        content: "Trivy supports terminal output and structured report formats such as JSON and other supported output formats. Machine-readable reports can be archived, parsed, uploaded to security dashboards, or consumed by downstream automation."
+      },
+      {
+        title: "Operational Limitations",
+        content: "A clean scan does not prove that an application is completely secure. Scanner databases can be outdated, unsupported package ecosystems may have limited detection, and static scanning cannot replace penetration testing, runtime monitoring, or secure design reviews."
+      }
+    ],
+    exercise: "Install Trivy, scan a sample container image and a local repository, export a JSON report, identify at least three findings or inventory components, and explain their security impact."
+  },
 
-  "7|Trivy Fundamentals": makeLesson(
-    "Trivy is an open-source security scanner used to inspect container images, filesystems, source repositories, Kubernetes configuration and other supported targets. It can identify operating-system package vulnerabilities, language dependency vulnerabilities, exposed secrets and configuration weaknesses. The scanner uses vulnerability intelligence and configuration checks to report findings with severity and remediation information.",
-    "Trivy helps a DevOps team discover security risks before an application is packaged, published or deployed. In a payment-service pipeline, it can prevent a container image with unacceptable critical vulnerabilities or exposed credentials from reaching Amazon ECR and Kubernetes.",
-    "Source repository or Docker image → Trivy scanner → vulnerability database and security checks → findings with package, severity and fix information → CI policy evaluation → pass, fail or approved exception.",
-    [
-      "Select the target to scan, such as a repository, filesystem or image.",
-      "Install or use a supported Trivy release.",
-      "Ensure the vulnerability database is available and current.",
-      "Choose the required scanners and severity levels.",
-      "Execute the scan and save machine-readable results when needed.",
-      "Review findings and determine their application impact.",
-      "Fix vulnerabilities or apply an approved, documented exception.",
-      "Run the scan again before promoting the artifact."
+  "Trivy Installation": {
+    title: "Trivy Installation",
+    description: "Install Trivy on developer systems and CI agents using supported package managers, binaries, and container execution.",
+    sections: [
+      {
+        title: "Installation Requirements",
+        content: "Choose an installation method based on the operating system and operational environment. Confirm CPU architecture, supported release, network access to package repositories, and permissions to install the executable."
+      },
+      {
+        title: "Linux Installation",
+        content: "On Linux, install Trivy using the official installation instructions for the distribution or a verified release package. Validate the package source and version before making it available to shared CI agents."
+      },
+      {
+        title: "Windows Installation",
+        content: "On Windows, use a supported package manager or official release binary. Ensure the executable directory is included in PATH. Open a new terminal if the PATH was updated after installation."
+      },
+      {
+        title: "Container-Based Execution",
+        content: "Trivy can also run from a container image. Container execution is useful for consistent CI environments because the scanner does not need to be installed directly on every host. Mount the scan target and report directory with appropriate permissions."
+      },
+      {
+        title: "Verify Installation",
+        code: "trivy --version\ntrivy --help\nGet-Command trivy",
+        content: "Check the installed version, available commands, and executable resolution. Confirm that the CI agent invokes the expected binary rather than an older installation elsewhere in PATH."
+      },
+      {
+        title: "Database Initialization",
+        content: "The first vulnerability scan may download vulnerability database data. Ensure the scanner can access configured registries and database distribution endpoints. For restricted networks, configure approved mirrors or database distribution methods."
+      },
+      {
+        title: "Production Agent Standardization",
+        content: "Pin the Trivy version used by CI jobs, validate upgrades in a test pipeline, and document the approved installation source. Avoid silently changing scanner versions across production agents."
+      }
     ],
-    "The payment-service pipeline scans its source dependencies and final Docker image. A critical vulnerability in an operating-system package is detected before the image is pushed to ECR, so the pipeline blocks promotion until the base image is updated.",
-    [
-      "trivy --version",
-      "trivy fs --scanners vuln,misconfig,secret .",
-      "trivy image devmavox/payment-service:1.0.0",
-      "trivy repo .",
-      "trivy image --format json --output trivy-report.json devmavox/payment-service:1.0.0"
-    ],
-    "Select scanners explicitly when a predictable scan scope is required. Configure severity filters, report format, ignored findings and exit-code policy deliberately. Keep the scanner version controlled in CI and protect any private registry credentials used for image scanning.",
-    [
-      "The vulnerability database cannot be downloaded.",
-      "The scanner version does not support a requested option.",
-      "A private image cannot be pulled.",
-      "The scan reports vulnerabilities in an outdated base image.",
-      "The pipeline fails because findings exceed the configured severity policy."
-    ],
-    [
-      "Check the installed Trivy version and command help.",
-      "Verify network access to the configured database and registry.",
-      "Authenticate to the private registry using a protected credential.",
-      "Inspect the affected package, installed version and available fixed version.",
-      "Update the vulnerable package or base image.",
-      "Repeat the scan and verify that the finding is resolved."
-    ],
-    [
-      "Scan source, dependencies and final images at appropriate stages.",
-      "Keep Trivy and its vulnerability database updated.",
-      "Use severity policies that match release risk.",
-      "Store reports as CI artifacts.",
-      "Do not suppress findings without a documented reason and owner."
-    ],
-    "Run Trivy against the payment-service filesystem and Docker image. Save JSON reports, identify one vulnerable package and demonstrate that a policy-controlled pipeline fails when a critical finding is present."
-  ),
+    exercise: "Install Trivy on a Linux or Windows environment, verify its version, perform a test image scan, and document how the installation will be standardized on Jenkins agents."
+  },
 
-  "7|Trivy Installation": makeLesson(
-    "Trivy installation provides the scanner executable or container image required by the CI environment. It can be installed through supported operating-system packages, release binaries or a container image. The selected installation method should provide a known version and a predictable executable path.",
-    "A controlled installation prevents inconsistent scan results caused by different scanner versions on developer machines and Jenkins agents. It also makes pipeline execution reproducible and easier to troubleshoot.",
-    "Jenkins agent or developer workstation → approved installation method → Trivy executable or scanner container → vulnerability database access → scan target → report.",
-    [
-      "Choose the installation method supported by the operating system.",
-      "Select an approved Trivy version.",
-      "Install the executable or pull the scanner container.",
-      "Verify the executable is available in PATH.",
-      "Run a version check.",
-      "Verify vulnerability database connectivity.",
-      "Execute a small test scan."
+  "Filesystem Scanning": {
+    title: "Filesystem Scanning",
+    description: "Scan source directories and local application filesystems for vulnerable dependencies, exposed secrets, and supported misconfigurations.",
+    sections: [
+      {
+        title: "Filesystem Scan Scope",
+        content: "Filesystem scanning examines a directory on the local machine. It can identify supported package manifests, lockfiles, dependency information, secrets, and configuration files. The scan scope should point to the application repository or a carefully selected directory."
+      },
+      {
+        title: "Dependency Discovery",
+        content: "Trivy detects supported package manifests and lockfiles to identify installed or declared dependencies. Accurate lockfiles improve dependency identification because they describe resolved package versions more precisely than broad version ranges."
+      },
+      {
+        title: "Scan a Repository",
+        code: "trivy fs .\ntrivy fs --scanners vuln,misconfig,secret .\ntrivy fs --scanners vuln --format json --output fs-report.json .",
+        content: "Run filesystem scanning from the repository root. Select scanners deliberately and generate a JSON report when findings need to be consumed by another system."
+      },
+      {
+        title: "Scan Specific Directories",
+        content: "Large repositories may contain application code, generated files, build outputs, and unrelated tools. Select meaningful scan paths and use supported skip settings carefully. Do not exclude application directories merely to reduce findings."
+      },
+      {
+        title: "Interpreting Filesystem Findings",
+        content: "Review the affected file, package name, installed version, fixed version when available, and vulnerability identifier. For secret findings, identify the credential type and revoke exposed credentials rather than simply deleting the visible text."
+      },
+      {
+        title: "CI Filesystem Scanning",
+        content: "Run a filesystem scan after source checkout and before building a release artifact. Preserve the report as a pipeline artifact. Use consistent scan settings so developers and CI agents produce comparable results."
+      },
+      {
+        title: "Filesystem Scan Troubleshooting",
+        content: "If expected dependencies are missing, inspect the working directory, manifest support, lockfile availability, ignored files, and scanner configuration. Check whether the CI workspace contains the files that exist in the developer environment."
+      }
     ],
-    "A Linux Jenkins agent installs a pinned Trivy release during agent image creation. The pipeline verifies the version before scanning the payment-service image, ensuring that all builds use the expected scanner.",
-    [
-      "trivy --version",
-      "trivy --help",
-      "which trivy",
-      "docker pull aquasec/trivy:latest",
-      "docker run --rm aquasec/trivy:latest --version"
-    ],
-    "For production CI, pin a tested scanner version or immutable container image digest rather than relying on an uncontrolled latest tag. Verify downloaded binaries using the official release verification process. Restrict installation permissions on shared agents.",
-    [
-      "The Trivy executable is missing from PATH.",
-      "The installed version is older than the required feature.",
-      "A download fails because of proxy or network restrictions.",
-      "The scanner container cannot start.",
-      "The agent has insufficient permissions to execute the binary."
-    ],
-    [
-      "Check the executable path and PATH environment variable.",
-      "Compare the installed version with the approved version.",
-      "Verify proxy, DNS and TLS connectivity.",
-      "Inspect container runtime availability and image pull errors.",
-      "Reinstall using the approved installation method.",
-      "Run the version and test-scan checks again."
-    ],
-    [
-      "Pin scanner versions in build infrastructure.",
-      "Verify release checksums or signatures where provided.",
-      "Avoid installing tools dynamically in every production build when a controlled agent image is possible.",
-      "Keep scanner installation separate from application source code.",
-      "Test upgrades before rolling them out to all agents."
-    ],
-    "Install Trivy on a test Jenkins agent using the approved method. Verify its version, database access and ability to scan a sample filesystem before adding it to the payment-service pipeline."
-  ),
+    exercise: "Scan a sample Java or Node.js repository using Trivy filesystem scanning. Export the findings, identify vulnerable dependencies, and verify that the expected manifest and lockfiles were discovered."
+  },
 
-  "7|Filesystem Scanning": makeLesson(
-    "Filesystem scanning examines files and directories in a checked-out repository or local workspace. Trivy can inspect supported dependency manifests and lock files, configuration files and secrets. The scan can identify vulnerable application dependencies, exposed credentials and certain infrastructure configuration problems without building a container image first.",
-    "Filesystem scanning gives developers early feedback while source code is still being changed. It can catch a vulnerable Java dependency or accidentally committed credential before the application is packaged.",
-    "Git checkout → Trivy filesystem scanner → manifest, lock-file, secret and configuration inspection → findings → developer remediation → CI policy result.",
-    [
-      "Check out the repository at the intended commit.",
-      "Identify the directories that should be scanned.",
-      "Select the required scanners.",
-      "Run Trivy filesystem scanning.",
-      "Review dependency, secret and configuration findings separately.",
-      "Fix the source or configuration problem.",
-      "Rerun the scan and archive the report."
+  "Dependency Scanning": {
+    title: "Dependency Scanning",
+    description: "Identify vulnerable third-party libraries in application manifests, resolved dependency graphs, and software packages.",
+    sections: [
+      {
+        title: "Why Dependency Security Matters",
+        content: "Modern applications depend on external libraries maintained by other teams. A vulnerability in a transitive dependency can affect an application even when developers did not directly add that package."
+      },
+      {
+        title: "Direct and Transitive Dependencies",
+        content: "Direct dependencies are declared by the application. Transitive dependencies are introduced by other packages. Dependency scanners inspect supported manifests and lockfiles to discover package names and versions across the dependency graph."
+      },
+      {
+        title: "Supported Package Ecosystems",
+        content: "Trivy supports multiple package ecosystems and file formats. Detection depends on the scanner version and supported ecosystem. Check the current Trivy documentation when introducing a new package manager or manifest format."
+      },
+      {
+        title: "Scan Dependency Files",
+        code: "trivy fs --scanners vuln .\ntrivy repo --scanners vuln .\ntrivy fs --format json --output dependency-report.json .",
+        content: "Filesystem or repository scanning can inspect supported dependency files. Use the appropriate command for the repository source and retain the report for review."
+      },
+      {
+        title: "Understanding Vulnerability Metadata",
+        content: "Review vulnerability identifiers, affected package versions, installed versions, fixed versions, severity, and references. A fix may require a direct dependency upgrade or a parent dependency update that replaces the vulnerable transitive package."
+      },
+      {
+        title: "Dependency Remediation Strategy",
+        content: "Upgrade to a fixed compatible version, update lockfiles, rebuild the application, and execute regression tests. If no fix is available, evaluate mitigations and document the risk with an owner and review date."
+      },
+      {
+        title: "Dependency Scanning in CI",
+        content: "Run dependency scanning on pull requests and main branch builds. Apply policy thresholds to new or actionable vulnerabilities. Avoid allowing an old backlog to hide newly introduced high-risk dependencies."
+      },
+      {
+        title: "Dependency Scan Troubleshooting",
+        content: "Missing package findings may result from absent lockfiles, unsupported manifest formats, incomplete checkout, private dependency resolution, or inaccurate package metadata. Validate the repository contents before changing scanner exclusions."
+      }
     ],
-    "The payment-service repository contains a Maven pom.xml and application configuration. A filesystem scan identifies a vulnerable dependency version and a test credential accidentally added to a configuration file before Docker image creation.",
-    [
-      "trivy fs .",
-      "trivy fs --scanners vuln,secret,misconfig .",
-      "trivy fs --severity HIGH,CRITICAL .",
-      "trivy fs --format json --output filesystem-report.json .",
-      "trivy fs --exit-code 1 --severity CRITICAL ."
-    ],
-    "Set the scan target to the repository root or a deliberately selected directory. Choose scanners and severity filters explicitly. Keep generated build output and unrelated directories out of scope only when justified, and ensure dependency manifests and lock files remain included.",
-    [
-      "A manifest is not detected because the scan starts in the wrong directory.",
-      "A secret finding is missed because secret scanning is disabled.",
-      "The report includes unrelated build output.",
-      "A scan fails because the vulnerability database is unavailable.",
-      "A critical finding is reported but the pipeline does not fail."
-    ],
-    [
-      "Verify the working directory and repository checkout.",
-      "Check the selected scanner types and target paths.",
-      "Inspect Trivy debug output for skipped files when necessary.",
-      "Verify database availability.",
-      "Set an explicit exit-code policy for blocking findings.",
-      "Rerun the scan after correcting the source."
-    ],
-    [
-      "Scan the actual commit used by the build.",
-      "Enable the scanners required by the security policy.",
-      "Keep manifests and lock files in the repository.",
-      "Use report artifacts for audit and review.",
-      "Avoid broad exclusions that hide application files."
-    ],
-    "Run filesystem scanning on the payment-service repository. Identify one dependency issue and one controlled secret finding, correct both and verify that the second scan meets the selected policy."
-  ),
+    exercise: "Scan a sample Maven or npm repository, identify one vulnerable direct or transitive dependency, update the dependency graph, rebuild, and compare the before-and-after reports."
+  },
 
-  "7|Dependency Scanning": makeLesson(
-    "Dependency scanning checks third-party libraries used by an application against known vulnerability information. Trivy supports several package ecosystems and reads supported dependency manifests and lock files. For Java projects, Maven dependency information can be used to identify vulnerable libraries and their versions.",
-    "Modern applications depend on external libraries for HTTP, database, logging and security functions. A vulnerable transitive dependency can expose the payment-service even when developers did not directly declare that library.",
-    "pom.xml and dependency metadata → dependency resolution or manifest analysis → package and version identification → vulnerability database matching → CVE findings → upgrade or mitigation.",
-    [
-      "Inspect the project's dependency declarations and lock or resolved dependency data.",
-      "Run Trivy filesystem dependency scanning.",
-      "Identify the package name and installed version.",
-      "Review CVE identifiers, severity and fixed-version information.",
-      "Trace whether the dependency is direct or transitive.",
-      "Update the dependency or its parent dependency management.",
-      "Run tests and scan again."
+  "Container Image Scanning": {
+    title: "Container Image Scanning",
+    description: "Scan container images for operating-system and application-library vulnerabilities before images are published or deployed.",
+    sections: [
+      {
+        title: "Container Image Attack Surface",
+        content: "Container images package operating-system layers, runtime components, application libraries, and configuration. Vulnerabilities in any included component can increase the attack surface of the deployed workload."
+      },
+      {
+        title: "Image and Layer Inspection",
+        content: "Trivy inspects image metadata and filesystem contents to identify operating systems and installed packages. Layer history and package discovery help identify components that may not be visible from the application source repository alone."
+      },
+      {
+        title: "Scan Local Images",
+        code: "docker build -t devmavox-api:test .\ntrivy image devmavox-api:test\ntrivy image --severity HIGH,CRITICAL devmavox-api:test",
+        content: "Build an image in a test environment and scan it locally. Filter output to selected severities when prioritizing findings, but retain full reports for deeper investigation."
+      },
+      {
+        title: "Scan Registry Images",
+        code: "trivy image registry.example.com/team/api:1.0.0\ntrivy image --format json --output image-report.json registry.example.com/team/api:1.0.0",
+        content: "Registry scanning allows teams to inspect images by registry reference. Configure registry authentication securely when private images are involved. Avoid placing registry passwords in shell history or source files."
+      },
+      {
+        title: "Base Image and Application Package Risks",
+        content: "A vulnerable base image can introduce many operating-system findings. Application packages may introduce a separate set of vulnerabilities. Select maintained base images, update dependencies, and rebuild images to ensure fixes are actually included."
+      },
+      {
+        title: "Image Promotion Policy",
+        content: "Scan images before pushing to a production registry or before promoting them between environments. Use immutable image tags or digests to ensure the artifact that passed scanning is the artifact that gets deployed."
+      },
+      {
+        title: "Image Scan Failure Handling",
+        content: "Distinguish scanner execution failures from policy failures. A failed database download is not the same as a vulnerability threshold being exceeded. Preserve the scanner exit status and report so CI can communicate the actual cause."
+      },
+      {
+        title: "Container Image Optimization",
+        content: "Use minimal maintained base images, multi-stage builds, and appropriate package cleanup. Do not remove diagnostic tools or libraries blindly when the application requires them. Rebuild and rescan after image changes."
+      }
     ],
-    "The payment-service directly uses Spring Boot but receives a vulnerable transitive library through another dependency. The team inspects the Maven dependency tree, upgrades the compatible dependency version and validates the application before release.",
-    [
-      "trivy fs --scanners vuln .",
-      "mvn dependency:tree",
-      "mvn dependency:tree -Dincludes=org.example:sample-library",
-      "mvn clean verify",
-      "trivy fs --format json --output dependency-report.json ."
-    ],
-    "Keep Maven dependency declarations and dependency management under version control. Use compatible patched versions and review the dependency tree before excluding or overriding transitive dependencies. Configure Trivy to scan the relevant manifests and dependency data supported by the selected version.",
-    [
-      "The vulnerable library is transitive and not obvious in pom.xml.",
-      "The scanner cannot identify a dependency because metadata is missing.",
-      "A suggested fixed version conflicts with the Spring Boot dependency set.",
-      "A dependency update breaks application tests.",
-      "A vulnerable dependency remains because an older version is resolved."
-    ],
-    [
-      "Use mvn dependency:tree to locate the dependency path.",
-      "Inspect the resolved version and dependency management.",
-      "Choose a compatible patched release.",
-      "Use a targeted exclusion only when a safe replacement is provided.",
-      "Run unit and integration tests.",
-      "Rescan the repository and verify the resolved version."
-    ],
-    [
-      "Review direct and transitive dependencies.",
-      "Prefer supported patched releases.",
-      "Use dependency management to centralize versions.",
-      "Avoid arbitrary exclusions without replacement.",
-      "Track vulnerability remediation with owners and due dates."
-    ],
-    "Scan the payment-service Maven project. Use dependency:tree to trace a vulnerable transitive library, update it safely, run tests and confirm the vulnerability no longer appears."
-  ),
+    exercise: "Build a sample Docker image, scan it with Trivy, identify operating-system and application dependency findings, update the base image or packages, rebuild, and compare scan reports."
+  },
 
-  "7|Container Image Scanning": makeLesson(
-    "Container image scanning examines the packages and configuration inside a built image. Trivy can identify vulnerabilities in operating-system packages and supported application dependencies. It can also inspect image metadata and report findings associated with the image's software contents.",
-    "A source repository can be clean while the final image still contains vulnerable operating-system packages or outdated runtime libraries. Scanning the exact image intended for release provides an important final security check.",
-    "Dockerfile and application build → image creation → Trivy image scan → package and vulnerability analysis → severity policy → registry promotion or block.",
-    [
-      "Build the payment-service image using the intended Dockerfile.",
-      "Assign a unique build tag.",
-      "Scan the exact local image or registry image.",
-      "Review operating-system and application package findings.",
-      "Identify fixed versions and affected image layers.",
-      "Update the base image or application dependencies.",
-      "Rebuild and rescan the new image.",
-      "Push only the image that passed the required policy."
+  "CVE Database": {
+    title: "CVE Database",
+    description: "Understand vulnerability database updates, CVE identifiers, advisory metadata, fixed versions, and reliable database operations.",
+    sections: [
+      {
+        title: "CVE Fundamentals",
+        content: "A Common Vulnerabilities and Exposures identifier provides a standardized reference for a publicly disclosed vulnerability. CVE identifiers help teams correlate findings across scanners, vendors, security advisories, and remediation systems."
+      },
+      {
+        title: "How Trivy Uses Vulnerability Data",
+        content: "Trivy uses vulnerability information from configured database sources to match discovered package names and versions against known advisories. Results depend on the database contents, package metadata, ecosystem-specific advisory sources, and scanner version."
+      },
+      {
+        title: "Database Update Lifecycle",
+        content: "Trivy downloads vulnerability database data when required and uses local cached data for subsequent scans. Database freshness matters because newly published vulnerabilities and corrections may not exist in an older local database."
+      },
+      {
+        title: "Database Commands and Cache",
+        code: "trivy image --download-db-only\ntrivy image --skip-db-update nginx:latest\ntrivy clean --scan-cache",
+        content: "Use database-related options according to the installed Trivy version. Database-only operations can prepare scanner environments, while cache cleanup should be performed only when required by an operational procedure."
+      },
+      {
+        title: "Offline and Restricted Networks",
+        content: "Organizations with restricted outbound access may need an approved database mirror or controlled update process. Ensure the mirror is maintained and that scanners receive current database content before security-sensitive builds."
+      },
+      {
+        title: "Understanding Fixed Version Metadata",
+        content: "A finding may contain an installed version and a fixed version. The fixed version indicates a package version where the relevant vulnerability is addressed according to available advisory data. Verify compatibility and vendor guidance before upgrading."
+      },
+      {
+        title: "Database and Finding Troubleshooting",
+        content: "Investigate stale database warnings, download failures, proxy errors, corrupted caches, and differences between scanner environments. Compare Trivy versions and database update times before concluding that a vulnerability result is inconsistent."
+      }
     ],
-    "Jenkins builds devmavox/payment-service:build-125 and scans it before pushing to ECR. The scan identifies a vulnerable operating-system package, so the team updates the base image and rebuilds before registry promotion.",
-    [
-      "docker build -t devmavox/payment-service:build-125 .",
-      "trivy image devmavox/payment-service:build-125",
-      "trivy image --severity HIGH,CRITICAL devmavox/payment-service:build-125",
-      "trivy image --exit-code 1 --severity CRITICAL devmavox/payment-service:build-125",
-      "trivy image --format json --output image-report.json devmavox/payment-service:build-125"
-    ],
-    "Scan the immutable image identifier used by the release process. Configure severity and exit-code policies explicitly. Use a protected registry credential for private images and retain the scan report with the image digest and build metadata.",
-    [
-      "The image cannot be found locally.",
-      "The private registry denies image access.",
-      "The image contains vulnerable base operating-system packages.",
-      "The scanner reports an application dependency that was not updated.",
-      "The pipeline scans one tag but pushes a different image."
-    ],
-    [
-      "Verify the exact image tag and digest.",
-      "Authenticate to the registry using a protected credential.",
-      "Inspect the vulnerable package and base image layer.",
-      "Update the base image or dependency and rebuild.",
-      "Compare the scanned digest with the digest being pushed.",
-      "Repeat the scan and retain the new report."
-    ],
-    [
-      "Scan the final image, not only the source repository.",
-      "Use maintained and minimal base images.",
-      "Pin base images by digest where appropriate.",
-      "Keep image tags and digests tied to build metadata.",
-      "Block promotion when policy-critical vulnerabilities remain."
-    ],
-    "Build the payment-service image, scan it with Trivy and save a JSON report. Demonstrate a critical vulnerability blocking the push, update the image and verify the replacement image passes."
-  ),
+    exercise: "Inspect the vulnerability database update behavior on a test agent, run scans before and after an approved database update, and document how database freshness affects reported findings."
+  },
 
-  "7|CVE Database": makeLesson(
-    "A CVE is a publicly documented identifier for a known cybersecurity vulnerability. Trivy uses vulnerability intelligence sources and its local database to match installed package names and versions against known issues. Database freshness affects whether newly published vulnerability information is available during a scan.",
-    "An accurate and current vulnerability database helps the team make informed release decisions. A scan performed with stale intelligence may not include newly disclosed vulnerabilities affecting the payment-service.",
-    "Trivy scanner → local vulnerability database → package and version detection → advisory matching → CVE, severity and fix information → report.",
-    [
-      "Check the Trivy version.",
-      "Allow the scanner to obtain its required vulnerability database.",
-      "Run a scan against the selected target.",
-      "Review CVE identifiers and affected package versions.",
-      "Check the advisory and available fixed version.",
-      "Apply the appropriate package update.",
-      "Rescan after database and application updates."
+  "Severity Classification": {
+    title: "Severity Classification",
+    description: "Interpret vulnerability severity and design risk-based security policies that distinguish critical exposure from lower-priority findings.",
+    sections: [
+      {
+        title: "Severity Levels",
+        content: "Trivy commonly reports vulnerability severities such as UNKNOWN, LOW, MEDIUM, HIGH, and CRITICAL. Severity is derived from vulnerability advisory information and scoring systems. Exact availability and mapping can differ across sources."
+      },
+      {
+        title: "CVSS and Security Context",
+        content: "The Common Vulnerability Scoring System provides a standardized way to assess vulnerability characteristics and impact. A CVSS score is useful for prioritization, but application exposure, exploit availability, reachable code, and business context also matter."
+      },
+      {
+        title: "Severity Filtering",
+        code: "trivy image --severity CRITICAL,HIGH nginx:latest\ntrivy fs --severity HIGH,CRITICAL .\ntrivy image --severity MEDIUM,HIGH,CRITICAL --format json nginx:latest",
+        content: "Severity filters reduce output to findings that match selected levels. Do not confuse filtered output with the complete vulnerability inventory."
+      },
+      {
+        title: "Exit Codes and Policy Decisions",
+        code: "trivy image --exit-code 1 --severity CRITICAL,HIGH nginx:latest",
+        content: "Exit-code behavior allows CI pipelines to enforce a selected policy. Test the exact command and exit behavior for the installed Trivy version before making it a production release control."
+      },
+      {
+        title: "Prioritization Beyond Severity",
+        content: "Consider internet exposure, affected service, exploitability, runtime reachability, compensating controls, available fixes, and business criticality. A high-severity issue in an exposed authentication service may deserve earlier action than a similar issue in an isolated build utility."
+      },
+      {
+        title: "Security Exception Governance",
+        content: "Exceptions should have an owner, technical justification, expiry or review date, and compensating controls. Avoid permanent severity suppression for convenience."
+      },
+      {
+        title: "Severity Policy in CI/CD",
+        content: "Define thresholds separately for pull requests, release builds, and production image promotion. A mature policy can prioritize new critical findings while tracking existing accepted risks through a controlled remediation backlog."
+      }
     ],
-    "The payment-service uses an operating-system package that receives a new CVE advisory. The CI agent refreshes its Trivy database, rescans the image and identifies the newly reported issue before release.",
-    [
-      "trivy --version",
-      "trivy image devmavox/payment-service:1.0.0",
-      "trivy image --download-db-only",
-      "trivy fs --download-db-only .",
-      "trivy image --format json --output cve-report.json devmavox/payment-service:1.0.0"
-    ],
-    "Use the database update options supported by the installed Trivy release. Configure approved database mirrors when CI agents have restricted internet access. Understand database cache behavior and avoid assuming that every scan automatically downloads a fresh database.",
-    [
-      "The database download fails because the network is restricted.",
-      "The local database is outdated.",
-      "A scanner cannot access an approved mirror.",
-      "A package is reported with no available fixed version.",
-      "Different CI agents produce different results due to different database states."
-    ],
-    [
-      "Check Trivy database update output and cache status.",
-      "Verify DNS, proxy and registry access for database sources.",
-      "Configure an approved mirror or controlled database refresh process.",
-      "Compare scanner and database versions across agents.",
-      "Review vendor advisories when no fixed version is available.",
-      "Rescan after the database has been refreshed."
-    ],
-    [
-      "Maintain a controlled database refresh strategy.",
-      "Record scanner version and scan time with reports.",
-      "Use approved mirrors for restricted environments.",
-      "Do not interpret absence of a finding as proof of zero risk.",
-      "Review vendor advisories for important production packages."
-    ],
-    "Run a Trivy scan on a sample image and inspect the vulnerability database update behavior. Record the scanner version, CVE identifiers and fixed-version information in the payment-service security report."
-  ),
+    exercise: "Scan an image, create a policy that fails on HIGH and CRITICAL vulnerabilities, and demonstrate how a pipeline responds to a finding above and below the configured threshold."
+  },
 
-  "7|Severity Classification": makeLesson(
-    "Severity classification groups vulnerability findings according to their assessed impact. Trivy commonly reports severity levels such as UNKNOWN, LOW, MEDIUM, HIGH and CRITICAL when available from vulnerability data. Severity is useful for prioritization, but actual business risk also depends on exposure, exploitability, application usage and available mitigations.",
-    "A severity policy helps CI pipelines decide which findings require immediate action and which can be tracked for planned remediation. A payment application exposed to the internet may need stricter treatment for exploitable critical issues.",
-    "Scanner findings → advisory severity → policy filter → application and exposure assessment → remediation priority → pipeline decision.",
-    [
-      "Run a scan and collect the full findings report.",
-      "Group findings by severity.",
-      "Identify the affected component and application exposure.",
-      "Check whether a fixed version exists.",
-      "Apply the organization's blocking and warning policy.",
-      "Document accepted exceptions with owners and expiry dates.",
-      "Track remediation and rescan."
+  "Misconfiguration Scanning": {
+    title: "Misconfiguration Scanning",
+    description: "Detect insecure infrastructure and application configuration patterns in Dockerfiles, Terraform, Kubernetes manifests, and other supported files.",
+    sections: [
+      {
+        title: "Configuration Risk Fundamentals",
+        content: "Misconfigurations occur when infrastructure or application settings weaken security. Examples include publicly exposed services, excessive permissions, missing encryption, privileged containers, and insecure network policies."
+      },
+      {
+        title: "Trivy Misconfiguration Engine",
+        content: "Trivy evaluates supported configuration files using built-in checks and policy rules. Findings identify the affected file and configuration location, explain the risk, and may provide remediation guidance."
+      },
+      {
+        title: "Dockerfile Security Checks",
+        content: "Review risky Dockerfile patterns such as running as root, using untrusted base images, exposing unnecessary ports, and embedding secrets. The correct remediation depends on application runtime requirements."
+      },
+      {
+        title: "Terraform Configuration Checks",
+        content: "Terraform scanning can identify insecure cloud resource settings before infrastructure is deployed. Review storage exposure, encryption settings, network access, identity permissions, and resource-specific security controls."
+      },
+      {
+        title: "Scan Configuration Directories",
+        code: "trivy config .\ntrivy config ./terraform/\ntrivy config ./docker/\ntrivy config --format json --output config-report.json ./infrastructure/",
+        content: "Scan the directory containing infrastructure files. Use supported file formats and inspect the output to verify that the expected files were discovered."
+      },
+      {
+        title: "Understanding Misconfiguration Findings",
+        content: "Review the rule identifier, severity, affected resource, file path, line number, and remediation guidance. Validate the finding against the actual deployment design before changing a production configuration."
+      },
+      {
+        title: "Policy and Custom Rules",
+        content: "Where supported, use policy configuration and custom checks to enforce organization-specific security standards. Version-control policies, test them against representative files, and review changes before broad rollout."
+      },
+      {
+        title: "Preventing Configuration Drift",
+        content: "Run configuration scans during pull requests and before infrastructure deployment. Combine scanner findings with peer review, cloud policy controls, and post-deployment configuration monitoring."
+      }
     ],
-    "The payment-service policy blocks CRITICAL vulnerabilities and requires security review for HIGH findings. MEDIUM findings are recorded with remediation deadlines instead of being ignored.",
-    [
-      "trivy image --severity CRITICAL devmavox/payment-service:1.0.0",
-      "trivy image --severity HIGH,CRITICAL devmavox/payment-service:1.0.0",
-      "trivy image --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL devmavox/payment-service:1.0.0",
-      "trivy image --exit-code 1 --severity CRITICAL devmavox/payment-service:1.0.0"
-    ],
-    "Define severity thresholds in a reviewed pipeline policy. Configure the desired exit code and severity filters explicitly. Do not treat severity alone as a complete risk assessment; use exploitability, reachable code, internet exposure and vendor guidance where available.",
-    [
-      "A critical finding is ignored because severity filtering is incorrect.",
-      "The pipeline blocks every medium finding and becomes unusable.",
-      "An UNKNOWN severity finding is silently excluded.",
-      "An accepted exception has no expiry date.",
-      "Teams disagree because policies differ between environments."
-    ],
-    [
-      "Inspect the complete report and command-line severity filter.",
-      "Confirm the intended exit-code behavior.",
-      "Review UNKNOWN findings instead of silently discarding them.",
-      "Align policy with security and application owners.",
-      "Record exceptions with justification and review date.",
-      "Rerun the scan using the approved policy."
-    ],
-    [
-      "Use consistent severity thresholds across release pipelines.",
-      "Prioritize internet-exposed and exploitable vulnerabilities.",
-      "Keep exceptions time-bound and auditable.",
-      "Report lower-severity findings rather than hiding them.",
-      "Review blocking policies as application risk changes."
-    ],
-    "Create a payment-service Trivy policy that blocks CRITICAL findings and reports HIGH findings. Run sample scans and demonstrate the difference between reporting and blocking behavior."
-  ),
+    exercise: "Create a Terraform or Dockerfile example with insecure settings, scan it using Trivy config, fix the reported issues, and compare the reports."
+  },
 
-  "7|Misconfiguration Scanning": makeLesson(
-    "Misconfiguration scanning checks supported configuration files for insecure or non-compliant settings. Trivy can examine files such as Dockerfiles, Terraform configurations and other supported infrastructure definitions. Rules can identify issues such as privileged containers, overly permissive network settings and unsafe infrastructure defaults.",
-    "Configuration mistakes can expose production systems even when application code contains no known vulnerability. Detecting these problems before infrastructure or containers are deployed reduces avoidable security risks.",
-    "Dockerfile, Terraform or configuration repository → Trivy misconfiguration checks → rule evaluation → finding and remediation guidance → policy decision.",
-    [
-      "Identify infrastructure and application configuration files.",
-      "Select the repository or directory to scan.",
-      "Enable the misconfiguration scanner.",
-      "Review the rule identifier and affected line.",
-      "Understand the security impact of the configuration.",
-      "Correct the configuration and validate its behavior.",
-      "Rerun the scan and review the result."
+  "Kubernetes Configuration Scanning": {
+    title: "Kubernetes Configuration Scanning",
+    description: "Evaluate Kubernetes YAML and related deployment configuration for insecure workload, identity, networking, and storage settings.",
+    sections: [
+      {
+        title: "Kubernetes Security Configuration Risks",
+        content: "Kubernetes security depends on workload configuration, container privileges, identity permissions, network controls, and storage settings. A valid manifest can still define an insecure deployment."
+      },
+      {
+        title: "Workload Security Context",
+        content: "Review runAsNonRoot, allowPrivilegeEscalation, readOnlyRootFilesystem, privileged mode, Linux capabilities, and seccomp configuration. Apply controls that match the application requirements and supported Kubernetes environment."
+      },
+      {
+        title: "Resource and Image Configuration",
+        content: "Inspect container image references, image pull policies, resource requests and limits, and exposed ports. Prefer immutable image digests for controlled production deployments and ensure images have passed vulnerability scanning."
+      },
+      {
+        title: "RBAC and Service Account Risks",
+        content: "Review Role, ClusterRole, RoleBinding, ClusterRoleBinding, and service account permissions. Avoid broad cluster-admin privileges for ordinary application workloads. Grant only the actions required by the workload."
+      },
+      {
+        title: "Network and Storage Controls",
+        content: "Review NetworkPolicy coverage, ingress exposure, persistent volume access, storage encryption requirements, and secret mounting. A secure manifest should align with the cluster's network and storage architecture."
+      },
+      {
+        title: "Scan Kubernetes Manifests",
+        code: "trivy config ./k8s/\ntrivy config --severity HIGH,CRITICAL ./k8s/\ntrivy config --format json --output kubernetes-security.json ./k8s/",
+        content: "Scan the directory containing Kubernetes YAML files. Review findings for each workload and resource type. Verify that generated manifests and Helm-rendered output are included where appropriate."
+      },
+      {
+        title: "Helm Template Scanning",
+        content: "Render Helm templates into Kubernetes manifests and scan the rendered output. This helps inspect the actual resource configuration produced by chart values rather than only examining chart templates."
+      },
+      {
+        title: "Deployment Gate Integration",
+        content: "Add manifest scanning before kubectl apply or Helm deployment. Fail the pipeline for policy violations that must be corrected before deployment, and publish a report that identifies the exact resource and configuration."
+      }
     ],
-    "A payment-service Dockerfile runs the application as root. Trivy identifies the insecure configuration. The team creates a dedicated non-root user, adjusts file permissions and rebuilds the image.",
-    [
-      "trivy config .",
-      "trivy config --severity HIGH,CRITICAL .",
-      "trivy config --format json --output misconfig-report.json .",
-      "trivy config Dockerfile"
-    ],
-    "Enable the misconfiguration scanner for the relevant target and use supported policy checks. Keep infrastructure files in version control and review scanner rule identifiers against the tool version. Do not assume that every custom configuration format is automatically understood.",
-    [
-      "A configuration file is not recognized by the scanner.",
-      "A security rule reports an unsafe container setting.",
-      "A policy exception hides a real risk.",
-      "A finding refers to an outdated configuration line.",
-      "The pipeline scans the wrong directory."
-    ],
-    [
-      "Verify the file format and scan target.",
-      "Inspect the rule identifier and affected source line.",
-      "Correct the configuration using the platform's supported secure setting.",
-      "Review exceptions and remove unnecessary suppressions.",
-      "Rerun the scanner against the updated files."
-    ],
-    [
-      "Scan infrastructure and container configuration before deployment.",
-      "Use non-root containers where practical.",
-      "Avoid privileged execution unless specifically justified.",
-      "Review policy exceptions regularly.",
-      "Keep configuration changes subject to pull request review."
-    ],
-    "Create a controlled insecure Dockerfile setting in the payment-service. Run Trivy configuration scanning, correct the finding and verify the updated Dockerfile passes the selected policy."
-  ),
+    exercise: "Create a Kubernetes Deployment with a privileged container and excessive permissions. Scan the manifest, correct the security context and RBAC configuration, and rerun the scan."
+  },
 
-  "7|Kubernetes Configuration Scanning": makeLesson(
-    "Kubernetes configuration scanning evaluates supported Kubernetes manifests and related configuration for insecure settings and policy violations. Trivy can inspect manifest files for issues such as privileged containers, missing security controls and risky configuration. This analysis happens before the manifest is applied to a cluster.",
-    "Scanning manifests before deployment helps prevent unsafe workload definitions from reaching EKS. A payment-service should use appropriate security contexts, resource limits and restricted privileges instead of relying only on runtime monitoring.",
-    "Kubernetes YAML in Git → Trivy configuration scanner → Kubernetes policy checks → findings → manifest correction → Git review and deployment.",
-    [
-      "Collect the Kubernetes manifests or Helm-rendered manifests.",
-      "Select the directory containing deployment configuration.",
-      "Run Trivy configuration scanning.",
-      "Inspect the affected resource and YAML line.",
-      "Review security context, privileges and exposed settings.",
-      "Correct the manifest.",
-      "Render or validate the updated manifest.",
-      "Rescan before deployment."
+  "Secret Scanning": {
+    title: "Secret Scanning",
+    description: "Detect exposed credentials and sensitive tokens in repositories, source files, and supported scan targets.",
+    sections: [
+      {
+        title: "What Counts as a Secret",
+        content: "Secrets include API keys, access tokens, private keys, passwords, database credentials, cloud credentials, and signing material. Exposure can allow unauthorized access even when the application has no conventional software vulnerability."
+      },
+      {
+        title: "How Secret Detection Works",
+        content: "Trivy secret scanning examines supported file content using detection rules and patterns. Findings identify suspected secret material and its location. Detection is not perfect, so results require controlled investigation."
+      },
+      {
+        title: "Scan Repository Secrets",
+        code: "trivy fs --scanners secret .\ntrivy repo --scanners secret .\ntrivy fs --scanners secret --format json --output secret-report.json .",
+        content: "Run secret scanning against the repository or filesystem. Review reports carefully because they may contain sensitive context. Restrict access to stored reports."
+      },
+      {
+        title: "Handling a Confirmed Secret Exposure",
+        content: "Revoke or rotate the exposed credential immediately. Investigate access logs and possible misuse, identify where the secret was distributed, and replace it with a secret-management mechanism. Deleting the text from the latest commit does not revoke the credential."
+      },
+      {
+        title: "False Positives and Test Fixtures",
+        content: "Sample values and test fixtures may resemble real credentials. Validate whether a finding is active and sensitive before marking it as a false positive. Use narrow documented exceptions rather than disabling secret detection broadly."
+      },
+      {
+        title: "Preventing Secret Leakage",
+        content: "Use CI secret stores, cloud secret managers, short-lived credentials, least-privilege access, and pre-commit checks. Never place real credentials in Dockerfiles, application configuration committed to Git, or build logs."
+      },
+      {
+        title: "Secret Scanning Incident Response",
+        content: "Record the affected repository, commit, secret type, exposure period, affected systems, revocation time, and investigation owner. Treat secret exposure as a security incident when access may have been abused."
+      }
     ],
-    "The payment-service Deployment manifest sets privileged: true without a valid operational requirement. Trivy flags the risky configuration. The team removes unnecessary privilege and configures a non-root security context before applying the Deployment to EKS.",
-    [
-      "trivy config ./k8s",
-      "trivy config --severity HIGH,CRITICAL ./k8s",
-      "kubectl apply --dry-run=client -f ./k8s/",
-      "kubectl diff -f ./k8s/"
-    ],
-    "Scan the same manifests that will be deployed. For Helm-based deployments, render the chart with the intended values before scanning. Configure namespace, security context, service account and resource settings according to the organization's Kubernetes security baseline.",
-    [
-      "The scanner does not inspect the generated Helm output.",
-      "A manifest uses privileged mode or host namespace access.",
-      "The scanner reports an insecure container security context.",
-      "A configuration exception hides an unsafe workload.",
-      "The scanned YAML differs from the deployed manifest."
-    ],
-    [
-      "Render the exact Helm chart and values used for deployment.",
-      "Inspect the affected Kubernetes resource and rule.",
-      "Correct the security context or risky configuration.",
-      "Validate the manifest with Kubernetes client-side checks.",
-      "Compare the reviewed manifest with the deployment artifact.",
-      "Rescan before applying to the cluster."
-    ],
-    [
-      "Scan rendered manifests before deployment.",
-      "Use least-privilege service accounts.",
-      "Avoid privileged containers and host access unless justified.",
-      "Set resource requests and limits.",
-      "Keep scanned manifests identical to release manifests."
-    ],
-    "Scan the payment-service Kubernetes Deployment and Service manifests. Introduce a controlled privileged-container issue, correct it, validate the YAML and rerun Trivy before EKS deployment."
-  ),
+    exercise: "Create a disposable test credential in a non-production repository, scan it with Trivy, verify the finding, remove the test secret, and document the correct rotation and incident response steps."
+  },
 
-  "7|Secret Scanning": makeLesson(
-    "Secret scanning searches supported files for credentials and sensitive values such as API tokens, passwords, private keys and access keys. Trivy can identify patterns that resemble exposed secrets in source repositories and filesystem targets. A finding must be treated as a possible credential exposure even when the value appears to belong to a test environment.",
-    "Committed secrets can allow unauthorized access to cloud accounts, registries, databases and production systems. Preventing credentials from entering Git is safer than trying to remove them after they have been distributed.",
-    "Repository checkout → Trivy secret scanner → pattern and secret detection → finding review → credential revocation and rotation → source cleanup and verification.",
-    [
-      "Scan the repository with secret detection enabled.",
-      "Review each finding without copying the secret into logs or chat.",
-      "Identify the credential owner and affected system.",
-      "Revoke or rotate an exposed credential immediately.",
-      "Remove the secret from current source files.",
-      "Review Git history and distribution scope.",
-      "Move the replacement secret to a secure secret manager.",
-      "Rerun scanning and verify that no active credential remains exposed."
+  "SBOM Generation": {
+    title: "SBOM Generation",
+    description: "Generate Software Bills of Materials to inventory software components and support vulnerability management, compliance, and supply-chain visibility.",
+    sections: [
+      {
+        title: "SBOM Fundamentals",
+        content: "A Software Bill of Materials is a structured inventory of software components included in an application or artifact. It can describe package names, versions, relationships, licenses, and other component metadata."
+      },
+      {
+        title: "Why Organizations Need SBOMs",
+        content: "SBOMs help teams understand third-party dependencies, investigate newly disclosed vulnerabilities, support software supply-chain transparency, and provide component inventory evidence to customers or auditors."
+      },
+      {
+        title: "SPDX and CycloneDX Formats",
+        content: "SPDX and CycloneDX are established SBOM formats. Choose a format compatible with the receiving security, compliance, and vulnerability management systems. Validate the generated document before distribution."
+      },
+      {
+        title: "Generate an Image SBOM",
+        code: "trivy image --format cyclonedx --output image-sbom.json nginx:latest\ntrivy image --format spdx-json --output image-sbom-spdx.json nginx:latest",
+        content: "Generate an SBOM from a container image using a supported format. The resulting document represents discovered software components and metadata from the scanned image."
+      },
+      {
+        title: "Generate a Filesystem SBOM",
+        code: "trivy fs --format cyclonedx --output filesystem-sbom.json .",
+        content: "Filesystem SBOM generation inventories supported package information discovered in the selected directory. Confirm that the intended manifests and dependency files were included."
+      },
+      {
+        title: "SBOM Validation and Quality",
+        content: "Validate the document structure, format version, package identity, version metadata, and component relationships. An SBOM is only as complete as the component information the scanner can discover."
+      },
+      {
+        title: "SBOM Storage and Release Association",
+        content: "Associate each SBOM with the exact release artifact, image digest, source revision, and build identifier. Store the document alongside release evidence and restrict modification after publication."
+      },
+      {
+        title: "SBOM in Vulnerability Response",
+        content: "When a new vulnerability is announced, component inventories help determine which application releases contain the affected package. Teams can identify impacted artifacts and prioritize rebuilds and remediation."
+      }
     ],
-    "A developer accidentally commits a cloud access key in a payment-service properties file. The team revokes the key, checks cloud audit logs, removes the secret from the repository and stores the replacement in Jenkins credentials or an approved secret manager.",
-    [
-      "trivy fs --scanners secret .",
-      "trivy fs --scanners secret --format json --output secret-report.json .",
-      "git grep -n -I -E 'password|secret|token|access_key'",
-      "git log --all --oneline"
-    ],
-    "Enable secret scanning for the intended repository scope. Configure narrow, documented exclusions only for verified test fixtures. Use secret managers or CI credential stores for runtime values. Treat a confirmed exposed credential as compromised even after deleting its current file.",
-    [
-      "A real secret is committed to the current branch.",
-      "A credential remains in older Git commits.",
-      "A scanner reports a false positive in test data.",
-      "A secret is printed in a build log.",
-      "A rotated credential remains active in another environment."
-    ],
-    [
-      "Revoke or rotate the exposed credential before other cleanup.",
-      "Review cloud, registry or database audit activity.",
-      "Remove the secret from the current source and assess Git history exposure.",
-      "Use approved history-rewriting procedures if repository cleanup is required.",
-      "Move the replacement to a secure credential store.",
-      "Verify old credentials are no longer valid.",
-      "Rerun secret scanning."
-    ],
-    [
-      "Never commit credentials or private keys.",
-      "Use short-lived credentials where supported.",
-      "Restrict secret access by job and environment.",
-      "Avoid printing secret values in logs.",
-      "Rotate confirmed exposed credentials immediately."
-    ],
-    "Create a harmless dummy credential pattern in a test branch. Run Trivy secret scanning, inspect the finding safely, remove the dummy value and verify that the repository scan is clean."
-  ),
+    exercise: "Generate CycloneDX SBOMs for a sample application and container image. Validate the files, identify key components, and associate each SBOM with its exact image digest or build revision."
+  },
 
-  "7|SBOM Generation": makeLesson(
-    "A Software Bill of Materials is a structured inventory of software components included in an application or artifact. It can identify packages, versions and relationships so teams can understand what is inside a release. Trivy supports generating SBOM output in formats such as CycloneDX and SPDX for supported targets.",
-    "An SBOM improves software supply-chain visibility. If a new vulnerability is disclosed, the payment-service team can use its component inventory to determine whether the affected package exists in a released image.",
-    "Source or built image → Trivy package discovery → component inventory → CycloneDX or SPDX SBOM → artifact storage and release metadata → vulnerability investigation.",
-    [
-      "Choose the source directory or final image to inventory.",
-      "Select an SBOM format supported by the scanner.",
-      "Generate the SBOM.",
-      "Validate that expected application and operating-system components appear.",
-      "Associate the SBOM with the exact build and image digest.",
-      "Store it with the release artifact.",
-      "Use the inventory for later vulnerability and compliance reviews."
+  "Ignore Policies": {
+    title: "Ignore Policies",
+    description: "Manage vulnerability and finding exceptions responsibly using documented suppression policies and review controls.",
+    sections: [
+      {
+        title: "Why Ignore Policies Exist",
+        content: "Some findings may be irrelevant to the actual deployment, incorrectly matched, already mitigated, or temporarily accepted as a known risk. Ignore policies allow teams to manage such cases without disabling the entire security scan."
+      },
+      {
+        title: "Trivy Ignore File",
+        content: "Trivy supports a repository-level ignore configuration through .trivyignore and related supported configuration mechanisms. The exact supported fields and syntax depend on the Trivy release."
+      },
+      {
+        title: "Ignore Specific Vulnerabilities",
+        code: "trivy image --ignorefile .trivyignore nginx:latest",
+        content: "Use a controlled ignore file when scanning. Add only findings that have been reviewed and approved. Confirm the scanner reads the intended ignore file in the CI working directory."
+      },
+      {
+        title: "Expiration and Review",
+        content: "Exceptions should have an owner, justification, approval record, and review or expiration date. Review exceptions regularly because a temporary risk acceptance can become permanent when ownership is unclear."
+      },
+      {
+        title: "Avoid Broad Suppression",
+        content: "Do not ignore entire vulnerability severities or large groups of packages merely to make the pipeline pass. Narrow exceptions preserve visibility into unrelated findings and future vulnerabilities."
+      },
+      {
+        title: "Policy Governance",
+        content: "Require security review for high-risk exceptions. Keep ignore files in version control and include policy changes in code review. Track exception counts and remove entries when fixes become available."
+      },
+      {
+        title: "Verify Suppression Behavior",
+        content: "Run scans with and without the ignore configuration in a controlled test. Confirm that only the intended findings are suppressed and that other findings remain visible."
+      }
     ],
-    "After building the payment-service image, Jenkins generates a CycloneDX SBOM and stores it beside the image digest and Trivy vulnerability report. When a new CVE is announced, the team searches the inventory for affected package versions.",
-    [
-      "trivy image --format cyclonedx --output payment-service-sbom.cdx.json devmavox/payment-service:1.0.0",
-      "trivy fs --format cyclonedx --output source-sbom.cdx.json .",
-      "trivy image --format spdx-json --output payment-service-sbom.spdx.json devmavox/payment-service:1.0.0",
-      "Get-Item .\\payment-service-sbom.cdx.json"
-    ],
-    "Choose a format accepted by downstream inventory and compliance systems. Generate the SBOM from the exact release image or source revision. Retain the image digest, build identifier, generation time and scanner version alongside the SBOM.",
-    [
-      "The SBOM is generated from source rather than the final release image.",
-      "Expected components are missing because the target was incomplete.",
-      "The SBOM is not associated with an image digest.",
-      "The output format is not accepted by a downstream system.",
-      "The generated file is overwritten by another build."
-    ],
-    [
-      "Verify the target and selected output format.",
-      "Inspect the SBOM for expected application and operating-system packages.",
-      "Generate the inventory from the final image when image contents matter.",
-      "Associate the SBOM with an immutable digest.",
-      "Store each build's SBOM using a unique artifact name.",
-      "Validate it with the intended downstream consumer."
-    ],
-    [
-      "Generate SBOMs for release artifacts.",
-      "Use a standard machine-readable format.",
-      "Keep SBOMs tied to immutable image digests.",
-      "Retain SBOMs for supported release-retention periods.",
-      "Use inventories to investigate newly disclosed vulnerabilities."
-    ],
-    "Generate a CycloneDX SBOM for the payment-service image. Verify that application and operating-system packages are represented and archive the SBOM with the image digest and vulnerability report."
-  ),
+    exercise: "Create a test .trivyignore file for a disposable finding, document its justification and owner, scan with the ignore file, and verify that unrelated vulnerabilities are still reported."
+  },
 
-  "7|Ignore Policies": makeLesson(
-    "Trivy ignore policies allow selected findings to be suppressed from normal scan output. They can be useful for documented false positives, accepted risks or temporary exceptions while remediation is planned. Ignore mechanisms must be controlled because suppressing a finding does not remove the vulnerable component or fix the underlying security problem.",
-    "A controlled exception process prevents false positives from blocking every build while preserving visibility of accepted risk. For a payment-service, an exception should have a technical reason, owner, review date and clear scope.",
-    "Trivy finding → validation and risk review → approved exception → scoped ignore policy → scan report and audit trail → periodic reassessment.",
-    [
-      "Run a full scan and identify the exact finding.",
-      "Confirm whether the finding is valid or a false positive.",
-      "Review exploitability, exposure and available fixes.",
-      "Obtain approval from the responsible security owner.",
-      "Add the narrowest supported ignore entry.",
-      "Document the reason, owner and expiry date.",
-      "Verify the ignore affects only the intended finding.",
-      "Review and remove the exception after remediation."
+  "CI Pipeline Integration": {
+    title: "CI Pipeline Integration",
+    description: "Integrate Trivy into Jenkins and other CI systems to scan source, dependencies, container images, and deployment configuration.",
+    sections: [
+      {
+        title: "Security Scanning Pipeline Design",
+        content: "Place scans at stages where the required artifacts exist. Filesystem and dependency scanning can run after checkout. Image scanning runs after the image is built. Kubernetes configuration scanning runs before deployment."
+      },
+      {
+        title: "Jenkins Tool and Credential Setup",
+        content: "Install or provision a controlled Trivy version on Jenkins agents. Configure private registry credentials through Jenkins credentials or an approved identity mechanism. Do not expose registry passwords in pipeline logs."
+      },
+      {
+        title: "Filesystem Scan Stage",
+        code: "stage('Trivy Filesystem Scan') {\n  steps {\n    sh 'trivy fs --exit-code 1 --severity HIGH,CRITICAL .'\n  }\n}",
+        content: "This stage scans the checked-out repository and returns a failure status when the configured severity threshold is exceeded. Validate the policy against your repository before enforcing it."
+      },
+      {
+        title: "Container Image Scan Stage",
+        code: "stage('Build Image') {\n  steps {\n    sh 'docker build -t devmavox-api:${BUILD_NUMBER} .'\n  }\n}\nstage('Trivy Image Scan') {\n  steps {\n    sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL devmavox-api:${BUILD_NUMBER}'\n  }\n}",
+        content: "Build and scan the same image reference. Avoid scanning one mutable tag and deploying a different artifact. For production promotion, associate scan evidence with an immutable image digest."
+      },
+      {
+        title: "Kubernetes Configuration Scan Stage",
+        code: "stage('Trivy Kubernetes Config Scan') {\n  steps {\n    sh 'trivy config --exit-code 1 --severity HIGH,CRITICAL ./k8s/'\n  }\n}",
+        content: "Scan deployment manifests before applying them to a cluster. If Helm is used, render the intended values into manifests and scan the rendered output."
+      },
+      {
+        title: "Reports and Pipeline Artifacts",
+        content: "Generate JSON reports for traceability and publish them as pipeline artifacts. Restrict access to reports that may contain sensitive paths or secret-related findings. Preserve build identifiers and scan timestamps."
+      },
+      {
+        title: "Exit Codes and Failure Strategy",
+        content: "Configure scanner exit codes to distinguish policy violations from successful scans. Decide whether a scan failure blocks a build, release, or deployment. Handle scanner infrastructure failures separately from actual security findings."
+      },
+      {
+        title: "Production Pipeline Governance",
+        content: "Pin scanner versions, control database freshness, use approved registries, secure credentials, and document exceptions. Start with reporting mode when introducing a new policy, then move to enforcement after teams understand the findings."
+      }
     ],
-    "A payment-service test fixture triggers a verified false-positive secret finding. The team documents the specific finding and adds a narrowly scoped exception rather than disabling secret scanning for the entire repository.",
-    [
-      "trivy fs .",
-      "trivy image devmavox/payment-service:1.0.0",
-      "trivy fs --ignorefile .trivyignore .",
-      "Get-Content .\\.trivyignore"
-    ],
-    "Use the ignore-file format supported by the installed Trivy version. Prefer specific vulnerability identifiers and narrowly scoped exceptions. Use expiry and review metadata through the organization's policy process where supported. Do not ignore entire severities or scanner categories to make builds pass.",
-    [
-      "An ignore entry suppresses more findings than intended.",
-      "A vulnerability exception remains after a patch is available.",
-      "The ignore file is not loaded because its path is wrong.",
-      "A finding is suppressed without security approval.",
-      "Different scanner versions interpret exception metadata differently."
-    ],
-    [
-      "Inspect the full report before applying an exception.",
-      "Verify the ignore file path and supported syntax.",
-      "Narrow the exception to the exact finding.",
-      "Record approval and a review deadline.",
-      "Remove the exception after upgrading the affected package.",
-      "Rerun the scan and confirm the finding is visible or resolved as expected."
-    ],
-    [
-      "Never use ignore policies as a substitute for remediation.",
-      "Require an owner and documented justification.",
-      "Keep exceptions narrow and time-bound.",
-      "Review exceptions regularly.",
-      "Retain full scan reports for audit."
-    ],
-    "Create a controlled test finding and apply a narrowly scoped Trivy ignore entry. Verify the intended finding is suppressed, confirm unrelated findings remain visible and remove the exception after the test."
-  ),
+    exercise: "Build a Jenkins pipeline that scans source dependencies, builds a container image, scans the image, scans Kubernetes manifests, publishes JSON reports, and blocks promotion for configured critical findings."
+  },
 
-  "7|CI Pipeline Integration": makeLesson(
-    "CI pipeline integration runs security scans automatically during software delivery. A Jenkins pipeline can scan the repository, dependencies and final container image, save reports and enforce a security policy using scanner exit codes. Each scan should be placed at a stage where its target already exists.",
-    "Automated scanning makes security checks repeatable for every relevant code change and release. It prevents known unacceptable vulnerabilities and exposed secrets from silently moving into the registry or production cluster.",
-    "Git checkout → filesystem and dependency scan → Maven build and tests → Docker image build → image and configuration scan → policy evaluation → ECR push or pipeline block.",
-    [
-      "Check out the exact commit.",
-      "Verify the pinned Trivy version.",
-      "Run filesystem, dependency and secret scans.",
-      "Build and test the payment-service.",
-      "Build the Docker image with a unique tag.",
-      "Scan the exact image.",
-      "Save JSON or other required reports.",
-      "Apply the approved severity and exit-code policy.",
-      "Push only an image that meets the release policy."
+  "Vulnerability Remediation": {
+    title: "Vulnerability Remediation",
+    description: "Convert scanner findings into prioritized fixes, validated upgrades, rebuilt artifacts, and auditable security closure.",
+    sections: [
+      {
+        title: "Triage Before Fixing",
+        content: "Review the vulnerability identifier, affected package, installed version, fixed version, severity, advisory references, and affected application. Determine whether the vulnerable component is included in the deployed artifact and whether the relevant functionality is exposed."
+      },
+      {
+        title: "Prioritize by Risk",
+        content: "Prioritize critical exposure, internet-facing services, exploitable weaknesses, sensitive data paths, and high-business-impact applications. Severity is an important input but should not be the only remediation decision."
+      },
+      {
+        title: "Upgrade Direct Dependencies",
+        content: "Update the declared package version to a supported fixed release. Review compatibility notes, update lockfiles, execute tests, and verify that the resulting dependency graph no longer contains the vulnerable version."
+      },
+      {
+        title: "Resolve Transitive Dependency Vulnerabilities",
+        content: "A vulnerable transitive dependency may require upgrading its parent library or using a supported dependency override mechanism. Confirm that the override is compatible and does not introduce a different security or runtime issue."
+      },
+      {
+        title: "Patch Container Base Images",
+        content: "Select a maintained base image containing the required security updates. Rebuild the image rather than modifying a running container manually. Verify the resulting package versions and image digest."
+      },
+      {
+        title: "Re-scan and Validate",
+        code: "trivy fs --scanners vuln .\ntrivy image --severity HIGH,CRITICAL devmavox-api:patched\ntrivy image --format json --output remediation-report.json devmavox-api:patched",
+        content: "Run scans after remediation and compare reports. Confirm that the affected package or vulnerable version is no longer present. Execute regression tests and application validation before release."
+      },
+      {
+        title: "Unfixed Vulnerability Handling",
+        content: "If no fixed version exists, document the risk, exposure, compensating controls, owner, and review date. Consider disabling affected functionality or isolating the component when technically appropriate."
+      },
+      {
+        title: "Remediation Evidence",
+        content: "Retain the original finding, change reference, dependency or base-image update, test results, new scan report, and approval where required. Close the finding only when the actual release artifact has been verified."
+      }
     ],
-    "Jenkins scans the payment-service repository before Maven packaging and scans the final Docker image before ECR push. A critical vulnerability causes a non-zero scanner exit code and fails the security stage.",
-    [
-      "trivy fs --scanners vuln,secret,misconfig --exit-code 1 --severity CRITICAL .",
-      "mvn clean verify",
-      "docker build -t devmavox/payment-service:$env:BUILD_NUMBER .",
-      "trivy image --exit-code 1 --severity CRITICAL devmavox/payment-service:$env:BUILD_NUMBER",
-      "docker image inspect devmavox/payment-service:$env:BUILD_NUMBER"
-    ],
-    "Pin the Trivy version and define scanner commands in the Jenkinsfile. Bind private registry credentials only for the required steps. Archive reports even when a scan fails, using pipeline post actions where appropriate. Make the blocking policy explicit and keep it separate from report-only scans.",
-    [
-      "The scanner is not installed on the Jenkins agent.",
-      "A scan failure is ignored by shell error handling.",
-      "The image scan runs before the image is built.",
-      "A report is lost when the stage fails.",
-      "The pipeline scans a different tag from the one pushed.",
-      "Registry credentials are exposed in build logs."
-    ],
-    [
-      "Verify the scanner executable and version on the agent.",
-      "Check the exact command exit code and pipeline shell behavior.",
-      "Place image scanning after image creation and before push.",
-      "Archive reports in failure and success paths.",
-      "Compare the scanned image digest with the pushed image digest.",
-      "Move registry credentials to protected Jenkins credentials.",
-      "Rerun the pipeline after correcting the stage."
-    ],
-    [
-      "Scan before registry promotion.",
-      "Use immutable build identifiers and image digests.",
-      "Keep scan reports with build artifacts.",
-      "Fail the pipeline explicitly for policy violations.",
-      "Test both successful and failing security paths.",
-      "Avoid exposing credentials in shell output."
-    ],
-    "Implement filesystem and image scanning in a Jenkins pipeline for the payment-service. Save reports, fail on a critical finding and verify that ECR push happens only after the security stage passes."
-  ),
+    exercise: "Select a vulnerability in a sample image or dependency manifest, determine its fixed version, apply the upgrade, rebuild the artifact, run regression tests, and produce a remediation evidence report."
+  },
 
-  "7|Vulnerability Remediation": makeLesson(
-    "Vulnerability remediation is the process of reducing or removing risk identified by security scanning. Typical actions include upgrading a vulnerable dependency, rebuilding from a patched base image, removing an unused package, changing an insecure configuration or rotating an exposed secret. Remediation must be validated because a version change can affect application behavior.",
-    "A scan report is useful only when findings are investigated and addressed. The payment-service release process needs a clear way to prioritize vulnerabilities, apply fixes, test the application and prove that the resulting artifact is safer.",
-    "Trivy finding → package and CVE investigation → fix selection → dependency or image update → automated tests → rebuild and rescan → approved artifact promotion.",
-    [
-      "Collect the complete finding and affected package information.",
-      "Determine whether the package is direct, transitive or part of the base image.",
-      "Check vendor advisories and available fixed versions.",
-      "Select a compatible update or mitigation.",
-      "Change the dependency declaration or Docker base image.",
-      "Run unit and integration tests.",
-      "Rebuild the final container image.",
-      "Rescan the new image and compare results.",
-      "Record the remediation evidence."
+  "Troubleshooting": {
+    title: "Troubleshooting",
+    description: "Diagnose Trivy installation, database, registry, scanning, policy, and CI integration failures using reproducible evidence.",
+    sections: [
+      {
+        title: "Trivy Command Not Found",
+        content: "Check whether Trivy is installed, whether its executable directory is in PATH, and whether the CI agent uses the expected environment. Compare the interactive terminal environment with the actual service account environment."
+      },
+      {
+        title: "Vulnerability Database Download Failure",
+        content: "Inspect network access, DNS, proxy settings, TLS trust, registry or mirror configuration, and database distribution availability. Check whether the scanner can reach its configured database source."
+      },
+      {
+        title: "Private Registry Authentication Failure",
+        content: "Verify registry hostname, credential validity, access permissions, and token expiration. Use the CI platform's protected credential mechanism and ensure that authentication is available to the agent performing the scan."
+      },
+      {
+        title: "No Vulnerabilities Detected",
+        content: "A clean report may be valid, but verify that the intended image or repository was scanned. Check image digest, operating-system detection, package discovery, scan type, database freshness, and severity filters."
+      },
+      {
+        title: "Unsupported or Missing Package Detection",
+        content: "Inspect manifest support, package metadata, lockfiles, image filesystem contents, and Trivy version. Upgrade the scanner only after validating compatibility and the impact on existing CI policies."
+      },
+      {
+        title: "Unexpected Pipeline Success",
+        content: "Check whether --exit-code was configured, whether severity filters excluded the finding, whether the pipeline ignored the scanner exit status, or whether a shell wrapper converted failures into success."
+      },
+      {
+        title: "Unexpected Pipeline Failure",
+        content: "Determine whether the failure came from a security policy, scanner execution, network access, registry authentication, or report handling. Do not automatically classify every non-zero exit as a vulnerability."
+      },
+      {
+        title: "Evidence-Based Recovery",
+        content: "Capture the Trivy version, command, target digest or repository revision, database status, exit code, scanner logs, and CI environment. Correct the underlying issue and repeat the scan against the same artifact."
+      }
     ],
-    "Trivy reports a high-severity vulnerability in a Java library used by the payment-service. The developer traces the dependency through Maven, updates the compatible Spring Boot dependency set, runs regression tests and scans the rebuilt image before release.",
-    [
-      "mvn dependency:tree",
-      "mvn clean verify",
-      "trivy fs --scanners vuln .",
-      "docker build -t devmavox/payment-service:remediated .",
-      "trivy image devmavox/payment-service:remediated",
-      "docker image inspect devmavox/payment-service:remediated"
-    ],
-    "Track vulnerability identifier, affected component, installed version, fixed version, severity, owner and remediation status. Use dependency management for Maven updates and maintained base images for container fixes. Keep exceptions separate from completed remediation.",
-    [
-      "No fixed version is currently available.",
-      "A dependency upgrade breaks application compatibility.",
-      "A vulnerable transitive dependency remains resolved.",
-      "The Docker image still contains the old package.",
-      "A scan report is marked resolved without rebuilding the artifact.",
-      "A secret is deleted but its credential remains active."
-    ],
-    [
-      "Check vendor advisory and package maintenance status.",
-      "Trace the dependency path and update the correct version source.",
-      "Run tests to detect compatibility problems.",
-      "Rebuild the image and verify its package inventory.",
-      "Compare the new scan report with the original.",
-      "Rotate exposed credentials and review audit activity.",
-      "Document temporary mitigations when no fix exists."
-    ],
-    [
-      "Prioritize actively exploitable and internet-exposed risks.",
-      "Patch dependencies through controlled version management.",
-      "Rebuild artifacts after changing base packages.",
-      "Verify remediation with a new scan.",
-      "Keep evidence of fixes and approved exceptions.",
-      "Do not mark a finding resolved only because its source file changed."
-    ],
-    "Select a vulnerable dependency in a test payment-service branch. Trace its origin, upgrade to a compatible fixed version, run regression tests, rebuild the image and verify the vulnerability is resolved."
-  ),
+    exercise: "In a non-production CI job, simulate a missing executable, blocked database access, invalid registry credentials, and a vulnerability threshold failure. Diagnose each failure and document the recovery steps."
+  },
 
-  "7|Troubleshooting": makeLesson(
-    "Trivy troubleshooting covers scanner installation, database updates, target discovery, private registry authentication, dependency detection, false positives, report generation and CI exit-code behavior. A reliable diagnosis separates scanner execution problems from actual security findings.",
-    "Security stages must be dependable. If the scanner cannot access its database or the pipeline ignores its exit code, the team may mistakenly believe that an artifact passed security validation.",
-    "Jenkins agent → Trivy executable and configuration → database access → target discovery → scanner execution → report creation → exit-code policy → pipeline result.",
-    [
-      "Record the scanner version and exact command.",
-      "Identify the target and build identifier.",
-      "Find the first meaningful scanner error.",
-      "Verify database availability and update status.",
-      "Check private registry authentication when scanning images.",
-      "Inspect scanner selection and target discovery.",
-      "Validate report output and exit-code handling.",
-      "Correct the cause and repeat the scan."
+  "Production Hands-on Lab": {
+    title: "Production Hands-on Lab",
+    description: "Build an end-to-end DevSecOps pipeline that scans application dependencies, container images, and Kubernetes deployment manifests using Trivy.",
+    sections: [
+      {
+        title: "Lab Application and Architecture",
+        content: "Use a sample application stored in Git, a Dockerfile, Kubernetes deployment manifests, and a Jenkins pipeline. Trivy performs source and dependency scanning, image vulnerability scanning, configuration analysis, and SBOM generation."
+      },
+      {
+        title: "Prepare the Scanner Environment",
+        content: "Install an approved Trivy version on a non-production Jenkins agent. Verify executable access, database connectivity, registry access, and report storage permissions. Record the scanner version used by the lab."
+      },
+      {
+        title: "Source and Dependency Security",
+        code: "trivy fs --scanners vuln,secret .\ntrivy fs --format json --output source-security.json .",
+        content: "Scan the checked-out repository for supported dependency vulnerabilities and exposed secrets. Review the report and identify which findings require dependency changes or credential rotation."
+      },
+      {
+        title: "Container Image Build and Scan",
+        code: "docker build -t devmavox-api:lab .\ntrivy image --severity HIGH,CRITICAL devmavox-api:lab\ntrivy image --format json --output image-security.json devmavox-api:lab",
+        content: "Build the application image, scan it, and retain the report. Investigate vulnerable operating-system packages and application libraries. Update the base image or dependencies and rebuild."
+      },
+      {
+        title: "Kubernetes Manifest Security",
+        code: "trivy config ./k8s/\ntrivy config --format json --output kubernetes-security.json ./k8s/",
+        content: "Scan Kubernetes manifests before deployment. Correct insecure workload settings, excessive permissions, and missing security controls. Scan rendered Helm output when charts are part of the release."
+      },
+      {
+        title: "SBOM and Release Evidence",
+        code: "trivy image --format cyclonedx --output release-sbom.json devmavox-api:lab",
+        content: "Generate a CycloneDX SBOM for the exact image. Associate it with the image digest, source revision, build number, and security scan report."
+      },
+      {
+        title: "CI Security Gate",
+        content: "Configure Jenkins to run scans in the correct order and fail promotion for approved severity thresholds. Keep scanner infrastructure errors distinguishable from vulnerability policy failures. Publish reports even when a security gate fails."
+      },
+      {
+        title: "Security Exception Workflow",
+        content: "Create a controlled exception for a lab finding and document its identifier, reason, owner, and review date. Verify that the exception suppresses only the intended finding and does not hide other vulnerabilities."
+      },
+      {
+        title: "Incident Simulation and Recovery",
+        content: "Introduce a vulnerable dependency, a secret in a test file, an insecure Kubernetes setting, and an invalid registry credential in separate lab exercises. Diagnose each result and demonstrate the appropriate remediation or recovery."
+      },
+      {
+        title: "Production Readiness Review",
+        content: "Review scanner version management, database freshness, credential protection, artifact immutability, report retention, exception governance, and release enforcement. Confirm that the image deployed is exactly the image that passed security scanning."
+      }
     ],
-    "The payment-service security stage unexpectedly passes despite a critical finding. The engineer discovers that the command used report-only behavior without the required exit code. The pipeline is corrected and tested with a controlled critical finding.",
-    [
-      "trivy --version",
-      "trivy image --debug devmavox/payment-service:1.0.0",
-      "trivy fs --debug .",
-      "trivy image --download-db-only devmavox/payment-service:1.0.0",
-      "docker image inspect devmavox/payment-service:1.0.0",
-      "Write-Host $LASTEXITCODE"
-    ],
-    "Use explicit scanner selection, severity filters and exit-code policy. Configure database mirrors and registry credentials for restricted agents. Preserve JSON reports and scanner logs without exposing credentials or sensitive source values.",
-    [
-      "Database update fails because of proxy or DNS restrictions.",
-      "Private image pull fails with unauthorized access.",
-      "The scanner cannot find the intended image tag.",
-      "Dependency findings are missing because the manifest is outside scan scope.",
-      "A pipeline reports success despite a policy violation.",
-      "JSON report generation fails because of an invalid path."
-    ],
-    [
-      "Verify scanner version and executable path.",
-      "Check network connectivity to database sources.",
-      "Authenticate to the registry using protected credentials.",
-      "Confirm image tag and digest.",
-      "Inspect scan scope and enabled scanners.",
-      "Check the command exit code and Jenkins error handling.",
-      "Verify that the report file exists and contains findings.",
-      "Rerun the scan after correcting the root cause."
-    ],
-    [
-      "Keep a known-good scanner version available.",
-      "Test pipeline exit-code behavior with controlled findings.",
-      "Retain reports for failed security stages.",
-      "Monitor database update health.",
-      "Never convert scanner errors into successful security results.",
-      "Document false-positive and exception handling."
-    ],
-    "Troubleshoot a payment-service security pipeline by simulating an unavailable database or incorrect exit-code policy. Identify the cause, correct the configuration and prove that a critical finding fails the stage."
-  ),
-
-  "7|Production Hands-on Lab": makeLesson(
-    "This production lab builds a complete security scanning stage for a Spring Boot payment-service. It combines repository filesystem scanning, Maven dependency inspection, secret detection, Docker image scanning, Kubernetes configuration checks, SBOM generation, severity policies and controlled remediation. The final artifact is promoted only after required security checks pass.",
-    "The goal is to integrate repeatable security validation into the CI/CD release process. The pipeline should detect vulnerable dependencies, unsafe configuration, exposed credentials and image vulnerabilities before an artifact is published or deployed to EKS.",
-    "GitHub source → Jenkins checkout → Trivy filesystem and dependency scan → Maven tests and package → Docker build → image scan → Kubernetes manifest scan → SBOM generation → security policy → ECR push → later deployment.",
-    [
-      "Prepare the payment-service repository and Dockerfile.",
-      "Install a pinned Trivy version on the Jenkins agent.",
-      "Configure database access and private registry credentials.",
-      "Run filesystem vulnerability and secret scanning.",
-      "Run Maven dependency inspection and tests.",
-      "Build the payment-service image using a unique build tag.",
-      "Scan the exact image and evaluate severity policy.",
-      "Scan Kubernetes manifests or rendered Helm output.",
-      "Generate a CycloneDX or SPDX SBOM.",
-      "Archive scan reports and SBOM with build metadata.",
-      "Introduce a controlled critical finding and prove that the pipeline blocks ECR push.",
-      "Remediate the issue, rebuild, rescan and verify the final image digest."
-    ],
-    "A developer submits a payment-service change. Jenkins scans the source for vulnerable dependencies and exposed secrets, runs Maven tests, builds the container image and scans its operating-system and application packages. Trivy finds a critical vulnerability, so the image is not pushed to ECR. The team updates the vulnerable package, reruns tests and scans, generates a new SBOM and promotes only the passing image.",
-    [
-      "trivy --version",
-      "trivy fs --scanners vuln,secret,misconfig .",
-      "mvn dependency:tree",
-      "mvn clean verify",
-      "docker build -t devmavox/payment-service:$env:BUILD_NUMBER .",
-      "trivy image --exit-code 1 --severity CRITICAL devmavox/payment-service:$env:BUILD_NUMBER",
-      "trivy config ./k8s",
-      "trivy image --format cyclonedx --output payment-service-sbom.cdx.json devmavox/payment-service:$env:BUILD_NUMBER",
-      "docker image inspect devmavox/payment-service:$env:BUILD_NUMBER"
-    ],
-    "Pin Trivy and application build versions. Store registry credentials in Jenkins credentials. Configure scanner severity and exit-code policies explicitly. Archive reports even when security checks fail. Associate every report and SBOM with the source commit, build number and immutable image digest. Do not push or deploy an image that has not passed the required checks.",
-    [
-      "The Jenkins agent cannot download the Trivy database.",
-      "The repository scan misses a dependency manifest.",
-      "A secret is detected in the current branch or Git history.",
-      "The image scanner cannot authenticate to a private registry.",
-      "A critical vulnerability does not fail the pipeline.",
-      "The Kubernetes scan uses different manifests from the deployment.",
-      "The SBOM is associated with the wrong image.",
-      "The image pushed to ECR differs from the scanned image."
-    ],
-    [
-      "Verify the scanner version, agent network and database status.",
-      "Confirm that the repository root and dependency manifests are included.",
-      "Rotate any confirmed exposed credential and inspect access logs.",
-      "Verify registry authentication without printing secret values.",
-      "Check scanner exit-code handling and Jenkins stage conditions.",
-      "Render and scan the exact Kubernetes manifests used for deployment.",
-      "Generate the SBOM from the final image.",
-      "Compare the scanned and pushed image digests.",
-      "Rebuild and repeat all required checks after remediation."
-    ],
-    [
-      "Scan source code, dependencies, infrastructure configuration and final images.",
-      "Use immutable build identifiers and image digests.",
-      "Keep vulnerability reports and SBOMs as release evidence.",
-      "Block promotion for policy-critical findings.",
-      "Rotate exposed secrets immediately.",
-      "Keep exceptions narrow, approved and time-bound.",
-      "Test both passing and failing pipeline paths.",
-      "Promote exactly the image that passed security validation."
-    ],
-    "Implement the complete Trivy security stage for the payment-service in Jenkins. Demonstrate filesystem scanning, dependency scanning, secret detection, Docker image scanning, Kubernetes configuration scanning and SBOM generation. Introduce a controlled critical vulnerability, prove that ECR push is blocked, remediate it and verify that the rebuilt image passes the policy."
-  )
+    exercise: "Deliver a working Jenkins DevSecOps pipeline that scans source dependencies and secrets, scans the built container image, validates Kubernetes configuration, generates an SBOM, publishes reports, and blocks release promotion when the configured security policy fails."
+  }
 };

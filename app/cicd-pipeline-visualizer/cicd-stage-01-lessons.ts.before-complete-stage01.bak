@@ -1,0 +1,208 @@
+import type { CicdTopicLesson } from "./cicd-topic-lessons";
+
+export const stageOneLessonOverrides: Partial<Record<string, CicdTopicLesson>> = {
+  "1|Java Fundamentals": {
+    overview: "Java is a strongly typed, object-oriented programming language used to build backend services, enterprise applications, and APIs. Java source files are compiled into bytecode, which runs on the Java Virtual Machine (JVM). In this CI/CD stage, developers write the payment-service application, compile the source code, execute tests, and prepare a reliable application for the later build and deployment stages. The JDK provides the compiler and development tools, while the JVM provides the runtime environment.",
+    purpose: "Java provides a portable and maintainable foundation for backend services. A team can develop an application on a developer workstation and run the same compiled bytecode on compatible JVM environments. In a CI/CD pipeline, automated compilation and tests detect syntax errors, type errors, and application defects before an artifact is published. A consistent Java version across developer machines, Jenkins agents, and production runtime environments reduces compatibility problems.",
+    architecture: "The developer writes .java source files. The Java compiler javac converts them into .class bytecode files. Maven coordinates compilation and dependency resolution. During execution, the JVM loads classes, verifies bytecode, manages memory, and executes application code. In a Spring Boot service, the application entry point starts the Spring application context, which creates configured beans and exposes application functionality such as REST endpoints.",
+    workflow: [
+      "Install a supported JDK and verify that java and javac are available.",
+      "Create the Java source tree under src/main/java and test sources under src/test/java.",
+      "Write the application entry point and required business classes.",
+      "Compile source code using javac for a small standalone example or Maven for the project.",
+      "Run unit tests and inspect failures before creating a release artifact.",
+      "Package the application through the Maven build lifecycle.",
+      "Run the packaged application in a controlled environment and verify its behavior.",
+      "Commit the tested source code so the CI pipeline can reproduce the same build."
+    ],
+    example: "For a payment service, create PaymentApplication.java with a main method and a PaymentCalculator class that validates an amount and calculates a fee. A developer first runs the code locally, then executes mvn clean test. Jenkins later checks out the same commit and repeats the build and tests on a controlled agent. The resulting JAR is the build output passed to subsequent scanning and containerization stages. The source code is not copied manually from a developer laptop into production.",
+    commands: [
+      "java -version  # Check the installed Java runtime.",
+      "javac -version  # Check the Java compiler supplied by the JDK.",
+      "mvn -version  # Verify Maven and the Java version Maven uses.",
+      "javac HelloWorld.java  # Compile a standalone Java source file.",
+      "java HelloWorld  # Run the compiled class.",
+      "mvn clean test  # Compile the Maven project and execute tests.",
+      "mvn clean package  # Create the configured application package."
+    ],
+    configuration: "Install a supported JDK version and configure JAVA_HOME to point to the JDK installation directory. Add the JDK bin directory to PATH so java and javac can be executed. In Maven, define the Java release version in pom.xml using the compiler plugin or maven.compiler.release property. Keep the Java version consistent across local development and CI agents. Do not commit local machine paths or credentials into the project.",
+    failures: [
+      "java is not recognized because the JDK bin directory is missing from PATH.",
+      "javac is not recognized because only a JRE or an incomplete Java installation is available.",
+      "Unsupported class file version occurs when the runtime is older than the version used to compile the application.",
+      "Compilation fails because of syntax errors, missing classes, or incompatible dependencies.",
+      "The application starts locally but fails in CI because the agent uses a different Java version or environment."
+    ],
+    recovery: [
+      "Run java -version, javac -version, and mvn -version to identify the actual installed versions.",
+      "Check JAVA_HOME and PATH, then open a new terminal after changing environment variables.",
+      "Compare the compiler release configured in pom.xml with the Java version installed on the CI agent.",
+      "Read the first meaningful compiler error and correct the source or dependency issue.",
+      "Run mvn clean test again and verify that the same commit builds successfully on the CI agent."
+    ],
+    bestPractices: [
+      "Use a supported and consistently managed JDK version.",
+      "Keep source code, tests, and build configuration in version control.",
+      "Prefer automated builds over manually compiled production artifacts.",
+      "Use meaningful package names and class names.",
+      "Validate inputs and handle errors explicitly.",
+      "Keep application configuration separate from source code.",
+      "Run tests before creating release artifacts.",
+      "Record the commit ID and Java version used for every production build."
+    ],
+    exercise: "Create a small Java payment calculator with methods to validate a positive payment amount and calculate a transaction fee. Compile it with javac, run it, and add a test for a valid amount and an invalid amount. Then create a Maven project, move the source into src/main/java, add tests under src/test/java, and execute mvn clean test. Record the Java version, test result, and generated build output."
+  },
+
+  "1|Java Project Structure": {
+    overview: "A Java project structure organizes source code, tests, resources, dependencies, and build output into predictable directories. A standard Maven project uses src/main/java for application source, src/main/resources for runtime resources, src/test/java for test source, and src/test/resources for test data. The pom.xml file describes project coordinates, dependencies, plugins, and build settings. Spring Boot projects commonly follow this structure so developers and CI tools can locate files consistently.",
+    purpose: "A standard structure makes a project easier to understand, test, build, and maintain. Maven already understands the conventional directory layout, so developers usually do not need custom source-directory configuration. Jenkins can check out the repository and run Maven commands without manually locating Java files. Separating production code from test code also prevents test-only classes and fixtures from accidentally becoming part of the application package.",
+    architecture: "The repository root contains pom.xml and supporting project files. Production Java packages live under src/main/java, while application.yml and other runtime resources live under src/main/resources. Unit and integration tests live under src/test/java, with test-specific files under src/test/resources. Maven reads pom.xml, resolves dependencies, compiles source, copies resources, runs tests, and writes generated output under target. A packaged JAR is normally created in target.",
+    workflow: [
+      "Create the repository root and add pom.xml.",
+      "Create src/main/java with a package matching the application namespace.",
+      "Create the Spring Boot entry point in the main application package.",
+      "Add application configuration and other runtime files under src/main/resources.",
+      "Create corresponding test packages under src/test/java.",
+      "Add test fixtures under src/test/resources when required.",
+      "Run Maven validation and tests to verify that the standard layout is recognized.",
+      "Inspect target output and confirm that generated files are not committed unnecessarily."
+    ],
+    example: "A payment-service repository can contain src/main/java/com/example/payment/PaymentApplication.java, controller/PaymentController.java, service/PaymentService.java, and repository/PaymentRepository.java. Its configuration can be stored in src/main/resources/application.yml. Tests can mirror the package layout under src/test/java/com/example/payment. When Jenkins runs mvn clean verify from the repository root, Maven discovers the standard directories and produces the application artifact under target.",
+    commands: [
+      "tree /F  # Display the project directory structure on Windows.",
+      "find . -maxdepth 4 -type f  # Inspect project files on Linux.",
+      "mvn validate  # Validate the Maven project model.",
+      "mvn test  # Compile production and test sources and execute tests.",
+      "mvn clean package  # Rebuild the package from a clean target directory.",
+      "jar tf target/payment-service.jar  # Inspect entries in a packaged JAR."
+    ],
+    configuration: "Keep pom.xml at the repository root. Define groupId, artifactId, version, packaging, Java release, dependencies, and required plugins there. Place default application configuration in src/main/resources/application.yml. Put test-only dependencies in the appropriate test scope. Use .gitignore to exclude target/, IDE metadata, local logs, and machine-specific files. Avoid moving standard directories unless there is a genuine project requirement.",
+    failures: [
+      "Maven reports that no POM is present because the command runs from the wrong directory.",
+      "Java source files are not compiled because they were placed outside the configured source directory.",
+      "Application configuration is missing because application.yml is stored in the wrong resources directory.",
+      "Tests are not discovered because test classes or methods do not follow the configured test conventions.",
+      "Generated target files create noisy commits because the build directory is not ignored."
+    ],
+    recovery: [
+      "Run pwd or Get-Location and confirm that the terminal is at the directory containing pom.xml.",
+      "Inspect the source and resource paths against the Maven standard directory layout.",
+      "Move misplaced files into the correct directories and update package declarations if necessary.",
+      "Check test class naming, JUnit dependencies, and Surefire configuration.",
+      "Run mvn clean test and inspect the target directory and Git working-tree status."
+    ],
+    bestPractices: [
+      "Follow Maven's standard directory layout wherever possible.",
+      "Keep production source separate from test source.",
+      "Use a consistent Java package naming convention.",
+      "Keep configuration resources under src/main/resources.",
+      "Exclude generated build output from Git.",
+      "Keep project documentation and build instructions in the repository.",
+      "Avoid committing IDE-specific settings unless the team explicitly shares them.",
+      "Make the project buildable from a clean checkout."
+    ],
+    exercise: "Create a Maven project named payment-service with a main Java package, a service class, a resources directory, and a matching test package. Add application.yml and a JUnit test. Run mvn clean test and mvn package. Inspect the JAR contents and confirm that application classes and runtime resources are packaged while test source files are not included as application classes."
+  },
+
+  "1|Object-Oriented Programming": {
+    overview: "Object-Oriented Programming (OOP) is a way to design software around classes and objects. A class defines data and behavior, while an object is an instance created from that class. Java uses encapsulation, inheritance, polymorphism, and abstraction to organize application logic. In a Spring Boot service, these ideas help separate controllers, services, repositories, and domain models so each component has a clear responsibility.",
+    purpose: "OOP helps teams build code that can be extended and tested without putting all business logic into one large class. Encapsulation protects internal state, abstraction exposes only necessary operations, inheritance can reuse shared behavior when appropriate, and polymorphism allows different implementations to be used through a common contract. In CI/CD, maintainable code is easier to review, test, scan, and safely change.",
+    architecture: "A Java class declares fields, constructors, and methods. Objects interact through method calls and interfaces. In a payment application, a controller receives an HTTP request, a service applies business rules, and a repository handles persistence. The service can depend on a PaymentRepository interface rather than a concrete database implementation. Tests can provide a mock implementation of that interface, allowing business behavior to be verified independently.",
+    workflow: [
+      "Identify the business entities and responsibilities in the application.",
+      "Create classes with focused responsibilities instead of one oversized class.",
+      "Keep object state private and expose intentional methods.",
+      "Define interfaces where callers should depend on a contract rather than an implementation.",
+      "Use composition for assembling services and their dependencies.",
+      "Write unit tests for public behavior and important business rules.",
+      "Review class dependencies and remove unnecessary coupling.",
+      "Run automated tests in the CI pipeline before merging changes."
+    ],
+    example: "Create a PaymentService class with a processPayment method and a PaymentRepository interface with a save operation. PaymentService validates the amount and asks the repository to store the transaction. A production implementation can use a database, while a unit test can provide a mock repository. The controller calls the service instead of implementing payment rules itself. This separation allows developers to test business logic without requiring a live database for every unit test.",
+    commands: [
+      "mvn -Dtest=PaymentServiceTest test  # Run the focused service test.",
+      "mvn test  # Execute the complete test suite.",
+      "mvn clean verify  # Run the configured verification lifecycle.",
+      "mvn dependency:tree  # Inspect libraries used by the application.",
+      "git diff --check  # Check whitespace errors before committing."
+    ],
+    configuration: "Use Java access modifiers deliberately. Keep fields private, expose behavior through methods, and define interfaces for important boundaries where multiple implementations or isolated tests are useful. In Spring Boot, constructor injection makes dependencies explicit and supports testability. Avoid deep inheritance trees and avoid creating interfaces that have no meaningful abstraction. Configure test dependencies such as JUnit and Mockito in pom.xml with test scope.",
+    failures: [
+      "A class has too many responsibilities, making changes risky and tests difficult.",
+      "Public mutable fields allow callers to change object state unexpectedly.",
+      "Tight coupling to a database implementation makes unit tests dependent on external infrastructure.",
+      "Incorrect inheritance causes unexpected behavior or fragile parent-child dependencies.",
+      "A service contains business logic in multiple layers, producing inconsistent validation."
+    ],
+    recovery: [
+      "Identify the class or method responsible for the failing behavior.",
+      "Trace the call path from controller to service and repository.",
+      "Add a focused unit test that reproduces the incorrect behavior.",
+      "Move business rules into the responsible service or domain component.",
+      "Introduce a suitable interface or composition boundary if it reduces coupling.",
+      "Run focused tests and then the full Maven verification lifecycle."
+    ],
+    bestPractices: [
+      "Keep classes focused on a clear responsibility.",
+      "Prefer composition over unnecessary inheritance.",
+      "Encapsulate mutable state.",
+      "Use constructor injection for required Spring dependencies.",
+      "Depend on abstractions where they provide a real testing or design benefit.",
+      "Keep business rules out of REST controllers.",
+      "Write tests for externally observable behavior.",
+      "Review changes for unnecessary coupling and duplicated logic."
+    ],
+    exercise: "Build a small payment module containing Payment, PaymentRepository, and PaymentService. Make PaymentRepository an interface and implement a simple in-memory version for practice. Keep payment validation inside PaymentService. Write unit tests for valid and invalid amounts and verify that the repository is called only for valid payments. Run the tests using Maven."
+  },
+
+  "1|Collections and Generics": {
+    overview: "The Java Collections Framework provides interfaces and implementations for storing and processing groups of objects. List preserves order and allows duplicates, Set stores unique elements, and Map stores key-value pairs. Generics allow a collection or class to declare the type of values it accepts, such as List<Payment>. This provides compile-time type checking and reduces unsafe casting. Collections are commonly used in Spring Boot services to process request data, query results, configuration values, and batches of records.",
+    purpose: "Collections provide standard operations for adding, finding, sorting, and removing data. Generics make those operations safer because the compiler can detect many type mismatches before the application runs. Choosing an appropriate collection also affects performance and behavior. For example, a Set can prevent duplicate transaction references, while a Map can provide fast lookup of payments by transaction ID.",
+    architecture: "Collection interfaces define behavior and implementation classes provide data structures. ArrayList is commonly used for ordered, index-based access; HashSet enforces uniqueness using hash-based lookup; HashMap stores key-value mappings. Generics specify the element or key/value types. Iterators and enhanced for loops traverse values. Stream operations can filter, map, and aggregate collection data, but teams should avoid unnecessary complex stream chains that make business logic difficult to understand.",
+    workflow: [
+      "Identify whether the data needs ordering, uniqueness, or key-based lookup.",
+      "Choose List, Set, or Map according to the required behavior.",
+      "Declare the collection with a concrete generic type.",
+      "Add and retrieve values using the collection API.",
+      "Validate null values and duplicate data where business rules require it.",
+      "Use iteration or streams to process the data clearly.",
+      "Write tests for empty collections, duplicates, and boundary cases.",
+      "Measure performance before replacing a simple collection with a more complex data structure."
+    ],
+    example: "A payment service receives a batch of payment records and needs to prevent duplicate transaction IDs. It can maintain a Set<String> of processed IDs and a List<Payment> of accepted payments. A Map<String, Payment> can support lookup by transaction ID. Generics ensure that the Set contains strings and the Map contains the intended key and value types. Unit tests can verify duplicate detection and confirm that accepted payments are processed only once.",
+    commands: [
+      "mvn -Dtest=PaymentBatchServiceTest test  # Run collection-processing tests.",
+      "mvn test  # Execute all project tests.",
+      "mvn clean verify  # Verify compilation, tests, and configured checks.",
+      "mvn -q -DskipTests compile  # Check compilation without executing tests."
+    ],
+    configuration: "Declare collection types with generics, for example List<Payment>, Set<String>, and Map<String, Payment>. Prefer interface types for variable declarations and choose implementations such as ArrayList, HashSet, or HashMap based on required behavior. Define clear null-handling and duplicate-handling rules. Do not use raw collection types such as List or Map without type parameters. For concurrent access, select a suitable concurrency design rather than assuming ordinary collections are thread-safe.",
+    failures: [
+      "A raw collection allows unexpected object types and causes runtime casting errors.",
+      "A null value causes NullPointerException during processing.",
+      "A duplicate transaction is processed because uniqueness was not enforced.",
+      "Concurrent modification occurs when a collection is structurally changed during unsafe iteration.",
+      "An inappropriate collection causes slow lookup or unexpected ordering.",
+      "A large batch consumes excessive memory because all records are loaded at once."
+    ],
+    recovery: [
+      "Inspect the exception and identify the collection operation and offending value.",
+      "Replace raw types with explicit generic types.",
+      "Add validation for null and duplicate values according to business rules.",
+      "Use the iterator's supported removal operation or collect changes separately before modifying the collection.",
+      "Choose a data structure that matches the access pattern and ordering requirement.",
+      "For large workloads, process records in bounded batches and verify memory usage."
+    ],
+    bestPractices: [
+      "Use generics instead of raw collection types.",
+      "Choose List, Set, and Map according to actual business requirements.",
+      "Do not assume HashMap or ArrayList is thread-safe.",
+      "Validate null and duplicate data explicitly.",
+      "Avoid exposing internal mutable collections directly.",
+      "Use immutable views or defensive copies when appropriate.",
+      "Test empty, duplicate, and large-input scenarios.",
+      "Measure performance using realistic data before optimizing."
+    ],
+    exercise: "Create a PaymentBatchService that accepts a List<Payment>. Use a Set<String> to track processed transaction IDs and a Map<String, Payment> to find payments by ID. Write tests for duplicate IDs, an empty batch, and a valid batch. Run mvn clean test and explain why each collection type was selected."
+  }
+};

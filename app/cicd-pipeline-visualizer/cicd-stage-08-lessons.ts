@@ -1,378 +1,297 @@
-import type { CicdTopicLesson } from "./cicd-topic-lessons";
+export type DockerSection = {
+  title: string;
+  content: string;
+  code?: string;
+  practicalNotes?: string[];
+};
 
-function makeLesson(
-  overview: string,
-  purpose: string,
-  architecture: string,
-  workflow: string[],
-  example: string,
-  commands: string[],
-  configuration: string,
-  failures: string[],
-  recovery: string[],
-  bestPractices: string[],
-  exercise: string
-): CicdTopicLesson {
-  return {
-    overview,
-    purpose,
-    architecture,
-    workflow,
-    example,
-    commands,
-    configuration,
-    failures,
-    recovery,
-    bestPractices,
-    exercise,
-  };
-}
+export type DockerLesson = {
+  title: string;
+  description: string;
+  sections: DockerSection[];
+  exercise: string;
+};
 
-export const stageEightLessonOverrides: Record<string, CicdTopicLesson> = {
-  "8|Docker Fundamentals": makeLesson(
-    "Docker is a container platform used to package an application together with its runtime dependencies. A Docker image is the reusable package, while a container is a running instance of that image. Containers share the host operating system kernel but isolate application processes, filesystems, and networking. This makes application behavior more consistent between developer laptops, CI servers, and production environments.",
-    "Docker helps teams avoid environment-related failures. A Spring Boot payment service may work on one developer machine but fail on another because of different Java versions or missing libraries. Packaging the application with its required runtime in an image gives the team a repeatable deployment artifact.",
-    "The developer writes application code and a Dockerfile. Docker builds an image from the Dockerfile and build context. The image is stored locally or pushed to a registry. A container runtime creates a container from that image. The container runs the application process with configured ports, environment variables, storage, and resource limits.",
-    [
-      "Develop and test the Spring Boot payment service.",
-      "Create a Dockerfile describing the application runtime.",
-      "Build an image using the Docker build context.",
-      "Run a container from the generated image.",
-      "Verify application health and inspect container logs.",
-      "Tag and publish the verified image to a registry."
+const section = (
+  title: string,
+  content: string,
+  code?: string,
+  practicalNotes?: string[]
+): DockerSection => ({ title, content, code, practicalNotes });
+
+export const stageEightLessonOverrides: Record<string, DockerLesson> = {
+  "Docker Fundamentals": {
+    title: "Docker Fundamentals",
+    description: "Understand containerization, Docker images, containers, and the role Docker plays in modern application delivery.",
+    sections: [
+      section("What Docker Is", "Docker is a containerization platform used to package an application together with its runtime, libraries, and required dependencies. The resulting image can run consistently across developer laptops, CI servers, virtual machines, and cloud environments."),
+      section("Why Organizations Use Docker", "Containers reduce environment differences between development, testing, staging, and production. They improve application portability, simplify deployment, support horizontal scaling, and make CI/CD pipelines more repeatable."),
+      section("Images and Containers", "An image is an immutable template containing filesystem layers and image metadata. A container is a running or stopped instance created from an image. Multiple containers can be created from the same image while maintaining separate writable layers."),
+      section("Containerization Compared with Virtual Machines", "A virtual machine normally runs a separate guest operating system on a hypervisor. Containers share the host kernel while isolating processes, filesystems, and networking. Containers are generally lighter, but they do not provide the same kernel isolation boundary as separate virtual machines."),
+      section("First Docker Workflow", "A normal developer workflow pulls or builds an image, starts a container, checks its logs, tests the application, and removes the container when it is no longer required.", "docker pull nginx:alpine`ndocker run -d --name web -p 8080:80 nginx:alpine`ndocker ps`ncurl http://localhost:8080`ndocker logs web`ndocker rm -f web"),
+      section("Docker in a CI/CD Pipeline", "A CI server can build an image after source-code validation, run automated tests inside containers, tag the tested image with a commit identifier, and publish that exact image for deployment. Production should deploy an approved immutable image rather than rebuild different content later."),
+      section("Container Lifecycle and Cleanup", "Containers move through created, running, paused, restarting, exited, or dead states. Operators should inspect stopped containers and their logs before removing them. Automated cleanup must avoid deleting images or volumes that are still required.", "docker ps -a`ndocker inspect web`ndocker stop web`ndocker rm web`ndocker image ls`ndocker system df"),
+      section("Hands-on Exercise", "Create an Nginx container, publish it on host port 8080, verify the HTTP response, inspect its logs, stop it, and remove it. Explain the difference between the image and the container created from it.")
     ],
-    "A payment service packaged as payment-service:1.0.0 can run on a developer laptop, a Jenkins build agent, or a Kubernetes worker node without separately installing the application's Java dependencies on each machine.",
-    ["docker version", "docker info", "docker build -t payment-service:1.0.0 .", "docker run -d --name payment-api -p 8080:8080 payment-service:1.0.0", "docker ps", "docker logs payment-api"],
-    "The image tag identifies the packaged application version. The -p option maps a host port to a container port. Application configuration should be supplied through environment variables or mounted configuration rather than hard-coded production credentials inside the image.",
-    ["Docker daemon is not running, so build and run commands cannot connect to the engine.", "The image builds successfully but the container exits because the application configuration is invalid.", "The application listens on a different port from the published container port.", "The image contains an incompatible Java runtime."],
-    ["Start Docker Desktop or the Linux Docker service and verify docker info.", "Inspect docker logs and docker inspect to identify the application startup failure.", "Compare the application's listening port with the container port mapping.", "Use a runtime image compatible with the Java version required by the application."],
-    ["Use versioned image tags instead of relying only on latest.", "Keep secrets outside Docker images.", "Use small and maintained base images.", "Run application processes as a non-root user.", "Build once and promote the same image through environments."],
-    "Create a Dockerfile for a Spring Boot payment service, build payment-service:1.0.0, run it on port 8080, inspect its logs, and explain the difference between an image and a container."
-  ),
+    exercise: "Run an Nginx container using nginx:alpine, expose port 8080, verify the page with curl, inspect the container, and clean up the container without deleting the image."
+  },
 
-  "8|Docker Architecture": makeLesson(
-    "Docker uses a client-server architecture. The Docker CLI is the client, and the Docker daemon manages images, containers, networks, and volumes. The client communicates with the daemon through the Docker API. Modern Docker installations commonly use containerd to manage container lifecycle operations and runc to create containers according to OCI runtime specifications.",
-    "Understanding the architecture helps engineers identify where a Docker operation is failing. A build command, image download, container creation, and network connection involve different parts of the Docker system. Knowing these components makes troubleshooting more accurate.",
-    "The Docker CLI sends an API request to dockerd. The daemon processes the request and coordinates image, network, and volume operations. Containerd manages container lifecycle tasks, while runc creates the isolated container process. Images are stored in the engine's image store, and containers use configured filesystem, network, and runtime settings.",
-    [
-      "Run a Docker CLI command such as docker build or docker run.",
-      "The CLI sends the request to the Docker API endpoint.",
-      "The daemon validates and processes the requested operation.",
-      "The daemon coordinates image, network, and storage resources.",
-      "Containerd and the OCI runtime create and manage the container process.",
-      "The CLI displays the operation result."
+  "Docker Architecture": {
+    title: "Docker Architecture",
+    description: "Learn how the Docker client, daemon, API, container runtime, images, registries, and operating-system features work together.",
+    sections: [
+      section("Architecture Overview", "Docker uses a client-server architecture. The Docker CLI sends requests to the Docker Engine API, and the Docker daemon manages images, containers, networks, and volumes. Container execution is delegated through runtime components."),
+      section("Docker Client", "The Docker CLI is the command-line interface used by engineers and automation systems. Commands such as docker build and docker run are translated into API requests. The CLI does not itself execute the application process inside the container.", "docker version`ndocker info`ndocker context ls"),
+      section("Docker Daemon", "The dockerd daemon manages Docker objects and coordinates image builds, container creation, networking, and storage. A daemon outage can prevent normal Docker operations even when the CLI executable is installed correctly."),
+      section("Docker Engine API", "The Engine API exposes operations used by the CLI, SDKs, and automation tools. Access to the Docker socket is highly privileged because a user who controls the daemon can often gain host-level control."),
+      section("Container Runtime Components", "Docker commonly uses containerd to manage container lifecycle operations and a low-level runtime such as runc to create containers using Linux kernel features. Exact implementation details can vary by Docker Engine version and platform."),
+      section("Linux Kernel Isolation", "Namespaces isolate process IDs, networking, mounts, users, and other resources. Control groups limit and account for CPU, memory, and other resources. Capabilities and security profiles restrict privileged operations."),
+      section("Image Registry Communication", "When an image is not available locally, the engine contacts a registry to retrieve image manifests and layers. Registry authentication, DNS, TLS, proxy settings, and network connectivity can all affect image pulls."),
+      section("Architecture Diagnostics", "Inspect both client and server versions, daemon information, configured contexts, and runtime details when commands fail. A successful docker version client response does not prove that the daemon is healthy.", "docker version`ndocker info`ndocker context show`ndocker system events --since 10m"),
+      section("Hands-on Exercise", "Trace a docker run command from the CLI to the Docker daemon and runtime. Inspect the client/server versions and identify the configured Docker context.")
     ],
-    "When Jenkins runs docker run for the payment API, the CLI communicates with the Docker engine. The engine creates the container filesystem, configures networking, and starts the Java process through the container runtime.",
-    ["docker version", "docker info", "docker context ls", "docker ps -a", "docker image ls", "docker system info"],
-    "The Docker client can connect to different Docker contexts. A context selects the Docker endpoint used by the CLI. On Linux this commonly targets the local Unix socket; Docker Desktop on Windows provides an integration layer for the selected Linux engine.",
-    ["The CLI is installed but the daemon is unavailable.", "The active Docker context points to the wrong engine.", "Permission is denied when accessing the Docker socket.", "Container creation fails because the runtime or storage layer has an error."],
-    ["Check both Client and Server sections in docker version.", "Select the intended context with docker context use.", "Verify socket permissions and approved group membership.", "Inspect daemon logs and engine health before retrying container creation."],
-    ["Understand the client, daemon, containerd, and runtime responsibilities.", "Use Docker contexts carefully when multiple engines are configured.", "Avoid exposing the Docker API over an unauthenticated network.", "Grant Docker socket access only to trusted automation and users."],
-    "Run docker version and docker info. Identify the client and server details, inspect the active Docker context, and explain the path taken when Jenkins requests a new payment-service container."
-  ),
+    exercise: "Use docker version, docker info, docker context show, and docker system events to document the client, daemon, runtime, and container lifecycle information on your machine."
+  },
 
-  "8|Docker Installation": makeLesson(
-    "Docker installation provides the CLI and a container engine that can build images and run containers. On Windows, Docker Desktop commonly uses WSL 2 for Linux containers. On Linux servers, Docker Engine can be installed using the distribution-supported installation procedure. Installation requirements and commands differ by operating system and version.",
-    "A working Docker installation is required before developers or CI agents can build container images. Verifying the engine early prevents pipeline failures caused by a missing CLI, stopped daemon, incompatible environment, or insufficient permissions.",
-    "A developer installs Docker Desktop with WSL 2 integration or installs Docker Engine on a supported Linux host. The Docker CLI communicates with the running engine. The installation must provide access to the correct container mode, storage, networking, and required permissions.",
-    [
-      "Check the operating system and supported Docker installation method.",
-      "Install Docker Desktop or Docker Engine using official instructions.",
-      "Start the Docker service or Docker Desktop application.",
-      "Open a new terminal and verify the Docker CLI.",
-      "Verify that the client can communicate with the server.",
-      "Run a small test container to validate the installation."
+  "Docker Installation": {
+    title: "Docker Installation",
+    description: "Install Docker safely and validate the Engine, CLI, permissions, service state, and platform-specific configuration.",
+    sections: [
+      section("Installation Options", "Docker Desktop is commonly used on Windows and macOS. Linux servers commonly install Docker Engine using the official repository for the distribution. Installation steps must match the operating system and supported release."),
+      section("Windows Installation", "On Windows, Docker Desktop commonly uses the WSL 2 backend. Verify virtualization support, WSL availability, and the Docker Desktop service before troubleshooting application containers.", "wsl --status`ndocker version`ndocker info"),
+      section("Linux Engine Installation", "For Linux production hosts, configure the official Docker package repository and install the Engine, CLI, containerd, and build components required by the platform. Avoid mixing packages from unrelated repositories.", "sudo systemctl status docker`nsudo systemctl enable --now docker`ndocker version"),
+      section("Service and Startup Validation", "The Docker daemon must be running before most engine commands can succeed. Check service status, startup failures, and system logs rather than repeatedly reinstalling Docker.", "sudo systemctl status docker`nsudo journalctl -u docker --since '30 minutes ago'`nsudo systemctl restart docker"),
+      section("User Permissions", "On Linux, access to the Docker socket is normally restricted. Membership in the docker group grants powerful daemon control and should be treated as a security-sensitive privilege. Prefer controlled administrative access."),
+      section("Post-installation Verification", "Validate the CLI and daemon versions, run a small test container, inspect daemon information, and verify that image pulls work. A successful installation should be tested before it is used by CI automation.", "docker version`ndocker run --rm hello-world`ndocker info`ndocker image ls"),
+      section("Proxy, DNS, and Corporate Network Setup", "Corporate environments may require proxy configuration, trusted certificate authorities, and approved registry endpoints. Configure daemon-level proxy settings where required and restart the daemon after changing them."),
+      section("Installation Failure Recovery", "Common failures include unsupported virtualization, WSL startup problems, daemon permission errors, package conflicts, unavailable repositories, and blocked registry access. Capture the exact error and relevant service logs before changing configuration."),
+      section("Hands-on Exercise", "Install or validate Docker on a supported machine. Record the client and server versions, daemon status, storage driver, and result of the hello-world test.")
     ],
-    "A Windows developer enables WSL 2 integration in Docker Desktop and runs docker run hello-world. A Linux Jenkins agent installs and starts Docker Engine, then verifies that its pipeline account can access the approved Docker endpoint.",
-    ["docker --version", "docker version", "docker info", "docker context ls", "docker run --rm hello-world", "systemctl status docker"],
-    "Windows configuration includes Docker Desktop settings and WSL 2 integration. Linux configuration includes the Docker service, daemon configuration, storage location, and access permissions. Do not copy Linux installation commands directly into PowerShell without checking the operating system.",
-    ["Docker CLI is not found in PATH.", "Docker Desktop is installed but its engine has not started.", "WSL 2 integration is disabled or the distribution is unavailable.", "Linux users receive permission denied when connecting to the Docker socket."],
-    ["Restart the terminal and verify PATH.", "Start Docker Desktop and wait for the engine to become ready.", "Check WSL status and enable integration for the intended distribution.", "Verify the socket permissions and approved Docker group membership."],
-    ["Use official installation instructions for the target operating system.", "Keep Docker Desktop and Engine versions supported.", "Verify both client and server versions.", "Do not grant unrestricted Docker access to CI users.", "Validate installation with a disposable test container."],
-    "Install or verify Docker on your development machine. Capture docker version and docker info output, run hello-world, and record any operating-system-specific configuration required."
-  ),
+    exercise: "Validate Docker installation by checking the CLI, daemon, service startup, and hello-world container. Record any permission or network issue and its root cause."
+  },
 
-  "8|Dockerfile Instructions": makeLesson(
-    "A Dockerfile is a text file containing instructions used to build a Docker image. Instructions such as FROM, WORKDIR, COPY, RUN, ENV, ARG, USER, ENTRYPOINT, and CMD define the base image, filesystem, build operations, runtime settings, security identity, and application startup behavior.",
-    "A well-written Dockerfile makes application builds repeatable and understandable. It also controls image size, build caching, runtime behavior, and security. The payment service should start consistently without depending on manual commands inside a running container.",
-    "Docker reads the Dockerfile and executes its instructions to produce image layers. FROM selects a base image. RUN executes build-time commands. COPY adds files from the build context. ENV sets runtime environment variables, while ARG provides build-time values. ENTRYPOINT and CMD define the container startup command.",
-    [
-      "Select a maintained Java runtime base image.",
-      "Set a predictable working directory.",
-      "Copy the application artifact into the image.",
-      "Create a dedicated non-root runtime user.",
-      "Configure the application port and runtime settings.",
-      "Define the application startup command.",
-      "Build the image and verify its runtime behavior."
+  "Dockerfile Instructions": {
+    title: "Dockerfile Instructions",
+    description: "Write maintainable Dockerfiles using build instructions, metadata, dependency installation, startup commands, and safe defaults.",
+    sections: [
+      section("Dockerfile Build Process", "A Dockerfile is a declarative set of instructions used to build an image. Docker processes instructions in order and creates filesystem layers or build metadata according to each instruction."),
+      section("FROM and Base Image Selection", "FROM selects the parent image and establishes the build stage. Prefer trusted, maintained, minimal base images and pin versions deliberately. Review operating-system and runtime compatibility before changing a base image.", "FROM node:22-alpine"),
+      section("WORKDIR, COPY, and ADD", "WORKDIR sets the working directory for later instructions. COPY transfers files from the build context into the image. ADD has additional archive and remote-source behavior, so COPY is generally easier to reason about for ordinary file copying.", "WORKDIR /app`nCOPY package*.json ./"),
+      section("RUN and Dependency Installation", "RUN executes commands during image construction. Combine related package installation and cleanup steps where appropriate, and avoid leaving package-manager caches or temporary build artifacts in runtime images.", "RUN npm ci --omit=dev"),
+      section("ENV, ARG, and Build-time Values", "ARG defines build-time variables while ENV defines environment variables available in the resulting image and containers. Never place passwords, API keys, or private tokens in ARG or ENV because image metadata and layers may expose them."),
+      section("EXPOSE, USER, and Metadata", "EXPOSE documents the container port but does not publish it on the host. USER selects the identity used by subsequent instructions and the default application process. Prefer a non-root user when the application supports it.", "EXPOSE 3000`nUSER node"),
+      section("CMD and ENTRYPOINT", "ENTRYPOINT defines the primary executable while CMD supplies default arguments or a default command. Exec-form instructions provide predictable signal handling and avoid unnecessary shell-process behavior.", "ENTRYPOINT [\"node\"]`nCMD [\"server.js\"]"),
+      section("Health Checks and Stop Behavior", "HEALTHCHECK can define a command that reports whether the application is healthy. STOPSIGNAL controls the signal used when stopping a container. Health checks must test application readiness rather than merely checking that a process exists."),
+      section("Production Dockerfile Example", "A production Dockerfile should use deterministic dependency installation, a suitable runtime image, a non-root user, and a clear startup command. Build secrets should be supplied through supported build-secret mechanisms rather than embedded in the image.", "FROM node:22-alpine`nWORKDIR /app`nCOPY package*.json ./`nRUN npm ci --omit=dev`nCOPY --chown=node:node . .`nUSER node`nEXPOSE 3000`nCMD [\"node\", \"server.js\"]"),
+      section("Hands-on Exercise", "Create a Dockerfile for a small Node.js service. Use a pinned base version, install dependencies reproducibly, run as a non-root user, expose the application port, and start the application using exec form.")
     ],
-    "A runtime Dockerfile for the payment service can copy target/payment-service.jar into /app/app.jar and start it with java -jar /app/app.jar. The Maven compilation step can be performed in a separate builder stage.",
-    ["docker build -t payment-service:1.0.0 .", "docker image inspect payment-service:1.0.0", "docker run --rm payment-service:1.0.0", "docker history payment-service:1.0.0"],
-    "Example runtime instructions:\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nCOPY --chown=10001:10001 target/payment-service.jar /app/app.jar\nUSER 10001:10001\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"/app/app.jar\"]\nEXPOSE documents the intended listening port; it does not publish that port to the host.",
-    ["COPY fails because the source file is missing from the build context.", "RUN fails because a required package or command is unavailable.", "The container exits because ENTRYPOINT references the wrong JAR path.", "The application cannot write files after switching to a non-root user."],
-    ["Run Maven packaging before the Docker build and verify the JAR path.", "Use a supported base image and install only required build-time tools.", "Correct the application path and verify the JAR exists in the image.", "Create and assign ownership to only the directories the application must write."],
-    ["Use exec form for ENTRYPOINT and CMD.", "Separate build-time ARG values from runtime ENV configuration.", "Avoid embedding credentials in Dockerfile instructions.", "Use non-root execution.", "Keep the runtime image focused on runtime dependencies."],
-    "Write a Dockerfile for the payment-service JAR using a Java 21 runtime, /app as WORKDIR, a non-root USER, EXPOSE 8080, and exec-form ENTRYPOINT. Build and run the image."
-  ),
+    exercise: "Build and run a Node.js image using a Dockerfile with FROM, WORKDIR, COPY, RUN, USER, EXPOSE, and CMD. Verify the process runs as a non-root user."
+  },
 
-  "8|Build Context and .dockerignore": makeLesson(
-    "The Docker build context is the set of files sent to the Docker builder for a build. COPY and ADD instructions can access files within this context. A .dockerignore file excludes unnecessary files before the context is sent, reducing transfer size and preventing accidental inclusion of local secrets or development files.",
-    "A clean build context improves build speed, reduces accidental data exposure, and makes Docker builds more predictable. Sending node_modules, Git history, local logs, generated output, or environment files can make a payment-service image build slower and less secure.",
-    "When docker build runs, the CLI or builder prepares the selected context directory. Docker applies .dockerignore rules and makes the remaining files available to the build process. Dockerfile COPY sources are resolved relative to this context, not relative to arbitrary host directories.",
-    [
-      "Choose the project directory as the build context.",
-      "Inspect which files the application actually needs.",
-      "Create a .dockerignore file in the context root.",
-      "Exclude Git metadata, local dependencies, logs, and secrets.",
-      "Run the Docker build using the intended context directory.",
-      "Check COPY paths when a source file cannot be found."
+  "Build Context and .dockerignore": {
+    title: "Build Context and .dockerignore",
+    description: "Control which files Docker sends to the builder and prevent unnecessary, sensitive, or expensive content from entering image builds.",
+    sections: [
+      section("Understanding Build Context", "The build context is the set of files made available to the builder for a build. In docker build ., the current directory is the context. COPY and ADD source paths are resolved relative to the context rather than arbitrary host paths."),
+      section("How Context Transfer Works", "The Docker client or build frontend makes the selected context available to the builder. Large contexts increase transfer time, consume resources, and can slow local and remote CI builds."),
+      section("Purpose of .dockerignore", ".dockerignore excludes files and directories from the build context. It reduces accidental inclusion of local dependencies, Git history, test output, secrets, and generated files."),
+      section("Common Ignore Patterns", "Use patterns that match the project layout. Keep required build inputs available, and review exclusions whenever the Dockerfile changes. An overly broad pattern can silently remove a required file.", "node_modules`n.git`n.env`n.env.*`ndist`ncoverage`n*.log`n.DS_Store"),
+      section("Protecting Sensitive Files", "Do not send private keys, cloud credentials, local environment files, or personal configuration into the build context. A .dockerignore file is an important safeguard, but secret handling must also be enforced in CI and build tooling."),
+      section("Debugging Missing COPY Sources", "A COPY failure can occur when a file is outside the context or excluded by .dockerignore. Check the build command directory, context path, ignore patterns, and exact source filename."),
+      section("Build Performance Optimization", "Keep the context limited to files required for the build. Separate dependency manifests from frequently changing application source so dependency installation layers can be reused."),
+      section("Hands-on Exercise", "Create a .dockerignore file for a Node.js application. Measure the context before and after excluding node_modules, .git, coverage, logs, and local environment files.")
     ],
-    "For a Maven Spring Boot project, the context may contain pom.xml, src, and the generated target JAR. Local .git data, IDE files, temporary logs, and local credential files should not be sent to the builder.",
-    ["docker build -t payment-service:1.0.0 .", "docker build -f docker/Dockerfile -t payment-service:1.0.0 .", "Get-ChildItem -Force", "Get-Content .dockerignore"],
-    "Example .dockerignore:\n.git\n.gitignore\n.idea\n.vscode\n*.log\n.env\n.env.*\n!.env.example\ntarget/test-classes\nnode_modules\n.DS_Store\nThe exact exclusions must match the project's build process. Do not exclude the JAR if the Dockerfile copies it from target.",
-    ["COPY cannot find a file because the build context points to the wrong directory.", "The context is unexpectedly large due to generated files or dependencies.", "A required artifact is excluded by an overly broad ignore pattern.", "A developer accidentally sends a local secret file in the context."],
-    ["Run docker build from the intended project root and correct the context argument.", "Add unnecessary directories to .dockerignore and rebuild.", "Review ignore patterns and explicitly allow required files where appropriate.", "Remove exposed secrets from the context and rotate credentials if they were disclosed."],
-    ["Keep .dockerignore in the build context root.", "Exclude secrets and local-only files.", "Do not assume Dockerfile location determines build context.", "Keep context small and reproducible.", "Review ignore rules whenever the build structure changes."],
-    "Create a .dockerignore for the payment-service repository. Build using the correct context, verify that the JAR remains available to COPY, and explain why .git and local credentials must be excluded."
-  ),
+    exercise: "Build an application image with and without .dockerignore. Compare the context size and verify that .env, node_modules, and .git are not included in the build context."
+  },
 
-  "8|Image Layers and Caching": makeLesson(
-    "Docker images are constructed from filesystem layers and image configuration. Many Dockerfile instructions create layers or affect the build cache. Docker can reuse previously generated results when the instruction and its dependent inputs have not changed. Correct instruction ordering can avoid repeating expensive dependency downloads.",
-    "Layer caching reduces CI build time and makes repeated builds more efficient. A payment-service build should not download all Maven dependencies again whenever a developer changes a single Java source file.",
-    "The builder evaluates Dockerfile instructions in order. It checks whether a cached result can be reused. When an instruction or its relevant inputs change, later dependent instructions may need to execute again. The resulting image references its layers and configuration.",
-    [
-      "Identify stable project inputs such as pom.xml.",
-      "Copy dependency descriptors before frequently changing source files.",
-      "Resolve dependencies in an earlier build step.",
-      "Copy application source after dependency preparation.",
-      "Run the Maven package command.",
-      "Change one source file and rebuild to observe cache reuse."
+  "Image Layers and Caching": {
+    title: "Image Layers and Caching",
+    description: "Understand image layer construction, cache reuse, invalidation, and Dockerfile ordering for faster and more reliable builds.",
+    sections: [
+      section("Image Layer Fundamentals", "Container images are assembled from filesystem layers and image configuration. Layers are reused between images when their content and metadata permit reuse, reducing repeated downloads and build work."),
+      section("Read-only Layers and Container Writable Layer", "Image layers are read-only. A running container receives a writable layer for runtime changes. Changes written into this layer normally disappear when the container is removed unless data is stored in a volume or another persistent location."),
+      section("Build Cache Behavior", "Docker can reuse the result of an earlier build instruction when its inputs and relevant build configuration have not changed. A changed dependency manifest can invalidate dependency installation and subsequent layers."),
+      section("Dockerfile Instruction Ordering", "Place stable dependency manifests before frequently changing application source. This allows dependency installation to remain cached when only source files change.", "COPY package*.json ./`nRUN npm ci`nCOPY . .`nRUN npm run build"),
+      section("Cache Invalidation", "Changes to copied files, build arguments, parent images, or instruction definitions can invalidate cache entries. Diagnose unexpected rebuilds by identifying the first instruction whose inputs changed."),
+      section("Inspecting Image Layers", "Use image history and inspection commands to understand how an image was constructed. Large layers can reveal unnecessary package installations, build artifacts, or copied directories.", "docker image history myapp:latest`ndocker image inspect myapp:latest`ndocker system df"),
+      section("Cache Management", "Build cache can be pruned to reclaim disk space, but deleting useful cache may increase future build time. On shared CI agents, establish cleanup policies that account for disk capacity and build frequency.", "docker builder du`ndocker builder prune"),
+      section("Hands-on Exercise", "Build the same application twice, first without changes and then after changing a source file. Observe cached steps and explain why dependency installation should remain reusable.")
     ],
-    "In a Maven builder stage, copy pom.xml first and resolve dependencies before copying src. When only PaymentController.java changes, the dependency-resolution layer can remain cached if its inputs have not changed.",
-    ["docker build -t payment-service:1.0.0 .", "docker build --progress=plain -t payment-service:1.0.1 .", "docker history payment-service:1.0.0", "docker image inspect payment-service:1.0.0"],
-    "Example ordering:\nCOPY pom.xml .\nRUN mvn -B dependency:go-offline\nCOPY src ./src\nRUN mvn -B clean package -DskipTests\nA change to pom.xml should invalidate dependency-related work. A change only to application source should not unnecessarily invalidate earlier dependency preparation.",
-    ["Every build downloads dependencies because source files are copied too early.", "A cached layer contains outdated output because required inputs were not declared correctly.", "A broad COPY instruction invalidates cache when unrelated files change.", "Builds differ because external dependencies or base image references are mutable."],
-    ["Move stable dependency descriptors before frequently changing source files.", "Ensure every build output depends on the correct declared inputs.", "Narrow COPY instructions to required files.", "Pin or control dependency and base-image versions where reproducibility is required."],
-    ["Order Dockerfile instructions by change frequency.", "Keep dependency resolution separate from application source copying.", "Use .dockerignore to avoid irrelevant cache invalidation.", "Do not trade correctness for cache reuse.", "Measure build time before and after changing layer order."],
-    "Build the payment-service image twice. Compare the build output, modify one Java source file, rebuild with plain progress, and identify which Maven dependency layers were reused."
-  ),
+    exercise: "Optimize a sample Dockerfile by copying dependency manifests before source files. Build twice and record which steps use cache and which steps are rebuilt after a source-only change."
+  },
 
-  "8|BuildKit": makeLesson(
-    "BuildKit is Docker's modern build engine. It supports improved build execution, parallel processing, advanced cache management, secret mounts, SSH mounts, and flexible build outputs. It can make CI builds faster while providing safer ways to access temporary build credentials.",
-    "BuildKit helps Jenkins produce images efficiently without storing private repository credentials inside image layers. A build may need temporary access to a private Maven repository, but that credential must not become part of the final image.",
-    "The Docker CLI invokes the BuildKit builder. The builder processes the Dockerfile, resolves dependencies, manages cache, and executes eligible operations. Secret and SSH mounts provide temporary access during a build instruction without copying the credential into the resulting image layer.",
-    [
-      "Verify that the Docker installation supports BuildKit.",
-      "Prepare the Dockerfile for BuildKit syntax and features.",
-      "Provide required build secrets through the supported secret mechanism.",
-      "Mount the secret only for the instruction that needs it.",
-      "Build the application image and inspect the output.",
-      "Confirm that credentials are absent from image history and final filesystem."
+  "BuildKit": {
+    title: "BuildKit",
+    description: "Use the modern Docker build backend for parallel execution, improved caching, build secrets, and efficient multi-platform image creation.",
+    sections: [
+      section("What BuildKit Provides", "BuildKit is the modern build engine used by Docker build workflows. It supports advanced caching, parallelizable build operations, improved progress output, secret mounts, SSH mounts, and multi-platform build capabilities."),
+      section("Enabling BuildKit", "BuildKit is enabled by default in many modern Docker setups. Confirm the active builder and build command behavior instead of assuming every host has identical configuration.", "docker buildx version`ndocker buildx ls`ndocker buildx inspect"),
+      section("Buildx Builder Management", "Buildx provides a user-facing interface for creating and selecting builders. A builder may use a local Docker driver or another supported driver depending on the environment.", "docker buildx create --name devmavox-builder --use`ndocker buildx inspect --bootstrap"),
+      section("Build Secrets", "BuildKit secret mounts provide temporary access to sensitive build inputs without baking them into ordinary image layers. Use secret mounts for package tokens and private dependency credentials instead of Dockerfile ARG or ENV.", "RUN --mount=type=secret,id=npmrc,target=/root/.npmrc npm ci"),
+      section("SSH Forwarding", "SSH mounts allow a build step to use an SSH agent for private repository access without copying the private key into the image. Limit access to the specific build step that requires it.", "RUN --mount=type=ssh git clone git@example.com:team/private-repo.git"),
+      section("Cache Mounts", "Cache mounts preserve reusable package-manager data across builds when supported by the builder. They can reduce dependency download time without including the cache directory in the final runtime image.", "RUN --mount=type=cache,target=/root/.npm npm ci"),
+      section("Multi-platform Builds", "Buildx can build for multiple target platforms when the builder and host environment support the required emulation or native workers. Confirm the resulting manifest and test each supported architecture.", "docker buildx build --platform linux/amd64,linux/arm64 -t registry.example.com/team/app:1.0 --push ."),
+      section("BuildKit Troubleshooting", "Common failures include unavailable builder instances, missing secret IDs, unsupported mount syntax, registry authentication failures, and platform execution errors. Inspect builder details and build output before changing the Dockerfile."),
+      section("Hands-on Exercise", "Create a Buildx builder, build a sample image, use a cache mount for dependencies, and demonstrate how a build secret is mounted without being stored in the final image.")
     ],
-    "A Jenkins build may need a private Maven settings file to download internal payment-service dependencies. BuildKit can mount that file temporarily during dependency resolution instead of copying it into the image.",
-    ["docker buildx version", "docker buildx ls", "docker buildx build --load -t payment-service:1.0.0 .", "docker history payment-service:1.0.0"],
-    "Example Dockerfile instruction:\n# syntax=docker/dockerfile:1\nRUN --mount=type=secret,id=maven_settings,target=/root/.m2/settings.xml mvn -B dependency:go-offline\nExample build:\ndocker build --secret id=maven_settings,src=./settings.xml -t payment-service:1.0.0 .\nUse a protected CI credential file and never commit settings.xml containing passwords.",
-    ["The selected builder does not support the requested BuildKit feature.", "The secret ID used by RUN does not match the ID supplied to docker build.", "The build agent cannot access the secret source file.", "Cache behavior differs between local and CI builders."],
-    ["Select a BuildKit-enabled builder and verify docker buildx ls.", "Match the secret ID and target path in the Dockerfile and build command.", "Check CI credential-file permissions and temporary file availability.", "Use an explicit builder and cache configuration for consistent CI behavior."],
-    ["Use secret mounts instead of ARG or ENV for sensitive values.", "Do not print secrets in build logs.", "Restrict secret access to the build instruction that needs it.", "Use trusted builders and controlled cache storage.", "Verify the final image does not contain private credentials."],
-    "Configure a BuildKit build for the payment service. Mount a temporary Maven settings file as a secret, build the image, and verify that the settings file and password are not present in the final image."
-  ),
+    exercise: "Build a sample application using Buildx with a cache mount and a temporary secret. Inspect the final image and verify that the secret value is not present in image history."
+  },
 
-  "8|Multi-stage Builds": makeLesson(
-    "A multi-stage Dockerfile uses multiple FROM instructions to separate build-time work from runtime execution. A builder stage can contain Maven, a JDK, source code, and compilation tools. A smaller runtime stage copies only the packaged application and required runtime dependencies.",
-    "Separating build and runtime environments reduces image size and removes unnecessary compilers and build tools from production. The payment-service production container needs the packaged JAR and compatible Java runtime, not the complete Maven build environment.",
-    "The first stage uses a JDK and Maven to resolve dependencies, compile code, run tests, and package the JAR. A later stage starts from a Java runtime image and copies only the JAR from the builder stage. The final image contains the runtime configuration and application artifact.",
-    [
-      "Create a Maven builder stage with a compatible JDK.",
-      "Copy the Maven project files into the builder.",
-      "Resolve dependencies and compile the application.",
-      "Package the payment-service JAR.",
-      "Start a new stage using a Java runtime image.",
-      "Copy the packaged JAR from the builder stage.",
-      "Run the final image and verify the application."
+  "Multi-stage Builds": {
+    title: "Multi-stage Builds",
+    description: "Separate compilation and dependency preparation from the runtime image to reduce image size and production attack surface.",
+    sections: [
+      section("Multi-stage Build Concept", "A multi-stage Dockerfile uses multiple FROM instructions. Earlier stages can compile source code or install build tools, while a final stage copies only the required runtime artifacts."),
+      section("Builder and Runtime Separation", "The builder stage contains compilers, package managers, and development dependencies. The runtime stage contains the application output and only the libraries required to execute it."),
+      section("Naming and Referencing Stages", "Name stages with AS and copy artifacts from a named stage. Named stages make Dockerfiles easier to maintain when build stages are reordered.", "FROM node:22-alpine AS build`nWORKDIR /app`nCOPY package*.json ./`nRUN npm ci`nCOPY . .`nRUN npm run build"),
+      section("Creating a Minimal Runtime Image", "Use a suitable runtime base and copy only compiled output and required runtime dependencies. Verify that certificates, timezone data, native libraries, and runtime assets are present when the application needs them.", "FROM node:22-alpine AS runtime`nWORKDIR /app`nCOPY --from=build /app/dist ./dist`nCOPY --from=build /app/node_modules ./node_modules`nUSER node`nCMD [\"node\", \"dist/server.js\"]"),
+      section("Targeting Specific Stages", "BuildKit supports targeting a named stage for development, testing, or production workflows. This can reduce unnecessary work when only one stage output is required.", "docker build --target build -t app:build ."),
+      section("Security and Size Benefits", "Keeping compilers, source-control metadata, test tools, and temporary credentials out of the runtime image reduces image size and the number of components exposed in production."),
+      section("Native Dependency Compatibility", "Native modules compiled in one stage must be compatible with the libraries and architecture of the runtime stage. Use compatible base distributions and test the final image rather than only the builder stage."),
+      section("Hands-on Exercise", "Create a multi-stage build for a Node.js application. Compare the image size with a single-stage build and verify that development tools are absent from the runtime image.")
     ],
-    "The builder stage compiles payment-service.jar using Maven and JDK 21. The runtime stage uses a Java 21 JRE image and copies /workspace/target/payment-service.jar to /app/app.jar.",
-    ["docker build -t payment-service:1.0.0 .", "docker image ls payment-service", "docker history payment-service:1.0.0", "docker run --rm -p 8080:8080 payment-service:1.0.0"],
-    "Example Dockerfile:\nFROM maven:3.9-eclipse-temurin-21 AS builder\nWORKDIR /workspace\nCOPY pom.xml .\nCOPY src ./src\nRUN mvn -B clean package -DskipTests\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nRUN useradd --system --uid 10001 appuser\nCOPY --from=builder --chown=10001:10001 /workspace/target/payment-service.jar /app/app.jar\nUSER 10001:10001\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"/app/app.jar\"]",
-    ["The builder stage cannot download Maven dependencies.", "The runtime COPY source path does not match the actual JAR output.", "The JDK and JRE versions are incompatible with the application.", "The runtime image lacks a required native library or certificate."],
-    ["Verify Maven repository connectivity and dependency configuration.", "Inspect the builder stage output and correct the JAR path.", "Use compatible Java versions for compilation and runtime.", "Add only the runtime dependencies actually required by the application."],
-    ["Use separate builder and runtime stages.", "Keep build tools out of the final image.", "Use compatible and maintained base images.", "Run the final image as a non-root user.", "Test the final stage rather than only testing the builder."],
-    "Create the two-stage Maven Dockerfile for payment-service. Build the JAR in the builder stage, copy it into a Java runtime stage, compare image sizes, and verify the final container starts."
-  ),
+    exercise: "Build a Node.js application with separate build and runtime stages. Compare both image sizes and inspect the runtime image for build-only tools and source files."
+  },
 
-  "8|Container Runtime": makeLesson(
-    "A container is an isolated process created from an image. The runtime configures namespaces, resource controls, filesystem access, networking, and the process command. Containers have a lifecycle that includes creation, starting, running, stopping, restarting, and removal. A container is not a virtual machine with its own independent kernel.",
-    "Understanding runtime behavior helps engineers diagnose containers that exit immediately, restart repeatedly, consume too much memory, or fail to handle shutdown correctly. Production payment services must start reliably and terminate gracefully.",
-    "The container engine creates the container configuration and asks the runtime to start the configured process. Linux namespaces isolate views such as process IDs and networking. Control groups account for and limit resource usage. The configured application process is commonly PID 1 inside the container.",
-    [
-      "Create a container from a verified image.",
-      "Inspect its configured command, environment, and resource settings.",
-      "Check whether the container is running or exited.",
-      "Read logs and inspect the container exit information.",
-      "Send a stop signal and observe graceful shutdown.",
-      "Remove disposable containers after validation."
+  "Container Runtime": {
+    title: "Container Runtime",
+    description: "Manage container startup, process behavior, resource constraints, health, signals, restart policies, and runtime inspection.",
+    sections: [
+      section("Container Creation and Execution", "A container is created from an image with runtime configuration such as command, environment, mounts, network, and resource limits. The container process runs within the isolation provided by the host operating system."),
+      section("Foreground and Detached Execution", "Foreground mode attaches the terminal to the container process. Detached mode returns control to the shell while the container continues running in the background.", "docker run --rm alpine:3.20 echo hello`ndocker run -d --name web nginx:alpine"),
+      section("Process and Signal Handling", "The application process should receive termination signals and shut down gracefully. Exec-form ENTRYPOINT and CMD reduce unnecessary shell process layers and improve signal delivery."),
+      section("Environment and Runtime Configuration", "Environment variables can configure application behavior at startup. Do not pass secrets through command history or expose them in logs. Use controlled secret delivery for sensitive values.", "docker run -d --name api -e NODE_ENV=production -p 3000:3000 my-api:1.0"),
+      section("Resource Limits", "Set memory and CPU limits to prevent one container from consuming excessive host resources. Monitor actual workload behavior and configure limits based on measured demand rather than arbitrary values.", "docker run -d --memory=512m --cpus=1.5 --name api my-api:1.0`ndocker stats"),
+      section("Health Checks and Restart Policies", "Health checks report application health, while restart policies control whether Docker restarts containers after exit. A running process is not necessarily a healthy service.", "docker run -d --restart unless-stopped --health-cmd='wget -qO- http://localhost:3000/health || exit 1' --health-interval=30s my-api:1.0"),
+      section("Runtime Inspection and Logs", "Inspect container configuration, process state, exit code, network settings, and logs when investigating incidents. Correlate container timestamps with application and host monitoring data.", "docker inspect api`ndocker logs --tail 100 api`ndocker top api`ndocker stats --no-stream"),
+      section("Runtime Recovery", "Restart a container only after identifying why it stopped or became unhealthy. Repeated restarts can hide an application crash, missing dependency, bad configuration, or resource exhaustion."),
+      section("Hands-on Exercise", "Run a container with CPU and memory limits, configure a restart policy, inspect its health state, and review its resource usage.")
     ],
-    "The payment API starts as the main Java process in the container. When Docker sends SIGTERM during docker stop, the application should stop accepting new work, finish or safely terminate in-flight requests, and exit within the configured timeout.",
-    ["docker create --name payment-api payment-service:1.0.0", "docker start payment-api", "docker ps -a", "docker logs payment-api", "docker inspect payment-api", "docker stop --time 30 payment-api", "docker rm payment-api"],
-    "Runtime settings include the image, command, environment, port mappings, mounts, restart policy, and resource limits. The application should handle termination signals correctly. Shell-form startup commands can interfere with signal delivery when they introduce an unnecessary shell process.",
-    ["The container exits immediately because its main process finishes or fails.", "The application ignores termination signals and exceeds the stop timeout.", "The container repeatedly restarts due to an application crash.", "The process is killed because it exceeds its memory limit."],
-    ["Inspect State, ExitCode, and error details with docker inspect.", "Use exec-form ENTRYPOINT and implement graceful application shutdown.", "Read logs and correct the underlying startup or dependency failure.", "Review memory usage and limits before increasing resource allocation."],
-    ["Keep the main application process in the foreground.", "Handle SIGTERM and shutdown hooks correctly.", "Set appropriate CPU and memory limits.", "Use restart policies deliberately.", "Avoid using docker exec as a permanent production startup mechanism."],
-    "Run the payment-service container, inspect its process and state, stop it with a 30-second timeout, and verify that the application exits gracefully."
-  ),
+    exercise: "Run a test service with resource limits and a restart policy. Inspect its logs, health status, process list, and resource usage, then explain its runtime lifecycle."
+  },
 
-  "8|Docker Networking": makeLesson(
-    "Docker networking connects containers to each other and to external systems. Docker provides network drivers such as bridge, host, none, and overlay. A user-defined bridge network provides container-to-container communication and name-based DNS resolution within that network. Published ports allow traffic to enter a container through a host port.",
-    "A payment API may need to communicate with a database, message broker, or other service. Correct network configuration allows these services to communicate without exposing every internal port to the host or internet.",
-    "Docker creates virtual network interfaces and connects containers through a selected network driver. On a user-defined bridge network, containers can resolve one another by container or network alias. Port publishing maps a host port to a container port. Network isolation controls which containers can communicate.",
-    [
-      "Create a dedicated user-defined bridge network.",
-      "Start the payment database on that network.",
-      "Start the payment API on the same network.",
-      "Configure the API to use the database service name.",
-      "Publish only the API port required by the developer or external client.",
-      "Test internal DNS resolution and application connectivity."
+  "Docker Networking": {
+    title: "Docker Networking",
+    description: "Configure container communication, bridge networks, published ports, DNS discovery, and production network isolation.",
+    sections: [
+      section("Container Networking Fundamentals", "Docker networking connects containers to each other and to external networks. Network configuration determines addressing, name resolution, routing, and which ports are reachable from outside the container."),
+      section("Bridge Networks", "Bridge networks are commonly used for containers on a single Docker host. User-defined bridge networks provide automatic DNS-based name resolution between attached containers.", "docker network create app-network`ndocker run -d --name backend --network app-network nginx:alpine"),
+      section("Port Publishing", "Publishing maps a host port to a container port. EXPOSE in a Dockerfile is documentation and does not publish a port by itself.", "docker run -d --name web -p 8080:80 nginx:alpine`ncurl http://localhost:8080"),
+      section("Container-to-container Communication", "Containers on the same user-defined network can generally communicate using container names or network aliases. Use service names rather than hard-coded container IP addresses because IPs can change."),
+      section("Network Drivers", "Bridge is common for standalone single-host workloads. Host networking removes normal network namespace isolation on supported platforms. Overlay networking supports multi-host communication in supported orchestration environments. Select drivers according to deployment architecture."),
+      section("DNS and Name Resolution", "Docker provides service discovery on user-defined networks. DNS failures may result from containers being attached to different networks, incorrect aliases, or application configuration using stale IP addresses."),
+      section("Network Inspection and Diagnostics", "Inspect network membership, container IP configuration, routes, listening ports, and application logs. Test connectivity from the correct network namespace rather than assuming host connectivity proves container connectivity.", "docker network ls`ndocker network inspect app-network`ndocker inspect backend`ndocker exec backend cat /etc/resolv.conf"),
+      section("Network Isolation and Security", "Separate frontend, backend, and data services into networks according to required communication paths. Avoid publishing database ports publicly when only application containers need access."),
+      section("Hands-on Exercise", "Create a user-defined network with an application and database container. Verify name resolution and connectivity, then demonstrate that a container on a separate network cannot directly use the same service name.")
     ],
-    "The payment API connects to a PostgreSQL container using the hostname payment-db and the database port 5432. The API publishes port 8080 for access from the host, while the database port remains internal to the Docker network.",
-    ["docker network create payment-network", "docker network ls", "docker run -d --name payment-db --network payment-network postgres:16", "docker run -d --name payment-api --network payment-network -p 8080:8080 payment-service:1.0.0", "docker network inspect payment-network", "docker port payment-api"],
-    "Configure the application with DB_HOST=payment-db and DB_PORT=5432 using environment variables. The API container and database container must join the same user-defined network. Publishing 8080:8080 exposes the API through the host; it does not automatically expose the database.",
-    ["Containers cannot resolve each other's names because they use separate networks.", "The API connects to localhost instead of the database container name.", "The host port is already allocated to another process.", "The database is not listening or is not ready when the API starts."],
-    ["Attach both containers to the intended user-defined network.", "Use payment-db as the database hostname from the API container.", "Choose an available host port or stop the conflicting service.", "Add application retry logic and a database readiness check."],
-    ["Prefer user-defined bridge networks for application stacks.", "Use service names instead of hard-coded container IP addresses.", "Publish only ports that need external access.", "Keep databases on internal networks where possible.", "Do not confuse EXPOSE with actual host port publishing."],
-    "Create a Docker network for the payment application. Run PostgreSQL and the payment API on it, verify name resolution, and confirm that only the API port is published to the host."
-  ),
+    exercise: "Create frontend and backend Docker networks. Attach the application and database containers only to the required networks, test service-name resolution, and verify published ports."
+  },
 
-  "8|Volumes and Storage": makeLesson(
-    "Containers have a writable layer, but data stored only in that layer is tied to the container lifecycle. Docker volumes and bind mounts provide storage outside the container's writable layer. Named volumes are managed by Docker, bind mounts connect host paths, and tmpfs mounts provide temporary in-memory storage.",
-    "Persistent storage is necessary for data that must survive container replacement. A database must not lose its data when its container is removed. Stateless application containers should generally keep durable business data in external databases or managed storage instead of their writable layer.",
-    "Docker mounts storage into the container filesystem. A named volume is managed by Docker and can be reused by replacement containers. A bind mount maps a host path into a container. A tmpfs mount stores temporary data in memory and is not durable across container removal or host restart.",
-    [
-      "Identify whether application data must persist.",
-      "Create a named volume for database data.",
-      "Mount the volume at the database data directory.",
-      "Start the database and write test data.",
-      "Remove and recreate the database container using the same volume.",
-      "Verify that the stored data remains available.",
-      "Back up important data using an approved database-aware process."
+  "Volumes and Storage": {
+    title: "Volumes and Storage",
+    description: "Persist application data safely and understand volumes, bind mounts, temporary filesystems, backup, and storage troubleshooting.",
+    sections: [
+      section("Container Storage Model", "A container writable layer is temporary and tied to the container lifecycle. Important application data should be stored in a volume or an explicitly managed host path."),
+      section("Named Volumes", "Docker named volumes are managed by Docker and can outlive individual containers. They are suitable for persistent application data when the storage lifecycle is managed separately from the container.", "docker volume create db-data`ndocker run -d --name database -v db-data:/var/lib/postgresql/data postgres:16"),
+      section("Bind Mounts", "Bind mounts connect a specific host path to a container path. They are useful for local development and controlled host integration, but they create dependencies on host directory layout and permissions.", "docker run --rm -v ${PWD}:/workspace -w /workspace alpine:3.20 ls -la"),
+      section("Temporary Filesystems", "Tmpfs mounts provide temporary in-memory filesystem storage on supported Linux environments. They are useful for transient files that should not persist in the container writable layer or a normal volume."),
+      section("Storage Drivers and Copy-on-write", "The storage driver manages image layers and container writable layers. Performance and behavior depend on the host filesystem, driver, and workload. Persistent application data should generally use volumes rather than relying on writable-layer behavior."),
+      section("Volume Permissions", "A container process must have appropriate ownership and permissions on mounted data. Diagnose user IDs, group IDs, filesystem ownership, and security restrictions before applying broad permission changes."),
+      section("Backup and Restore", "Back up persistent data using application-consistent procedures. For databases, use database-native dump or backup tools where appropriate; a raw filesystem copy during active writes may not provide a consistent backup.", "docker run --rm -v db-data:/data -v ${PWD}:/backup alpine:3.20 tar czf /backup/db-data-backup.tgz -C /data ."),
+      section("Storage Inspection and Cleanup", "Inspect volume usage and references before pruning. Removing a volume can permanently delete data. Production cleanup must distinguish unused disposable volumes from retained business data.", "docker volume ls`ndocker volume inspect db-data`ndocker system df -v"),
+      section("Hands-on Exercise", "Create a named volume, write data from a container, remove the container, and create another container using the same volume. Verify that the data remains available.")
     ],
-    "The payment database stores PostgreSQL data in a named volume called payment-db-data. Replacing the database container while reusing that volume preserves the database files, provided the volume is not deleted and the database storage format remains compatible.",
-    ["docker volume create payment-db-data", "docker volume ls", "docker run -d --name payment-db -v payment-db-data:/var/lib/postgresql/data postgres:16", "docker inspect payment-db", "docker volume inspect payment-db-data", "docker rm -f payment-db"],
-    "Named volume example: -v payment-db-data:/var/lib/postgresql/data. Bind mount example: -v ${PWD}/config:/app/config:ro. Read-only mounts can protect configuration files. Database backups should use PostgreSQL-aware backup procedures rather than assuming a live filesystem copy is always consistent.",
-    ["The container cannot write to a mounted directory because of ownership or permissions.", "The application writes to the container layer instead of the intended volume.", "A bind mount points to the wrong host directory.", "An operator removes a volume and loses its persistent data."],
-    ["Inspect mount configuration with docker inspect.", "Correct directory ownership and permissions for the container user.", "Verify the resolved host path and container mount destination.", "Restore data from a verified backup if a volume was deleted."],
-    ["Use named volumes for Docker-managed persistent data.", "Use bind mounts carefully and prefer read-only mounts for configuration.", "Back up and test database restoration.", "Do not store durable business data only in a container writable layer.", "Never run docker volume prune without checking which volumes are unused and important."],
-    "Create a named volume for PostgreSQL, insert sample payment data, remove the database container, recreate it with the same volume, and verify that the data remains."
-  ),
+    exercise: "Persist a test file in a named volume, delete the original container, mount the volume into a new container, and verify the file. Document a safe backup and restore approach."
+  },
 
-  "8|Docker Security": makeLesson(
-    "Docker security protects the host, container image, application process, credentials, and network boundaries. Containers share the host kernel, so unsafe privileges or exposed daemon access can create serious risk. Security controls include minimal base images, non-root users, read-only filesystems, restricted capabilities, secret management, vulnerability scanning, and resource limits.",
-    "A payment service handles sensitive business operations. Its container should not run with unnecessary privileges or contain credentials and build tools that increase the attack surface. Security must be considered during image creation and runtime deployment.",
-    "Security controls apply across the image supply chain and runtime. The Dockerfile determines the base image and user. The builder controls dependency and secret handling. Runtime options control filesystem access, capabilities, privilege escalation, and resource limits. Registry scanning and image provenance support deployment decisions.",
-    [
-      "Select a maintained and trusted base image.",
-      "Scan the application image for known vulnerabilities.",
-      "Create a dedicated non-root runtime user.",
-      "Remove unnecessary packages and build tools from the runtime image.",
-      "Use read-only filesystems and restricted capabilities where compatible.",
-      "Supply secrets through an approved runtime secret mechanism.",
-      "Apply resource limits and review container permissions."
+  "Docker Security": {
+    title: "Docker Security",
+    description: "Reduce container attack surface through trusted images, non-root execution, capabilities, secrets handling, scanning, and runtime controls.",
+    sections: [
+      section("Container Security Model", "Container security depends on the host kernel, daemon, runtime, image contents, container configuration, and orchestration controls. Containers provide isolation but should not be treated as a complete substitute for host security."),
+      section("Trusted and Minimal Base Images", "Use maintained images from trusted publishers, pin versions, review provenance, and remove unnecessary packages. Rebuild images regularly to receive security fixes."),
+      section("Non-root Container Execution", "Run applications as a dedicated non-root user whenever possible. Verify ownership of application files and mounted directories so the application does not need unnecessary root privileges.", "USER 10001:10001"),
+      section("Linux Capabilities and Privileged Mode", "Linux capabilities divide powerful root privileges into smaller permissions. Avoid --privileged unless a documented requirement exists; it grants broad access that weakens container isolation.", "docker run --cap-drop=ALL --cap-add=NET_BIND_SERVICE nginx:alpine"),
+      section("Read-only Filesystem", "A read-only root filesystem prevents many unintended writes. Provide explicitly writable temporary directories or volumes for applications that require runtime write access.", "docker run --read-only --tmpfs /tmp nginx:alpine"),
+      section("Secrets and Credential Protection", "Never bake passwords, tokens, private keys, or cloud credentials into image layers. Use a secrets manager or supported runtime/build secret mechanism and restrict access to the minimum required process."),
+      section("Resource and Kernel Security Controls", "Apply CPU and memory limits, appropriate seccomp profiles, AppArmor or SELinux controls where supported, and restricted device access. Validate compatibility before enforcing policies in production."),
+      section("Image Scanning and Supply Chain", "Scan base images and application dependencies for vulnerabilities. Review severity, exploitability, reachability, fix availability, and business impact before prioritizing remediation. Record the image digest that passed approval."),
+      section("Docker Daemon and Socket Security", "Access to the Docker daemon socket is highly privileged. Do not mount the host Docker socket into untrusted containers, and restrict daemon access to trusted administrators and automation."),
+      section("Security Incident Response", "For a suspected compromised container, preserve relevant logs and image identity, isolate affected workloads according to incident procedures, rotate exposed credentials, rebuild from trusted sources, and investigate the host."),
+      section("Hands-on Exercise", "Build a non-root image, run it with a read-only root filesystem and restricted capabilities, and inspect the effective user and runtime settings.")
     ],
-    "The payment API runs as UID 10001, uses a minimal Java runtime image, receives database credentials at runtime, and does not require privileged mode or host filesystem access.",
-    ["docker image inspect payment-service:1.0.0", "docker run --rm --read-only --cap-drop=ALL --security-opt=no-new-privileges payment-service:1.0.0", "docker run -d --name payment-api --memory=512m --cpus=1 payment-service:1.0.0", "docker inspect payment-api", "docker history payment-service:1.0.0"],
-    "Example hardening options include --read-only, --cap-drop=ALL, --security-opt=no-new-privileges, --memory=512m, and --cpus=1. Validate compatibility before applying restrictions. Use a writable tmpfs mount only for application paths that genuinely require temporary writes.",
-    ["The application fails because it expects root privileges.", "A read-only filesystem prevents required temporary file creation.", "A missing capability breaks a required application operation.", "Credentials are exposed through image layers, build arguments, or logs."],
-    ["Identify the exact filesystem path or permission required and grant only that access.", "Provide a controlled tmpfs mount for required temporary files.", "Add back only the specific capability proven necessary.", "Rotate exposed credentials and rebuild the image without the secret."],
-    ["Never use privileged mode as a routine workaround.", "Run as a non-root user.", "Keep secrets outside image layers and source control.", "Scan and patch base images and application dependencies.", "Apply least privilege to networks, mounts, and Linux capabilities."],
-    "Harden the payment-service container. Run it as a non-root user with a read-only root filesystem, dropped capabilities, no-new-privileges, and resource limits. Identify which application paths need writable storage."
-  ),
+    exercise: "Harden a sample container by using a non-root user, read-only filesystem, resource limits, and dropped capabilities. Verify that the application still works and document any required writable paths."
+  },
 
-  "8|Image Tagging and Digests": makeLesson(
-    "An image tag is a human-readable reference such as payment-service:1.2.0. Tags can be moved to point to different image content, so a tag alone is not a guaranteed immutable identity. A digest is a content-addressed identifier for a specific image manifest. Deploying by digest provides stronger artifact identity.",
-    "Production teams must know exactly which image was tested and approved. Promoting the same digest from testing to staging and production avoids accidentally rebuilding different content under the same version tag.",
-    "An image reference includes a registry, repository, and optional tag or digest. The registry resolves the reference to image manifest content. A digest identifies that manifest by its content hash. Multi-platform images may use an image index that references platform-specific manifests.",
-    [
-      "Build the payment-service image.",
-      "Apply a meaningful release tag.",
-      "Inspect the image and record its repository and tag.",
-      "Push the image to the approved registry.",
-      "Retrieve the registry digest after push.",
-      "Record the digest in release metadata.",
-      "Promote the same digest to the next environment."
+  "Image Tagging and Digests": {
+    title: "Image Tagging and Digests",
+    description: "Identify images reliably using repository names, version tags, immutable digests, and release traceability.",
+    sections: [
+      section("Image Naming Structure", "An image reference commonly contains a registry hostname, namespace, repository, and optional tag. If no registry is specified, Docker uses its configured default registry behavior.", "docker image ls`ndocker pull nginx:1.27"),
+      section("Tagging Strategy", "Tags can represent releases, environments, branches, or commit identifiers. Mutable tags such as latest are convenient labels but do not guarantee that the underlying image remains unchanged."),
+      section("Semantic Version Tags", "Use a versioning strategy that communicates compatibility and release intent. Avoid reusing a production release tag for different image content because it weakens traceability."),
+      section("Commit-based Tags", "CI pipelines can add a short Git commit SHA to identify the source revision used to build an image. Combine this with release metadata so an incident can be traced back to source code and build records.", "docker build -t devmavox/api:git-a1b2c3d ."),
+      section("Image Digests", "A digest identifies image content using a cryptographic hash and is more reliable than a mutable tag for deployment identity. Record the digest of the approved image and use it when immutable deployment references are required."),
+      section("Inspecting Digests", "Inspect local image metadata and registry manifests to identify content digests. Multi-platform images may use a manifest-list digest that points to platform-specific image manifests.", "docker image inspect nginx:1.27`ndocker buildx imagetools inspect nginx:1.27"),
+      section("Release Promotion", "Promote the same tested image between environments rather than rebuilding it independently for staging and production. Preserve its digest and associate it with the release approval record."),
+      section("Hands-on Exercise", "Build an image with a semantic version tag and a commit-based tag. Inspect the image digest and explain why production deployment should use an immutable image reference.")
     ],
-    "A release may use the tag 123456789012.dkr.ecr.ap-south-1.amazonaws.com/payment-service:1.2.0. After push, the pipeline records the returned sha256 digest and deploys the exact digest in the Kubernetes manifest.",
-    ["docker image ls", "docker image inspect payment-service:1.2.0", "docker image tag payment-service:1.0.0 payment-service:1.2.0", "docker image inspect --format '{{index .RepoDigests 0}}' payment-service:1.2.0", "docker manifest inspect payment-service:1.2.0"],
-    "Use a release tag such as 1.2.0 or a unique CI build identifier. Use registry/repository@sha256:digest for immutable deployment references. A local image may not have a RepoDigest until it has been pushed to a registry.",
-    ["A mutable tag points to a newer image than the one originally tested.", "The pipeline cannot find a RepoDigest because the image has not been pushed.", "The deployment references a digest for the wrong architecture or release.", "A tag is overwritten by another CI job."],
-    ["Compare the registry digest with the digest recorded during the approved push.", "Push the image and retrieve its registry digest.", "Verify the image platform and release metadata.", "Use unique tags and registry immutability controls where supported."],
-    ["Do not treat latest as a release identity.", "Record image digests in deployment metadata.", "Promote the same artifact instead of rebuilding for each environment.", "Keep build number, source commit, and image digest connected.", "Verify the target platform when using multi-architecture images."],
-    "Build and tag payment-service:1.2.0, push it to a test registry, retrieve its digest, and write a deployment reference using repository@sha256:digest."
-  ),
+    exercise: "Tag one image with a release version and commit identifier, inspect its digest, and document how the same digest is promoted from testing to production."
+  },
 
-  "8|Registry Integration": makeLesson(
-    "A container registry stores and distributes Docker images. It may be a public registry, a private company registry, or a cloud service such as Amazon ECR. Developers and CI systems authenticate to the registry, tag images using the registry repository name, and push or pull image content.",
-    "A production pipeline needs a trusted location for built images. Jenkins should publish the tested payment-service image to a private registry so deployment systems can retrieve the same artifact without rebuilding the application.",
-    "The CI pipeline builds an image locally or through a remote builder. It authenticates using a scoped registry identity, tags the image with the registry and repository path, and pushes the manifest and layers. A deployment environment authenticates independently and pulls the required image.",
-    [
-      "Create the target repository in the selected registry.",
-      "Obtain a short-lived or approved registry authentication token.",
-      "Authenticate without placing passwords in source control.",
-      "Tag the local image with the full registry repository path.",
-      "Push the image and verify the registry result.",
-      "Retrieve the immutable digest.",
-      "Test pulling the published image using deployment credentials."
+  "Registry Integration": {
+    title: "Registry Integration",
+    description: "Authenticate with container registries, publish images, retrieve approved artifacts, and integrate registry operations into CI/CD.",
+    sections: [
+      section("Container Registry Fundamentals", "A registry stores image manifests and layers and provides access control for publishing and pulling images. Organizations may use Docker Hub, cloud registries, or private enterprise registries."),
+      section("Registry Image References", "Use fully qualified image names in automated workflows so the destination registry and repository are explicit. Establish consistent repository naming and retention rules."),
+      section("Authentication", "Authenticate using approved credentials or workload identity. Avoid placing passwords directly in scripts, source control, or command-line arguments that may be logged.", "docker login registry.example.com`ndocker logout registry.example.com"),
+      section("Build and Push Workflow", "A pipeline builds an image, applies a unique release tag, authenticates to the registry, and pushes the artifact. Validate the pushed manifest and digest before marking the build successful.", "docker build -t registry.example.com/team/api:1.0.0 .`ndocker push registry.example.com/team/api:1.0.0"),
+      section("Pull and Deployment Workflow", "Deployment systems pull the approved image from the registry. Use immutable digests for controlled releases and verify that runtime identities have pull access to the required repository."),
+      section("Private Registry Certificates and Network", "Private registries may require trusted CA certificates, correct DNS, firewall access, and proxy configuration. Do not disable TLS verification as a permanent workaround."),
+      section("CI/CD Credential Management", "Use short-lived credentials or workload identity where supported. Restrict push permissions to build jobs and pull permissions to deployment workloads. Separate production and non-production access where practical."),
+      section("Retention and Cleanup Policies", "Define retention rules for old development builds while preserving release artifacts needed for rollback, audits, or compliance. Confirm that cleanup policies do not remove currently deployed images."),
+      section("Registry Troubleshooting", "Authentication failures, denied pushes, missing repositories, TLS errors, rate limits, and DNS failures require different fixes. Capture the registry hostname, repository, identity, and exact error before changing permissions."),
+      section("Hands-on Exercise", "Build an image, authenticate to a test registry, push a unique tag, retrieve it from a clean environment, and verify the image digest.")
     ],
-    "For Amazon ECR, Jenkins obtains an authorization token using an IAM role, logs in to the registry, tags the payment-service image with the account, region, and repository, and pushes the image. The pipeline records the resulting digest for deployment.",
-    ["aws sts get-caller-identity", "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 123456789012.dkr.ecr.ap-south-1.amazonaws.com", "docker tag payment-service:1.0.0 123456789012.dkr.ecr.ap-south-1.amazonaws.com/payment-service:1.0.0", "docker push 123456789012.dkr.ecr.ap-south-1.amazonaws.com/payment-service:1.0.0", "docker pull 123456789012.dkr.ecr.ap-south-1.amazonaws.com/payment-service:1.0.0"],
-    "Replace the example AWS account ID, region, and repository with the actual environment values. The CI identity needs only the required repository permissions. Avoid embedding registry passwords in Jenkinsfiles or command-line arguments that can be exposed in logs.",
-    ["Registry login fails because the token is expired or the identity lacks permission.", "Push fails because the repository does not exist.", "The image is tagged with an incorrect registry hostname or region.", "The CI agent cannot reach the registry endpoint."],
-    ["Refresh the registry token and verify the active AWS identity.", "Create the repository or correct the repository name.", "Compare the registry URI, account ID, region, and image tag.", "Check DNS, network egress, proxy configuration, and registry service health."],
-    ["Use IAM roles or short-lived credentials for CI authentication.", "Grant only the required push and pull permissions.", "Never commit registry passwords.", "Record the digest returned by the registry.", "Test image pull access using the identity that will deploy it."],
-    "Configure a private ECR repository for payment-service. Authenticate from a CI-style environment, tag and push a test image, retrieve its digest, and verify that a separate pull identity can download it."
-  ),
+    exercise: "Push a versioned application image to a test registry, pull it into a clean environment, verify its digest, and explain how CI credentials should be protected."
+  },
 
-  "8|Troubleshooting": makeLesson(
-    "Docker troubleshooting is a structured process for identifying whether a failure belongs to the CLI, daemon, build context, Dockerfile, image, runtime, network, storage, or registry. Engineers should collect evidence before changing configuration. The first visible error is not always the root cause.",
-    "A failed Docker build or stopped container can block the complete CI/CD pipeline. A repeatable troubleshooting method reduces recovery time and prevents unsafe workarounds such as privileged containers, deleting important volumes, or disabling security controls.",
-    "Start with the exact command and timestamp. Check Docker client and daemon connectivity, then inspect build output, image metadata, container state, logs, mounts, networks, and registry access. Compare the failing build with a known-good commit or environment to isolate the change.",
-    [
-      "Capture the failed command and complete error output.",
-      "Verify Docker client and daemon connectivity.",
-      "Determine whether the failure occurred during build, run, network, storage, or push.",
-      "Inspect the affected image and container metadata.",
-      "Collect logs and resource information.",
-      "Test one evidence-based correction at a time.",
-      "Rebuild and verify the complete application workflow."
+  "Troubleshooting": {
+    title: "Troubleshooting",
+    description: "Diagnose common Docker build, startup, networking, storage, resource, daemon, and registry incidents using evidence-driven methods.",
+    sections: [
+      section("Troubleshooting Method", "Start by identifying the affected host, image, container, deployment time, and user impact. Collect logs and configuration before changing the system. Reproduce the issue safely and change one variable at a time."),
+      section("Container Exits Immediately", "A container exits when its main process completes or fails. Inspect the exit code, command, entrypoint, and application logs. A background process that daemonizes may also cause the container to exit if the main process ends.", "docker ps -a`ndocker logs <container>`ndocker inspect <container>"),
+      section("Image Build Failures", "Build failures may come from invalid Dockerfile instructions, missing context files, package repository outages, dependency errors, or resource constraints. Identify the first failing build step and inspect its complete output."),
+      section("Image Pull and Registry Errors", "Check image reference spelling, registry DNS, network reachability, authentication, repository permissions, and rate limits. Distinguish a missing tag from an authorization failure."),
+      section("Port and Network Failures", "Check whether the application listens on the expected interface and container port. Inspect published port mappings, network membership, DNS, and host firewall rules.", "docker port <container>`ndocker network inspect <network>`ndocker exec <container> ss -lnt"),
+      section("Volume Permission Problems", "A container may fail to read or write mounted files because of UID, GID, ownership, or security policy differences. Inspect mount details and process identity before changing host permissions."),
+      section("Out of Memory and Resource Pressure", "Exit code 137 can indicate a process was killed, commonly due to memory pressure, but it is not proof of an out-of-memory event by itself. Check container state, host kernel logs, and memory metrics.", "docker stats --no-stream`ndocker inspect <container>`ndmesg -T | grep -i -E 'oom|killed process'"),
+      section("Daemon and Storage Failures", "A stopped daemon, full disk, corrupted storage metadata, or filesystem issue can prevent container operations. Check daemon logs and disk capacity before restarting services or pruning data.", "sudo systemctl status docker`ndf -h`ndocker system df`nsudo journalctl -u docker -n 200"),
+      section("Recovery and Rollback", "Restore service using a known-good image digest and verified configuration. Preserve logs and incident evidence, avoid deleting persistent volumes, and validate the application after recovery."),
+      section("Hands-on Exercise", "Intentionally create a failing container, diagnose it using logs and inspect output, identify the root cause, apply a safe correction, and verify recovery.")
     ],
-    "If the payment API container exits with code 1, inspect docker ps -a, docker logs, and docker inspect before rebuilding. The evidence may show a missing database URL rather than a Docker engine problem.",
-    ["docker version", "docker info", "docker ps -a", "docker logs payment-api", "docker inspect payment-api", "docker events --since 30m", "docker system df", "docker network ls", "docker volume ls"],
-    "Keep a troubleshooting record containing the failed command, image tag and digest, container ID, exit code, relevant logs, recent configuration changes, and recovery action. Do not delete containers, images, or volumes until their diagnostic and data value is understood.",
-    ["Cannot connect to the Docker daemon.", "Docker build fails at COPY because a file is missing.", "Container exits immediately or enters a restart loop.", "Port publishing fails because the host port is occupied.", "Registry push fails due to authentication or repository permissions.", "The host runs out of disk space."],
-    ["Start or repair the Docker engine and verify the active context.", "Correct the build context or COPY source path.", "Inspect application logs, environment variables, and exit status.", "Select an available host port and verify the mapping.", "Refresh credentials and check registry permissions.", "Inspect docker system df and clean only confirmed unused resources."],
-    ["Collect evidence before cleanup or restart.", "Use logs and inspect output instead of guessing.", "Protect named volumes and production data.", "Avoid disabling security to make a build pass.", "Document the root cause and prevention action."],
-    "Simulate a payment-service container failure using an incorrect environment variable. Diagnose it with docker ps, docker logs, and docker inspect, correct the configuration, and verify recovery."
-  ),
+    exercise: "Troubleshoot a container that exits immediately and a service with an unreachable port. Record evidence, root cause, recovery action, and validation results for both incidents."
+  },
 
-  "8|Production Hands-on Lab": makeLesson(
-    "This lab combines Docker image creation, multi-stage Maven packaging, build context control, runtime security, container networking, health verification, tagging, and registry publishing. The objective is to create a repeatable production-style image for the Spring Boot payment service.",
-    "The CI/CD pipeline needs one tested and identifiable container artifact. This lab demonstrates how source code becomes a secure image that can be stored in a registry and promoted through environments without rebuilding it.",
-    "The Maven builder stage compiles and packages the payment service. The runtime stage contains only the Java runtime and application JAR. Docker builds the image from a controlled context. The container runs as a non-root user, exposes the application port, and receives environment-specific configuration at runtime. The verified image is then tagged and published.",
-    [
-      "Confirm that Maven tests and packaging succeed.",
-      "Create and review the production Dockerfile.",
-      "Create .dockerignore and remove unnecessary build context files.",
-      "Build the multi-stage Docker image.",
-      "Inspect image layers, user, and exposed ports.",
-      "Run the container with environment configuration and resource limits.",
-      "Verify health endpoint, application logs, and graceful shutdown.",
-      "Scan the image and remediate unacceptable vulnerabilities.",
-      "Tag the approved image and push it to the private registry.",
-      "Record the registry digest and deployment artifact metadata."
+  "Production Hands-on Lab": {
+    title: "Production Hands-on Lab",
+    description: "Build, scan, publish, and run a production-oriented Docker image using secure configuration, persistent storage, networking, and operational validation.",
+    sections: [
+      section("Lab Architecture and Requirements", "Build a small API service with a Dockerfile, a non-root runtime user, a health endpoint, and externalized configuration. The service should be packaged once and promoted as the same artifact."),
+      section("Application and Dockerfile Preparation", "Create the application source and a production Dockerfile. Use deterministic dependency installation, a suitable base image, a non-root user, and a predictable startup command."),
+      section("Build Context and Supply Chain Controls", "Create a .dockerignore file to exclude local dependencies, Git history, test output, and secret files. Pin base image versions and record the source commit used for the build."),
+      section("Optimized Multi-stage Image Build", "Separate dependency preparation and compilation from the runtime stage. Copy only required runtime artifacts and verify that build-only tools are absent from the final image."),
+      section("Build and Validate the Image", "Build with a unique version and commit tag. Inspect image history, configuration, size, and digest. Run the application locally and execute functional checks before publishing.", "docker build -t devmavox/api:1.0.0 .`ndocker image inspect devmavox/api:1.0.0"),
+      section("Security Validation", "Run vulnerability scanning and review findings according to severity and exploitability. Verify non-root execution, avoid privileged mode, restrict capabilities, and confirm that no credentials are embedded in image layers."),
+      section("Registry Publishing", "Authenticate through a protected CI credential, push the approved image, and record its digest. The deployment stage should consume the exact published artifact rather than rebuilding it.", "docker tag devmavox/api:1.0.0 registry.example.com/devmavox/api:1.0.0`ndocker push registry.example.com/devmavox/api:1.0.0"),
+      section("Production Runtime Configuration", "Run the service with an explicit network, resource limits, restart policy, health check, and externalized configuration. Persist only the data that must survive container replacement."),
+      section("Observability and Operational Checks", "Collect application logs and container resource metrics. Monitor health, restart count, CPU, memory, disk, and request behavior. Define actionable alerts rather than relying only on container running state."),
+      section("Failure Simulation and Recovery", "Simulate an application failure and validate alerting, diagnosis, and recovery. Roll back to the last approved image digest when a release causes production impact."),
+      section("Release Checklist and Evidence", "Record the source commit, image tag, digest, scan results, test results, deployment configuration, and rollback reference. Keep evidence with the release record for audit and incident investigation."),
+      section("Hands-on Exercise", "Complete the full workflow: build, test, scan, tag, push, pull, run, inspect, and recover the service. Submit the Dockerfile, .dockerignore, validation commands, and release evidence.")
     ],
-    "The payment-service release is built from a specific Git commit. Jenkins runs Maven tests, builds the Docker image, verifies the container, performs security scanning, and pushes the approved image to ECR. The deployment manifest references the recorded image digest.",
-    ["mvn clean verify", "docker build -t payment-service:1.0.0 .", "docker image inspect payment-service:1.0.0", "docker run -d --name payment-api -p 8080:8080 --memory=512m --cpus=1 payment-service:1.0.0", "docker logs payment-api", "docker inspect payment-api", "docker stop --time 30 payment-api", "docker rm payment-api"],
-    "Production Dockerfile:\nFROM maven:3.9-eclipse-temurin-21 AS builder\nWORKDIR /workspace\nCOPY pom.xml .\nCOPY src ./src\nRUN mvn -B clean package -DskipTests\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nRUN useradd --system --uid 10001 appuser\nCOPY --from=builder --chown=10001:10001 /workspace/target/payment-service.jar /app/app.jar\nUSER 10001:10001\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"/app/app.jar\"]\nAdjust the JAR path, health endpoint, Java version, and runtime write paths to match the real application. Do not publish an image until tests and security checks pass.",
-    ["Maven packaging fails before the Docker image can be built.", "The multi-stage COPY instruction cannot find the generated JAR.", "The application starts but its health endpoint fails.", "The non-root user cannot access a required application directory.", "The image scan reports a critical vulnerability.", "The registry rejects the push because of incorrect permissions."],
-    ["Resolve Maven test and package failures before the Docker build.", "Inspect the builder output and correct the generated JAR path.", "Check application configuration, dependencies, and health endpoint behavior.", "Grant ownership only to the required writable directories.", "Update vulnerable dependencies or base images and rescan.", "Verify registry identity, repository path, and scoped permissions."],
-    ["Build from a controlled source commit.", "Use multi-stage builds and a minimal runtime image.", "Exclude secrets and unnecessary files from the build context.", "Run as non-root with restricted runtime permissions.", "Verify health and graceful shutdown.", "Scan before publishing and record the immutable digest.", "Promote the same approved image through environments."],
-    "Complete the payment-service container release. Build and run the image, verify its health endpoint and logs, stop it gracefully, scan it, push it to a private registry, and record the final image digest."
-  )
+    exercise: "Build a production-style API image, scan it, publish it to a registry, deploy it with resource limits and health checks, simulate a failure, and roll back using the previously approved image digest."
+  }
 };

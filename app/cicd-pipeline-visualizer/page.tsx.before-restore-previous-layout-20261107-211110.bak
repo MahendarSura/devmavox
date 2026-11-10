@@ -1,0 +1,32 @@
+import PipelineStages from "./PipelineStages";
+
+export default function CICDPipelineVisualizerPage() {
+  return (
+    <main className="min-h-screen bg-slate-950 px-4 py-10 text-white md:px-8">
+      <div className="mx-auto max-w-7xl">
+        <a
+          href="/"
+          className="mb-8 inline-block text-sm text-cyan-400 hover:text-cyan-300"
+        >
+          ← Back to Home
+        </a>
+
+        <header className="mb-10">
+          <p className="text-sm font-semibold uppercase tracking-widest text-cyan-400">
+            DevMavox Production Learning Lab
+          </p>
+          <h1 className="mt-3 text-3xl font-bold md:text-5xl">
+            CI/CD Pipeline Visualizer
+          </h1>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-400">
+            Explore all 12 stages of a production CI/CD pipeline, including
+            workflows, inputs, outputs, practical exercises, tools and
+            production failure scenarios.
+          </p>
+        </header>
+
+        <PipelineStages />
+      </div>
+    </main>
+  );
+}

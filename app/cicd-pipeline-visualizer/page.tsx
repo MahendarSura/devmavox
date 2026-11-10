@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { cicdTopicContent } from "./cicd-learning-content";
 import { getCicdTopicLesson } from "./cicd-topic-lessons";
 import { buildCicdStageTopics } from "./cicd-stage-syllabus";
+import { freshStageLessons } from "./cicd-fresh-stage-data";
 
 type Topic = {
   title: string;
@@ -18,6 +19,7 @@ type Topic = {
   recovery: string[];
   bestPractices: string[];
   exercise: string;
+  sections?: Array<{ title: string; content: string; code?: string; practicalNotes?: string[] }>; 
 };
 
 type Stage = {
@@ -1628,8 +1630,11 @@ console.log("Generated section fields processed before curriculum filtering: " +
 console.log("Interview question content: removed");
 // END DEVMAVOX_BULK_CONTENT_STAGES_3_TO_12
 
-// Expanded stage-specific learning syllabus. Existing stage IDs and simulator remain intact.
+// Expanded stage-specific learning syllabus with individually mapped navigation lessons.
 stages.forEach((stage) => {
+  const stageLessons =
+    freshStageLessons[stage.id as keyof typeof freshStageLessons];
+
   stage.topics = buildCicdStageTopics(stage.id).map((topic) => {
     const lesson = getCicdTopicLesson(stage.id, topic.title);
 
@@ -1639,9 +1644,20 @@ stages.forEach((stage) => {
       );
     }
 
+    const freshTopic = stageLessons.find(
+      (item) => item.topicTitle === topic.title
+    );
+
+    if (!freshTopic) {
+      throw new Error(
+        `Missing fresh lesson data for stage ${stage.id}: ${topic.title}`
+      );
+    }
+
     return {
       ...topic,
       ...lesson,
+      sections: freshTopic.sections,
     };
   });
 });
@@ -2040,26 +2056,61 @@ export default function CicdPipelineVisualizerPage() {
               </div>
 
               <div className="mt-6 space-y-6">
-                <LessonSection title="01 · Concept and Definition" content={topic.overview} />
-                <LessonSection title="02 · Purpose and Business Value" content={topic.purpose} />
-                <LessonSection title="03 · Architecture" content={topic.architecture} />
-                <LessonSection title="04 · Production Workflow" list={topic.workflow} />
-                <LessonSection title="05 · Real Payment Application Example" content={topic.example} />
-                <div>
-                  <SectionHeading title="06 · Practical Commands" />
-                  <div className="mt-3 space-y-2">
-                    {topic.commands.map((command, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"><code className="overflow-x-auto text-xs text-emerald-300">{command}</code><button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 hover:text-white">Copy</button></div>)}
-                  </div>
-                </div>
-                <LessonSection title="07 · Configuration Example" content={topic.configuration} />
-                <LessonSection title="08 · Common Failures" list={topic.failures} />
-                <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
-                <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
-                <LessonSection title="11 · Hands-on Exercise" content={topic.exercise} />
+  {topic.sections && topic.sections.length > 0 ? (
+    topic.sections.map((section, index) => (
+      <section
+        key={`${stage.id}-${topic.title}-section-${index}`}
+        className="rounded-xl border border-slate-800 bg-slate-950/60 p-4"
+      >
+        <h3 className="text-sm font-bold text-cyan-300">
+          {String(index + 1).padStart(2, "0")} · {section.title}
+        </h3>
 
-              </div>
+        <div className="mt-3 whitespace-pre-wrap text-sm leading-7 text-slate-300">
+          {section.content}
+        </div>
 
-              <div className="mt-8 flex flex-wrap justify-between gap-3 border-t border-slate-800 pt-5">
+        {section.code && (
+          <pre className="mt-4 overflow-x-auto rounded-lg border border-slate-800 bg-[#050911] p-4 text-xs leading-6 text-emerald-300">
+            <code>{section.code}</code>
+          </pre>
+        )}
+
+        {section.practicalNotes && section.practicalNotes.length > 0 && (
+          <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-slate-400">
+            {section.practicalNotes.map((note, noteIndex) => (
+              <li key={noteIndex}>{note}</li>
+            ))}
+          </ul>
+        )}
+      </section>
+    ))
+  ) : (
+    <>
+      <LessonSection title="01 · Concept and Definition" content={topic.overview} />
+      <LessonSection title="02 · Purpose and Business Value" content={topic.purpose} />
+      <LessonSection title="03 · Architecture" content={topic.architecture} />
+      <LessonSection title="04 · Production Workflow" list={topic.workflow} />
+      <LessonSection title="05 · Real Application Example" content={topic.example} />
+      <div>
+        <SectionHeading title="06 · Practical Commands" />
+        <div className="mt-3 space-y-2">
+          {topic.commands.map((command, i) => (
+            <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3">
+              <code className="overflow-x-auto text-xs text-emerald-300">{command}</code>
+              <button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 hover:text-white">Copy</button>
+            </div>
+          ))}
+        </div>
+      </div>
+      <LessonSection title="07 · Configuration Example" content={topic.configuration} />
+      <LessonSection title="08 · Common Failures" list={topic.failures} />
+      <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
+      <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
+      <LessonSection title="11 · Hands-on Exercise" content={topic.exercise} />
+    </>
+  )}
+</div><div className="mt-8 flex flex-wrap justify-between gap-3 border-t border-slate-800 pt-5">
                 <button disabled={selectedStage === 0} onClick={() => { setSelectedStage(s => s - 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm text-slate-300 disabled:opacity-30">← Previous stage</button>
                 <button onClick={() => setActiveTab("simulator")} className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 hover:bg-cyan-400">Open simulator →</button>
                 <button disabled={selectedStage === 11} onClick={() => { setSelectedStage(s => s + 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm text-slate-300 disabled:opacity-30">Next stage →</button>
@@ -2498,3 +2549,4 @@ function InfoLab({ title, description, items }: { title: string; description: st
     </section>
   );
 }
+

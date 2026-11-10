@@ -1,859 +1,910 @@
 import type { CicdTopicLesson } from "./cicd-topic-lessons";
 
 export const stageTwoLessonOverrides: Partial<Record<string, CicdTopicLesson>> = {
-
   "2|Git and GitHub Fundamentals": {
-    overview: "Git is a distributed version control system that records changes to source code. Every developer can maintain a local repository with its own commit history. GitHub is a hosting platform that stores Git repositories and provides collaboration features such as pull requests, code review, branch protection, issues, and automation. Git manages version history; GitHub provides the shared collaboration environment.",
-    purpose: "The payment-service source code must be shared, reviewed, and tracked before it enters the CI/CD pipeline. Git allows developers to work independently and recover earlier versions. GitHub provides a central location where teams can review changes, enforce repository policies, and trigger automated workflows.",
-    architecture: "A developer works in a local working directory. The staging area selects changes for the next commit. The local Git repository stores commits and references. A remote repository on GitHub stores shared branches and tags. Git transfers commits between local and remote repositories using push, fetch, and pull operations.",
+    overview: "Git is a distributed version control system that records changes to source code. GitHub is a cloud-based platform that hosts Git repositories and provides collaboration features such as pull requests, code reviews, issues, branch protection, and automation. Git runs on a developer machine and communicates with remote repositories when developers push or pull changes.",
+    purpose: "Git allows multiple developers to work on the same application without overwriting one another's work. GitHub provides a central collaboration platform where teams review and approve changes. In a CI/CD pipeline, a developer commits application code and pushes it to GitHub. A webhook or GitHub Actions workflow can then trigger automated builds, tests, security scans, and deployment activities.",
+    architecture: "Git maintains a working directory, staging area, local repository, and remote repository. The working directory contains files being edited. The staging area contains selected changes for the next commit. The local repository stores commits and branches. GitHub hosts the remote repository and exposes collaboration and automation capabilities. Each commit identifies a snapshot using a unique hash.",
     workflow: [
-      "Install Git and configure the developer identity.",
-      "Create or clone the payment-service repository.",
-      "Modify application source files in the working directory.",
-      "Inspect changes and select files for the staging area.",
+      "Install Git and verify the installed version.",
+      "Configure the developer name and email used in commits.",
+      "Create or clone the application repository.",
+      "Modify source files in the working directory.",
+      "Review changes and stage the required files.",
       "Create a commit with a meaningful message.",
-      "Connect the local repository to the GitHub remote.",
-      "Push the branch and collaborate through GitHub."
+      "Push commits to the remote GitHub repository.",
+      "Use pull requests and code reviews to integrate team changes."
     ],
-    example: "A developer changes PaymentService.java to validate payment amounts. Git records the change in a local commit. The developer pushes the feature branch to GitHub and creates a pull request. Other developers review the code before it is merged into the main branch.",
+    example: "A DevMavox payment-service developer updates the payment validation logic. The developer creates a feature branch, changes the Java service, runs tests, stages the modified files, and commits the change. The branch is pushed to GitHub. A pull request allows another developer to review the implementation before it is merged into the main branch. The merge can trigger the Jenkins or GitHub Actions CI pipeline.",
     commands: [
-      "git --version — verify that Git is installed.",
+      "git --version — verify the installed Git version.",
       "git config --global user.name \"Developer Name\" — configure the commit author name.",
-      "git config --global user.email \"developer@example.com\" — configure the commit author email.",
-      "git init — initialize a new local repository.",
-      "git clone <repository-url> — copy a remote repository locally.",
-      "git status — inspect working-tree and staging-area changes.",
-      "git add <file> — stage a selected file.",
-      "git commit -m \"Add payment validation\" — create a commit.",
-      "git remote -v — display configured remote repositories."
+      "git config --global user.email \"developer@example.com\" — configure the commit email.",
+      "git init — initialize a local repository.",
+      "git clone https://github.com/organization/payment-service.git — clone a remote repository.",
+      "git status — inspect the current working tree.",
+      "git log --oneline — view recent commits.",
+      "git remote -v — inspect configured remote repositories."
     ],
-    configuration: "Configure user.name and user.email for accurate commit attribution. Use .gitignore to exclude target, IDE files, logs, generated output, and local secret files. Configure the remote URL using HTTPS or SSH. Use credential managers or SSH keys instead of storing access tokens in scripts. Protect the GitHub default branch with repository rules.",
+    configuration: "Configure user.name and user.email for accurate commit attribution. Use SSH keys or an approved credential manager for authentication. Configure the remote origin to point to the correct GitHub repository. Add a .gitignore file to exclude generated files, IDE metadata, logs, build output, and local environment files. Never store passwords, private keys, or production credentials in the repository.",
     failures: [
-      "Git is not recognized because it is not installed or its executable is missing from PATH.",
-      "Git reports an unknown author because user.name or user.email is not configured.",
-      "Push is rejected because the remote branch contains commits missing locally.",
-      "Authentication fails because the credential or SSH key is invalid.",
-      "Generated files are committed because .gitignore is incomplete.",
-      "A developer accidentally commits a secret or sensitive configuration."
+      "Git commands are unavailable because Git is not installed or its executable is missing from PATH.",
+      "Commits show an incorrect author because user.name or user.email is configured incorrectly.",
+      "Authentication fails because the SSH key, token, or repository permissions are incorrect.",
+      "Push is rejected because the remote branch contains commits not present locally.",
+      "Developers accidentally commit generated build output or sensitive configuration.",
+      "The local repository points to an incorrect remote URL."
     ],
     recovery: [
-      "Verify Git installation using git --version.",
-      "Configure the correct author identity.",
-      "Inspect git status and git remote -v before changing repository state.",
-      "Fetch remote changes and integrate them using the team's approved strategy.",
-      "Correct authentication using a credential manager or SSH key.",
-      "Remove generated files from tracking and update .gitignore.",
-      "Rotate any exposed credential and follow the repository's secret-removal process."
+      "Verify Git installation with git --version and correct PATH if necessary.",
+      "Inspect git config --list and correct the author configuration.",
+      "Check git remote -v and confirm the remote repository URL.",
+      "Verify SSH authentication or refresh the approved GitHub credential.",
+      "Fetch remote changes and integrate them before retrying a rejected push.",
+      "Inspect committed files and follow the repository cleanup and secret-rotation process if sensitive information was exposed."
     ],
     bestPractices: [
-      "Commit small, logically related changes.",
-      "Write messages that explain the purpose of each commit.",
-      "Use feature branches instead of committing directly to main.",
-      "Review git diff before staging and committing.",
-      "Never commit passwords, tokens, private keys, or production configuration.",
-      "Use repository rules and pull-request review.",
-      "Keep local branches synchronized with the remote repository."
+      "Use descriptive commit messages that explain the purpose of a change.",
+      "Create feature branches instead of developing directly on the protected main branch.",
+      "Keep commits focused on one logical change.",
+      "Review git status before staging and committing.",
+      "Use .gitignore for generated and local-only files.",
+      "Protect repository access with least-privilege permissions.",
+      "Require code review and automated checks before production changes.",
+      "Never commit credentials or sensitive production data."
     ],
-    exercise: "Create a GitHub repository for payment-service. Clone it, configure the author identity, add a README and a Java source file, and create a commit. Push the branch to GitHub. Make another change, inspect it with git diff, commit it, and verify the commit history in both the terminal and GitHub."
+    exercise: "Create a GitHub repository named payment-service. Clone it locally, add a README.md file, configure your Git author details, and make an initial commit. Create a feature branch, add a sample application file, stage and commit the change, and push the branch to GitHub. Verify the commit history and remote repository contents."
   },
 
   "2|Repository Management": {
-    overview: "Repository management covers creating, cloning, organizing, configuring, and maintaining a Git repository. A repository contains source files, commit history, branches, tags, and configuration. GitHub adds collaboration settings, access permissions, default-branch configuration, repository visibility, topics, descriptions, and security controls.",
-    purpose: "The payment-service repository is the shared source of truth for developers and CI automation. Proper management ensures that team members access the correct project, generated files are excluded, repository permissions are controlled, and Jenkins or GitHub Actions can retrieve the expected source code.",
-    architecture: "The Git repository contains tracked files and version history. GitHub hosts the remote repository and stores branch references. Repository settings define the default branch, access roles, secrets, webhooks, and rulesets. CI systems authenticate to the remote repository using an approved identity with limited permissions.",
+    overview: "A Git repository is the managed location where project files, commit history, branches, tags, and configuration are stored. GitHub repository management adds remote hosting, access control, repository settings, collaboration, visibility, and automation. A well-managed repository provides a reliable source of truth for application development and CI/CD execution.",
+    purpose: "Repository management ensures developers work against the correct source code and follow consistent collaboration rules. DevOps teams use repositories to maintain application code, Dockerfiles, Kubernetes manifests, Helm charts, pipeline definitions, and documentation. Correct repository settings reduce accidental changes, unauthorized access, and inconsistent builds.",
+    architecture: "A repository contains tracked files, commits, branches, tags, and Git metadata. A local clone communicates with a remote GitHub repository through a configured remote such as origin. GitHub stores repository settings, collaborators, teams, branch rules, webhooks, and pull request history. Organizations can group repositories and apply centralized access policies.",
     workflow: [
-      "Create the repository under the correct GitHub organization or account.",
-      "Choose a clear repository name, description, and visibility.",
-      "Initialize the repository with a README and suitable .gitignore.",
-      "Clone the repository to the developer workstation.",
-      "Configure the default branch and repository access.",
-      "Add collaborators or teams with the minimum required permissions.",
-      "Review repository settings before enabling automation."
+      "Create a repository under the correct GitHub account or organization.",
+      "Choose private or public visibility based on project requirements.",
+      "Initialize the repository with an appropriate README and .gitignore.",
+      "Clone the repository and verify the origin remote.",
+      "Configure collaborator and team permissions.",
+      "Organize source code, pipeline files, deployment manifests, and documentation.",
+      "Review repository settings and protect important branches.",
+      "Monitor repository activity and periodically review access."
     ],
-    example: "The DevMavox team creates a private payment-service repository. Developers receive write access through a team, while production automation receives only the permissions needed to read source code. The repository excludes Maven target output and local application secrets.",
+    example: "A DevMavox organization maintains separate repositories for payment-service, infrastructure, and deployment configuration. Application developers receive write access to the application repository, while production deployment permissions are restricted to an approved release team. Jenkins checks out the application repository and builds the version associated with the approved commit.",
     commands: [
-      "git clone <repository-url> — clone the remote repository.",
-      "git remote -v — verify remote configuration.",
-      "git remote get-url origin — inspect the origin URL.",
-      "git remote set-url origin <new-url> — update the remote URL.",
-      "git ls-files — list tracked files.",
-      "git check-ignore -v target/ — identify the ignore rule affecting a generated path.",
-      "git status --short — inspect repository changes."
+      "git init — create a repository in the current directory.",
+      "git clone <repository-url> — create a local copy of a remote repository.",
+      "git remote -v — display remote repository URLs.",
+      "git remote set-url origin <repository-url> — update the origin URL.",
+      "git fetch origin — download remote references without merging.",
+      "git ls-remote origin — inspect references available on the remote.",
+      "git status — inspect repository changes.",
+      "git log --oneline --decorate --all — inspect repository history."
     ],
-    configuration: "Set the default branch to main or the team's agreed name. Configure repository visibility deliberately. Use organization teams and least-privilege roles. Add a .gitignore suitable for Java, Maven, IntelliJ, and VS Code. Configure branch rules and required checks. Keep credentials in GitHub Actions secrets or an approved secret manager rather than repository files.",
+    configuration: "Use a meaningful repository name and description. Select visibility carefully and use organization ownership for team-managed projects. Configure default branch settings, collaborator permissions, team access, branch protection, and repository rulesets. Add README.md, .gitignore, and contribution instructions. Store CI/CD secrets in approved secret-management settings rather than committed files.",
     failures: [
-      "A developer clones the wrong repository or an outdated fork.",
-      "The origin remote points to an incorrect URL.",
-      "The repository is accidentally public and exposes internal source code.",
-      "Generated Maven output is tracked because ignore rules were added too late.",
-      "A CI identity has insufficient repository permissions.",
-      "A collaborator has excessive access to production source or settings."
+      "A developer clones the wrong repository or an outdated repository URL.",
+      "A repository is accidentally made public and exposes internal source code.",
+      "A team member cannot push because repository permissions are insufficient.",
+      "The default branch is inconsistent across development and automation environments.",
+      "Repository settings allow direct changes to critical production branches.",
+      "A CI job checks out the wrong repository or branch."
     ],
     recovery: [
-      "Confirm the repository URL and organization before making changes.",
-      "Inspect git remote -v and correct the origin if necessary.",
-      "Review repository visibility and organization access settings.",
-      "Remove generated files from Git tracking while preserving local files.",
-      "Check the CI identity's repository permissions and token scope.",
-      "Review collaborator roles and remove unnecessary access.",
-      "Verify that developers and automation can access only the intended repository."
+      "Verify the repository owner, name, URL, and configured origin.",
+      "Correct visibility and immediately assess whether confidential information was exposed.",
+      "Ask an organization administrator to review team and collaborator permissions.",
+      "Standardize the default branch and update automation references.",
+      "Enable appropriate branch protection or repository rulesets.",
+      "Review pipeline checkout configuration and verify the exact commit being built."
     ],
     bestPractices: [
-      "Use a clear naming convention for repositories.",
-      "Keep one authoritative repository for the application source.",
-      "Use private visibility for internal application code when appropriate.",
-      "Apply least-privilege access through teams.",
-      "Maintain a suitable .gitignore.",
-      "Protect the default branch.",
-      "Review repository access and automation permissions periodically."
+      "Use organization-owned repositories for business-critical applications.",
+      "Choose repository visibility according to data classification.",
+      "Grant permissions through teams wherever practical.",
+      "Document repository purpose, setup, and contribution workflow.",
+      "Keep application source and deployment configuration organized.",
+      "Protect critical branches against unreviewed changes.",
+      "Review inactive collaborators and access permissions periodically.",
+      "Use consistent naming conventions across repositories."
     ],
-    exercise: "Create a private payment-service repository. Add a README, Java/Maven .gitignore, and project description. Clone it locally and verify origin. Configure a team with appropriate access. Confirm that target output and application secrets are excluded from Git tracking."
+    exercise: "Create a private GitHub repository named payment-service under your organization or personal account. Add a README.md and .gitignore, clone it locally, verify the origin URL, create a feature branch, and push a sample application file. Review the repository settings and identify which users have read, write, and administrative access."
   },
 
   "2|Branching Strategy": {
-    overview: "A branching strategy defines how developers create, update, review, and merge parallel lines of development. Common approaches include feature branches, release branches, hotfix branches, and trunk-based development. The correct model depends on release frequency, team size, deployment risk, and review requirements.",
-    purpose: "Developers should implement payment features without directly destabilizing the production branch. Feature branches isolate changes until automated checks and reviews pass. A consistent strategy allows Jenkins or GitHub Actions to validate every proposed change before it reaches the release branch.",
-    architecture: "The main branch represents the accepted integration baseline. A feature branch starts from an agreed base commit and contains a focused change. A pull request compares the feature branch with the target branch. After checks and approvals, the change is merged according to repository policy.",
+    overview: "A branching strategy defines how developers create, maintain, merge, and retire Git branches. Branches allow independent development without immediately changing the main code line. Common approaches include feature branching, GitHub Flow, Git Flow, and release branching. The selected strategy should match team size, release frequency, testing requirements, and production deployment practices.",
+    purpose: "A clear branching strategy prevents unreviewed development changes from entering production. It separates feature work, bug fixes, release preparation, and emergency fixes. CI/CD pipelines can validate each branch differently, such as running pull request tests for feature branches and deployment workflows for approved release branches.",
+    architecture: "The main branch represents the primary integration line. Feature branches contain isolated development work. Optional release branches stabilize a release, while hotfix branches address urgent production defects. Pull requests connect branches through review and automated validation. Branch protection enforces required checks before changes are integrated.",
     workflow: [
-      "Select the correct base branch for the work.",
+      "Identify the type of work: feature, bug fix, release, or hotfix.",
+      "Update the local main branch from the remote repository.",
       "Create a branch using the team's naming convention.",
-      "Implement one focused feature or fix.",
-      "Commit related changes with clear messages.",
-      "Fetch and integrate relevant updates from the target branch.",
-      "Push the feature branch and open a pull request.",
-      "Merge only after required checks and reviews pass."
+      "Implement the change and commit related updates.",
+      "Push the branch to GitHub.",
+      "Open a pull request against the intended target branch.",
+      "Run automated checks and complete code review.",
+      "Merge the approved change and remove the completed branch."
     ],
-    example: "A developer implements payment retry handling on feature/payment-retry. Another developer works on bugfix/payment-validation. Both branches are tested independently. Their pull requests target main and must pass the required build and test checks before merging.",
+    example: "A developer adds refund support to a payment service. The developer creates feature/refund-api from the latest main branch. Jenkins runs compilation and unit tests for the pull request. After review and approval, the branch is merged into main. The integration pipeline builds the merged commit and creates a deployable artifact.",
     commands: [
-      "git branch --show-current — display the current branch.",
-      "git switch -c feature/payment-retry — create and switch to a feature branch.",
+      "git branch — list local branches.",
       "git branch -a — list local and remote-tracking branches.",
-      "git fetch origin — retrieve remote references.",
-      "git rebase origin/main — update a feature branch by replaying commits on the latest main when permitted by team policy.",
-      "git push -u origin feature/payment-retry — publish a new branch and set its upstream.",
-      "git branch -d feature/payment-retry — delete a merged local branch."
+      "git switch main — switch to the main branch.",
+      "git pull --ff-only origin main — update main without creating an unnecessary merge commit.",
+      "git switch -c feature/refund-api — create and switch to a feature branch.",
+      "git push -u origin feature/refund-api — publish the branch and configure upstream tracking.",
+      "git branch -d feature/refund-api — delete a merged local branch.",
+      "git push origin --delete feature/refund-api — delete a remote branch when permitted."
     ],
-    configuration: "Document branch prefixes such as feature/, bugfix/, hotfix/, and release/. Define whether the team uses merge commits, squash merging, or rebase workflows. Configure branch protection on main. Require pull requests and automated checks. Avoid long-lived branches that drift far from the integration branch.",
+    configuration: "Choose a documented branch naming convention such as feature/, bugfix/, hotfix/, and release/. Define the target branch for pull requests and configure required checks on protected branches. Decide whether the team uses merge commits, squash merges, or rebase merges. Ensure CI workflows validate the branches that are allowed to enter production.",
     failures: [
-      "A feature branch is created from an outdated base.",
-      "Developers commit directly to main and bypass review.",
-      "A branch remains open for weeks and accumulates conflicts.",
-      "A developer force-pushes over shared commits.",
-      "The branch name does not follow the team's automation convention.",
-      "A release branch contains unreviewed or untested changes."
+      "A feature branch is created from an outdated main branch.",
+      "Developers commit directly to main instead of using pull requests.",
+      "Two developers create branches with unclear or conflicting names.",
+      "A pull request targets the wrong base branch.",
+      "A long-lived feature branch accumulates many integration conflicts.",
+      "A branch is deleted before its work is safely merged or preserved."
     ],
     recovery: [
-      "Inspect the current branch and its base commit.",
-      "Fetch the latest remote references.",
-      "Integrate the target branch using the approved merge or rebase process.",
-      "Resolve conflicts and rerun tests.",
-      "Restore overwritten commits from reflog or remote references where possible.",
-      "Open or update a pull request and require the normal review process.",
-      "Delete stale branches only after confirming that their work is merged or safely preserved."
+      "Fetch the latest remote references and compare the branch with main.",
+      "Create a backup branch before performing risky history changes.",
+      "Move unfinished work to a correctly named branch if necessary.",
+      "Correct the pull request base branch after checking the intended release flow.",
+      "Integrate main regularly and resolve conflicts in a controlled environment.",
+      "Restore a deleted branch from a known commit when its work is recoverable."
     ],
     bestPractices: [
-      "Use short-lived feature branches.",
-      "Keep each branch focused on one change.",
-      "Protect the main branch.",
-      "Synchronize frequently with the target branch.",
-      "Avoid force-pushing shared branches.",
-      "Automate branch checks and naming validation.",
-      "Delete merged branches to reduce repository clutter."
+      "Keep feature branches short-lived.",
+      "Start new work from an updated base branch.",
+      "Use meaningful branch names linked to tickets or requirements.",
+      "Require pull requests for protected branches.",
+      "Run automated tests before merging.",
+      "Avoid mixing unrelated changes in one branch.",
+      "Document the team's branching and release strategy.",
+      "Delete merged branches after confirming no further work depends on them."
     ],
-    exercise: "Create feature/payment-validation from main. Implement a small validation change, commit it, and push the branch. Create a second branch for a separate change. Open pull requests for both and verify that neither branch can directly update the protected main branch."
+    exercise: "Create a GitHub repository with a main branch. Create feature/payment-validation from the latest main branch, add a validation change, commit it, and push the branch. Open a pull request, review the base and compare branches, and merge it using the team's selected merge method. Confirm that the change is available in main."
   },
 
   "2|Commit History": {
-    overview: "Git commit history records snapshots of repository content and links each commit to its parent commit or commits. A commit includes a unique hash, author information, timestamp, and message. Inspecting history helps developers understand why a line changed, identify regressions, compare versions, and restore earlier work.",
-    purpose: "When a payment API starts failing after a code change, engineers need to identify which commit introduced the regression. Clear commit history makes code review, incident investigation, release tracking, and rollback planning more reliable.",
-    architecture: "Each Git commit points to a tree representing repository content and to one or more parent commits. Branch names are references that point to commits. Git stores objects in its object database. Commands such as log, show, diff, blame, and bisect provide different ways to inspect the recorded history.",
+    overview: "Git commit history records the sequence of snapshots that changed a repository. Each commit contains a unique identifier, author information, timestamp, commit message, and references to parent commits. History allows developers to understand how code evolved, identify when defects were introduced, compare changes, and restore earlier versions when necessary.",
+    purpose: "Commit history provides traceability for application changes and supports incident investigation. When a payment service starts failing after a deployment, engineers can identify the commits included in the release and inspect the exact code differences. CI/CD systems can associate build artifacts and deployment records with commit hashes.",
+    architecture: "Git stores commits as objects connected through parent relationships. Branches and tags point to commits. Commands such as log, show, diff, and blame expose different views of history. Remote repositories preserve shared history, while local repositories allow developers to inspect and create commits before pushing them.",
     workflow: [
       "Make a focused source-code change.",
-      "Review the staged diff before creating a commit.",
-      "Create a commit with a descriptive message.",
-      "Inspect the commit hash and changed files.",
-      "Compare the commit with its parent or another branch.",
-      "Use blame or bisect when investigating a regression.",
-      "Keep commits understandable and connected to the related work item."
+      "Inspect the working tree with git status.",
+      "Review the exact difference using git diff.",
+      "Stage only the intended files.",
+      "Create a commit with a meaningful message.",
+      "Inspect the new commit using git show and git log.",
+      "Push the commit to the remote branch.",
+      "Associate the commit with a pull request, ticket, or release."
     ],
-    example: "After deployment, payment validation starts rejecting valid requests. The engineer checks git log to identify recent commits affecting PaymentService.java, uses git show to inspect the exact change, and uses git blame to locate the author and commit responsible for the affected lines.",
+    example: "A payment-service deployment introduces a rounding defect. The engineer checks the release commit hash and uses git log to identify the commits included in the release. The engineer inspects the relevant change with git show and uses git blame to understand when the calculation line was modified. The team prepares a corrective commit and validates it through CI.",
     commands: [
-      "git log --oneline --graph --decorate — display a compact branch history.",
-      "git show <commit-hash> — inspect one commit and its changes.",
-      "git diff <commit-a> <commit-b> — compare two commits.",
+      "git log --oneline — display compact commit history.",
+      "git log --graph --oneline --all — visualize branch history.",
+      "git show <commit-hash> — inspect a commit and its changes.",
+      "git diff — inspect unstaged changes.",
       "git diff --staged — inspect staged changes.",
-      "git blame src/main/java/.../PaymentService.java — identify the commit associated with each line.",
-      "git bisect start — begin binary-search regression investigation.",
-      "git reflog — inspect recent local reference movements."
+      "git diff <commit-a> <commit-b> — compare two commits.",
+      "git blame <file> — inspect the commit associated with each line.",
+      "git show --stat <commit-hash> — inspect the files changed by a commit."
     ],
-    configuration: "Use a commit-message convention such as type(scope): summary. Configure author identity correctly. Use repository templates or commit-message hooks if the team requires a format. Avoid including secrets or customer data in commit messages. Use signed commits when required by organizational policy.",
+    configuration: "Use commit messages that explain the reason for a change. Teams may adopt Conventional Commits such as feat:, fix:, docs:, and refactor:. Configure author identity correctly and avoid rewriting shared history after others have based work on it. Preserve commit hashes in release records so deployed artifacts can be traced to source.",
     failures: [
-      "A commit message does not explain the change.",
-      "A developer stages unrelated files and creates an oversized commit.",
-      "A sensitive value is accidentally stored in Git history.",
-      "A developer resets or rewrites history and loses a local reference.",
-      "git blame points to a large formatting commit instead of the original logic change.",
-      "The commit author identity is incorrect."
+      "Commit history contains unclear messages such as update or changes.",
+      "A developer stages unrelated files and includes them in a commit.",
+      "A commit is created with an incorrect author identity.",
+      "A developer cannot locate the commit that introduced a defect.",
+      "A shared commit is rewritten and causes synchronization problems.",
+      "A release cannot be traced to the exact source commit."
     ],
     recovery: [
-      "Use git show and git diff to inspect the affected commit.",
-      "Use git reflog to find recently moved branch references.",
-      "Restore lost work from a known commit or reflog entry after reviewing the state.",
-      "Use git revert for a safe corrective commit on shared history.",
-      "If a secret entered history, rotate it first and follow an approved history-cleaning procedure.",
-      "Create focused commits after separating unrelated changes.",
-      "Verify the corrected history and run tests."
+      "Inspect git status and git show before changing commit contents.",
+      "Use git restore --staged <file> to unstage an accidentally staged file.",
+      "Correct future author configuration and follow team policy for existing commits.",
+      "Use git log, git diff, and git blame to narrow down the change that introduced the defect.",
+      "Prefer git revert for reversing changes already shared with other developers.",
+      "Record the source commit hash alongside each build and release artifact."
     ],
     bestPractices: [
-      "Write concise messages that explain intent.",
-      "Keep commits small and logically complete.",
-      "Review git diff before committing.",
-      "Use git revert for shared-history corrections.",
-      "Use git log and git show during incident investigation.",
-      "Avoid committing secrets because deleting a later file does not erase earlier history.",
-      "Link commits to issues or pull requests when useful."
+      "Make small commits that represent one logical change.",
+      "Write messages that explain why the change was needed.",
+      "Review staged differences before committing.",
+      "Use commit hashes to identify exact source versions.",
+      "Avoid force-pushing shared branches without an approved recovery plan.",
+      "Use git revert for safe reversal of published changes.",
+      "Link commits to pull requests and work items.",
+      "Preserve source-to-build-to-deployment traceability."
     ],
-    exercise: "Create three commits in a sample payment-service repository. Inspect them with git log, git show, and git diff. Modify a payment validation line and use git blame to identify its history. Introduce a test regression, locate it using git bisect, and document the commit that caused the failure."
+    exercise: "Create a repository and make three commits: initial application setup, payment validation, and unit tests. Inspect the history using git log --graph --oneline. Use git show to inspect the payment validation commit and git blame to identify the commit responsible for a selected source line. Record the final commit hash."
   },
 
   "2|Pull Request Lifecycle": {
-    overview: "A pull request is a collaboration workflow for proposing changes from one branch into another. It provides a diff, discussion area, review approvals, automated checks, and merge controls. A pull request does not automatically mean code is accepted; it remains open until repository policies and team decisions are satisfied.",
-    purpose: "The payment-service team needs a controlled method to review code before it reaches main. Pull requests make changes visible, provide an audit trail, and allow automated builds, tests, security checks, and quality gates to run before integration.",
-    architecture: "A developer pushes a source branch to GitHub and opens a pull request against a target branch. GitHub calculates the changed-file diff and starts configured checks. Reviewers comment, request changes, or approve. After required policies pass, an authorized user merges the pull request and the target branch receives the accepted changes.",
+    overview: "A pull request is a GitHub collaboration mechanism used to propose changes from one branch into another. It presents the changed files, commit history, discussion, automated checks, approvals, and merge controls. The pull request lifecycle begins when a developer publishes a branch and ends when the approved changes are merged or the request is closed.",
+    purpose: "Pull requests create a controlled integration point between developers and protect important branches from unreviewed changes. They allow teams to validate application logic, discuss implementation decisions, run CI checks, and approve changes before integration. Pull request events can also trigger automated build and security workflows.",
+    architecture: "A source branch contains the proposed changes and a base branch receives them. GitHub calculates the difference between the branches and displays commits and changed files. Reviewers submit comments or approvals. Required status checks report CI results. Merge controls apply the selected merge strategy after all repository rules are satisfied.",
     workflow: [
-      "Create a feature branch from the correct target branch.",
-      "Implement and commit the change.",
-      "Push the branch to GitHub.",
-      "Open a pull request with a clear title and description.",
-      "Link the related issue and explain testing performed.",
-      "Wait for automated checks and reviewer feedback.",
-      "Update the branch to address requested changes.",
-      "Merge after approvals and required checks pass."
+      "Create a feature branch from the correct base branch.",
+      "Implement and locally test the change.",
+      "Commit the changes and push the branch to GitHub.",
+      "Open a pull request with the correct base and compare branches.",
+      "Write a description covering purpose, implementation, and testing.",
+      "Allow automated CI checks to execute.",
+      "Address reviewer comments and push follow-up commits.",
+      "Obtain required approvals and merge the pull request.",
+      "Delete the feature branch when appropriate."
     ],
-    example: "A developer opens a pull request for payment retry handling. Jenkins runs Maven tests and a quality scan. A reviewer identifies a missing timeout test and requests changes. The developer adds the test and pushes another commit. After all checks pass and approval is recorded, the pull request is merged into main.",
+    example: "A developer implements a new refund endpoint in payment-service. After pushing feature/refund-api, the developer opens a pull request into main. GitHub Actions or Jenkins runs unit tests and security checks. A reviewer identifies missing validation, so the developer pushes a correction. Once required checks pass and approval is recorded, the change is merged.",
     commands: [
-      "git switch -c feature/payment-retry — create the pull-request branch.",
-      "git add . — stage intended changes after reviewing the working tree.",
-      "git commit -m \"Add payment retry handling\" — create the commit.",
-      "git push -u origin feature/payment-retry — publish the branch.",
+      "git switch -c feature/refund-api — create the source branch.",
+      "git add . — stage changes after reviewing the working tree.",
+      "git commit -m \"feat: add refund API validation\" — create a commit.",
+      "git push -u origin feature/refund-api — publish the source branch.",
       "git fetch origin — refresh remote references.",
-      "git diff origin/main...HEAD — inspect changes relative to the target branch."
+      "git diff origin/main...HEAD — inspect changes relative to the target branch.",
+      "git log --oneline origin/main..HEAD — list commits not yet in main.",
+      "git switch main; git pull --ff-only origin main — update the local target branch."
     ],
-    configuration: "Configure pull-request templates to request purpose, risk, test evidence, and deployment notes. Require approvals and status checks on the target branch. Define who can dismiss reviews and bypass restrictions. Enable automatic deletion of merged branches if appropriate. Ensure CI checks run against the proposed changes and report their results to GitHub.",
+    configuration: "Configure a pull request template containing purpose, change summary, testing evidence, deployment impact, and rollback considerations. Define required reviewers and status checks in branch protection or repository rulesets. Enable the merge methods approved by the team. Ensure CI workflows validate pull request changes before merge.",
     failures: [
-      "The pull request targets the wrong base branch.",
-      "Required status checks are missing or remain pending.",
-      "The source branch is behind the target branch and has conflicts.",
-      "A reviewer requests changes but the developer does not update the branch.",
-      "The pull request contains unrelated generated files.",
-      "The pull request is merged before required approvals."
+      "A pull request targets the wrong base branch.",
+      "Automated checks fail because the proposed code does not compile or pass tests.",
+      "The pull request has merge conflicts.",
+      "Required approvals are missing.",
+      "A reviewer cannot understand the change because the description is incomplete.",
+      "A new commit invalidates previously successful checks or approvals under repository policy."
     ],
     recovery: [
-      "Verify the base and compare branches before changing the pull request.",
-      "Inspect the check summary and open the failed CI job logs.",
-      "Fetch and integrate the latest target branch.",
-      "Resolve conflicts and rerun tests.",
-      "Remove unrelated changes and update the pull request.",
-      "Request review again after addressing feedback.",
-      "Confirm the final merge satisfies repository rules."
+      "Verify the base and compare branches and correct the target when necessary.",
+      "Read the failing CI logs and reproduce the failure locally.",
+      "Update the feature branch with the latest target branch and resolve conflicts.",
+      "Request review from the appropriate code owners or team members.",
+      "Improve the pull request description with implementation and test details.",
+      "Wait for the latest required checks to complete before merging."
     ],
     bestPractices: [
-      "Keep pull requests small and focused.",
-      "Explain purpose, risk, and testing evidence.",
-      "Require automated checks before merge.",
-      "Require appropriate human review.",
-      "Do not approve your own change when policy requires independent review.",
-      "Resolve every important review comment.",
-      "Use the pull request as the audit record for the change."
+      "Keep pull requests focused and reasonably small.",
+      "Use descriptive titles and complete change descriptions.",
+      "Include test results and relevant screenshots or evidence.",
+      "Require review for important application and infrastructure changes.",
+      "Treat CI failures as merge blockers when required by policy.",
+      "Resolve reviewer comments before requesting final approval.",
+      "Do not merge unreviewed production changes.",
+      "Record the merged commit or pull request number in release documentation."
     ],
-    exercise: "Create a feature/payment-retry branch and push it to GitHub. Open a pull request targeting main. Add a description, link an issue, and run the CI checks. Request a review, make a change in response to feedback, push the update, and merge only after the required checks pass."
+    exercise: "Create feature/refund-api in a GitHub repository, add a sample endpoint and tests, and push the branch. Open a pull request into main with a clear description. Review the changed files, inspect the checks, add a reviewer comment, push a correction, and complete the approval and merge process."
   },
 
   "2|Code Review": {
-    overview: "Code review is the process of examining proposed source-code changes before they are merged. Reviewers evaluate correctness, readability, security, performance, test coverage, maintainability, and compatibility. GitHub pull requests provide inline comments, review decisions, and a record of discussions.",
-    purpose: "A payment-service change can affect money movement, customer data, authentication, and system availability. Code review helps detect logic defects, insecure handling of sensitive data, missing tests, and risky changes before production deployment.",
-    architecture: "The author submits a pull request containing a diff. Reviewers inspect changed files and surrounding code. They can comment, approve, or request changes. Automated tools complement human review by checking compilation, tests, formatting, dependencies, and security. The final approval decision follows repository policy.",
+    overview: "Code review is the process of examining proposed source-code changes before they are integrated into a shared branch. Reviewers evaluate correctness, readability, security, maintainability, test coverage, performance, and compatibility. GitHub provides inline comments, review states, suggestions, approvals, and code-owner workflows.",
+    purpose: "Code review identifies defects before they reach production and spreads technical knowledge across the team. In a CI/CD environment, automated tests check repeatable conditions while human reviewers assess design choices and business correctness. A review process is especially important for payment logic, authentication, infrastructure configuration, and deployment workflows.",
+    architecture: "A pull request displays the proposed diff between a source branch and a target branch. Reviewers can comment on individual lines or submit an overall review. Review states commonly include comment, approve, and request changes. CODEOWNERS can assign responsible reviewers for selected paths. Branch rules can require approval before merging.",
     workflow: [
-      "Read the pull-request description and understand the intended behavior.",
-      "Inspect the complete diff rather than only the changed line.",
-      "Check business logic, input validation, and error handling.",
-      "Review security-sensitive code and data handling.",
-      "Check tests for normal, boundary, and failure cases.",
-      "Leave specific comments that explain the concern and expected correction.",
-      "Re-review updates and submit the appropriate review decision."
+      "Open the pull request and read its purpose and implementation summary.",
+      "Understand the business requirement and expected behavior.",
+      "Inspect changed files and compare them with the target branch.",
+      "Check correctness, edge cases, error handling, and security.",
+      "Review test coverage and automated CI results.",
+      "Add clear comments that explain the issue and suggested improvement.",
+      "Recheck the developer's updates.",
+      "Approve the change only when review requirements are satisfied."
     ],
-    example: "A reviewer notices that a payment retry implementation logs the full request object, which may contain sensitive information. The reviewer requests removal of the unsafe logging and asks for a test proving that retry attempts do not create duplicate charges.",
+    example: "A developer changes the payment amount validation method. A reviewer checks whether negative values, zero values, decimal precision, and missing input are handled correctly. The reviewer also checks that sensitive payment details are not written to logs and that unit tests cover failure cases. The pull request is approved only after the issues are corrected.",
     commands: [
-      "git diff origin/main...HEAD — inspect the pull-request changes locally.",
-      "git show <commit-hash> — inspect an individual commit.",
-      "mvn clean verify — validate compilation and tests.",
+      "git diff origin/main...HEAD — inspect proposed branch changes.",
       "git diff --check — detect whitespace errors and conflict markers.",
-      "git grep -n \"password\\|secret\\|token\" — search tracked source for suspicious hard-coded secret terms."
+      "git show --stat HEAD — inspect the latest commit summary.",
+      "git status — confirm the developer's working tree state.",
+      "git log --oneline origin/main..HEAD — inspect proposed commits.",
+      "git grep \"password\" — search tracked source files for a sensitive term.",
+      "mvn test — run Java project tests when applicable.",
+      "git diff --name-only origin/main...HEAD — list changed files."
     ],
-    configuration: "Define review expectations in CONTRIBUTING.md or the repository pull-request template. Use CODEOWNERS to request reviewers for sensitive paths. Require approvals for protected branches. Configure automated checks for tests, static analysis, and dependency scanning. Reviewers should have enough context and permission to evaluate the change.",
+    configuration: "Create a pull request review policy that identifies required approvals and code owners. Use CODEOWNERS to route changes in sensitive directories to responsible teams. Configure required automated checks and prohibit bypassing review for protected branches except through a documented emergency process. Define review expectations for application code, tests, Dockerfiles, pipeline definitions, and Kubernetes manifests.",
     failures: [
-      "Reviewers approve without reading the full change.",
-      "Important security or payment correctness issues are missed.",
-      "Comments are vague and do not explain the required correction.",
-      "A large pull request makes meaningful review difficult.",
-      "Automated tests pass but do not cover the changed business behavior.",
-      "A required code owner is not included in the review."
+      "Reviewers approve changes without reading the actual diff.",
+      "Important edge cases are not covered by tests.",
+      "Review comments are vague and do not explain the problem.",
+      "A developer merges before resolving requested changes.",
+      "Sensitive files are changed without review from the responsible team.",
+      "Automated tests pass but a business rule is implemented incorrectly."
     ],
     recovery: [
-      "Reopen the diff and identify the exact unreviewed area.",
-      "Split large changes into smaller pull requests where possible.",
-      "Add tests for the missing boundary or failure condition.",
-      "Request review from the relevant code owner.",
-      "Clarify comments with a concrete example and expected behavior.",
-      "Run automated checks again after changes.",
-      "Record important review findings for future prevention."
+      "Reopen the diff and inspect every changed file before approval.",
+      "Ask for tests covering missing, invalid, and boundary inputs.",
+      "Write actionable comments with a reason and an expected correction.",
+      "Use repository rules to prevent merging while required changes remain.",
+      "Assign the appropriate code owner to sensitive changes.",
+      "Create a follow-up defect or corrective pull request if an issue is discovered after merge."
     ],
     bestPractices: [
-      "Review correctness before style preferences.",
-      "Check security, authorization, and sensitive-data handling.",
-      "Verify tests cover important success and failure paths.",
-      "Keep pull requests small enough to review carefully.",
-      "Use CODEOWNERS for critical application areas.",
-      "Give respectful, specific, actionable feedback.",
-      "Never treat a green build as a substitute for human review."
+      "Review correctness before formatting preferences.",
+      "Keep comments respectful, specific, and actionable.",
+      "Check tests, security, error handling, and backward compatibility.",
+      "Avoid approving changes you do not understand.",
+      "Use code owners for high-risk application areas.",
+      "Review small changes frequently instead of large accumulated changes.",
+      "Document important architectural decisions.",
+      "Treat code review as a shared engineering responsibility."
     ],
-    exercise: "Open a pull request that changes PaymentService. Ask a second reviewer to inspect the diff for business logic, sensitive logging, and missing tests. Add a CODEOWNERS rule for the payment module and verify that GitHub requests the designated reviewer."
+    exercise: "Create a pull request that changes a sample payment validation method. Review the diff as another team member. Identify one correctness issue, one missing test case, and one maintainability improvement. Add inline review comments, update the implementation, rerun tests, and submit an approval after verifying the corrections."
   },
 
   "2|Branch Protection Rules": {
-    overview: "Branch protection rules and repository rulesets enforce conditions before important branches can be updated. Policies can require pull requests, approvals, status checks, signed commits, linear history, restricted push access, and restrictions on force pushes or deletion. GitHub applies these rules to protect branches such as main.",
-    purpose: "The payment-service main branch must not receive unreviewed or failing code. Branch protection ensures that developers cannot bypass required reviews and automated CI checks during normal collaboration. It reduces the chance of accidental production-bound changes.",
-    architecture: "GitHub evaluates repository rules when a user or automation attempts to update a protected branch. A pull request must satisfy required approvals and status checks. Authorized roles may have controlled bypass permissions. Rulesets can apply to selected branch patterns and can be managed at repository or organization level depending on the plan and configuration.",
+    overview: "Branch protection rules are GitHub repository controls that restrict how selected branches can be modified. They can require pull requests, approvals, status checks, signed commits, linear history, or restrictions on who can push. Repository rulesets provide a related policy mechanism for enforcing repository-wide or branch-targeted rules.",
+    purpose: "Protected branches prevent accidental or unauthorized changes to important code lines. A production main branch should not accept untested code simply because a developer has push access. Branch policies connect code review and CI validation with the actual merge decision.",
+    architecture: "GitHub evaluates branch protection or ruleset requirements when a user attempts a protected operation. Pull request requirements, approval counts, required status checks, and push restrictions determine whether the change can be merged. CI providers report status checks against commits or pull requests. Authorized administrators may have configured bypass behavior, which must be governed carefully.",
     workflow: [
-      "Identify important branches such as main and release/*.",
-      "Open repository settings and locate branch protection or rulesets.",
-      "Create a rule targeting the required branch pattern.",
+      "Identify branches that require protection, such as main and release branches.",
+      "Open repository settings and locate branch protection or ruleset controls.",
+      "Define the target branch pattern.",
       "Require pull requests and an appropriate approval count.",
-      "Require successful CI status checks before merging.",
-      "Disable force pushes and branch deletion where appropriate.",
-      "Test the policy with a normal developer account and review bypass permissions."
+      "Select required CI status checks.",
+      "Configure restrictions on direct pushes and force pushes.",
+      "Save the policy and test it with a normal developer account.",
+      "Review bypass permissions and periodically verify policy effectiveness."
     ],
-    example: "The payment-service main branch requires one independent approval and successful Jenkins checks named build-and-test and security-scan. A developer cannot push directly to main. If a check fails, GitHub blocks the merge until the issue is corrected and the check succeeds.",
+    example: "A payment-service repository protects main with required pull requests, two approvals for high-risk changes, and successful unit-test and security-scan checks. A developer cannot push directly to main. The developer must open a pull request, obtain approval, and wait for the CI checks before GitHub permits the merge.",
     commands: [
-      "git push origin HEAD:main — a direct update that should be rejected when branch policy blocks it.",
-      "git push --force origin main — a force push that should be blocked by the applicable rule.",
-      "git status --short — inspect local changes before creating a pull request.",
-      "git branch --show-current — confirm the branch being updated."
+      "git push origin main — a direct push that may be rejected by branch protection.",
+      "git push -u origin feature/payment-fix — publish a feature branch.",
+      "git status — inspect local changes before creating a pull request.",
+      "git fetch origin — retrieve current remote references.",
+      "git log --oneline origin/main..HEAD — inspect commits proposed for integration.",
+      "git diff origin/main...HEAD — review proposed changes.",
+      "gh repo view --json nameWithOwner,defaultBranchRef — inspect repository information using GitHub CLI.",
+      "gh pr checks — inspect checks for the current pull request using GitHub CLI."
     ],
-    configuration: "Configure a rule for main. Require pull requests, independent approvals, and named status checks. Enable stale-review dismissal when policy requires a new review after important updates. Restrict force pushes and deletion. Define bypass actors narrowly and document emergency procedures. Ensure CI check names are stable and actually report to GitHub.",
+    configuration: "In GitHub repository settings, configure branch protection or rulesets for main and release branches. Require pull requests, approvals, and selected status checks. Disable force pushes and branch deletion where appropriate. Restrict bypass permissions to explicitly authorized roles. Ensure the required check names match the checks actually reported by the CI workflows.",
     failures: [
-      "A developer cannot merge because a required status check is missing.",
-      "The required check name does not match the CI workflow's reported name.",
-      "A stale approval is dismissed after new commits are pushed.",
-      "An administrator or automation account bypasses rules unexpectedly.",
-      "A rule pattern does not match the intended branch.",
-      "A branch is protected but the team has no documented emergency process."
+      "A direct push is rejected because the target branch is protected.",
+      "A pull request cannot merge because a required status check is missing.",
+      "The required check name does not match the CI provider's reported check.",
+      "A developer cannot merge because the required approval count is not satisfied.",
+      "An administrator bypasses controls without a documented reason.",
+      "A branch pattern does not match the intended production branch."
     ],
     recovery: [
-      "Open the pull request's mergeability and rules status details.",
-      "Identify the exact unsatisfied rule.",
-      "Verify the CI workflow reports the required status-check name.",
-      "Rerun or repair failed checks rather than bypassing them.",
-      "Review branch patterns and repository or organization ruleset precedence.",
-      "Check bypass permissions and audit recent administrative changes.",
-      "Document and test any emergency exception process."
+      "Use a feature branch and submit a pull request instead of bypassing protection.",
+      "Inspect the pull request checks and identify the missing or failing status.",
+      "Correct the CI workflow or required check configuration.",
+      "Request the required approvals from eligible reviewers.",
+      "Review ruleset patterns and confirm they target the intended branches.",
+      "Audit bypass permissions and document any emergency exception."
     ],
     bestPractices: [
-      "Protect main and release branches.",
-      "Require independent review and passing automated checks.",
-      "Block force pushes and accidental deletion.",
-      "Keep bypass permissions limited and auditable.",
-      "Use stable status-check names.",
-      "Test rules with normal developer permissions.",
-      "Review protection policies after changes to CI or team structure."
+      "Protect main and production release branches.",
+      "Require pull requests for production-bound changes.",
+      "Require meaningful CI checks before merge.",
+      "Use code owners for sensitive directories.",
+      "Restrict force pushes and branch deletion.",
+      "Minimize administrator bypass permissions.",
+      "Test protection policies using ordinary developer permissions.",
+      "Review repository rules after CI workflow changes."
     ],
-    exercise: "Configure a protection rule for main in the payment-service repository. Require one approval and two CI checks. Attempt a direct push using a developer account and confirm it is blocked. Open a pull request with a failing check and verify that GitHub prevents merging."
+    exercise: "Create a test GitHub repository and configure protection for main. Require pull requests, at least one approval, and a successful test status check. Attempt a direct push and confirm that it is blocked. Then create a feature branch, open a pull request, satisfy the configured requirements, and merge it."
   },
 
   "2|Merge Strategies": {
-    overview: "GitHub supports different ways to integrate pull-request changes. A merge commit preserves the branch history and creates a merge commit. Squash merging combines the pull-request commits into one commit on the target branch. Rebase merging places commits onto the target branch without creating a merge commit. Each strategy produces a different history shape.",
-    purpose: "The payment-service team needs a consistent history that supports review, release tracking, and incident investigation. A merge strategy affects how commits appear in main and how easily teams can understand which changes entered a release.",
-    architecture: "A pull request compares a head branch with a base branch. GitHub calculates whether the branches can be merged. The selected strategy determines how the source commits are represented in the target branch. Repository settings can enable or disable available merge methods.",
+    overview: "A Git merge strategy determines how changes from one branch are integrated into another. GitHub commonly offers merge commits, squash merges, and rebase merges as pull request merge methods. The selected method affects commit history, traceability, and how individual feature changes appear in the target branch.",
+    purpose: "A consistent merge strategy keeps repository history understandable and reduces confusion during troubleshooting and releases. Teams choose a strategy based on whether they need to preserve individual commits, create a single feature-level commit, or maintain a linear history. CI/CD systems use the resulting commit history to identify source versions and release changes.",
+    architecture: "A merge commit connects the histories of two branches with a new commit that has multiple parents. A squash merge combines the pull request changes into one new commit on the target branch. A rebase merge replays commits onto the target branch to create a linear history. GitHub repository settings control which merge methods are available.",
     workflow: [
-      "Review the source branch and target branch histories.",
-      "Choose the strategy agreed by the team.",
-      "Confirm the pull request is mergeable and all required checks pass.",
-      "Use a merge commit when preserving branch topology is important.",
-      "Use squash merging when a single logical commit per pull request is preferred.",
-      "Use rebase merging when a linear commit history is required.",
-      "Verify the resulting main history after merging."
+      "Review the pull request and identify the target branch.",
+      "Confirm all required tests and approvals are complete.",
+      "Check whether the team requires merge, squash, or rebase history.",
+      "Inspect the final pull request diff.",
+      "Select the approved merge method in GitHub.",
+      "Complete the merge and verify the resulting target branch history.",
+      "Delete the feature branch when appropriate.",
+      "Confirm that the merged commit triggers the expected CI workflow."
     ],
-    example: "A developer creates eight small commits while implementing payment validation. The team chooses squash merging so main receives one commit representing the completed feature. The pull request still retains its review discussion and individual commits for investigation.",
+    example: "A developer completes a small payment validation feature using four local commits. The team prefers a clean main history, so the pull request is squash-merged into one commit. The resulting commit represents the complete feature and triggers the main-branch CI pipeline. For a larger release integration, the team may prefer a merge commit to preserve branch structure.",
     commands: [
-      "git log --oneline --graph --decorate --all — compare branch history.",
-      "git merge --no-ff feature/payment-validation — create a merge commit locally.",
-      "git merge --squash feature/payment-validation — stage a combined change for a single commit.",
-      "git rebase main — replay local commits on top of main when permitted.",
-      "git log --first-parent --oneline main — inspect the main branch's first-parent history."
+      "git merge feature/payment-fix — merge a branch into the current branch.",
+      "git merge --no-ff feature/payment-fix — create a merge commit even when fast-forward is possible.",
+      "git merge --ff-only feature/payment-fix — allow only a fast-forward merge.",
+      "git rebase main — replay the current branch commits on top of main.",
+      "git log --graph --oneline --all — inspect branch and merge history.",
+      "git show --summary HEAD — inspect the resulting commit.",
+      "git status — check for an unfinished merge or rebase.",
+      "git merge --abort — cancel an in-progress merge when safe."
     ],
-    configuration: "Enable only the merge methods supported by the team's history policy. Document when to use merge commits, squash, or rebase. Avoid rewriting shared branch history. Require pull-request checks and approvals regardless of merge method. Confirm release automation and versioning tools work with the chosen history model.",
+    configuration: "Enable only the merge methods approved by the engineering team in GitHub repository settings. Document when each method should be used. If linear history is required, configure the corresponding repository rules and avoid merge commits where policy disallows them. Ensure release tooling can identify the final merged commit.",
     failures: [
-      "A merge is blocked because the source branch has conflicts.",
-      "A squash merge loses the individual commit structure from the target branch.",
+      "A merge creates an unexpected history structure.",
       "A rebase changes commit hashes and confuses collaborators using the old branch history.",
-      "A merge commit introduces unexpected changes from an outdated source branch.",
-      "The team uses inconsistent strategies and release automation interprets history incorrectly."
+      "A merge is attempted while the working tree contains conflicting changes.",
+      "A team uses inconsistent merge methods across repositories.",
+      "A feature branch is deleted before the resulting merge is verified.",
+      "A release process incorrectly assumes every pull request creates a merge commit."
     ],
     recovery: [
-      "Inspect the pull request's mergeability status.",
-      "Fetch the latest target branch and update the source branch.",
-      "Choose the strategy required by repository policy.",
-      "Avoid rebasing a branch that other developers are actively using unless coordinated.",
-      "Review the resulting diff and commit graph.",
-      "Run tests after resolving conflicts or rewriting local commits.",
-      "Document the final strategy in the team's contribution guide."
+      "Inspect git log --graph --oneline --all to understand the resulting history.",
+      "Coordinate before rewriting any branch history that others may have fetched.",
+      "Create a backup branch before a risky rebase or merge correction.",
+      "Resolve or abort an unfinished operation using the appropriate Git command.",
+      "Standardize merge settings and update team documentation.",
+      "Use the final target-branch commit hash when identifying the integrated source."
     ],
     bestPractices: [
-      "Choose a consistent merge strategy for the repository.",
-      "Use squash merging for focused pull requests when a clean main history is desired.",
-      "Use merge commits when branch topology is valuable.",
-      "Rebase local feature work carefully and coordinate shared branches.",
-      "Never use a merge strategy to bypass required checks.",
-      "Inspect the resulting history after important merges.",
-      "Keep release and versioning automation compatible with the history model."
+      "Choose one documented default merge method.",
+      "Use squash merges for focused feature work when a clean history is preferred.",
+      "Use merge commits when preserving branch integration history is important.",
+      "Use rebase carefully and avoid rewriting shared branch history.",
+      "Review the final diff before merging.",
+      "Keep pull requests focused and understandable.",
+      "Verify the target branch after merging.",
+      "Make release automation independent of assumptions about merge commit shape."
     ],
-    exercise: "Create a feature branch with three small commits. Compare the history before merging. In a test repository, merge one branch with a merge commit and another with squash merging. Inspect git log --graph and explain how the resulting main histories differ."
+    exercise: "Create two feature branches in a test repository. Merge one using a merge commit and the other using a squash merge through GitHub pull requests. Inspect both results with git log --graph --oneline --all. Compare the commit history and document which strategy your team would use for routine feature work."
   },
 
   "2|Merge Conflict Resolution": {
-    overview: "A merge conflict occurs when Git cannot automatically combine changes from different branches. Conflicts commonly happen when two developers modify the same lines, rename files differently, or change related code in incompatible ways. Git pauses the merge or rebase and asks the developer to resolve the affected files.",
-    purpose: "Parallel payment-service development can cause conflicts in shared classes, configuration files, and Maven dependencies. Correct conflict resolution ensures that both intended changes are preserved without accidentally removing business logic or introducing invalid code.",
-    architecture: "Git compares the common ancestor with each branch's changes. If changes can be combined safely, Git performs the merge automatically. When it cannot determine the correct result, it marks conflicted files. The developer edits the result, stages the resolved files, and completes the merge or rebase.",
+    overview: "A merge conflict occurs when Git cannot automatically combine changes from different branches. Conflicts commonly happen when two developers edit the same lines, modify the same file structure, or change related content in incompatible ways. Git marks unresolved files and requires a developer to choose or combine the intended changes.",
+    purpose: "Conflict resolution allows teams to integrate parallel development safely without silently losing valid changes. In CI/CD projects, unresolved conflicts can prevent pull requests from merging and delay releases. Correct resolution must preserve business behavior, not merely remove Git conflict markers.",
+    architecture: "During a three-way merge, Git compares the common ancestor, the current branch, and the incoming branch. If changes can be combined automatically, Git completes the merge. Otherwise it marks conflicted files. The developer edits the files, stages the resolved versions, and completes the merge or rebase operation.",
     workflow: [
-      "Fetch the latest target branch.",
-      "Start the approved merge or rebase operation.",
-      "Inspect git status to identify conflicted files.",
-      "Open each file and inspect the conflict markers.",
-      "Understand both developers' intended changes before editing.",
-      "Remove conflict markers and create the correct combined implementation.",
+      "Fetch the latest remote changes.",
+      "Update the target branch and identify the source of the conflict.",
+      "Start the merge or rebase operation in a clean working tree.",
+      "Run git status to identify conflicted files.",
+      "Open each conflicted file and inspect both versions.",
+      "Combine the intended behavior and remove conflict markers.",
+      "Run relevant tests to verify the resolved implementation.",
       "Stage resolved files and complete the merge or rebase.",
-      "Run tests and review the final diff before pushing."
+      "Push the updated branch and verify the pull request."
     ],
-    example: "One developer changes PaymentService.java to validate payment amounts. Another changes the same method to add retry behavior. Git reports a conflict. The resolving developer preserves both validation and retry behavior in the correct order, adds tests for both cases, and completes the merge.",
+    example: "Two developers edit the payment validation method. One changes the minimum payment rule while another adds currency validation to the same method. Git reports a conflict. The developer combines both rules, adds tests for invalid amounts and unsupported currencies, runs the test suite, and completes the merge so neither valid change is lost.",
     commands: [
-      "git fetch origin — update remote references.",
-      "git merge origin/main — merge the latest target branch into the current branch.",
-      "git status — list conflicted files and operation state.",
-      "git diff --name-only --diff-filter=U — list unresolved conflict files.",
+      "git fetch origin — retrieve the latest remote changes.",
+      "git status — identify files with unresolved conflicts.",
+      "git diff --name-only --diff-filter=U — list unresolved files.",
       "git diff — inspect conflict-related changes.",
-      "git add <resolved-file> — mark a file as resolved.",
-      "git merge --continue — continue a merge when required.",
-      "git merge --abort — abandon the current merge and return to the pre-merge state."
+      "git diff --ours -- <file> — inspect the current branch version.",
+      "git diff --theirs -- <file> — inspect the incoming version during a merge.",
+      "git add <file> — mark a file as resolved after editing.",
+      "git merge --continue — complete a merge after resolving conflicts.",
+      "git merge --abort — abandon the current merge when appropriate."
     ],
-    configuration: "Use consistent formatting and keep files focused to reduce unnecessary conflicts. Encourage short-lived branches and frequent synchronization. Configure merge or rebase policy clearly. Protect the target branch and require tests after conflict resolution. Do not automatically accept one side of a conflict in sensitive payment logic without understanding the change.",
+    configuration: "Use a consistent line-ending policy through .gitattributes, especially when developers use different operating systems. Configure suitable merge tools where helpful. Keep branches reasonably short-lived and encourage frequent integration. Protect critical branches so conflicted or unreviewed changes cannot be merged without validation.",
     failures: [
-      "Conflict markers remain in a Java source file and cause compilation errors.",
-      "A developer chooses the wrong side and silently removes valid logic.",
-      "The merge is completed without rerunning tests.",
-      "A conflict occurs in pom.xml and incompatible dependency versions are combined.",
-      "A developer aborts the wrong operation or loses uncommitted work.",
-      "A binary file cannot be resolved using ordinary text conflict markers."
+      "Conflict markers such as <<<<<<< and >>>>>>> remain in the source file.",
+      "A developer selects one side and accidentally removes valid functionality.",
+      "The merge is completed without running tests.",
+      "A file remains unresolved in the Git index.",
+      "Different line-ending conventions create unnecessary conflicts.",
+      "A developer aborts or restarts an operation without understanding the repository state."
     ],
     recovery: [
-      "Run git status and identify whether a merge or rebase is active.",
-      "Back up uncommitted work before attempting recovery.",
-      "Inspect the base, current branch, and incoming branch changes.",
-      "Resolve each file according to intended application behavior.",
-      "Use the appropriate Git continuation or abort command.",
-      "Run compilation and tests, especially for payment business rules.",
-      "Review the final diff and ask the original contributors when intent is unclear."
+      "Run git status and identify the exact operation in progress.",
+      "Open each conflicted file and compare both implementations with the business requirement.",
+      "Remove all conflict markers after combining the intended code.",
+      "Use git diff --check to detect remaining markers and whitespace problems.",
+      "Run unit and integration tests relevant to the changed behavior.",
+      "Stage resolved files and continue the operation, or abort and restart if the resolution is unsafe."
     ],
     bestPractices: [
-      "Keep branches short-lived and synchronize regularly.",
-      "Understand both sides before resolving a conflict.",
-      "Never leave conflict markers in committed source code.",
-      "Run tests after every important conflict resolution.",
-      "Avoid blind accept-current or accept-incoming operations.",
-      "Use small commits and clear ownership for shared configuration.",
-      "Record complex conflict decisions in the pull request."
+      "Pull or fetch regularly to reduce long-lived branch divergence.",
+      "Communicate before changing shared configuration or critical files.",
+      "Understand both sides of a conflict before editing.",
+      "Do not blindly select ours or theirs for business logic.",
+      "Run tests after every meaningful conflict resolution.",
+      "Use consistent line-ending settings.",
+      "Keep conflict resolution inside a focused commit.",
+      "Request a second review for high-risk conflict resolutions."
     ],
-    exercise: "Create two branches from the same main commit. Modify the same payment validation method differently in each branch. Merge one branch into the other and resolve the conflict manually. Run Maven tests and inspect the final diff to prove both intended behaviors remain."
+    exercise: "Create a test repository with a sample payment-rules.txt file. Create two branches and modify the same line differently in each branch. Merge one branch into the other and observe the conflict. Combine both intended changes, remove conflict markers, run git diff --check, stage the file, and complete the merge."
   },
 
   "2|GitHub Webhooks": {
-    overview: "A GitHub webhook sends an HTTP request to a configured endpoint when a selected repository event occurs. Events can include push, pull request, release, issue, and workflow-related activity. The receiving system processes the payload and performs an action, such as starting a Jenkins job. Webhooks are event-driven integration points between GitHub and external systems.",
-    purpose: "A Jenkins pipeline should start when developers push code or open a pull request. A webhook avoids unnecessary polling and provides faster feedback. It also allows GitHub events to trigger notifications, deployment workflows, and other approved automation.",
-    architecture: "GitHub stores the webhook URL, selected events, and optional secret. When an event occurs, GitHub sends an HTTP request with event metadata and a JSON payload. The receiving endpoint validates the request, identifies the event, and starts the corresponding workflow. The receiver responds with an HTTP status and records processing results.",
+    overview: "A GitHub webhook is an HTTP callback that sends an event payload from GitHub to an external service. Events can include push, pull request, release, issue, and workflow-related activities. Webhooks allow external systems such as Jenkins to react automatically when repository activity occurs.",
+    purpose: "Webhooks connect source-code collaboration with automated delivery systems. When a developer pushes a commit or opens a pull request, GitHub can notify Jenkins or another integration service. The receiving service can then start builds, tests, quality scans, or other approved automation without requiring manual polling.",
+    architecture: "A webhook is configured with a destination URL, selected event types, and optional security settings. When a selected event occurs, GitHub sends an HTTP request containing headers and a JSON payload. The receiver validates the request, processes the event, and returns an HTTP response. A shared secret can be used to verify the HMAC signature.",
     workflow: [
-      "Create an endpoint reachable by GitHub.",
-      "Configure the webhook URL in repository settings.",
+      "Identify the external service that should receive repository events.",
+      "Expose a reachable HTTPS webhook endpoint.",
+      "Configure the webhook URL in GitHub repository settings.",
       "Select only the events required by the integration.",
-      "Configure a webhook secret.",
-      "Receive the HTTP request and validate its signature.",
-      "Process the event and trigger the intended CI action.",
-      "Inspect delivery history and receiver logs when troubleshooting."
+      "Configure a webhook secret and secure the receiving service.",
+      "Trigger a test event such as a push.",
+      "Inspect the delivery status, response code, and payload.",
+      "Confirm that the receiving CI system processes the event correctly."
     ],
-    example: "A developer pushes feature/payment-retry to GitHub. GitHub sends a push event to the Jenkins webhook endpoint. Jenkins identifies the repository and branch, starts the configured pipeline, checks out the source, and runs Maven tests. The pipeline reports its result to the team.",
+    example: "A developer pushes a payment-service feature branch to GitHub. GitHub sends a push event to the configured Jenkins webhook endpoint. Jenkins validates the event and starts the appropriate branch build. The pipeline checks out the commit identified by the event, runs Maven tests, performs security checks, and reports the result.",
     commands: [
-      "curl -i -X POST <webhook-endpoint> -H 'Content-Type: application/json' -d '{\"test\":\"payload\"}' — test an endpoint in a controlled environment.",
-      "Get-NetTCPConnection -LocalPort 8080 — inspect a local listener on Windows.",
-      "ss -lntp — inspect listening TCP ports on Linux.",
-      "curl -i <webhook-endpoint> — test endpoint reachability where a GET route is supported."
+      "git push origin feature/payment-api — generate a push event.",
+      "curl -I https://ci.example.com/github-webhook/ — inspect endpoint HTTP response headers.",
+      "curl -X POST https://webhook.site/example -H \"Content-Type: application/json\" -d '{\"event\":\"test\"}' — send a sample request to a controlled test endpoint.",
+      "Get-Service -Name Jenkins — inspect Jenkins service status on Windows.",
+      "sudo systemctl status jenkins — inspect Jenkins service status on Linux.",
+      "sudo journalctl -u jenkins -n 100 --no-pager — inspect recent Jenkins service logs.",
+      "git rev-parse HEAD — identify the current commit hash."
     ],
-    configuration: "Configure the correct public HTTPS endpoint and select only required events. Store the webhook secret securely. Validate GitHub's X-Hub-Signature-256 header using the raw request body and HMAC SHA-256. Do not trust event payloads until signature verification succeeds. Configure delivery timeouts, retry-safe processing, and restricted network access.",
+    configuration: "In GitHub repository settings, open Webhooks and add the receiver URL. Select the required event types, such as push and pull request. Use HTTPS and configure a strong shared secret. The receiving service must validate the X-Hub-Signature-256 header using the raw request body and the configured secret. Avoid exposing internal credentials in webhook payloads or logs.",
     failures: [
-      "GitHub reports connection timeout because the receiver is unreachable.",
-      "The endpoint returns HTTP 404 because the URL or route is incorrect.",
-      "The receiver rejects requests because the webhook secret does not match.",
-      "A reverse proxy removes required headers or changes request handling.",
-      "Duplicate deliveries trigger duplicate builds.",
-      "The receiver accepts an event but fails to process its payload."
+      "GitHub reports a connection timeout because the endpoint is unreachable.",
+      "The endpoint returns HTTP 404 because the configured path is incorrect.",
+      "The receiver returns HTTP 401 or 403 because authentication or signature validation fails.",
+      "The webhook sends events that the integration does not need.",
+      "A proxy or firewall blocks inbound requests.",
+      "The receiver accepts a request but does not trigger the expected job."
     ],
     recovery: [
-      "Inspect GitHub webhook delivery history and response details.",
-      "Verify DNS, HTTPS certificate, firewall, proxy, and endpoint routing.",
-      "Compare the configured secret with the receiver's secure secret value.",
-      "Check signature verification against the unmodified raw request body.",
-      "Inspect receiver logs and identify payload parsing or processing errors.",
-      "Make event processing idempotent to handle retries safely.",
-      "Send a test event and verify that the expected CI job starts exactly as designed."
+      "Inspect the webhook delivery history and read the response code and error.",
+      "Verify DNS, HTTPS certificate, firewall, proxy, and endpoint path.",
+      "Check receiver logs and confirm that the expected event type is supported.",
+      "Validate the HMAC signature using the correct secret and raw payload bytes.",
+      "Confirm the GitHub repository and Jenkins job integration settings.",
+      "Replay a failed delivery after correcting the receiver configuration."
     ],
     bestPractices: [
-      "Use HTTPS for webhook endpoints.",
-      "Verify webhook signatures before processing payloads.",
+      "Use HTTPS for every production webhook endpoint.",
+      "Validate webhook signatures before trusting event data.",
       "Subscribe only to required event types.",
-      "Make processing idempotent because deliveries may be retried.",
-      "Avoid logging secrets or full sensitive payloads.",
-      "Monitor delivery failures and processing latency.",
-      "Restrict endpoint access and rotate webhook secrets when exposed."
+      "Make event processing idempotent where duplicate delivery is possible.",
+      "Log event identifiers and processing outcomes without exposing secrets.",
+      "Monitor delivery failures and receiver availability.",
+      "Restrict access to webhook configuration.",
+      "Test webhook changes in a non-production repository first."
     ],
-    exercise: "Configure a test webhook for push events in a sample GitHub repository. Point it to a controlled receiver or Jenkins endpoint. Configure a secret, push a test commit, inspect delivery status, and verify the receiver starts the expected pipeline only after signature validation."
+    exercise: "Create a test GitHub repository and configure a webhook to a controlled request-inspection endpoint. Subscribe to push events and trigger a push. Inspect the event headers and JSON payload. Then configure a test Jenkins webhook integration and verify that a repository push starts the intended job."
   },
 
   "2|GitHub Actions Integration": {
-    overview: "GitHub Actions is GitHub's automation platform for running workflows in response to repository events or manual schedules. A workflow is defined in YAML under .github/workflows. Jobs contain steps that run on hosted or self-hosted runners. Actions can check out source code, configure Java, run Maven, execute tests, and publish results.",
-    purpose: "The payment-service repository needs automated feedback whenever a pull request or push occurs. GitHub Actions can run build and test workflows close to the source repository. It can complement or integrate with Jenkins while enforcing required status checks before merge.",
-    architecture: "A repository event triggers a workflow. GitHub evaluates the workflow YAML and schedules jobs on compatible runners. Each job executes steps such as checkout, JDK setup, dependency caching, Maven verification, and artifact upload. The final job status is reported to the commit or pull request.",
+    overview: "GitHub Actions is an automation platform built into GitHub. It executes workflows in response to repository events, schedules, or manual triggers. Workflows are defined as YAML files under .github/workflows and contain jobs, steps, runners, actions, and configuration. It can automate builds, tests, code checks, container creation, and deployments.",
+    purpose: "GitHub Actions reduces manual work by running repeatable automation close to the source repository. A CI workflow can compile a Java application and execute tests whenever a pull request is opened. A controlled deployment workflow can publish an image or deploy to a target environment after approval. It can complement or replace external CI tools depending on the organization's architecture.",
+    architecture: "A workflow is triggered by an event such as push, pull_request, workflow_dispatch, or schedule. GitHub assigns jobs to hosted or self-hosted runners. Each job executes steps that use shell commands or reusable actions. Artifacts can preserve build outputs, while secrets and variables provide controlled configuration. Job dependencies define execution order.",
     workflow: [
-      "Create a workflow YAML file under .github/workflows.",
-      "Define push and pull_request triggers for the required branches.",
-      "Select a supported runner environment.",
-      "Check out the repository source.",
-      "Set up the required JDK version.",
-      "Run mvn clean verify.",
-      "Upload useful build artifacts or test reports when required.",
-      "Make the workflow status a required branch-protection check."
+      "Create the .github/workflows directory in the repository.",
+      "Create a workflow YAML file with a name and trigger.",
+      "Define jobs and select an appropriate runner.",
+      "Add checkout and required build-tool setup steps.",
+      "Run compilation, tests, and quality checks.",
+      "Configure required secrets or variables securely.",
+      "Commit and push the workflow file.",
+      "Inspect the Actions tab and review execution logs.",
+      "Add deployment jobs only after validation and approval requirements are defined."
     ],
-    example: "When a pull request targets main, GitHub Actions checks out payment-service, configures the required JDK, and runs mvn clean verify. If a unit test fails, the workflow returns a failed status and GitHub blocks the merge because the workflow is a required check.",
+    example: "A payment-service repository uses a GitHub Actions workflow triggered by pull_request and push events. The workflow checks out source code, configures Java, runs mvn clean verify, and uploads the test report. A separate protected deployment workflow can build a Docker image and publish it to a registry after the required release approval.",
     commands: [
-      "git add .github/workflows/ci.yml — stage the workflow file.",
-      "git commit -m \"Add GitHub Actions CI workflow\" — commit the automation.",
-      "git push — publish the workflow to GitHub.",
-      "mvn clean verify — run the same Maven verification locally.",
-      "git diff --check — inspect workflow and source changes for whitespace errors."
+      "mkdir -p .github/workflows — create the workflow directory on Linux or Git Bash.",
+      "git status — inspect the new workflow file.",
+      "git add .github/workflows/ci.yml — stage the CI workflow.",
+      "git commit -m \"ci: add GitHub Actions build workflow\" — commit the workflow.",
+      "git push origin feature/actions-ci — publish the workflow branch.",
+      "mvn clean verify — run the example Java build locally.",
+      "gh workflow list — list repository workflows using GitHub CLI.",
+      "gh run list — list recent workflow executions using GitHub CLI."
     ],
-    configuration: "Define workflow triggers carefully to avoid unnecessary runs. Use permissions to grant the minimum GITHUB_TOKEN access required. Pin third-party actions to reviewed versions or immutable commit SHAs according to organizational policy. Store credentials in GitHub Actions secrets or trusted environments. Avoid printing secrets in logs. Use concurrency controls when overlapping runs should be cancelled.",
+    configuration: "Create a YAML workflow under .github/workflows. Define the minimum required triggers and permissions. Use actions/checkout to retrieve source code and a suitable setup action for the build tool. Pin third-party actions to reviewed versions or immutable commit SHAs according to organizational policy. Set explicit job permissions and use GitHub secrets for sensitive values.",
     failures: [
-      "The workflow does not run because the YAML file is in the wrong directory.",
-      "A YAML indentation or syntax error prevents workflow loading.",
-      "The runner uses an incompatible Java version.",
-      "A Maven dependency download fails because of network or repository problems.",
-      "A secret is unavailable because its scope or environment is incorrect.",
-      "The workflow lacks permission to publish a required artifact.",
-      "The branch-protection rule expects a different status-check name."
+      "A workflow does not run because its YAML file is outside .github/workflows.",
+      "The workflow YAML is invalid or contains an unsupported property.",
+      "A workflow runs on the wrong branch or event.",
+      "A job fails because the required Java or build tool is unavailable.",
+      "An action cannot be downloaded or uses an incompatible version.",
+      "A deployment job lacks the required permissions or secrets."
     ],
     recovery: [
-      "Open the Actions tab and inspect the workflow run details.",
-      "Verify the file path and YAML syntax.",
-      "Compare the runner JDK with the project's Maven compiler release.",
-      "Inspect the failing step and Maven output.",
-      "Check secret scope, environment approval, and workflow permissions.",
-      "Correct the required check name in branch protection if the workflow name changed.",
-      "Rerun the workflow and confirm the status is reported to the pull request."
+      "Confirm the workflow file path and inspect the YAML syntax.",
+      "Review the workflow trigger and branch filters.",
+      "Open the failed job and inspect the first meaningful error in its logs.",
+      "Verify runner availability and build-tool setup.",
+      "Review action versions and permissions.",
+      "Confirm secret names and deployment environment approvals without printing secret values.",
+      "Rerun the workflow after correcting the root cause."
     ],
     bestPractices: [
-      "Keep workflow files small and reusable.",
-      "Use least-privilege workflow permissions.",
+      "Keep workflows small and reusable.",
+      "Use explicit triggers and least-privilege permissions.",
+      "Separate CI validation from production deployment.",
+      "Protect production environments with approvals.",
+      "Cache dependencies only when cache keys are correct.",
       "Pin and review third-party actions.",
-      "Cache dependencies safely to improve build time.",
-      "Never print secrets in logs.",
-      "Require CI checks before merging.",
-      "Use protected environments for sensitive deployment jobs."
+      "Store credentials in GitHub secrets or approved external secret managers.",
+      "Preserve test reports and build artifacts for troubleshooting."
     ],
-    exercise: "Create .github/workflows/ci.yml for payment-service. Trigger it on pull requests and pushes to main. Configure the required JDK, check out source, and run mvn clean verify. Open a pull request and verify that the workflow status appears as a check that can be required by branch protection."
+    exercise: "Create .github/workflows/ci.yml in a sample Java repository. Configure it to run on pull_request and pushes to main. Add checkout, Java setup, and mvn clean verify steps. Push the workflow, open a pull request, inspect the Actions execution logs, and correct any failing configuration."
   },
 
   "2|Repository Secrets": {
-    overview: "Repository secrets are protected values used by automation without storing them in source code. Examples include package registry credentials, cloud deployment credentials, and webhook tokens. GitHub Actions can expose authorized secrets to workflow steps through its secrets context. Secret access can also be scoped to environments or organizations.",
-    purpose: "The payment-service pipeline may need credentials to access a private artifact repository or cloud deployment account. Storing those credentials in Java files, workflow YAML, or Git history exposes them to unauthorized users. Secret management reduces accidental disclosure and supports controlled credential rotation.",
-    architecture: "An administrator stores a secret in GitHub repository, organization, or environment settings. An authorized workflow references it through the secrets context. GitHub provides the value to the job according to access rules. The workflow uses the credential for a specific operation and should avoid printing or persisting it.",
+    overview: "GitHub repository secrets are encrypted values used by workflows to access sensitive systems without storing credentials in source code. Examples include cloud access credentials, container registry tokens, deployment keys, and API tokens. GitHub also supports organization-level and environment-level secrets with different access scopes.",
+    purpose: "Secrets allow CI/CD workflows to authenticate securely with external platforms. A deployment pipeline may need permission to publish a Docker image or access a cloud environment. Keeping credentials outside source files reduces accidental exposure and allows administrators to rotate access without changing application code.",
+    architecture: "A repository administrator stores an encrypted secret in GitHub settings. A workflow references it through the secrets context. GitHub makes the value available to an authorized workflow step according to its scope and access policy. Environment protection rules can require approval before environment-specific secrets are made available.",
     workflow: [
-      "Identify the exact automation operation requiring a credential.",
-      "Create a dedicated credential with minimum permissions.",
-      "Store the value in the appropriate repository, organization, or environment secret scope.",
-      "Reference the secret only in the required workflow step.",
-      "Avoid echoing or writing the value to artifacts.",
-      "Restrict who can modify workflows and access protected environments.",
-      "Rotate credentials according to policy and investigate any exposure."
+      "Identify the external system that requires authentication.",
+      "Create a dedicated credential with minimum required permissions.",
+      "Open repository or organization secret settings.",
+      "Add the secret with a clear and consistent name.",
+      "Reference the secret in the workflow without hard-coding its value.",
+      "Run a controlled workflow to verify authentication.",
+      "Monitor access and rotate credentials according to policy.",
+      "Revoke exposed or unused credentials immediately."
     ],
-    example: "A payment-service workflow publishes a verified artifact to a private Maven repository. The repository username and token are stored as protected GitHub secrets. The workflow passes them to the publishing step without committing them to pom.xml or the workflow file.",
+    example: "A payment-service CI workflow builds a Docker image and pushes it to a private registry. The registry username and token are stored as GitHub secrets. The workflow uses those values during the login step. The credentials are not written into the Dockerfile, application source code, or committed YAML file.",
     commands: [
-      "git grep -n \"password\\|secret\\|token\\|api_key\" — search tracked files for suspicious credential references.",
-      "git status --short — inspect whether a local secret file is accidentally staged.",
-      "git diff --cached — review staged content before committing.",
-      "mvn deploy — publish an artifact using credentials supplied through a secured Maven settings configuration."
+      "gh secret list — list repository secret names using GitHub CLI.",
+      "gh secret set REGISTRY_USERNAME — securely set a secret through the interactive GitHub CLI flow.",
+      "gh secret set REGISTRY_TOKEN — securely set a registry token.",
+      "gh secret list --org devmavox — inspect organization secret names when authorized.",
+      "git grep -n \"TOKEN\" — search tracked files for suspicious token references.",
+      "git log --all --oneline -- .github/workflows — inspect workflow history.",
+      "docker login <registry> -u <username> --password-stdin — authenticate using standard input rather than a command-line password."
     ],
-    configuration: "Create secrets through GitHub repository, organization, or environment settings. Use separate credentials for development and production. Grant only the required repository and environment access. Use environment protection rules and required reviewers for sensitive deployments. Ensure workflow permissions are limited and avoid passing secrets to untrusted pull-request code.",
+    configuration: "Create repository secrets under Settings, Secrets and variables, Actions. Use names such as REGISTRY_USERNAME and REGISTRY_TOKEN. Reference values through expressions such as ${{ secrets.REGISTRY_TOKEN }}. Restrict secret access to the required repositories and environments. Avoid echoing secrets, passing them as visible command-line arguments, or writing them into artifacts and logs.",
     failures: [
       "A workflow reports that a required secret is empty or unavailable.",
-      "The secret exists at organization level but repository access is not granted.",
-      "A secret is referenced using an incorrect name.",
-      "A forked pull request cannot access protected secrets.",
-      "A credential expires and publishing or deployment fails.",
-      "A developer accidentally commits a token into Git history."
+      "The secret name in YAML does not match the configured name.",
+      "A forked pull request cannot access protected repository secrets.",
+      "A token has expired or lacks the required permission.",
+      "A secret is accidentally printed in logs or committed to Git.",
+      "An environment protection rule prevents a secret from becoming available."
     ],
     recovery: [
-      "Check the secret name and its repository, organization, or environment scope.",
-      "Verify that the workflow is running in an authorized context.",
-      "Check environment approval and repository access policies.",
-      "Rotate expired or exposed credentials immediately.",
-      "Remove the secret from active source files and follow the repository history-cleaning process if necessary.",
-      "Review logs and audit events for possible unauthorized use.",
-      "Rerun the workflow with the corrected credential."
+      "Verify the secret name and scope without displaying its value.",
+      "Check whether the workflow runs from a fork or protected environment.",
+      "Create or rotate a credential with the required minimum permissions.",
+      "Inspect the external service's authentication logs.",
+      "Immediately revoke any credential that may have been exposed.",
+      "Remove exposed credentials from active code and follow the repository history cleanup process where required.",
+      "Rerun the workflow after validating the corrected configuration."
     ],
     bestPractices: [
-      "Never commit secrets to Git.",
-      "Use short-lived credentials or workload identity where supported.",
-      "Apply least privilege and separate production credentials.",
-      "Restrict access to protected environments.",
-      "Rotate credentials and monitor usage.",
-      "Do not expose secrets to untrusted pull-request workflows.",
-      "Use secret scanning and review automation changes carefully."
+      "Never commit credentials, private keys, or access tokens.",
+      "Use short-lived credentials or OIDC federation where supported.",
+      "Apply least-privilege permissions to every token.",
+      "Separate development, staging, and production credentials.",
+      "Use environment protection for production deployments.",
+      "Rotate credentials regularly and after suspected exposure.",
+      "Never print secrets in workflow logs.",
+      "Audit secret access and remove unused credentials."
     ],
-    exercise: "Create a test-only repository secret for a private package repository. Reference it in a controlled GitHub Actions workflow and verify the publishing step without printing the value. Then remove or rotate the test credential and confirm that the workflow fails safely when the credential is unavailable."
+    exercise: "Create a test GitHub Actions workflow that authenticates to a non-production container registry. Store the registry username and token as repository secrets. Reference the secrets in the workflow, perform a controlled login, and verify that the job succeeds without printing credential values. Rotate the test token and confirm the updated workflow still works."
   },
 
   "2|Tags and Releases": {
-    overview: "Git tags identify specific commits, commonly to mark software versions such as v1.0.0. Lightweight tags are simple references, while annotated tags store additional metadata such as tagger, date, and message. GitHub releases add release notes and downloadable assets around a tag. Tags and releases help teams identify exactly which source version was built and deployed.",
-    purpose: "The payment-service team needs traceable versions for staging and production. A release tag connects a deployed artifact to a specific source commit. When an incident occurs, engineers can identify the exact version and compare it with a previous known-good release.",
-    architecture: "A Git tag points to a commit in the repository. Git pushes tags to the remote when requested. GitHub can create a release associated with a tag and attach notes or build artifacts. CI pipelines can trigger on tag patterns and build versioned artifacts.",
+    overview: "A Git tag is a named reference to a specific commit. Tags are commonly used to identify application versions such as v1.0.0 or v2.3.1. GitHub Releases provide a user-facing release record associated with a tag and can include release notes, downloadable assets, and version information.",
+    purpose: "Tags and releases provide stable version identifiers for builds and deployments. Instead of deploying an uncertain branch state, a release pipeline can build a specific tag. This helps teams trace production artifacts to source code, reproduce builds, identify changes, and coordinate rollback to a known version.",
+    architecture: "A lightweight tag points directly to a commit, while an annotated tag stores additional metadata such as tagger information and a message. Tags can be pushed to a remote repository. GitHub Releases associate release descriptions and assets with tags. CI/CD workflows can trigger when a matching tag is pushed.",
     workflow: [
-      "Confirm the target commit has passed required validation.",
-      "Choose a version following the team's release convention.",
-      "Create an annotated tag on the approved commit.",
+      "Complete code review and required CI validation.",
+      "Confirm the intended release commit.",
+      "Choose a version number using the team's versioning policy.",
+      "Create an annotated Git tag.",
       "Push the tag to the remote repository.",
-      "Create a GitHub release with meaningful release notes.",
-      "Attach or link the corresponding build artifact.",
-      "Record the tag and artifact version in the deployment record."
+      "Create a GitHub Release associated with the tag.",
+      "Generate release notes and attach approved artifacts if needed.",
+      "Trigger the release pipeline and record the deployed version."
     ],
-    example: "After payment-service passes release validation, the team creates tag v1.4.0. GitHub creates a release containing the change summary. The CI pipeline builds the source associated with that tag and publishes payment-service:1.4.0 for deployment.",
+    example: "After payment-service version 1.4.0 passes validation, the release owner creates the v1.4.0 tag on the approved main commit. GitHub records the release notes. A tag-triggered pipeline builds the exact tagged source, creates a container image with version 1.4.0, and publishes it to the registry for controlled deployment.",
     commands: [
       "git tag — list local tags.",
-      "git tag -a v1.4.0 -m \"Payment service release 1.4.0\" — create an annotated tag.",
+      "git tag -a v1.4.0 -m \"Payment Service 1.4.0\" — create an annotated tag.",
       "git show v1.4.0 — inspect the tag and referenced commit.",
-      "git push origin v1.4.0 — push one tag to the remote.",
-      "git push origin --tags — push all local tags; use only when intended.",
-      "git ls-remote --tags origin — inspect remote tags."
+      "git push origin v1.4.0 — push a specific tag.",
+      "git push origin --tags — push all local tags when intended.",
+      "git tag -d v1.4.0 — delete a local tag.",
+      "git push origin :refs/tags/v1.4.0 — delete a remote tag only when approved.",
+      "gh release list — list GitHub Releases using GitHub CLI.",
+      "gh release view v1.4.0 — inspect a GitHub Release."
     ],
-    configuration: "Adopt a versioning convention such as semantic versioning when appropriate. Configure CI to trigger on approved tag patterns. Restrict who can create or modify release tags. Use annotated tags for important releases. Ensure artifact names and container image tags match the release identifier. Avoid moving an existing production tag to a different commit.",
+    configuration: "Adopt a versioning convention such as semantic versioning: MAJOR.MINOR.PATCH. Define who can create production tags and whether tags must be signed. Configure release workflows to trigger only for approved tag patterns. Ensure the release pipeline checks out the tagged commit rather than the latest main branch.",
     failures: [
-      "The release tag points to the wrong commit.",
-      "A tag exists locally but was not pushed to GitHub.",
-      "A CI tag trigger pattern does not match the actual tag name.",
-      "A release artifact does not correspond to the tagged source.",
-      "A tag is accidentally moved or deleted.",
-      "Release notes omit important compatibility or migration details."
+      "A release tag points to the wrong commit.",
+      "The tag exists locally but was never pushed to GitHub.",
+      "A tag-triggered workflow does not run because its pattern is incorrect.",
+      "The same version is reused for different source code.",
+      "Release notes describe changes that are not included in the tag.",
+      "A production artifact cannot be traced back to its tag."
     ],
     recovery: [
-      "Inspect the tag using git show and compare its commit hash.",
-      "Check remote tags with git ls-remote.",
-      "Verify workflow trigger patterns and tag filters.",
-      "Compare the artifact build metadata with the tagged commit.",
-      "Follow the approved correction process rather than silently moving a production tag.",
-      "Recreate or correct release documentation with an auditable record.",
-      "Verify the final release and artifact identifiers."
+      "Use git show <tag> to verify the commit associated with the tag.",
+      "Check remote tags using git ls-remote --tags origin.",
+      "Inspect the workflow trigger and tag filters.",
+      "Follow the approved release correction process instead of silently reusing a version.",
+      "Regenerate release notes from the actual commits included in the release.",
+      "Record the tag, commit hash, artifact digest, and deployment details together."
     ],
     bestPractices: [
       "Use a consistent versioning policy.",
-      "Create annotated tags for important releases.",
-      "Protect release creation and tag modification.",
-      "Build artifacts from the tagged commit.",
-      "Keep release notes useful and accurate.",
-      "Do not reuse production version tags.",
-      "Maintain a mapping between source tag, artifact, and deployed version."
+      "Create release tags only from approved commits.",
+      "Prefer annotated tags for formal releases.",
+      "Protect release creation permissions.",
+      "Never reuse a published version for different code.",
+      "Include meaningful release notes.",
+      "Build immutable artifacts from the tagged source.",
+      "Record artifact digests and deployed versions."
     ],
-    exercise: "Create an annotated v1.0.0 tag on a validated payment-service commit. Push the tag to GitHub and create a release with a summary of changes. Configure a test workflow to run on v* tags and verify that the resulting artifact identifies the same source version."
+    exercise: "Create a test repository with a working application and commit history. Create an annotated tag v1.0.0 on the approved commit and push it to GitHub. Create a GitHub Release with a summary of changes. Configure a tag-triggered workflow and verify that it builds the tagged commit."
   },
 
   "2|Release Approval Workflow": {
-    overview: "A release approval workflow introduces explicit authorization before a build or release is promoted to a sensitive environment. Approval can be implemented through pull-request review, GitHub protected environments, required reviewers, change-management records, or an external deployment approval system. The goal is to ensure that tested changes are released through a controlled process.",
-    purpose: "Payment-service production deployments may affect financial transactions and customer availability. A release should be promoted only after required testing, security checks, operational readiness, and authorized approval. A clear approval workflow creates accountability and an audit trail.",
-    architecture: "A validated source change produces a versioned artifact. The release workflow records the source commit, artifact identifier, test results, and target environment. A protected environment or approval system pauses the deployment job until authorized reviewers approve. After approval, the pipeline deploys the same verified artifact.",
+    overview: "A release approval workflow defines the checks and human decisions required before a software version is promoted to a target environment. It connects source validation, artifact creation, security review, change authorization, deployment execution, and post-deployment verification. GitHub pull request approvals and protected environments can enforce parts of this process.",
+    purpose: "Approval workflows reduce the risk of deploying untested or unauthorized changes to production. They provide accountability for business-critical releases and ensure that testing, security, operational readiness, and rollback planning are considered. In a payment application, production deployment may require approval from a release owner after staging validation.",
+    architecture: "The workflow begins with a tagged or merged source commit. CI creates a versioned artifact and records its metadata. Validation stages execute tests and security checks. A protected deployment environment can require designated reviewers. Once approved, the deployment job receives authorized access and promotes the approved artifact to the target environment.",
     workflow: [
-      "Complete code review and merge the approved change.",
-      "Build and test the source code.",
-      "Publish an immutable, versioned artifact.",
-      "Run security and quality checks.",
-      "Prepare release notes and deployment evidence.",
+      "Identify the release scope and target environment.",
+      "Confirm the source commit and release tag.",
+      "Build an immutable artifact and record its digest.",
+      "Run unit, integration, security, and deployment validation.",
+      "Prepare release notes, change details, and rollback instructions.",
       "Request approval from the authorized release reviewers.",
-      "Deploy only after the required approval is granted.",
-      "Record the deployment result and retain rollback information."
+      "Deploy the approved artifact after authorization.",
+      "Verify application health and business-critical transactions.",
+      "Record deployment status and close the release activity."
     ],
-    example: "The payment-service v1.4.0 artifact passes Maven tests and security scanning. The release workflow targets production but pauses at a protected GitHub environment. The release manager reviews the commit, test report, and deployment plan, then approves. The workflow deploys the already-built artifact rather than rebuilding different source.",
+    example: "A payment-service version is ready for production after staging tests pass. The pipeline records the container image digest and security scan results. A release owner reviews the change summary and rollback plan. GitHub Environment protection requires approval before the production job can access its deployment credentials. After approval, the pipeline deploys the exact validated image and verifies the payment health endpoint.",
     commands: [
-      "git show v1.4.0 — verify the approved release tag.",
-      "git rev-parse v1.4.0 — record the exact source commit.",
-      "mvn clean verify — validate the application before artifact publication.",
-      "gh run list — inspect recent GitHub Actions workflow runs when GitHub CLI is configured.",
-      "gh run view <run-id> — inspect a particular workflow run."
+      "git tag --points-at HEAD — inspect tags associated with the current commit.",
+      "git rev-parse HEAD — record the source commit hash.",
+      "docker image inspect payment-service:1.4.0 — inspect a local image.",
+      "docker image inspect payment-service:1.4.0 --format '{{.Id}}' — inspect the image identifier.",
+      "gh run list — review recent workflow executions.",
+      "gh run view <run-id> --log — inspect workflow logs using GitHub CLI.",
+      "kubectl rollout status deployment/payment-service -n production — verify a Kubernetes rollout.",
+      "kubectl get pods -n production — inspect production pod status."
     ],
-    configuration: "Create a protected production environment and configure required reviewers where supported. Restrict which branches or tags can deploy. Keep deployment credentials scoped to the protected environment. Define what evidence approvers must inspect. Prevent untrusted pull-request workflows from accessing production secrets. Record approval and deployment events.",
+    configuration: "Create a protected GitHub Environment such as production and configure required reviewers. Store production credentials as environment-scoped secrets. Separate build and deployment jobs, pass immutable artifact references between them, and require successful validation before deployment. Document emergency approval rules and maintain an auditable record of who approved each release.",
     failures: [
-      "A production deployment starts without the expected approval gate.",
-      "The wrong artifact version is selected for release.",
-      "The required reviewer is unavailable or lacks permission.",
-      "An approval is granted but deployment credentials are missing.",
-      "A workflow rebuilds the source and produces a different artifact after approval.",
-      "The release record does not identify the source commit or deployment result."
+      "A release is blocked because the required reviewer has not approved it.",
+      "The pipeline deploys a different artifact from the one validated in staging.",
+      "Production secrets are unavailable because the deployment environment is misconfigured.",
+      "Approval is granted without reviewing test or security evidence.",
+      "A release starts before the change window or operational checks are complete.",
+      "The deployment succeeds but post-deployment health checks fail."
     ],
     recovery: [
-      "Stop the deployment if the approval gate is bypassed.",
-      "Inspect environment protection settings and workflow dependencies.",
-      "Verify the artifact digest, version, and source commit.",
-      "Confirm reviewer permissions and environment access.",
-      "Correct secret scope without exposing credentials.",
-      "Redeploy only the approved artifact after required authorization.",
-      "Record the incident and improve the release policy."
+      "Inspect the workflow run and identify the approval or environment gate blocking progress.",
+      "Verify that the approved artifact digest matches the artifact tested in staging.",
+      "Check environment reviewer settings and secret scope.",
+      "Provide reviewers with test, security, and rollback evidence before requesting approval again.",
+      "Stop deployment when release authorization or change-window requirements are not satisfied.",
+      "Follow the rollback plan if post-deployment health checks show unacceptable impact."
     ],
     bestPractices: [
-      "Use separate approval controls for sensitive environments.",
-      "Promote the same immutable artifact between environments.",
-      "Require evidence from tests, scans, and release checks.",
-      "Limit production approval to authorized roles.",
-      "Keep deployment credentials environment-scoped.",
-      "Record source commit, artifact digest, approver, and deployment result.",
-      "Maintain a tested rollback plan."
+      "Separate build validation from production deployment.",
+      "Deploy the same immutable artifact that passed staging.",
+      "Require appropriate approval for production changes.",
+      "Provide release notes, test evidence, and rollback instructions.",
+      "Use environment-scoped secrets and least-privilege credentials.",
+      "Record approver, source commit, artifact digest, and deployment result.",
+      "Run health checks after deployment.",
+      "Define an emergency release process with an audit trail."
     ],
-    exercise: "Configure a protected production environment for payment-service. Create a workflow that builds and verifies an artifact, then pauses before deployment. Require a reviewer to approve. Verify that deployment cannot proceed before approval and that the workflow deploys the same artifact that passed validation."
+    exercise: "Create a GitHub Actions workflow with build, test, and production deployment jobs. Configure a protected production environment with required reviewers. Make the deployment job wait for approval and use a test artifact. Verify that deployment is blocked before approval and continues only after an authorized reviewer approves it."
   },
 
   "2|Troubleshooting": {
-    overview: "Git and GitHub troubleshooting is the process of diagnosing repository, authentication, branch, commit, pull-request, and automation failures. Effective troubleshooting begins with identifying the exact operation that failed, collecting Git status and remote information, and inspecting the relevant GitHub event or check details before changing repository state.",
-    purpose: "A blocked payment-service pull request can delay a release. Engineers must distinguish local Git problems from remote permissions, branch rules, webhook delivery, and CI failures. Correct diagnosis avoids destructive commands that could overwrite developer work or bypass repository controls.",
-    architecture: "Local Git commands provide working-tree, staging, commit, branch, and remote information. GitHub provides repository settings, pull-request status, webhook delivery history, Actions logs, and audit information. CI systems report build status to GitHub. Troubleshooting follows the failure path from developer operation through remote repository and automation.",
+    overview: "Git and GitHub troubleshooting is the systematic process of identifying and correcting repository, authentication, branch, commit, pull request, webhook, and automation problems. Effective troubleshooting begins with the exact error message and repository state rather than repeatedly executing commands without understanding their effects.",
+    purpose: "Git-related failures can stop development, block CI pipelines, prevent releases, or expose sensitive information. DevOps engineers need to diagnose whether the issue is local Git configuration, remote authentication, branch divergence, repository policy, GitHub service configuration, or a pipeline integration problem.",
+    architecture: "Troubleshooting examines the developer working tree, staging area, local commits, remote-tracking references, GitHub repository settings, pull request checks, webhook delivery records, and CI execution logs. Each layer provides evidence about where the failure occurs. A safe recovery preserves valid work and avoids destructive history operations unless explicitly required.",
     workflow: [
-      "Record the exact command, error message, branch, and repository.",
-      "Run git status and inspect the current branch.",
-      "Check git remote -v and confirm the remote URL.",
-      "Inspect local and remote commit history.",
-      "Check GitHub permissions, branch rules, and pull-request status.",
-      "Inspect webhook or CI logs if automation did not run.",
-      "Apply the smallest safe correction and repeat the failed operation."
+      "Capture the exact command and error message.",
+      "Run git status and identify the current branch and working-tree state.",
+      "Inspect the configured remotes and relevant commit history.",
+      "Determine whether the issue is local, remote, permission-related, or pipeline-related.",
+      "Collect the relevant GitHub error, webhook delivery, or CI log.",
+      "Identify the root cause before modifying repository state.",
+      "Apply the smallest safe correction.",
+      "Repeat the failed operation and verify the expected result.",
+      "Document the cause and preventive action."
     ],
-    example: "A developer pushes a payment-service branch and receives a non-fast-forward rejection. Instead of force-pushing, the engineer checks git status, fetches origin, inspects the remote history, and integrates the remote changes. The developer resolves any conflicts, runs Maven tests, and pushes the updated branch.",
+    example: "A Jenkins pipeline cannot check out the payment-service repository after a credential rotation. The engineer verifies the repository URL, checks the credential identifier configured in Jenkins, and reviews the checkout error. The old token is found to be expired. The team updates the approved credential, verifies repository access, and reruns the pipeline without changing application source code.",
     commands: [
-      "git status — inspect working-tree state.",
-      "git branch --show-current — identify the current branch.",
+      "git status — inspect repository state.",
+      "git branch -vv — inspect branches and upstream tracking.",
       "git remote -v — verify remote URLs.",
-      "git fetch --all --prune — refresh remote references and remove stale remote-tracking references.",
-      "git log --oneline --graph --decorate --all — inspect branch history.",
-      "git reflog — inspect recent local reference changes.",
-      "git diff --check — identify whitespace errors and conflict markers.",
-      "git ls-remote origin — verify remote repository access."
+      "git fetch --prune origin — update remote references and remove stale tracking references.",
+      "git log --oneline --graph --decorate --all -20 — inspect recent repository history.",
+      "git diff --check — detect whitespace errors and conflict markers.",
+      "git config --show-origin --list — identify configuration values and their source files.",
+      "git ls-remote origin — test remote reference access.",
+      "git reflog --date=local -20 — inspect recent local reference movements."
     ],
-    configuration: "Use SSH keys or a credential manager for authentication. Keep remote URLs correct. Document branch policies, merge strategy, required CI checks, and webhook endpoints. Use least-privilege GitHub access. Keep diagnostic logs available for GitHub Actions and Jenkins. Avoid storing tokens in shell history or repository files.",
+    configuration: "Maintain consistent Git versions and author configuration across development machines and CI agents. Use SSH keys, credential managers, or approved tokens. Document repository URLs, default branches, branch policies, and CI credentials. Enable appropriate GitHub audit and webhook delivery visibility. Ensure logs do not expose credentials or sensitive payloads.",
     failures: [
-      "Authentication failed because the credential is invalid or expired.",
-      "Push is rejected because the remote contains new commits.",
-      "A branch is blocked by protection rules.",
-      "A pull request has a failing or missing status check.",
+      "fatal: not a git repository occurs because the command runs outside the repository.",
+      "Authentication failed because credentials are invalid, expired, or unavailable.",
+      "Updates were rejected because the remote contains commits not present locally.",
+      "A merge or rebase remains incomplete because conflicts are unresolved.",
+      "A branch has no upstream tracking configuration.",
+      "A pull request is blocked by required checks or approvals.",
       "A webhook delivery fails because the endpoint is unreachable.",
-      "A local branch has diverged from the remote branch.",
-      "A developer loses track of uncommitted work after an incorrect reset."
+      "A CI checkout fails because the repository URL or credential is incorrect."
     ],
     recovery: [
-      "Inspect git status before executing any reset, clean, or checkout command.",
-      "Verify the remote URL and authentication method.",
-      "Fetch remote history and inspect divergence.",
-      "Integrate changes using the team's approved merge or rebase process.",
-      "Read branch protection details and satisfy the required checks.",
-      "Inspect webhook delivery responses or CI job logs.",
-      "Use reflog or backups to recover lost references where possible.",
-      "Run tests and verify the final repository state."
+      "Use Get-Location or pwd and confirm the current directory contains the .git metadata.",
+      "Verify git remote -v and test remote access with git ls-remote.",
+      "Refresh approved credentials without exposing token values.",
+      "Fetch remote changes and inspect branch divergence before integrating.",
+      "Resolve conflicts carefully or abort the operation if the working state is unsafe.",
+      "Configure upstream tracking with git push -u when appropriate.",
+      "Inspect GitHub checks, review requirements, and webhook delivery details.",
+      "Correct CI checkout configuration and rerun the failed job."
     ],
     bestPractices: [
-      "Collect evidence before changing repository state.",
-      "Avoid blind force pushes and destructive resets.",
-      "Use git status before and after risky operations.",
-      "Keep authentication credentials secure.",
-      "Understand branch rules and required checks.",
-      "Use logs and commit history to identify the actual cause.",
-      "Document recurring failures and their proven fixes."
+      "Read the full error message before choosing a recovery command.",
+      "Run git status before and after risky operations.",
+      "Create a backup branch before destructive history changes.",
+      "Prefer fetch and inspection before merge, rebase, reset, or force push.",
+      "Use git revert for reversing published changes.",
+      "Never share credential values in logs or screenshots.",
+      "Preserve relevant error logs and commit hashes for incident records.",
+      "Document recurring failures and preventive controls."
     ],
-    exercise: "Create a test repository and reproduce a non-fast-forward push rejection by updating the remote from another clone. Diagnose it using git status, git fetch, and git log. Resolve it safely, run the application tests, and push successfully. Also inspect a deliberately failing GitHub Actions check."
+    exercise: "Create a test repository and deliberately reproduce three safe problems: an incorrect remote URL, an unconfigured upstream branch, and a merge conflict. Diagnose each using git status, git remote -v, git branch -vv, and git log. Correct the problems and document the exact root cause and recovery command for each one."
   },
 
   "2|Production Hands-on Lab": {
-    overview: "This lab creates a production-style GitHub collaboration workflow for the payment-service application. It combines repository creation, Git fundamentals, branching, commits, pull requests, code review, branch protection, merge strategies, conflict resolution, webhooks, GitHub Actions, secrets, tags, and release approvals. The final result is a reviewed and traceable source version ready for Stage 03 pipeline triggering.",
-    purpose: "A reliable CI/CD process begins with controlled source-code collaboration. Before Jenkins or another pipeline system builds the application, the repository must provide a clear history, protected integration branch, reviewed changes, automated validation, secure credentials, and traceable release versions.",
-    architecture: "Developers work in local Git clones and publish short-lived branches to GitHub. Pull requests provide review and status checks. Branch rules protect main. GitHub Actions validates Maven builds. Webhooks can notify Jenkins of repository events. Secrets are stored securely. Annotated tags identify approved release versions, and protected environments enforce release approval.",
+    overview: "This production hands-on lab combines Git and GitHub practices into a realistic application delivery workflow. It covers repository setup, branch creation, commits, pull requests, review, branch protection, merge conflict resolution, GitHub Actions, secrets, version tags, and release approval. The objective is to demonstrate how controlled source-code collaboration supports a reliable CI/CD pipeline.",
+    purpose: "Production engineering requires more than knowing individual Git commands. Developers and DevOps engineers must coordinate changes, preserve history, protect production branches, automate validation, handle credentials safely, and produce traceable releases. This lab connects those activities into one end-to-end workflow.",
+    architecture: "The lab uses a GitHub repository for a sample payment-service. Developers work on feature branches and open pull requests against main. Branch protection requires approvals and successful CI checks. GitHub Actions validates the application. Secrets are used only for approved external integrations. An annotated release tag identifies the source version, and a protected production environment controls deployment approval.",
     workflow: [
-      "Create a private GitHub repository named payment-service.",
-      "Clone it locally and configure Git author identity.",
-      "Add the Maven project and a suitable .gitignore.",
-      "Create feature/payment-validation and implement a focused change.",
-      "Commit the change and push the feature branch.",
-      "Open a pull request with a clear description and test evidence.",
-      "Configure a reviewer and review the complete diff.",
-      "Protect main with required approvals and CI checks.",
-      "Add a GitHub Actions workflow that runs mvn clean verify.",
-      "Configure a test webhook and validate its delivery.",
-      "Store any required automation credential as a protected secret.",
-      "Merge the approved pull request using the team's chosen strategy.",
-      "Create an annotated release tag and release notes.",
-      "Configure a protected production approval gate for a future deployment."
+      "Create a GitHub repository named payment-service.",
+      "Clone the repository and configure Git author details.",
+      "Add a sample application, README, and .gitignore.",
+      "Create feature/payment-validation from the updated main branch.",
+      "Implement validation logic and add unit tests.",
+      "Commit the changes with meaningful messages and push the branch.",
+      "Open a pull request and inspect the proposed diff.",
+      "Run GitHub Actions checks and complete code review.",
+      "Enable branch protection and merge only after requirements pass.",
+      "Create an annotated version tag and publish a GitHub Release.",
+      "Configure a protected production environment and request release approval.",
+      "Record the source commit, artifact version, and deployment result."
     ],
-    example: "A developer submits payment validation changes through feature/payment-validation. GitHub Actions runs Maven verification. A reviewer requests an additional invalid-amount test. The developer adds the test and pushes an update. After approval and successful checks, the pull request is squash-merged into main. The team creates a release tag for the verified commit and records the artifact version for the next CI/CD stage.",
+    example: "A DevMavox team develops a payment validation feature. The developer creates a feature branch, commits the implementation and tests, and pushes it to GitHub. A pull request triggers GitHub Actions to run Maven validation. A reviewer checks the payment rules and approves the change. Branch protection allows the merge only after all checks pass. The release owner creates v1.0.0 and approves the protected deployment workflow. The team records the deployed version and source commit for future incident investigation.",
     commands: [
-      "git clone <repository-url> — clone the payment-service repository.",
-      "git switch -c feature/payment-validation — create a feature branch.",
-      "git status — inspect repository changes.",
-      "git diff — review unstaged modifications.",
-      "git add <file> — stage intended files.",
-      "git commit -m \"Add payment validation\" — create a commit.",
-      "git push -u origin feature/payment-validation — publish the branch.",
-      "mvn clean verify — run the application build and tests.",
-      "git log --oneline --graph --decorate --all — inspect repository history.",
-      "git tag -a v1.0.0 -m \"Payment service release 1.0.0\" — create an annotated release tag.",
-      "git push origin v1.0.0 — publish the release tag."
+      "git clone <repository-url> — clone the application repository.",
+      "git switch -c feature/payment-validation — create the feature branch.",
+      "git status — inspect the working tree.",
+      "git add src/ — stage the intended application changes.",
+      "git diff --staged — review staged changes.",
+      "git commit -m \"feat: add payment validation\" — create a focused commit.",
+      "git push -u origin feature/payment-validation — publish the feature branch.",
+      "git fetch origin — retrieve the latest remote changes.",
+      "git log --graph --oneline --all — inspect repository history.",
+      "git tag -a v1.0.0 -m \"Payment Service 1.0.0\" — create a release tag.",
+      "git push origin v1.0.0 — publish the release tag.",
+      "gh pr checks — inspect pull request checks using GitHub CLI.",
+      "gh run list — inspect recent workflow executions."
     ],
-    configuration: "Use a private repository with a documented default branch. Add Java/Maven ignore rules. Require pull requests, independent approval, and successful CI checks on main. Configure a reviewed GitHub Actions workflow with least-privilege permissions. Store credentials in protected secrets or environments. Configure a webhook only when an external integration requires it. Restrict release-tag creation and production approval to authorized roles.",
+    configuration: "Configure the repository with a clear README, .gitignore, default branch, and documented contribution process. Add branch protection for main with required pull requests, approvals, and CI status checks. Store external integration credentials as GitHub secrets. Configure GitHub Actions with explicit permissions and protected deployment environments. Use version tags and immutable artifacts to maintain release traceability.",
     failures: [
-      "Developers can push directly to main because branch protection is incomplete.",
-      "The GitHub Actions workflow does not run because its YAML path or trigger is incorrect.",
-      "The Maven build fails because the runner uses an incompatible JDK.",
-      "The pull request cannot merge because required checks are missing.",
-      "A merge conflict removes valid payment logic.",
-      "A webhook fails because its endpoint or signature configuration is incorrect.",
-      "A secret is unavailable to the workflow or is accidentally exposed.",
-      "A release tag points to a commit that was not approved."
+      "The developer starts from an outdated main branch and encounters conflicts.",
+      "The pull request fails because the application tests do not pass.",
+      "Branch protection blocks a merge because approval or status checks are missing.",
+      "A workflow cannot access a required secret.",
+      "A release tag points to the wrong source commit.",
+      "A production deployment uses a different artifact from the one tested.",
+      "The webhook or automation integration does not start the expected job.",
+      "The deployed application fails its post-deployment health checks."
     ],
     recovery: [
-      "Inspect repository rules and confirm main is protected.",
-      "Check the Actions run logs, workflow YAML, and JDK version.",
-      "Inspect pull-request status and satisfy each required check.",
-      "Resolve conflicts by preserving intended behavior and rerunning tests.",
-      "Inspect webhook delivery history and validate endpoint and signature handling.",
-      "Rotate exposed credentials and restrict secret access.",
-      "Verify the release tag points to the approved source commit.",
-      "Record the final repository state and correct any policy gaps before proceeding."
+      "Fetch and update the feature branch from the correct target branch.",
+      "Inspect CI logs and fix the underlying application or workflow failure.",
+      "Complete required reviews and verify the exact status checks.",
+      "Check secret names, scopes, and permissions without exposing their values.",
+      "Verify the release tag and associated commit before publishing.",
+      "Compare the artifact digest used in staging and production.",
+      "Inspect webhook delivery history and CI trigger configuration.",
+      "Follow the documented rollback plan when production health checks fail."
     ],
     bestPractices: [
-      "Keep feature branches short-lived and focused.",
-      "Require independent review for important application changes.",
-      "Protect main and release branches.",
-      "Run build, test, and security checks before merge.",
-      "Use a consistent merge strategy.",
-      "Never commit secrets or generated artifacts.",
-      "Use immutable versioned tags for releases.",
-      "Keep an auditable mapping between pull request, commit, tag, and artifact.",
-      "Use protected environments for sensitive release approval."
+      "Use feature branches and pull requests for shared development.",
+      "Keep commits focused and messages meaningful.",
+      "Require code review and automated validation for main.",
+      "Protect production release branches and restrict bypass access.",
+      "Never commit credentials or generated build artifacts.",
+      "Use immutable release tags and artifact identifiers.",
+      "Require approval for production deployment.",
+      "Verify application health after deployment.",
+      "Record the source commit, release version, artifact digest, and deployment outcome.",
+      "Document lessons learned and improve the pipeline after failures."
     ],
-    exercise: "Complete the entire payment-service GitHub workflow. Demonstrate a feature branch, commit history, pull request, code review, protected main branch, passing GitHub Actions build, webhook delivery, protected test secret, and annotated release tag. Capture the approved commit hash and release version. The repository must be ready for Stage 03, where pipeline triggers will consume GitHub repository events."
+    exercise: "Complete an end-to-end GitHub workflow using a sample payment-service repository. Create a feature branch, implement a small validation change, commit and push it, open a pull request, run automated checks, and complete code review. Configure branch protection, merge the approved change, create a v1.0.0 release tag, and configure a protected deployment environment. Submit a short release report containing the pull request number, commit hash, tag, CI result, approval status, and deployment verification evidence."
   }
 };

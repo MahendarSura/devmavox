@@ -1,0 +1,10 @@
+{
+  "updatedAt": "2026-11-10 16:57:45",
+  "model": "qwen2.5:3b",
+  "completed": [
+    "stage-1-topic-1-section-1",
+    "stage-1-topic-1-section-2",
+    "stage-1-topic-1-section-3",
+    "stage-1-topic-1-section-4"
+  ]
+}

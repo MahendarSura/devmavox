@@ -1,0 +1,818 @@
+"use client";
+
+import { useState } from "react";
+
+const stages = [
+  {
+    id: "developer-code",
+    number: "01",
+    title: "Developer Code",
+    description: "Understand how developers create, modify, validate and prepare application code for delivery.",
+    purpose: "This is the starting point of the CI/CD process. Developers implement application features, fix bugs and validate their changes before sharing them with the team.",
+    workflow: [
+      "Understand the application requirement.",
+      "Create a feature branch from the main development branch.",
+      "Implement the payment feature in the application.",
+      "Run local application checks and tests.",
+      "Review the code changes before committing.",
+      "Prepare the code for Git repository submission."
+    ],
+    inputs: [
+      "Application requirements",
+      "Existing source code",
+      "Developer changes",
+      "Local development environment"
+    ],
+    outputs: [
+      "Updated application source code",
+      "Local validation results",
+      "Feature branch changes",
+      "Code ready for version control"
+    ],
+    practical: [
+      "Understand a Java application project structure.",
+      "Create a sample payment feature.",
+      "Run the application locally.",
+      "Execute available unit tests.",
+      "Review modified source files."
+    ],
+    failures: [
+      "Application compilation errors",
+      "Local test failures",
+      "Incorrect application configuration",
+      "Missing dependencies"
+    ],
+    tools: ["Java", "Spring Boot", "IDE", "Maven or Gradle"]
+  },
+  {
+    id: "git-github",
+    number: "02",
+    title: "Git / GitHub",
+    description: "Learn how application code is version-controlled and shared with the engineering team.",
+    purpose: "Git tracks source code changes. GitHub hosts the repository and supports collaboration through branches, pull requests and code reviews.",
+    workflow: [
+      "Initialize or clone the Git repository.",
+      "Create a feature branch.",
+      "Review modified and untracked files.",
+      "Stage and commit application changes.",
+      "Push the feature branch to GitHub.",
+      "Create a pull request.",
+      "Complete code review and required checks.",
+      "Merge approved changes into the target branch."
+    ],
+    inputs: [
+      "Developer source code",
+      "Git repository",
+      "Feature branch",
+      "Commit changes"
+    ],
+    outputs: [
+      "Version-controlled source code",
+      "Remote GitHub branch",
+      "Pull request and review evidence",
+      "Merged application changes"
+    ],
+    practical: [
+      "Create a GitHub repository.",
+      "Configure Git locally.",
+      "Create and switch branches.",
+      "Commit and push changes.",
+      "Create and merge a pull request.",
+      "Understand merge conflicts."
+    ],
+    failures: [
+      "Git authentication failure",
+      "Push rejected",
+      "Merge conflicts",
+      "Incorrect branch selection",
+      "Webhook not triggered after repository events"
+    ],
+    tools: ["Git", "GitHub", "GitHub Pull Requests"]
+  },
+  {
+    id: "jenkins-trigger",
+    number: "03",
+    title: "Jenkins Trigger",
+    description: "Understand how Jenkins automatically detects source code changes and starts pipeline execution.",
+    purpose: "Jenkins automates the software delivery workflow. A GitHub webhook can notify Jenkins when a relevant repository event occurs.",
+    workflow: [
+      "Configure Jenkins and required plugins.",
+      "Connect the GitHub repository.",
+      "Configure webhook endpoint and event settings.",
+      "Configure repository credentials securely.",
+      "Create or configure a Jenkins pipeline job.",
+      "Configure the pipeline agent.",
+      "Receive the repository event.",
+      "Check out the required source revision.",
+      "Start pipeline execution."
+    ],
+    inputs: [
+      "GitHub repository event",
+      "Repository URL",
+      "Branch and commit reference",
+      "Jenkins job configuration",
+      "Required credentials"
+    ],
+    outputs: [
+      "Triggered Jenkins build",
+      "Pipeline execution record",
+      "Checked-out source code",
+      "Build agent assignment"
+    ],
+    practical: [
+      "Install Jenkins in a lab environment.",
+      "Connect a GitHub repository.",
+      "Configure a webhook.",
+      "Create a pipeline job.",
+      "Trigger a build through a repository change.",
+      "Inspect Jenkins console output."
+    ],
+    failures: [
+      "Webhook delivery failure",
+      "Invalid repository credentials",
+      "Jenkins agent offline",
+      "No available executor",
+      "Incorrect branch configuration"
+    ],
+    tools: ["Jenkins", "GitHub Webhooks", "Jenkins Agents"]
+  },
+  {
+    id: "build",
+    number: "04",
+    title: "Maven / Gradle Build",
+    description: "Learn how source code and dependencies are compiled and packaged into deployable application artifacts.",
+    purpose: "The build tool resolves dependencies, compiles source code and creates a versioned application package such as a JAR or WAR file.",
+    workflow: [
+      "Read the project build configuration.",
+      "Resolve required dependencies.",
+      "Compile application source code.",
+      "Process resources and configuration.",
+      "Execute configured build lifecycle tasks.",
+      "Generate the application package.",
+      "Publish or retain the build artifact."
+    ],
+    inputs: [
+      "Checked-out source code",
+      "pom.xml or build.gradle",
+      "Dependency repositories",
+      "Build environment"
+    ],
+    outputs: [
+      "Compiled application",
+      "Resolved dependencies",
+      "JAR or WAR artifact",
+      "Build execution report"
+    ],
+    practical: [
+      "Understand Maven project structure.",
+      "Inspect pom.xml.",
+      "Execute mvn clean package.",
+      "Understand Gradle build tasks.",
+      "Generate and inspect a JAR file."
+    ],
+    failures: [
+      "Dependency resolution failure",
+      "Compilation error",
+      "Incorrect Java version",
+      "Repository connectivity problem",
+      "Build configuration error"
+    ],
+    tools: ["Maven", "Gradle", "JDK", "Nexus Repository"]
+  },
+  {
+    id: "automated-tests",
+    number: "05",
+    title: "Automated Tests",
+    description: "Understand how application functionality is automatically verified before the release moves forward.",
+    purpose: "Automated tests detect functional defects early. Mandatory test failures should prevent the pipeline from proceeding to later release stages.",
+    workflow: [
+      "Identify the tests configured in the project.",
+      "Execute unit tests.",
+      "Execute integration tests.",
+      "Collect test results.",
+      "Generate test reports.",
+      "Review failed test cases.",
+      "Block subsequent mandatory stages when tests fail."
+    ],
+    inputs: [
+      "Compiled application code",
+      "Test source code",
+      "Test configuration",
+      "Required test services"
+    ],
+    outputs: [
+      "Unit test results",
+      "Integration test results",
+      "Test reports",
+      "Pass or fail status"
+    ],
+    practical: [
+      "Write a sample unit test.",
+      "Execute tests through Maven or Gradle.",
+      "Publish JUnit reports in Jenkins.",
+      "Introduce a test failure.",
+      "Inspect the failed test and correct it."
+    ],
+    failures: [
+      "Unit test assertion failure",
+      "Integration service unavailable",
+      "Test environment configuration error",
+      "Flaky tests",
+      "Test report generation failure"
+    ],
+    tools: ["JUnit", "Mockito", "Maven", "Gradle", "Jenkins"]
+  },
+  {
+    id: "sonarqube",
+    number: "06",
+    title: "SonarQube Quality Gate",
+    description: "Learn how source code quality is analyzed and how quality gate decisions control the release.",
+    purpose: "SonarQube analyzes code quality and reports issues such as bugs, vulnerabilities, code smells and coverage information. Configured quality gate conditions determine whether the pipeline can continue.",
+    workflow: [
+      "Configure the SonarQube project.",
+      "Connect Jenkins to SonarQube securely.",
+      "Execute source code analysis.",
+      "Publish the analysis results.",
+      "Wait for the quality gate result.",
+      "Review failed quality conditions.",
+      "Block the pipeline when mandatory quality gates fail."
+    ],
+    inputs: [
+      "Application source code",
+      "Test and coverage reports",
+      "SonarQube project configuration",
+      "Quality gate rules"
+    ],
+    outputs: [
+      "Code analysis report",
+      "Bug and code smell findings",
+      "Coverage information",
+      "Quality gate result"
+    ],
+    practical: [
+      "Configure a SonarQube project.",
+      "Integrate SonarQube with Jenkins.",
+      "Execute a code scan.",
+      "Inspect the quality dashboard.",
+      "Configure and evaluate a quality gate."
+    ],
+    failures: [
+      "SonarQube server unavailable",
+      "Invalid analysis credentials",
+      "Quality gate failure",
+      "Coverage report missing",
+      "Analysis timeout"
+    ],
+    tools: ["SonarQube", "Jenkins", "SonarScanner", "JUnit"]
+  },
+  {
+    id: "security",
+    number: "07",
+    title: "Security Scanning",
+    description: "Understand how vulnerabilities, exposed secrets and insecure dependencies are detected during delivery.",
+    purpose: "Security checks help identify risks before an application reaches production. Organizations configure security policies and release gates based on risk.",
+    workflow: [
+      "Inspect application dependencies.",
+      "Scan dependencies for known vulnerabilities.",
+      "Check repositories for exposed secrets.",
+      "Scan container images when available.",
+      "Review vulnerability severity and impact.",
+      "Apply security policies and thresholds.",
+      "Stop or approve releases according to configured policy."
+    ],
+    inputs: [
+      "Application dependencies",
+      "Dependency lock or build files",
+      "Source code",
+      "Container image when available",
+      "Security policy"
+    ],
+    outputs: [
+      "Dependency vulnerability report",
+      "Secret detection findings",
+      "Container scan report",
+      "Security gate decision"
+    ],
+    practical: [
+      "Scan application dependencies.",
+      "Execute a Trivy filesystem scan.",
+      "Scan a Docker image.",
+      "Understand vulnerability severity.",
+      "Review findings and remediation."
+    ],
+    failures: [
+      "Scanner unavailable",
+      "Vulnerability policy violation",
+      "Exposed secret detected",
+      "Incorrect scan configuration",
+      "Security report unavailable"
+    ],
+    tools: ["Trivy", "OWASP Dependency-Check", "Git Secret Scanning"]
+  },
+  {
+    id: "docker",
+    number: "08",
+    title: "Docker Build",
+    description: "Learn how a tested application artifact is packaged into a versioned container image.",
+    purpose: "Docker creates a consistent application image containing the application and its runtime requirements. The image can then be stored and deployed in different environments.",
+    workflow: [
+      "Prepare the Dockerfile.",
+      "Select an appropriate base image.",
+      "Copy the application artifact.",
+      "Configure runtime requirements.",
+      "Build the Docker image.",
+      "Apply a unique image tag.",
+      "Inspect the generated image.",
+      "Prepare the image for registry publishing."
+    ],
+    inputs: [
+      "Application JAR or WAR",
+      "Dockerfile",
+      ".dockerignore",
+      "Base image",
+      "Build arguments"
+    ],
+    outputs: [
+      "Docker image",
+      "Image tag",
+      "Image metadata",
+      "Build result"
+    ],
+    practical: [
+      "Write a Dockerfile for a Java application.",
+      "Build an image using docker build.",
+      "Inspect the image.",
+      "Run a local container.",
+      "Tag the image with a version or commit identifier."
+    ],
+    failures: [
+      "Docker daemon unavailable",
+      "Base image pull failure",
+      "Dockerfile syntax error",
+      "Missing build artifact",
+      "Insufficient disk space"
+    ],
+    tools: ["Docker", "Dockerfile", "Container Runtime"]
+  },
+  {
+    id: "ecr",
+    number: "09",
+    title: "Amazon ECR",
+    description: "Understand how container images are securely stored and retrieved from Amazon Elastic Container Registry.",
+    purpose: "Amazon ECR provides a container image registry. Jenkins or another authorized build system can publish images, while deployment environments retrieve approved images.",
+    workflow: [
+      "Create or select an ECR repository.",
+      "Configure AWS credentials and IAM permissions.",
+      "Authenticate Docker with ECR.",
+      "Tag the image with the repository URI.",
+      "Push the image to ECR.",
+      "Verify the image and tag.",
+      "Configure image retention and scanning policies where required."
+    ],
+    inputs: [
+      "Docker image",
+      "AWS account and region",
+      "ECR repository",
+      "IAM permissions"
+    ],
+    outputs: [
+      "Published ECR image",
+      "Image URI",
+      "Image tag and digest",
+      "Registry storage record"
+    ],
+    practical: [
+      "Create an ECR repository.",
+      "Authenticate using AWS CLI.",
+      "Tag a Docker image.",
+      "Push the image to ECR.",
+      "Verify the published image."
+    ],
+    failures: [
+      "ECR authentication failure",
+      "IAM permission denied",
+      "Incorrect repository URI",
+      "Image push failure",
+      "AWS region mismatch"
+    ],
+    tools: ["Amazon ECR", "AWS CLI", "Docker", "AWS IAM"]
+  },
+  {
+    id: "eks",
+    number: "10",
+    title: "Kubernetes / EKS",
+    description: "Learn how a container image is deployed and operated in a Kubernetes production environment.",
+    purpose: "Kubernetes manages containerized applications. Amazon EKS provides a managed Kubernetes control plane on AWS.",
+    workflow: [
+      "Connect to the target EKS cluster.",
+      "Select the correct namespace.",
+      "Configure deployment manifests.",
+      "Reference the approved ECR image.",
+      "Configure application environment and secrets.",
+      "Apply or update Kubernetes resources.",
+      "Wait for the rollout.",
+      "Verify Pod readiness and application health.",
+      "Expose the application through the required service or ingress."
+    ],
+    inputs: [
+      "ECR image URI",
+      "Kubernetes manifests",
+      "Cluster access",
+      "Namespace and configuration",
+      "Application secrets"
+    ],
+    outputs: [
+      "Kubernetes Deployment",
+      "Running Pods",
+      "Service endpoints",
+      "Deployment and health status"
+    ],
+    practical: [
+      "Configure kubectl.",
+      "Connect to an EKS cluster.",
+      "Create a namespace.",
+      "Deploy an application using YAML.",
+      "Inspect Pods and Services.",
+      "Perform a rollout and rollback."
+    ],
+    failures: [
+      "ImagePullBackOff",
+      "CrashLoopBackOff",
+      "Insufficient cluster resources",
+      "Readiness probe failure",
+      "RBAC permission denied",
+      "Deployment rollout timeout"
+    ],
+    tools: ["Kubernetes", "Amazon EKS", "kubectl", "AWS CLI"]
+  },
+  {
+    id: "helm-argocd",
+    number: "11",
+    title: "Helm / Argo CD",
+    description: "Understand how deployment configuration is packaged, versioned and synchronized through GitOps.",
+    purpose: "Helm manages Kubernetes application releases using charts. Argo CD continuously compares the desired state in Git with the live Kubernetes state and synchronizes changes according to its configuration.",
+    workflow: [
+      "Organize Kubernetes manifests or Helm charts.",
+      "Configure environment-specific values.",
+      "Store deployment configuration in Git.",
+      "Configure an Argo CD application.",
+      "Connect Argo CD to the Git repository.",
+      "Compare desired and live application states.",
+      "Synchronize approved changes.",
+      "Verify application health and synchronization status."
+    ],
+    inputs: [
+      "Helm charts",
+      "Values files",
+      "GitOps repository",
+      "Argo CD application configuration",
+      "Kubernetes cluster"
+    ],
+    outputs: [
+      "Versioned Helm release",
+      "Git-managed deployment configuration",
+      "Argo CD sync status",
+      "Application health status"
+    ],
+    practical: [
+      "Create a Helm chart.",
+      "Configure environment values.",
+      "Install and upgrade a Helm release.",
+      "Connect a Git repository to Argo CD.",
+      "Create an Argo CD application.",
+      "Perform a sync and inspect application health."
+    ],
+    failures: [
+      "Helm chart validation failure",
+      "Argo CD repository connection failure",
+      "Sync failure",
+      "Configuration drift",
+      "Insufficient Kubernetes permissions"
+    ],
+    tools: ["Helm", "Argo CD", "Git", "Kubernetes"]
+  },
+  {
+    id: "monitoring",
+    number: "12",
+    title: "Prometheus / Grafana",
+    description: "Learn how production teams verify application health and monitor releases after deployment.",
+    purpose: "Prometheus collects metrics and evaluates alerting rules. Grafana visualizes metrics through dashboards. Monitoring helps engineers detect errors, performance degradation and unhealthy releases.",
+    workflow: [
+      "Expose application and infrastructure metrics.",
+      "Configure Prometheus scraping.",
+      "Collect Kubernetes and application metrics.",
+      "Create Grafana dashboards.",
+      "Monitor CPU, memory and Pod health.",
+      "Monitor latency, traffic and error rates.",
+      "Configure alerts for important conditions.",
+      "Validate the new release after deployment.",
+      "Investigate abnormal behavior and initiate recovery when needed."
+    ],
+    inputs: [
+      "Application metrics",
+      "Kubernetes metrics",
+      "Prometheus configuration",
+      "Grafana dashboard configuration",
+      "Alert thresholds"
+    ],
+    outputs: [
+      "Collected metrics",
+      "Monitoring dashboards",
+      "Alert notifications",
+      "Post-deployment health evidence"
+    ],
+    practical: [
+      "Configure Prometheus scraping.",
+      "Connect Grafana to Prometheus.",
+      "Create a dashboard.",
+      "Monitor application health.",
+      "Configure an alert.",
+      "Validate a deployment using metrics."
+    ],
+    failures: [
+      "Prometheus target down",
+      "Missing application metrics",
+      "Grafana data source error",
+      "Alert not firing",
+      "High application latency",
+      "Elevated HTTP 5xx errors"
+    ],
+    tools: ["Prometheus", "Grafana", "Alertmanager", "Kubernetes"]
+  }
+];
+
+export default function CicdPipelineVisualizerPage() {
+  const [active, setActive] = useState("developer-code");
+
+  const activeIndex = stages.findIndex((stage) => stage.id === active);
+  const current = stages[activeIndex];
+
+  const navigate = (direction: number) => {
+    const nextIndex = activeIndex + direction;
+    if (nextIndex >= 0 && nextIndex < stages.length) {
+      setActive(stages[nextIndex].id);
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-slate-950 text-slate-100">
+      <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
+
+        <header className="rounded-3xl border border-cyan-500/20 bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950/40 p-6 sm:p-9">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-300">
+            DevMavox Production Learning Lab
+          </p>
+
+          <h1 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">
+            CI/CD Pipeline Visualizer
+          </h1>
+
+          <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-300 sm:text-base">
+            Understand how an e-commerce application moves from developer code
+            to production through GitHub, Jenkins, build automation, testing,
+            security, Docker, Amazon ECR, Kubernetes, GitOps and monitoring.
+          </p>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            {["12 Production Stages", "Real-World Workflow", "Practical Learning", "Production Troubleshooting"].map((item) => (
+              <span
+                key={item}
+                className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs font-semibold text-cyan-200"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        </header>
+
+        <section className="mt-6 grid gap-3 sm:grid-cols-3">
+          {[
+            ["12", "Production stages"],
+            ["01", "Developer to production"],
+            ["01", "E-commerce release example"]
+          ].map(([value, label]) => (
+            <div key={label} className="rounded-2xl border border-slate-800 bg-slate-900 p-4">
+              <p className="text-2xl font-black text-cyan-300">{value}</p>
+              <p className="mt-1 text-sm text-slate-400">{label}</p>
+            </div>
+          ))}
+        </section>
+
+        <section className="mt-8 grid items-start gap-6 lg:grid-cols-[290px_minmax(0,1fr)]">
+
+          <aside className="h-fit rounded-2xl border border-slate-800 bg-slate-900 p-4 lg:sticky lg:top-5">
+            <div className="mb-4 border-b border-slate-800 pb-4">
+              <p className="text-xs font-bold uppercase tracking-widest text-cyan-300">
+                Developer to Production
+              </p>
+              <h2 className="mt-2 text-lg font-bold text-white">
+                Pipeline Stages
+              </h2>
+              <p className="mt-1 text-xs text-slate-500">
+                Select a stage to explore its production workflow.
+              </p>
+            </div>
+
+            <nav className="flex flex-col gap-1">
+              {stages.map((stage) => (
+                <button
+                  key={stage.id}
+                  onClick={() => setActive(stage.id)}
+                  aria-current={active === stage.id ? "step" : undefined}
+                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm transition ${
+                    active === stage.id
+                      ? "border border-cyan-400/30 bg-cyan-400/15 text-cyan-200"
+                      : "border border-transparent text-slate-400 hover:bg-slate-800 hover:text-white"
+                  }`}
+                >
+                  <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${
+                    active === stage.id
+                      ? "bg-cyan-400 text-slate-950"
+                      : "bg-slate-800 text-cyan-300"
+                  }`}>
+                    {stage.number}
+                  </span>
+
+                  <span className="min-w-0 flex-1 font-semibold leading-5">
+                    {stage.title}
+                  </span>
+
+                  <span className="text-slate-500">›</span>
+                </button>
+              ))}
+            </nav>
+
+            <div className="mt-4 border-t border-slate-800 pt-4">
+              <div className="flex items-center justify-between text-xs text-slate-400">
+                <span>Selected stage</span>
+                <span className="font-bold text-cyan-300">
+                  {activeIndex + 1} / 12
+                </span>
+              </div>
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-800">
+                <div
+                  className="h-full rounded-full bg-cyan-400 transition-all"
+                  style={{ width: `${((activeIndex + 1) / stages.length) * 100}%` }}
+                />
+              </div>
+            </div>
+          </aside>
+
+          <article className="min-w-0 overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/80">
+
+            <div className="border-b border-slate-800 bg-gradient-to-r from-cyan-950/40 to-transparent p-5 sm:p-7">
+              <p className="text-xs font-bold uppercase tracking-widest text-cyan-300">
+                Production pipeline stage {current.number}
+              </p>
+
+              <h2 className="mt-3 text-2xl font-black text-white sm:text-3xl">
+                {current.title}
+              </h2>
+
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
+                {current.description}
+              </p>
+            </div>
+
+            <div className="space-y-7 p-5 sm:p-7">
+
+              <section>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-300">
+                  Why this stage is required
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-slate-300">
+                  {current.purpose}
+                </p>
+              </section>
+
+              <section>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-300">
+                  Real production workflow
+                </h3>
+                <div className="mt-4 space-y-3">
+                  {current.workflow.map((item, index) => (
+                    <div key={item} className="flex gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-cyan-400/10 text-xs font-bold text-cyan-300">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <p className="text-sm leading-6 text-slate-300">{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <div className="grid gap-5 md:grid-cols-2">
+                <section className="rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+                  <h3 className="text-sm font-bold text-cyan-300">
+                    Inputs
+                  </h3>
+                  <ul className="mt-3 space-y-2">
+                    {current.inputs.map((item) => (
+                      <li key={item} className="flex gap-2 text-sm leading-6 text-slate-300">
+                        <span className="text-cyan-400">•</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                <section className="rounded-xl border border-slate-800 bg-slate-950/50 p-4">
+                  <h3 className="text-sm font-bold text-emerald-300">
+                    Outputs
+                  </h3>
+                  <ul className="mt-3 space-y-2">
+                    {current.outputs.map((item) => (
+                      <li key={item} className="flex gap-2 text-sm leading-6 text-slate-300">
+                        <span className="text-emerald-400">•</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              </div>
+
+              <section>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-300">
+                  Practical learning
+                </h3>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {current.practical.map((item, index) => (
+                    <div key={item} className="rounded-lg border border-slate-800 bg-slate-950/60 p-3 text-sm leading-6 text-slate-300">
+                      <span className="mr-2 font-bold text-cyan-400">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-red-300">
+                  Common production failures
+                </h3>
+                <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {current.failures.map((item) => (
+                    <li key={item} className="flex gap-2 text-sm leading-6 text-slate-300">
+                      <span className="text-red-400">•</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-300">
+                  Tools used in this stage
+                </h3>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {current.tools.map((tool) => (
+                    <span key={tool} className="rounded-lg border border-cyan-500/20 bg-cyan-400/5 px-3 py-2 text-xs font-semibold text-cyan-200">
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+              </section>
+
+              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 pt-5">
+                <button
+                  onClick={() => navigate(-1)}
+                  disabled={activeIndex === 0}
+                  className="rounded-xl border border-slate-700 px-4 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  ← Previous Stage
+                </button>
+
+                <span className="text-xs text-slate-500">
+                  Stage {activeIndex + 1} of {stages.length}
+                </span>
+
+                <button
+                  onClick={() => navigate(1)}
+                  disabled={activeIndex === stages.length - 1}
+                  className="rounded-xl bg-cyan-400 px-4 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  Next Stage →
+                </button>
+              </div>
+
+            </div>
+          </article>
+        </section>
+
+        <footer className="mt-8 rounded-2xl border border-slate-800 bg-slate-900 p-5">
+          <h2 className="text-lg font-bold text-white">
+            Complete Developer to Production Workflow
+          </h2>
+          <p className="mt-2 text-sm leading-7 text-slate-400">
+            This is a representative production architecture. Organizations
+            may use different build systems, CI platforms, registries and
+            deployment tools. Required build, test, quality and security gates
+            must pass before their dependent release stages proceed.
+          </p>
+        </footer>
+
+      </div>
+    </main>
+  );
+}
