@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { cicdTopicContent } from "./cicd-learning-content";
+import { getCicdTopicLesson } from "./cicd-topic-lessons";
+import { buildCicdStageTopics } from "./cicd-stage-syllabus";
 
 type Topic = {
   title: string;
@@ -16,7 +18,6 @@ type Topic = {
   recovery: string[];
   bestPractices: string[];
   exercise: string;
-  interview: string[];
 };
 
 type Stage = {
@@ -50,7 +51,6 @@ const stages: Stage[] = [
         recovery: ["Check java -version and JAVA_HOME.", "Inspect Maven dependency errors.", "Run the failing test individually.", "Validate application.yml and required environment variables."],
         bestPractices: ["Use feature branches.", "Keep business logic out of controllers.", "Validate payment amounts and request fields.", "Never commit credentials.", "Write unit tests for payment logic."],
         exercise: "Create a payment endpoint, validate a positive amount, write a unit test and package the application using Maven.",
-        interview: ["Why is Spring Boot used for microservices?", "What is the difference between a controller and a service?", "Why should secrets not be committed to Git?"]
       },
       {
         title: "Project Structure and Dependencies",
@@ -65,7 +65,6 @@ const stages: Stage[] = [
         recovery: ["Inspect dependency:tree.", "Correct groupId and artifactId.", "Align the compiler release with the installed JDK."],
         bestPractices: ["Pin important dependency versions through a BOM.", "Avoid unnecessary dependencies.", "Keep tests in src/test.", "Review dependency changes."],
         exercise: "Add a Spring Web dependency and inspect the resolved dependency tree.",
-        interview: ["What is a Maven dependency?", "What is the purpose of pom.xml?", "What is the target directory?"]
       },
       {
         title: "Git Feature Branch and Commit",
@@ -80,7 +79,6 @@ const stages: Stage[] = [
         recovery: ["Fetch and rebase or merge remote changes.", "Check git branch before committing.", "Remove secrets from the commit and rotate exposed credentials."],
         bestPractices: ["Use descriptive commit messages.", "Keep commits focused.", "Review git diff before committing.", "Never commit credentials."],
         exercise: "Create a feature branch, change one Java file, commit it and push it to a remote repository.",
-        interview: ["What is a Git branch?", "What is the difference between fetch and pull?", "What does git push -u do?"]
       }
     ]
   },
@@ -103,7 +101,6 @@ const stages: Stage[] = [
         recovery: ["Update the feature branch with main.", "Resolve conflicts and push again.", "Fix failing checks.", "Correct the base branch before merging."],
         bestPractices: ["Keep pull requests small.", "Explain business impact.", "Require review for sensitive payment logic.", "Protect main.", "Use meaningful review comments."],
         exercise: "Open a pull request, request a review, inspect a diff and merge after checks pass.",
-        interview: ["What is a pull request?", "What is branch protection?", "What is the difference between merge and rebase?"]
       },
       {
         title: "Branching Strategy",
@@ -118,7 +115,6 @@ const stages: Stage[] = [
         recovery: ["Update branches frequently.", "Verify the target branch.", "Inspect commit history before creating release tags."],
         bestPractices: ["Prefer short-lived feature branches.", "Automate required checks.", "Use protected release branches where needed.", "Document hotfix procedures."],
         exercise: "Create a feature branch, rebase it on main and inspect the resulting history.",
-        interview: ["What is trunk-based development?", "Why should feature branches be short-lived?", "What is a hotfix branch?"]
       },
       {
         title: "GitHub Webhooks",
@@ -133,7 +129,6 @@ const stages: Stage[] = [
         recovery: ["Inspect GitHub delivery details.", "Check Jenkins endpoint reachability.", "Verify job repository and branch configuration.", "Inspect Jenkins logs and webhook plugin configuration."],
         bestPractices: ["Use HTTPS.", "Restrict network access appropriately.", "Validate webhook signatures or shared secrets.", "Monitor failed deliveries."],
         exercise: "Configure a test webhook and verify that a repository push reaches Jenkins.",
-        interview: ["What is a webhook?", "Why use webhooks instead of polling?", "How do you troubleshoot failed webhook delivery?"]
       }
     ]
   },
@@ -156,7 +151,6 @@ const stages: Stage[] = [
         recovery: ["Reconnect the agent.", "Inspect executor availability.", "Review plugin compatibility.", "Correct workspace ownership and permissions."],
         bestPractices: ["Use agents for builds.", "Manage credentials securely.", "Back up JENKINS_HOME.", "Keep plugins updated after testing.", "Apply least privilege."],
         exercise: "Create a Pipeline job and run it on an agent labelled linux.",
-        interview: ["What is a Jenkins controller?", "What is an agent?", "What is an executor?"]
       },
       {
         title: "Jenkinsfile and Declarative Pipeline",
@@ -171,7 +165,6 @@ const stages: Stage[] = [
         recovery: ["Use Pipeline syntax validation.", "Check agent labels.", "Create the required credential ID.", "Read console output and fix the failing command."],
         bestPractices: ["Keep Jenkinsfile in source control.", "Use shared libraries for reusable logic.", "Use credential IDs rather than hard-coded secrets.", "Archive useful reports."],
         exercise: "Create a Jenkinsfile with Checkout, Build and Test stages.",
-        interview: ["What is a Jenkinsfile?", "Declarative versus Scripted Pipeline?", "What does post always do?"]
       },
       {
         title: "Jenkins Credentials and Agents",
@@ -186,7 +179,6 @@ const stages: Stage[] = [
         recovery: ["Verify credential ID and scope.", "Reconnect the agent.", "Configure required permissions securely.", "Rotate exposed secrets and mask sensitive output."],
         bestPractices: ["Use least-privilege credentials.", "Never print secrets.", "Use ephemeral agents where practical.", "Separate build and deployment permissions."],
         exercise: "Create a scoped credential and use it in a test pipeline without printing its value.",
-        interview: ["How does Jenkins store credentials?", "Why use agents?", "What is an agent label?"]
       }
     ]
   },
@@ -209,7 +201,6 @@ const stages: Stage[] = [
         recovery: ["Check repository access and proxy settings.", "Fix compilation errors.", "Inspect Surefire reports.", "Check finalName and packaging configuration."],
         bestPractices: ["Use reproducible dependency versions.", "Run verify in CI.", "Cache Maven dependencies carefully.", "Archive build outputs with commit metadata."],
         exercise: "Build a JAR using Maven and verify its presence in the target directory.",
-        interview: ["What is the Maven lifecycle?", "What is the difference between package and install?", "What is a SNAPSHOT version?"]
       },
       {
         title: "pom.xml and Dependency Management",
@@ -224,7 +215,6 @@ const stages: Stage[] = [
         recovery: ["Inspect dependency tree.", "Correct repository configuration.", "Verify artifact coordinates and credentials."],
         bestPractices: ["Use a BOM where appropriate.", "Avoid dynamic versions.", "Review transitive dependencies.", "Keep repository credentials outside source control."],
         exercise: "Inspect the dependency tree and identify one transitive dependency.",
-        interview: ["What is a transitive dependency?", "What is dependencyManagement?", "What is the effective POM?"]
       },
       {
         title: "JAR Artifact and Build Reports",
@@ -239,7 +229,6 @@ const stages: Stage[] = [
         recovery: ["Check Maven package result.", "Verify POM version and artifact path.", "Clean the workspace or use isolated build directories."],
         bestPractices: ["Use immutable artifact names.", "Record checksums.", "Do not rebuild different binaries for later environments.", "Retain build metadata."],
         exercise: "Build a JAR, calculate its SHA-256 checksum and archive it in Jenkins.",
-        interview: ["What is a JAR?", "Why archive CI artifacts?", "Why should the same artifact move between environments?"]
       }
     ]
   },
@@ -262,7 +251,6 @@ const stages: Stage[] = [
         recovery: ["Inspect assertion details.", "Correct test setup.", "Remove timing dependencies.", "Review Surefire configuration."],
         bestPractices: ["Test success and failure paths.", "Keep tests isolated.", "Avoid dependence on production services.", "Use descriptive test names."],
         exercise: "Write unit tests for valid amount, zero amount and negative amount payment requests.",
-        interview: ["What is unit testing?", "What is a mock?", "What is an assertion?"]
       },
       {
         title: "Integration Testing",
@@ -277,7 +265,6 @@ const stages: Stage[] = [
         recovery: ["Verify test database availability.", "Use dynamic ports where suitable.", "Isolate test data.", "Inspect Spring context startup errors."],
         bestPractices: ["Use disposable test infrastructure.", "Avoid shared mutable test data.", "Separate unit and integration test reports.", "Clean up resources."],
         exercise: "Create an integration test that calls the payment endpoint and checks its response.",
-        interview: ["Unit test versus integration test?", "What is a test profile?", "Why isolate test data?"]
       },
       {
         title: "Test Reports and Coverage",
@@ -292,7 +279,6 @@ const stages: Stage[] = [
         recovery: ["Check report paths.", "Verify plugin execution.", "Compare Java and environment versions.", "Inspect CI test logs."],
         bestPractices: ["Treat test failures as pipeline failures.", "Use coverage as evidence, not the only quality measure.", "Review skipped tests.", "Keep reports accessible."],
         exercise: "Publish a JUnit report in Jenkins and inspect a failed test.",
-        interview: ["What is code coverage?", "What is JaCoCo?", "How does Jenkins publish JUnit reports?"]
       }
     ]
   },
@@ -315,7 +301,6 @@ const stages: Stage[] = [
         recovery: ["Check server connectivity.", "Verify token permissions.", "Correct source paths.", "Review gate conditions and fix reported issues."],
         bestPractices: ["Protect analysis tokens.", "Use consistent project keys.", "Focus on new-code quality.", "Review security findings with developers."],
         exercise: "Run SonarQube analysis and inspect one bug, one code smell and the quality gate result.",
-        interview: ["What is static code analysis?", "What is a quality gate?", "What is a code smell?"]
       },
       {
         title: "Quality Profiles and Quality Gates",
@@ -330,7 +315,6 @@ const stages: Stage[] = [
         recovery: ["Verify project profile assignment.", "Review gate conditions.", "Fix the underlying issue and rerun analysis."],
         bestPractices: ["Keep gates meaningful.", "Review rule changes.", "Apply consistent policies.", "Avoid weakening gates just to make builds pass."],
         exercise: "Inspect a project's quality gate and identify which condition caused a failure.",
-        interview: ["Quality profile versus quality gate?", "What is new-code analysis?", "How do you enforce a quality gate in Jenkins?"]
       },
       {
         title: "Jenkins Quality Gate Integration",
@@ -345,7 +329,6 @@ const stages: Stage[] = [
         recovery: ["Inspect webhook delivery.", "Check Jenkins and SonarQube logs.", "Verify project analysis ID and server configuration.", "Fix gate findings."],
         bestPractices: ["Use a timeout around gate waiting.", "Fail closed when policy cannot be evaluated.", "Keep tokens in credentials.", "Make gate results visible."],
         exercise: "Add a quality gate wait step to a test Jenkins pipeline.",
-        interview: ["Why is waitForQualityGate used?", "What happens when the gate fails?", "Why is a webhook required?"]
       }
     ]
   },
@@ -368,7 +351,6 @@ const stages: Stage[] = [
         recovery: ["Check scanner database connectivity.", "Validate affected dependency versions.", "Document reviewed false positives.", "Upgrade or remove vulnerable dependencies."],
         bestPractices: ["Scan every build.", "Prioritize exploitable critical findings.", "Track exceptions with expiry.", "Keep dependency inventories."],
         exercise: "Inspect the payment application's dependency tree and document one vulnerable or outdated dependency.",
-        interview: ["What is a CVE?", "What is SCA?", "How do transitive dependencies create risk?"]
       },
       {
         title: "Trivy Filesystem and Image Scanning",
@@ -383,7 +365,6 @@ const stages: Stage[] = [
         recovery: ["Verify image tag and local registry access.", "Check database connectivity.", "Inspect the report.", "Update affected packages or base image."],
         bestPractices: ["Scan the final image.", "Use minimal base images.", "Set severity policy.", "Keep scan reports as pipeline evidence."],
         exercise: "Scan a test container image and identify its highest-severity vulnerability.",
-        interview: ["What does Trivy scan?", "Why scan the final image?", "How can a scan fail a Jenkins stage?"]
       },
       {
         title: "Secrets and Security Policy",
@@ -398,7 +379,6 @@ const stages: Stage[] = [
         recovery: ["Revoke exposed credentials immediately.", "Rotate dependent services.", "Review repository history and access logs.", "Correct secret-manager permissions."],
         bestPractices: ["Never store secrets in Git.", "Use short-lived credentials.", "Apply least privilege.", "Rotate exposed secrets immediately."],
         exercise: "Review a sample repository for accidental credentials and describe the safe rotation process.",
-        interview: ["Why is deleting a secret from the latest commit not enough?", "What is secret rotation?", "What is least privilege?"]
       }
     ]
   },
@@ -421,7 +401,6 @@ const stages: Stage[] = [
         recovery: ["Check Docker daemon status.", "Verify artifact path and .dockerignore.", "Inspect build output.", "Read container logs and check application startup configuration."],
         bestPractices: ["Use multi-stage builds when compiling inside Docker.", "Keep images small.", "Run as non-root.", "Pin base image versions.", "Avoid copying secrets into images."],
         exercise: "Build an image from the payment JAR and run it locally.",
-        interview: ["What is a Docker image layer?", "Image versus container?", "What is a build context?"]
       },
       {
         title: "Multi-stage Docker Build",
@@ -436,7 +415,6 @@ const stages: Stage[] = [
         recovery: ["Check builder output path.", "Align build and runtime Java versions.", "Inspect final image filesystem and startup logs."],
         bestPractices: ["Use trusted minimal runtime images.", "Keep build and runtime versions compatible.", "Use .dockerignore.", "Scan the final image."],
         exercise: "Convert a single-stage Dockerfile into a multi-stage build and compare image sizes.",
-        interview: ["What is a multi-stage build?", "Why separate JDK and runtime images?", "What does COPY --from do?"]
       },
       {
         title: "Image Tags and Container Runtime",
@@ -451,7 +429,6 @@ const stages: Stage[] = [
         recovery: ["Verify image ID and digest.", "Check port mapping.", "Inspect container logs and application configuration."],
         bestPractices: ["Avoid mutable latest for production releases.", "Use immutable tags.", "Track image digests.", "Perform smoke tests before publishing."],
         exercise: "Tag an image with a Git SHA and verify the running container uses that image.",
-        interview: ["What is the difference between an image tag and digest?", "Why avoid latest in production?", "How do you inspect container logs?"]
       }
     ]
   },
@@ -474,7 +451,6 @@ const stages: Stage[] = [
         recovery: ["Verify the AWS identity.", "Check repository name and region.", "Validate ECR upload and download permissions.", "Refresh registry authentication."],
         bestPractices: ["Use IAM roles where possible.", "Enable image scanning.", "Use lifecycle policies.", "Keep production images immutable where supported.", "Record image digests."],
         exercise: "Authenticate to a test ECR repository and push a tagged sample image.",
-        interview: ["What is Amazon ECR?", "How does Docker authenticate to ECR?", "Which IAM permissions are needed for image push?"]
       },
       {
         title: "ECR Authentication and IAM",
@@ -489,7 +465,6 @@ const stages: Stage[] = [
         recovery: ["Refresh credentials.", "Correct the trust relationship.", "Review required ECR actions.", "Verify registry URI and region."],
         bestPractices: ["Apply least privilege.", "Use temporary credentials.", "Separate push and pull roles.", "Audit registry access."],
         exercise: "Inspect the AWS caller identity and explain which role should be used for ECR push.",
-        interview: ["What is an IAM role?", "What is an ECR authorization token?", "Why use temporary credentials?"]
       },
       {
         title: "ECR Scanning and Lifecycle Policies",
@@ -504,7 +479,6 @@ const stages: Stage[] = [
         recovery: ["Wait for scan completion and inspect status.", "Correct lifecycle selection rules.", "Restore or republish an approved image if required."],
         bestPractices: ["Retain deployed release images.", "Review scan findings.", "Test lifecycle rules.", "Keep image provenance and digest records."],
         exercise: "Inspect ECR image metadata and create a sample retention policy in a non-production repository.",
-        interview: ["What is an ECR lifecycle policy?", "How do you inspect image scan findings?", "Why retain deployed image versions?"]
       }
     ]
   },
@@ -527,7 +501,6 @@ const stages: Stage[] = [
         recovery: ["Check endpoint networking and kubeconfig.", "Inspect node conditions.", "Validate IAM and RBAC.", "Inspect scheduling events and resource requests."],
         bestPractices: ["Use private networking where appropriate.", "Apply RBAC.", "Use managed node groups or approved compute.", "Patch cluster components.", "Monitor node capacity."],
         exercise: "Connect to a test EKS cluster and inspect nodes, namespaces and Pods.",
-        interview: ["What is EKS?", "What is the Kubernetes control plane?", "What is a worker node?"]
       },
       {
         title: "Deployment, ReplicaSet and Pods",
@@ -542,7 +515,6 @@ const stages: Stage[] = [
         recovery: ["Check image URI and ECR pull permissions.", "Inspect container logs.", "Review node capacity and resource settings.", "Correct application health endpoint and probe configuration."],
         bestPractices: ["Use resource requests and limits.", "Configure health probes.", "Use non-root containers.", "Roll out gradually.", "Keep manifests in Git."],
         exercise: "Deploy a sample payment workload and observe its rollout status.",
-        interview: ["Deployment versus Pod?", "What is a ReplicaSet?", "What causes ImagePullBackOff?"]
       },
       {
         title: "Services, ConfigMaps and Secrets",
@@ -557,7 +529,6 @@ const stages: Stage[] = [
         recovery: ["Compare Service selectors with Pod labels.", "Check readiness status.", "Validate key names.", "Review service account and RBAC permissions."],
         bestPractices: ["Keep secrets out of Git.", "Use least-privilege RBAC.", "Use namespaces.", "Avoid exposing internal services unnecessarily."],
         exercise: "Create a ConfigMap and ClusterIP Service for a sample application.",
-        interview: ["Service versus Ingress?", "ConfigMap versus Secret?", "What is a ClusterIP service?"]
       }
     ]
   },
@@ -580,7 +551,6 @@ const stages: Stage[] = [
         recovery: ["Run helm lint and helm template.", "Validate rendered YAML.", "Inspect Helm status and Kubernetes events.", "Correct the environment values."],
         bestPractices: ["Version charts.", "Separate environment values.", "Validate templates in CI.", "Keep secrets external.", "Review rendered manifests."],
         exercise: "Create a Helm chart for the payment service and render its staging manifests.",
-        interview: ["What is a Helm chart?", "What is values.yaml?", "What does helm upgrade --install do?"]
       },
       {
         title: "Argo CD GitOps Workflow",
@@ -595,7 +565,6 @@ const stages: Stage[] = [
         recovery: ["Inspect application diff.", "Correct repository access.", "Review rendering errors.", "Inspect workload events and health checks."],
         bestPractices: ["Review Git changes before production sync.", "Use separate environment paths.", "Protect deployment repositories.", "Monitor drift.", "Control automated pruning."],
         exercise: "Connect a test Argo CD application to a Git repository and inspect its sync status.",
-        interview: ["What is GitOps?", "What is OutOfSync?", "What is the difference between sync and refresh?"]
       },
       {
         title: "Release Rollback and Revision History",
@@ -610,7 +579,6 @@ const stages: Stage[] = [
         recovery: ["Retain known-good images.", "Validate schema compatibility.", "Use backward-compatible migrations.", "Run smoke tests after rollback."],
         bestPractices: ["Define rollback criteria.", "Preserve immutable image references.", "Test rollback procedures.", "Coordinate application and database changes."],
         exercise: "Deploy two test Helm revisions and rollback to the earlier revision.",
-        interview: ["How does Helm rollback work?", "What is a Kubernetes rollout undo?", "Why must database migrations be backward-compatible?"]
       }
     ]
   },
@@ -633,7 +601,6 @@ const stages: Stage[] = [
         recovery: ["Check target URL and network access.", "Inspect application metrics endpoint.", "Validate scrape annotations or monitor selectors.", "Reduce unbounded labels."],
         bestPractices: ["Monitor service-level indicators.", "Use meaningful labels.", "Avoid sensitive metric labels.", "Set practical scrape intervals.", "Retain useful historical data."],
         exercise: "Expose a sample application metric and query it in Prometheus.",
-        interview: ["What is Prometheus?", "What is a scrape target?", "What is PromQL?"]
       },
       {
         title: "Grafana Dashboards",
@@ -648,7 +615,6 @@ const stages: Stage[] = [
         recovery: ["Verify Prometheus data source.", "Check target scrape status.", "Validate metric names and labels.", "Inspect query time range."],
         bestPractices: ["Build dashboards around operational questions.", "Show service-level indicators.", "Use consistent units.", "Control dashboard permissions."],
         exercise: "Create a dashboard with request rate, error rate and latency panels.",
-        interview: ["What is a Grafana data source?", "What is a dashboard panel?", "Why monitor p95 latency?"]
       },
       {
         title: "Alerts, SLOs and Incident Response",
@@ -663,7 +629,6 @@ const stages: Stage[] = [
         recovery: ["Test rule expressions.", "Tune thresholds and grouping.", "Verify Alertmanager routing.", "Correlate metrics with deployment events and logs."],
         bestPractices: ["Alert on user impact.", "Use actionable alerts.", "Define on-call ownership.", "Review incidents and error budgets.", "Validate health after rollback."],
         exercise: "Create a test alert for elevated payment API errors and document the response steps.",
-        interview: ["What is an SLI?", "What is an SLO?", "What is an error budget?", "How do you investigate a production alert?"]
       }
     ]
   }
@@ -698,7 +663,6 @@ addDevMavoxTopic(2, {
   recovery: ["Inspect git diff --cached before committing.", "Unstage unrelated files with git restore --staged.", "Correct the commit message when safe.", "Remove exposed secrets and rotate credentials immediately."],
   bestPractices: ["Keep commits focused.", "Review staged changes.", "Do not commit build output or secrets.", "Mention the reason for a non-obvious change.", "Avoid giant commits."],
   exercise: "Create two separate commits for a payment validation change and a documentation change. Inspect both with git log and git show.",
-  interview: ["What is an atomic commit?", "What is the difference between the working tree and staging area?", "Why should developers inspect git diff --cached?"]
 });
 
 addDevMavoxTopic(2, {
@@ -714,7 +678,6 @@ addDevMavoxTopic(2, {
   recovery: ["Verify the exact check name reported by GitHub.", "Review bypass permissions.", "Correct reviewer and team permissions.", "Test the branch pattern against the intended branches."],
   bestPractices: ["Protect main and release branches.", "Require checks that actually validate the code.", "Review bypass permissions periodically.", "Avoid requiring obsolete CI check names.", "Document emergency merge procedures."],
   exercise: "Configure a test repository so main requires one approval and a successful CI status check.",
-  interview: ["What is branch protection?", "What is a GitHub ruleset?", "Why must required status-check names match the checks reported by CI?"]
 });
 
 addDevMavoxTopic(2, {
@@ -730,7 +693,6 @@ addDevMavoxTopic(2, {
   recovery: ["Validate path patterns and file location.", "Check team membership and repository permissions.", "Re-request reviewers after correcting ownership.", "Inspect the changed-file list."],
   bestPractices: ["Assign owners to critical paths.", "Keep ownership current.", "Avoid assigning every file to one overloaded team.", "Review security-sensitive changes carefully.", "Treat approval as technical review, not a formality."],
   exercise: "Create a CODEOWNERS entry for the payment service and verify which team should review a sample pull request.",
-  interview: ["What is CODEOWNERS?", "How does code review reduce production risk?", "What should a reviewer check beyond code formatting?"]
 });
 
 addDevMavoxTopic(2, {
@@ -746,7 +708,6 @@ addDevMavoxTopic(2, {
   recovery: ["Resolve conflicts and continue the rebase.", "Abort with git rebase --abort when necessary.", "Coordinate rewritten shared branches.", "Use the team's documented merge strategy."],
   bestPractices: ["Choose a consistent strategy.", "Do not rewrite shared history without coordination.", "Preserve useful commit messages.", "Understand the effect on release and audit history."],
   exercise: "Create a test feature branch with multiple commits and compare merge, squash and rebase history.",
-  interview: ["What is squash merging?", "How does rebase differ from merge?", "When can rewriting Git history create problems?"]
 });
 
 addDevMavoxTopic(2, {
@@ -762,7 +723,6 @@ addDevMavoxTopic(2, {
   recovery: ["Inspect every conflicted file.", "Remove conflict markers after choosing correct logic.", "Ask the relevant code owner when intent is unclear.", "Run focused and full tests before pushing."],
   bestPractices: ["Keep branches short-lived.", "Integrate main frequently.", "Never resolve blindly with ours or theirs.", "Test the combined behavior.", "Request another review for risky resolutions."],
   exercise: "Create two branches that edit the same method, trigger a conflict and resolve it without losing either required behavior.",
-  interview: ["Why do merge conflicts happen?", "What do conflict markers mean?", "Why must tests run after conflict resolution?"]
 });
 
 addDevMavoxTopic(2, {
@@ -778,7 +738,6 @@ addDevMavoxTopic(2, {
   recovery: ["Check organization and repository membership.", "Verify token scopes and workflow permissions.", "Remove obsolete access.", "Grant only the specific permission required."],
   bestPractices: ["Prefer teams over individual grants.", "Audit access regularly.", "Use least privilege.", "Protect secrets and environments.", "Separate administrative and routine development access."],
   exercise: "Design a permission model for developers, reviewers, CI automation and repository administrators.",
-  interview: ["What is least privilege?", "Why use GitHub teams?", "Why should CI tokens have limited permissions?"]
 });
 
 addDevMavoxTopic(2, {
@@ -794,7 +753,6 @@ addDevMavoxTopic(2, {
   recovery: ["Verify the supported file path and default branch.", "Remove irrelevant checklist items.", "Ask for links, test output or screenshots where evidence is required."],
   bestPractices: ["Ask for business context.", "Require test evidence.", "Include security and migration impact when relevant.", "Keep templates concise and actionable."],
   exercise: "Create a pull request template for the payment application with testing, security, deployment and rollback sections.",
-  interview: ["Why use a pull request template?", "What evidence should a production-risk change include?", "How can review checklists become ineffective?"]
 });
 
 addDevMavoxTopic(2, {
@@ -810,7 +768,6 @@ addDevMavoxTopic(2, {
   recovery: ["Inspect the tag target with git show.", "Follow the organization's tag correction policy.", "Rebuild from the approved tag when appropriate.", "Compare artifact metadata with the release commit."],
   bestPractices: ["Use immutable release references.", "Create annotated tags.", "Record commit SHA and artifact digest.", "Do not silently move published production tags."],
   exercise: "Create a test annotated release tag and verify the referenced commit and release notes.",
-  interview: ["What is an annotated Git tag?", "How does a GitHub Release differ from a tag?", "Why record the commit SHA in a deployment?"]
 });
 
 addDevMavoxTopic(2, {
@@ -826,7 +783,6 @@ addDevMavoxTopic(2, {
   recovery: ["Inspect the latest commit's check results.", "Correct CI integration and permissions.", "Update branch rules to the intended check name.", "Rerun validation on the current commit."],
   bestPractices: ["Require meaningful checks.", "Keep check names stable.", "Include tests and security validation.", "Do not bypass failed checks without documented emergency approval."],
   exercise: "Configure a test branch to require a CI check and verify that a failing check blocks merging.",
-  interview: ["What is a status check?", "Why can a required check remain pending?", "Why must checks validate the latest commit?"]
 });
 
 // ============================================================
@@ -846,7 +802,6 @@ addDevMavoxTopic(3, {
   recovery: ["Restrict network access immediately.", "Restore a known-good authorization configuration.", "Check identity-provider connectivity.", "Rotate exposed credentials and clean retained data according to policy."],
   bestPractices: ["Apply least privilege.", "Disable unnecessary public access.", "Patch Jenkins and plugins.", "Protect JENKINS_HOME.", "Separate controller duties from build execution."],
   exercise: "Design Jenkins roles for administrators, developers and read-only auditors.",
-  interview: ["Why should builds not run on the controller?", "What is JENKINS_HOME?", "How do you secure Jenkins administration?"]
 });
 
 addDevMavoxTopic(3, {
@@ -862,7 +817,6 @@ addDevMavoxTopic(3, {
   recovery: ["Check label expressions and online status.", "Inspect agent connection logs.", "Install or configure the required tool.", "Adjust executor count and capacity."],
   bestPractices: ["Use dedicated build agents.", "Keep agent images reproducible.", "Avoid excessive executors on small hosts.", "Use ephemeral agents where practical.", "Restrict deployment-capable agents."],
   exercise: "Create a Linux agent with a java17 label and execute a Maven version check on it.",
-  interview: ["What is a Jenkins agent label?", "Why can a pipeline remain queued?", "What is the relationship between executors and agent capacity?"]
 });
 
 addDevMavoxTopic(3, {
@@ -878,7 +832,6 @@ addDevMavoxTopic(3, {
   recovery: ["Inspect GitHub delivery payload and Jenkins logs.", "Verify job branch filters and repository configuration.", "Review trigger overlap.", "Check reverse proxy and firewall routing."],
   bestPractices: ["Use HTTPS.", "Trigger only relevant events.", "Validate branch conditions.", "Monitor failed webhook deliveries.", "Prevent untrusted pull requests from accessing deployment credentials."],
   exercise: "Configure a test job to run on a main-branch push and verify the trigger cause in Jenkins.",
-  interview: ["Webhook versus SCM polling?", "How do you prevent duplicate builds?", "Why should untrusted pull requests not receive deployment credentials?"]
 });
 
 addDevMavoxTopic(3, {
@@ -894,7 +847,6 @@ addDevMavoxTopic(3, {
   recovery: ["Add input validation.", "Check parameter names and scope.", "Inspect the executing agent environment.", "Rotate exposed secrets and remove unsafe logging."],
   bestPractices: ["Validate every external input.", "Use allow-listed deployment targets.", "Keep secrets in credential bindings.", "Record commit and build metadata.", "Avoid printing the complete environment."],
   exercise: "Create a pipeline with a staging/production choice parameter and reject all other values.",
-  interview: ["What is a Jenkins parameter?", "What is the difference between params and env?", "Why should secrets not be normal build parameters?"]
 });
 
 addDevMavoxTopic(3, {
@@ -910,7 +862,6 @@ addDevMavoxTopic(3, {
   recovery: ["Verify repository credentials and revision.", "Check vars and src naming conventions.", "Pin a known-good version.", "Review trust configuration and revert unsafe changes."],
   bestPractices: ["Version shared libraries.", "Document public functions.", "Test library changes.", "Keep application-specific logic in application repositories.", "Review trusted code carefully."],
   exercise: "Create a shared function that prints build metadata and call it from a sample Jenkinsfile.",
-  interview: ["What is a Jenkins Shared Library?", "What belongs in vars?", "Why should shared libraries be versioned?"]
 });
 
 addDevMavoxTopic(3, {
@@ -926,7 +877,6 @@ addDevMavoxTopic(3, {
   recovery: ["Inspect workspace disk usage.", "Use isolated workspaces.", "Archive required files before cleanup.", "Review cleanup scope and concurrent-build settings."],
   bestPractices: ["Avoid sharing mutable workspaces.", "Clean before reproducible builds.", "Archive outputs explicitly.", "Monitor agent disk space.", "Do not store long-term artifacts only in workspaces."],
   exercise: "Run two builds and verify that the second build does not reuse the first build's generated JAR.",
-  interview: ["What is a Jenkins workspace?", "Why can stale workspace files cause false build results?", "When should artifacts be archived before cleanup?"]
 });
 
 addDevMavoxTopic(3, {
@@ -942,7 +892,6 @@ addDevMavoxTopic(3, {
   recovery: ["Inspect the workspace and Maven reports.", "Correct the archive pattern.", "Clean stale output before rebuilding.", "Pass an explicit build number or immutable artifact reference downstream."],
   bestPractices: ["Archive only required outputs.", "Record commit SHA and version.", "Publish test reports even when tests fail where appropriate.", "Use immutable artifact references.", "Set sensible retention."],
   exercise: "Configure a pipeline to archive a JAR and publish Surefire XML reports.",
-  interview: ["What is the difference between an artifact and a test report?", "What does fingerprinting help track?", "Why should downstream jobs use an exact build artifact?"]
 });
 
 addDevMavoxTopic(3, {
@@ -958,7 +907,6 @@ addDevMavoxTopic(3, {
   recovery: ["Remove unsafe error suppression.", "Inspect the original stage exception.", "Use retries only for transient operations.", "Place essential cleanup in appropriate post handling."],
   bestPractices: ["Fail fast on required validation.", "Preserve diagnostic reports.", "Do not hide command exit codes.", "Make notifications actionable.", "Avoid automatic retries for unsafe production changes."],
   exercise: "Create a pipeline that intentionally fails its test stage, publishes available reports and sends a failure notification.",
-  interview: ["What is the purpose of post always?", "When is retry appropriate?", "Why should a failed test stage block image publication?"]
 });
 
 addDevMavoxTopic(3, {
@@ -974,7 +922,6 @@ addDevMavoxTopic(3, {
   recovery: ["Inspect Jenkins startup logs.", "Identify the incompatible plugin.", "Restore the tested plugin set or controller backup.", "Validate critical integrations before reopening builds."],
   bestPractices: ["Minimize unnecessary plugins.", "Test updates before production.", "Back up before changes.", "Track plugin ownership and purpose.", "Keep Jenkins core and plugins on supported versions."],
   exercise: "Prepare a plugin update checklist that includes backup, compatibility review, test pipeline and rollback.",
-  interview: ["Why can plugin updates break Jenkins?", "What should be checked before a plugin update?", "Why should unnecessary plugins be removed?"]
 });
 
 addDevMavoxTopic(3, {
@@ -990,7 +937,6 @@ addDevMavoxTopic(3, {
   recovery: ["Verify backup integrity.", "Restore required secret keys and configuration securely.", "Match compatible Jenkins and plugin versions.", "Run representative jobs before declaring recovery complete."],
   bestPractices: ["Automate backups.", "Keep protected off-controller copies.", "Restrict backup access.", "Test restores regularly.", "Document recovery objectives and ownership."],
   exercise: "Write a disaster-recovery checklist for restoring Jenkins configuration and validating a sample pipeline.",
-  interview: ["What is JENKINS_HOME?", "Why is backing up only job XML insufficient?", "Why must Jenkins restore procedures be tested?"]
 });
 
 
@@ -1066,13 +1012,6 @@ const devMavoxDetailedBatch1: Record<number, any[]> = {
         "Run the application locally and submit one valid request with curl. Record the HTTP status and response body.",
         "Expected result: the valid request returns HTTP 201 with a transaction reference, invalid requests return HTTP 400, and the application health endpoint reports UP."
       ],
-      interview: [
-        "Q: Why do Spring Boot applications use controller, service and repository layers? A: They separate HTTP handling, business rules and persistence. This reduces coupling, improves testability and makes changes safer.",
-        "Q: What is dependency injection? A: Spring creates and supplies required objects to a class instead of forcing the class to construct its own dependencies. Constructor injection makes these dependencies visible and testable.",
-        "Q: What is the difference between an entity and a DTO? A: An entity represents persisted data and database mapping. A DTO defines the data accepted or returned through an application interface.",
-        "Q: Why should payment APIs support idempotency? A: Clients and gateways may retry requests after timeouts. An idempotency key prevents the same logical payment from being processed more than once.",
-        "Q: What is the purpose of application.yml? A: It stores externalizable application settings such as server ports, datasource properties, logging levels and management endpoint configuration. Secrets should be injected securely rather than committed."
-      ]
     },
     {
       overview: "Java application quality depends on how source code is divided into classes, interfaces and packages. A maintainable Spring Boot codebase gives each component a clear responsibility and keeps business rules independent from infrastructure details. This is especially important when a payment platform grows from one service into multiple services handling authorization, settlement, refunds and notifications.",
@@ -1129,13 +1068,6 @@ const devMavoxDetailedBatch1: Record<number, any[]> = {
         "Inspect the dependency tree and package imports. Confirm that business rules do not directly depend on HTTP controller classes.",
         "Expected result: the controller contains only request handling, the service owns the payment use case, and tests can run without a real payment gateway."
       ],
-      interview: [
-        "Q: What is separation of concerns? A: It means each component has a clearly defined responsibility. For example, controllers handle HTTP, services coordinate business operations and repositories handle persistence.",
-        "Q: Why use interfaces for external integrations? A: Interfaces separate the business use case from a specific provider implementation and allow tests to inject fakes or mocks.",
-        "Q: What is a circular dependency in Spring? A: It occurs when bean A requires bean B while bean B also requires bean A. It often indicates unclear responsibilities or dependency direction.",
-        "Q: What is a DTO? A: A Data Transfer Object defines the fields exchanged across an application boundary without exposing internal persistence details.",
-        "Q: Should every class have an interface? A: No. Interfaces are useful at meaningful boundaries where multiple implementations, testing substitutions or independent contracts are needed."
-      ]
     },
     {
       overview: "Application configuration controls how the same Java code behaves in local development, automated testing, staging and production. Spring Boot supports external configuration through properties, YAML files, environment variables, command-line arguments and configuration providers. A reliable application keeps environment-specific values outside the compiled artifact so that one tested JAR can be promoted through multiple environments.",
@@ -1192,13 +1124,6 @@ const devMavoxDetailedBatch1: Record<number, any[]> = {
         "Inspect the packaged JAR and verify that no real production password is stored in the repository.",
         "Expected result: the same JAR can run with different environment settings, and missing mandatory configuration is detected clearly."
       ],
-      interview: [
-        "Q: Why externalize Spring Boot configuration? A: It allows the same artifact to run in different environments without rebuilding and keeps environment-specific values outside source code.",
-        "Q: What is a Spring profile? A: A profile selects a group of configuration settings for an environment or runtime mode, such as local, staging or production.",
-        "Q: Where should database passwords be stored? A: In a secret manager or protected deployment secret mechanism, not in Git or a committed application.yml file.",
-        "Q: What is configuration property precedence? A: Spring Boot can receive the same property from multiple sources. Higher-precedence sources override lower-precedence defaults according to Spring Boot's configuration rules.",
-        "Q: Why use typed configuration properties? A: They group related settings, support type conversion and validation, and make required configuration easier to maintain."
-      ]
     }
   ],
   2: [
@@ -1262,13 +1187,6 @@ const devMavoxDetailedBatch1: Record<number, any[]> = {
         "Configure a required reviewer and CI status check on a test repository, then verify that an unapproved pull request cannot merge.",
         "Expected result: the pull request contains only the intended change, required checks pass and the merge is blocked until repository rules are satisfied."
       ],
-      interview: [
-        "Q: What is a pull request? A: It is a reviewable proposal to merge changes from one branch into another. It records discussion, approvals and automated validation.",
-        "Q: Why should pull requests be small? A: Smaller changes are easier to understand, test and review. They reduce the chance that unrelated defects are hidden in a large diff.",
-        "Q: What is branch protection? A: Repository rules that prevent unsafe updates by requiring reviews, status checks or other conditions before a protected branch can change.",
-        "Q: What is the difference between a base branch and a compare branch? A: The base branch is the target receiving changes; the compare branch contains the proposed commits.",
-        "Q: Why are CI checks required before merge? A: They provide repeatable evidence that the proposed code meets defined build and test conditions before entering the shared branch."
-      ]
     },
     {
       overview: "A code review is a technical inspection of a proposed change before it becomes part of a shared branch. Reviewers examine correctness, readability, security, performance, test coverage and compatibility with existing behavior. CODEOWNERS can automatically request review from people responsible for particular directories. For a payment platform, changes to authorization, transaction state or database migrations should receive review from engineers who understand those risks.",
@@ -1329,13 +1247,6 @@ const devMavoxDetailedBatch1: Record<number, any[]> = {
         "Enable a required approval rule and verify that the pull request cannot merge before the required review is recorded.",
         "Expected result: ownership is assigned correctly, review feedback is traceable and protected branches enforce the configured approval policy."
       ],
-      interview: [
-        "Q: What is CODEOWNERS? A: It is a repository file that maps paths to responsible users or teams so GitHub can request reviews from the relevant owners.",
-        "Q: Does CODEOWNERS automatically block every merge? A: No. It identifies owners and requests reviews. Repository branch protection or rulesets must require code-owner approval.",
-        "Q: What should a reviewer check in a payment change? A: Business correctness, authorization, idempotency, transaction handling, data validation, logging safety, tests and migration impact.",
-        "Q: What is a stale approval? A: An approval that was given before later code changes. Repository rules can dismiss stale approvals or require approval of the latest revision.",
-        "Q: Why use team ownership instead of one individual? A: Team ownership provides continuity when people change roles or leave and distributes review responsibility."
-      ]
     },
     {
       overview: "Merging integrates reviewed commits from a feature branch into a target branch. Git supports merge commits, squash merges and rebasing workflows. Each strategy produces a different commit history and affects traceability, rollback and collaboration. Teams should choose a consistent strategy that matches their release and audit requirements rather than selecting a merge option randomly for each pull request.",
@@ -1397,13 +1308,6 @@ const devMavoxDetailedBatch1: Record<number, any[]> = {
         "Choose one strategy for a sample team and document why it best supports review, release traceability and rollback.",
         "Expected result: you can explain how each strategy changes commit history and safely integrate a feature without rewriting shared production history."
       ],
-      interview: [
-        "Q: What is a merge commit? A: It is a commit with multiple parents that records the integration of one branch into another while preserving branch history.",
-        "Q: What is squash merging? A: It combines the changes from a pull request into one commit on the target branch, creating a concise history.",
-        "Q: What does git rebase do? A: It replays commits onto a different base commit, producing new commit IDs and often a linear history.",
-        "Q: Why is force-pushing a shared branch dangerous? A: It can rewrite commit references other developers depend on, causing lost work or confusing histories.",
-        "Q: How should a production change be reverted? A: Prefer a reviewed revert commit on the protected branch so the rollback is visible and the published history remains intact."
-      ]
     }
   ]
 };
@@ -1443,7 +1347,6 @@ const devMavoxBulkProfiles: Record<number, any> = {
     recovery: ["Inspect the provider's webhook delivery response and Jenkins system log; correct the endpoint and authentication without exposing the secret.", "Compare the event branch and payload with the job's branch filters; send a test event after correcting the filter.", "Check agent online status, labels, executors and disk capacity; provision or reconnect a suitable agent.", "Run java -version and mvn -version on the actual agent; align its toolchain with the project.", "Verify the credential ID and permissions in Jenkins Credentials; rotate exposed credentials and rerun the job."],
     bestPractices: ["Keep Jenkinsfiles in version control and review pipeline changes like application code.", "Use dedicated, ephemeral agents for untrusted pull requests and isolate build workloads.", "Store secrets in Jenkins Credentials and use credential bindings; never echo secret values.", "Apply timeouts, timestamps, retry policies only for transient operations, and explicit post actions.", "Archive useful build artifacts and test reports; retain logs according to operational policy."],
     exercise: ["Create a test repository with a Jenkinsfile and a small Maven project.", "Configure a webhook for push and pull-request events, then inspect delivery responses.", "Run the pipeline on a labeled agent and verify the exact commit SHA in the console log.", "Break a test intentionally and confirm Jenkins marks the run failed and publishes the report.", "Restore the test and verify the next run succeeds without changing the pipeline definition."],
-    interview: ["How does a Jenkins webhook trigger differ from polling? A webhook sends an event when a repository action occurs, reducing delay and unnecessary requests; polling periodically checks for changes.", "Why use Jenkins agents? Agents isolate build execution, provide the required toolchain and allow jobs to scale without overloading the controller.", "How should credentials be handled? Store them in the credentials store, reference IDs in the pipeline and restrict access to trusted jobs."]
   },
   4: {
     tool: "Apache Maven",
@@ -1457,7 +1360,6 @@ const devMavoxBulkProfiles: Record<number, any> = {
     recovery: ["Inspect the full Maven error and dependency tree; verify coordinates, repository URL, credentials and network access.", "Compare mvn -version on the workstation and CI agent; install the expected JDK and align compiler release settings.", "Inspect Surefire or Failsafe reports and plugin configuration; confirm test naming and lifecycle phase.", "Pin released dependency versions and use controlled repository policies for repeatable builds.", "Run mvn -X only when necessary, identify the failing plugin goal and correct its inputs or version."],
     bestPractices: ["Use explicit dependency and plugin versions rather than relying on environment defaults.", "Use dependencyManagement to centralize versions across modules.", "Separate unit tests from integration tests and bind them to appropriate lifecycle phases.", "Run clean verify in CI so compilation, tests and verification execute consistently.", "Cache the Maven repository safely in CI, but do not treat a cache as the source of truth.", "Publish checksums, test reports and versioned artifacts; avoid mutable release coordinates."],
     exercise: ["Create a minimal Maven Java project with explicit groupId, artifactId and version.", "Run mvn help:effective-pom and identify inherited configuration.", "Add a dependency and inspect its transitive dependencies with dependency:tree.", "Add a failing JUnit test and observe the difference between test and verify.", "Build with clean package and inspect the JAR contents and manifest."],
-    interview: ["What is the difference between package and install? Package creates the distributable artifact; install also places it in the local Maven repository for other local projects.", "Why is verify useful in CI? It executes the lifecycle through verification, allowing configured checks and integration-test validations to run.", "What is the purpose of dependencyManagement? It centralizes dependency versions and configuration without automatically adding every managed dependency."]
   },
   5: {
     tool: "JUnit and Integration Tests",
@@ -1471,7 +1373,6 @@ const devMavoxBulkProfiles: Record<number, any> = {
     recovery: ["Compare runtime versions and environment variables; make timezone, locale and test configuration explicit.", "Add readiness checks and bounded startup waits; verify the test service endpoint before executing tests.", "Remove shared mutable state, isolate test data and replace uncontrolled external calls with deterministic test doubles.", "Map business requirements to test cases and add boundary, failure and authorization tests.", "Inspect test reports and plugin discovery patterns; confirm test classes and naming conventions."],
     bestPractices: ["Test observable behavior rather than private implementation details.", "Keep unit tests fast and deterministic; reserve real infrastructure for integration boundaries.", "Use unique test data and clean up created resources after each test.", "Never use production credentials or production customer data in test environments.", "Publish test reports and preserve failure output for diagnosis.", "Track flaky tests and fix or quarantine them with a clear owner and expiry."],
     exercise: ["Write tests for valid, invalid, minimum and maximum payment amounts.", "Mock a payment gateway timeout and assert the expected error behavior.", "Run an integration test against an isolated test database.", "Intentionally break one assertion and locate the corresponding CI report.", "Run the suite repeatedly to identify hidden ordering or shared-state problems."],
-    interview: ["What is the difference between unit and integration testing? Unit tests isolate a small component; integration tests verify collaboration across real component boundaries.", "When should you mock a dependency? Mock an external boundary when isolation is needed, but retain integration tests to verify the real contract.", "How do you reduce flaky tests? Remove shared state, control time and data, wait for readiness and avoid uncontrolled external dependencies."]
   },
   6: {
     tool: "SonarQube",
@@ -1485,7 +1386,6 @@ const devMavoxBulkProfiles: Record<number, any> = {
     recovery: ["Check DNS, TLS trust, server health and connectivity from the actual CI agent.", "Create or rotate a least-privilege token and inject it through the CI credential store.", "Generate the coverage XML before scanning and verify the configured report path exists.", "Enable quality-gate waiting or poll the analysis task until the server reports a final status.", "Verify project key, branch parameters, source paths and assigned quality profile."],
     bestPractices: ["Use quality gates focused on new code to prevent new debt while managing legacy findings.", "Keep scanner versions and analysis parameters controlled across CI agents.", "Protect tokens and avoid printing them in command output.", "Review security findings with developers and security owners; do not blindly suppress issues.", "Treat coverage as a measure of tested code, not proof that the code is correct."],
     exercise: ["Connect a sample Maven project to a test SonarQube project.", "Generate a coverage report and verify that SonarQube imports it.", "Introduce a code smell and locate the rule and remediation guidance.", "Configure a quality gate and make the pipeline wait for its result.", "Correct the issue and verify that the new analysis passes."],
-    interview: ["What does a quality gate do? It evaluates configured conditions and gives the project a pass or fail status.", "Why can coverage show zero? The coverage report may not exist, may be generated after scanning or may be referenced using the wrong path.", "Why focus on new code? It prevents additional technical debt without requiring an immediate rewrite of every legacy issue."]
   },
   7: {
     tool: "Trivy and Dependency Scanning",
@@ -1499,7 +1399,6 @@ const devMavoxBulkProfiles: Record<number, any> = {
     recovery: ["Update the scanner database and verify the detected target and scanner version.", "Trace the package to its base image or dependency; upgrade to a fixed release and rebuild.", "Revoke exposed credentials immediately, rotate dependent secrets and remove them from source history where appropriate.", "Tag and scan the exact image digest that will be deployed; pass that digest between pipeline stages.", "Review exceptions with security owners, narrow their scope and assign an expiry and remediation owner."],
     bestPractices: ["Scan source dependencies, configuration and final container images at appropriate pipeline points.", "Prefer fixed package versions and trusted minimal base images.", "Keep reports and image digests as release evidence.", "Never assume a clean scan means an application is completely secure.", "Use narrow, time-bound exceptions with documented risk acceptance.", "Do not expose secret values in CI logs or reports."],
     exercise: ["Scan a sample repository and save the JSON report.", "Build a container image and scan the exact image tag and digest.", "Introduce an outdated dependency in a test branch and inspect the finding.", "Upgrade the package and verify the finding is resolved.", "Configure the CI policy to fail on the agreed severity threshold."],
-    interview: ["What is the difference between dependency and image scanning? Dependency scanning inspects application libraries; image scanning also examines operating-system packages and image layers.", "Why scan the final image? The final image contains the actual packages and layers that will run in production.", "Should every finding automatically block a release? Apply a documented risk policy based on severity, fix availability and exposure, with controlled exceptions."]
   },
   8: {
     tool: "Docker",
@@ -1513,7 +1412,6 @@ const devMavoxBulkProfiles: Record<number, any> = {
     recovery: ["Inspect the build context and .dockerignore; verify required files are copied from the correct directory.", "Use multi-stage builds and inspect image layers to remove build-only tools and unnecessary files.", "Check container logs and exit code; run the application in the foreground and correct startup configuration.", "Inspect exposed and published ports and confirm the application listens on 0.0.0.0 inside the container.", "Pin base image versions and build for the target platform; test the same image digest in CI and deployment."],
     bestPractices: ["Use multi-stage builds and minimal trusted base images.", "Run as a non-root user and avoid embedding secrets in image layers.", "Use .dockerignore to reduce context size and prevent accidental secret inclusion.", "Pin important image versions and retain immutable image digests.", "Add health checks and graceful shutdown behavior where appropriate.", "Scan the final image and keep build provenance with the artifact."],
     exercise: ["Write a Dockerfile for a small Java service using a multi-stage build.", "Build the image and inspect its history and size.", "Run it with a port mapping and verify the health endpoint.", "Stop the container and verify that the application handles termination cleanly.", "Rebuild after a source change and compare layer cache behavior."],
-    interview: ["What is a Docker image layer? It is a filesystem change captured as part of an image; reusable layers help caching and distribution.", "Why use multi-stage builds? They separate compilation tools from the runtime image, reducing size and attack surface.", "Why should a container run as non-root? It limits the impact if an application process is compromised."]
   },
   9: {
     tool: "Amazon ECR",
@@ -1527,7 +1425,6 @@ const devMavoxBulkProfiles: Record<number, any> = {
     recovery: ["Authenticate again using the correct region and verify the AWS caller identity.", "Review IAM and repository policies for the required upload actions; avoid granting unrestricted access.", "Confirm account, region and repository URI using ECR describe commands.", "Check the EKS node or workload image-pull access path and validate repository permissions.", "Resolve and deploy by digest; record the digest produced by the successful push."],
     bestPractices: ["Use separate repositories or controlled naming for application images.", "Use IAM roles and short-lived credentials instead of long-lived access keys.", "Enable image scanning and lifecycle policies appropriate to retention requirements.", "Promote the same immutable digest across environments rather than rebuilding for each environment.", "Restrict repository access and audit image publishing identities."],
     exercise: ["Create a test ECR repository in a non-production account.", "Authenticate using an IAM role and push a uniquely tagged image.", "Inspect the image metadata and capture its digest.", "Attempt a push with insufficient permissions and identify the denied action.", "Deploy the exact digest to a test workload and verify that it can be pulled."],
-    interview: ["Why use ECR? It provides managed private container image storage integrated with AWS IAM and deployment services.", "Why is a digest safer than a tag? A digest identifies exact image content, while a tag can be moved to another image.", "What permissions does CI need? Only the repository actions required to authenticate and upload image layers and manifests."]
   },
   10: {
     tool: "Kubernetes and EKS",
@@ -1541,7 +1438,6 @@ const devMavoxBulkProfiles: Record<number, any> = {
     recovery: ["Describe the Pod and inspect events; compare requests, node capacity, taints and placement rules.", "Verify the exact image reference and ECR access from the worker-node identity.", "Inspect current and previous container logs, exit code, environment configuration and mounted secrets.", "Compare Service selectors with Pod labels and verify readiness and target ports.", "Check rollout status and probe events; restore a known-good revision if the release is unsafe."],
     bestPractices: ["Use readiness, liveness and startup probes for distinct health purposes.", "Set realistic CPU and memory requests and limits based on observed workload behavior.", "Use immutable image digests and declarative manifests under version control.", "Separate workloads with namespaces, RBAC and network policies where appropriate.", "Use rolling updates with suitable availability settings and verify application-level health.", "Monitor node capacity, Pod restarts, scheduling failures and API events."],
     exercise: ["Deploy a three-replica test application into a dedicated namespace.", "Expose it through a ClusterIP Service and verify endpoints.", "Change the image to an invalid tag and diagnose ImagePullBackOff.", "Correct the image and perform a rolling update while observing readiness.", "Roll back to the previous revision and verify the application recovers."],
-    interview: ["What is the difference between Deployment and ReplicaSet? Deployment manages rollout history and ReplicaSets; ReplicaSet maintains the requested number of matching Pods.", "Why does a Service need selectors? Selectors identify the Pods that should receive traffic.", "What is the purpose of readiness probes? They determine whether a Pod should receive traffic, independently of whether the container process is running."]
   },
   11: {
     tool: "Helm and Argo CD",
@@ -1555,7 +1451,6 @@ const devMavoxBulkProfiles: Record<number, any> = {
     recovery: ["Run helm lint and helm template with the exact environment values; inspect the rendered manifest before syncing.", "Use Argo CD diff to identify the precise drift and decide whether Git or the cluster should be corrected.", "Review the application destination, service account and Kubernetes RBAC permissions.", "Inspect Pod events, logs, probes and service dependencies; do not equate sync success with healthy service.", "Make approved changes in Git and revert unintended commits instead of relying on manual live edits."],
     bestPractices: ["Keep chart templates reusable and put environment differences in reviewed values files.", "Pin chart and application versions and deploy immutable image digests.", "Use pull requests and protected branches for production configuration changes.", "Restrict Argo CD project destinations, source repositories and sync permissions.", "Use sync waves or hooks only when ordering is required and document their behavior.", "Monitor both synchronization status and actual application health."],
     exercise: ["Create a Helm chart for a small application and render its manifests.", "Create separate values files for development and production.", "Connect a test Git repository to an Argo CD application.", "Change the image digest in Git and observe the OutOfSync state and reconciliation.", "Revert the commit and verify the previous desired state is restored."],
-    interview: ["What is GitOps? GitOps uses version-controlled desired state and automated reconciliation to manage deployed infrastructure or applications.", "What does OutOfSync mean? The live cluster differs from the desired manifests at the tracked Git revision.", "Why is Helm useful with Argo CD? Helm provides reusable templating and release configuration while Argo CD manages Git-based reconciliation."]
   },
   12: {
     tool: "Prometheus and Grafana",
@@ -1569,14 +1464,13 @@ const devMavoxBulkProfiles: Record<number, any> = {
     recovery: ["Inspect the Prometheus Targets page and target error; test endpoint reachability from the Prometheus environment.", "Verify application metrics endpoint, authentication and scrape path; inspect the raw metrics response.", "Use the Prometheus expression browser to inspect available metric names and labels before building complex queries.", "Validate alert rules with promtool and inspect active and pending rule state.", "Test the Grafana data source connection and run the panel query directly in Explore."],
     bestPractices: ["Use service-level indicators such as request rate, error ratio and latency rather than relying only on host CPU.", "Avoid high-cardinality labels such as user IDs, request IDs and unbounded URLs.", "Alert on actionable symptoms and sustained conditions, not every transient metric fluctuation.", "Include ownership, severity, runbook links and clear descriptions in alert annotations.", "Set retention and storage capacity according to metric volume and operational needs.", "Validate dashboards and alerts during normal operation and controlled failure exercises."],
     exercise: ["Expose a test application's metrics endpoint and confirm it returns Prometheus format.", "Configure a scrape job and verify the target is UP.", "Write PromQL queries for request rate and error ratio.", "Create an alert rule and validate it with promtool.", "Build a Grafana dashboard and simulate a controlled error to verify the alert and visualization."],
-    interview: ["What is Prometheus scraping? Prometheus periodically requests metrics from configured targets and stores samples as time series.", "What is label cardinality? It is the number of distinct label combinations; uncontrolled cardinality increases memory and storage costs.", "Why use Grafana with Prometheus? Prometheus stores and queries metrics, while Grafana provides dashboards and visualization across data sources."]
   }
 };
 
 const devMavoxRequiredFields = [
   "overview", "purpose", "architecture", "workflow", "example",
   "commands", "configuration", "failures", "recovery",
-  "bestPractices", "exercise", "interview"
+  "bestPractices", "exercise"
 ];
 
 let devMavoxUpdatedTopics = 0;
@@ -1669,11 +1563,6 @@ for (const stageId of [3,4,5,6,7,8,9,10,11,12]) {
         `Document the expected successful result and at least two failure symptoms for '${title}'.`,
         `Perform a controlled failure in a test environment, collect evidence, apply recovery and verify the final state.`
       ]),
-
-      interview: profile.interview.concat([
-        `How would you troubleshoot '${title}' in production? First identify the failed boundary, inspect its status and logs, verify configuration and permissions, compare with a known-good run, then apply a reversible correction and validate downstream behavior.`,
-        `What evidence should be retained? Keep the relevant source revision, configuration version, command output, logs, test or scan reports and immutable artifact reference.`
-      ])
     };
 
     for (const field of devMavoxRequiredFields) {
@@ -1688,15 +1577,74 @@ for (const stageId of [3,4,5,6,7,8,9,10,11,12]) {
   });
 }
 
-if (devMavoxUpdatedTopics !== 40 || devMavoxUpdatedSections !== 480) {
-  throw new Error(`Unexpected result: ${devMavoxUpdatedTopics} topics, ${devMavoxUpdatedSections} sections.`);
+/*
+ * Final learning model:
+ * 12 stages x exactly 3 topics x exactly 11 learning sections = 396 sections.
+ * Extra historical topics are intentionally excluded from the 12-stage curriculum.
+ */
+for (const stage of stages) {
+  if (!Array.isArray(stage.topics) || stage.topics.length < 3) {
+    throw new Error(`Stage ${stage.id} must contain at least 3 topics before curriculum normalization.`);
+  }
+
+  if (stage.topics.length > 3) {
+    stage.topics.splice(3);
+  }
+
+  for (const topic of stage.topics) {
+    delete (topic as any).interview;
+  }
 }
 
-console.log("DEVMAVOX BULK CONTENT: STAGES 3-12 COMPLETE: 40 TOPICS, 480 SECTIONS");
-console.log("Stages expanded: 10");
-console.log("Topics expanded: " + devMavoxUpdatedTopics);
-console.log("Subsections populated: " + devMavoxUpdatedSections);
+const finalTopicCount = stages.reduce((total, item) => total + item.topics.length, 0);
+const finalSectionCount = finalTopicCount * 11;
+const requiredTopicFields = [
+  "overview", "purpose", "architecture", "workflow", "example",
+  "commands", "configuration", "failures", "recovery",
+  "bestPractices", "exercise"
+];
+
+if (stages.length !== 12 || finalTopicCount !== 36 || finalSectionCount !== 396) {
+  throw new Error(`CI/CD curriculum validation failed: ${stages.length} stages, ${finalTopicCount} topics, ${finalSectionCount} sections.`);
+}
+
+for (const stage of stages) {
+  for (const topic of stage.topics) {
+    for (const field of requiredTopicFields) {
+      if (!(field in topic) || (topic as any)[field] == null) {
+        throw new Error(`Missing learning section '${field}' in Stage ${stage.id}, topic '${topic.title}'.`);
+      }
+    }
+  }
+}
+
+console.log("DEVMAVOX CI/CD CURRICULUM VALIDATION PASSED");
+console.log("Stages: " + stages.length);
+console.log("Topics: " + finalTopicCount);
+console.log("Learning sections: " + finalSectionCount);
+console.log("Sections per topic: 11");
+console.log("Expanded topics processed before curriculum filtering: " + devMavoxUpdatedTopics);
+console.log("Generated section fields processed before curriculum filtering: " + devMavoxUpdatedSections);
+console.log("Interview question content: removed");
 // END DEVMAVOX_BULK_CONTENT_STAGES_3_TO_12
+
+// Expanded stage-specific learning syllabus. Existing stage IDs and simulator remain intact.
+stages.forEach((stage) => {
+  stage.topics = buildCicdStageTopics(stage.id).map((topic) => {
+    const lesson = getCicdTopicLesson(stage.id, topic.title);
+
+    if (!lesson) {
+      throw new Error(
+        `Missing CI/CD lesson for stage ${stage.id}: ${topic.title}`
+      );
+    }
+
+    return {
+      ...topic,
+      ...lesson,
+    };
+  });
+});
 export default function CicdPipelineVisualizerPage() {
   const [selectedStage, setSelectedStage] = useState(0);
   const [selectedTopic, setSelectedTopic] = useState(0);
@@ -1923,7 +1871,9 @@ export default function CicdPipelineVisualizerPage() {
     }
   ];
   const tabs = [
-    ["learning", "Learning Center"],
+    ["start-here", "Start Here"],
+    ["pipeline-overview", "Pipeline Overview"],
+    ["learning", "Learn 12 Stages"],
     ["simulator", "Pipeline Simulator"],
     ["architecture", "Architecture"],
     ["config", "Configuration Library"],
@@ -1933,7 +1883,7 @@ export default function CicdPipelineVisualizerPage() {
     ["monitoring", "Monitoring Lab"],
     ["security", "Security Lab"],
     ["project", "Payment Project"],
-    ["interview", "Interview Prep"],
+
     ["architecture-builder", "Interactive Architecture"],
     ["failure-lab", "Failure Injection Lab"],
     ["fundamentals", "CI/CD Fundamentals"],
@@ -2012,6 +1962,50 @@ export default function CicdPipelineVisualizerPage() {
           ))}
         </nav>
 
+        {activeTab === "start-here" && (
+          <InfoLab
+            title="Start Here — CI/CD for Absolute Beginners"
+            description="Begin with the basic ideas, then follow one payment-service change through a real delivery pipeline. Each item introduces the meaning, why it matters and where it appears in a software team."
+            items={[
+              "01 · What is an application? — A program that performs a task for a user or another system. Example: payment-service accepts a payment request and returns its result.",
+              "02 · What is software development? — The process of understanding a requirement, writing code, testing it and maintaining the application.",
+              "03 · Who is a developer? — An engineer who designs, writes, tests and improves application code.",
+              "04 · What happens after code is written? — The code is reviewed, built, tested, packaged, checked for risk, deployed and monitored.",
+              "05 · What is a server? — A computer or virtual machine that runs an application and responds to requests from users or other systems.",
+              "06 · What is cloud computing? — Renting computing, storage, networking and managed services from a provider such as AWS instead of operating every physical server yourself.",
+              "07 · What is DevOps? — A way for development and operations teams to work together using automation, shared ownership and continuous feedback.",
+              "08 · What is Continuous Integration (CI)? — Frequently combining code changes and automatically building and testing them so integration problems are found early.",
+              "09 · What is Continuous Delivery? — Keeping every validated change ready to release; production may still require an approval.",
+              "10 · What is Continuous Deployment? — Automatically releasing every change that passes the required controls into production.",
+              "11 · What is a CI/CD pipeline? — An automated sequence that takes a source-code change through validation and delivery to a monitored running application."
+            ]}
+          />
+        )}
+
+        {activeTab === "pipeline-overview" && (
+          <InfoLab
+            title="Pipeline Overview — Source Code to Production"
+            description="This is the representative DevMavox payment-service flow. Real organizations may run some checks in parallel or use different tools, but every transition must preserve traceability and release safety."
+            items={[
+              "01 · Developer Code — Java and Spring Boot create the payment-service source code. Output: reviewed source changes and a Git commit.",
+              "02 · Pull Request & Merge — GitHub reviews changes, runs required checks and merges approved code. Output: an accepted commit on the protected branch.",
+              "03 · Pipeline Trigger — GitHub webhook notifies Jenkins. Jenkins controller schedules work on an appropriate build agent. Output: a pipeline run tied to an exact commit SHA.",
+              "04 · Maven Build — Maven resolves dependencies, compiles code and packages the application. Output: a versioned JAR and build evidence.",
+              "05 · Automated Tests — JUnit unit tests and integration tests verify behavior. A failed mandatory test blocks artifact promotion.",
+              "06 · Quality Gate — SonarQube analyzes reliability, maintainability and security findings. Jenkins waits for the actual quality-gate result.",
+              "07 · Security Scanning — Trivy and dependency scanning inspect source dependencies, configuration and later the final image. Findings follow an approved severity and exception policy.",
+              "08 · Docker Build — Docker or BuildKit packages the tested JAR into a container image. Output: a versioned image built from a controlled Dockerfile.",
+              "09 · Push to Registry — Jenkins authenticates to Amazon ECR and publishes the image. Capture the immutable image digest; do not rely only on a movable tag.",
+              "10 · Kubernetes Deployment — Amazon EKS runs the approved image as Pods managed by Deployments and Services. Validate probes, rollout status and smoke tests.",
+              "11 · Release Management — Helm manages release configuration and Argo CD reconciles Kubernetes desired state from Git. Argo CD does not replace the Kubernetes workload runtime.",
+              "12 · Production Monitoring — Prometheus collects metrics and Grafana displays service health. Alerts use request rate, error rate, latency and saturation to guide incident response.",
+              "Production rule — Promote the same tested image digest from development to staging and production. Do not rebuild a different image for each environment.",
+              "Pipeline control — Unit tests, quality analysis and source scans can run in parallel. If a mandatory gate fails, block downstream image publication and deployment; cleanup and report publishing may still run.",
+              "Release safety — Use environment-specific configuration, managed secrets, least-privilege identities, resource requests and limits, readiness/liveness probes, approval gates and tested rollback procedures."
+            ]}
+          />
+        )}
+
         {activeTab === "learning" && (
           <section className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
             <aside className="h-fit rounded-2xl border border-slate-800 bg-[#0c1422] p-4">
@@ -2062,7 +2056,7 @@ export default function CicdPipelineVisualizerPage() {
                 <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
                 <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
                 <LessonSection title="11 · Hands-on Exercise" content={topic.exercise} />
-                <LessonSection title="12 · Interview Questions" list={topic.interview} />
+
               </div>
 
               <div className="mt-8 flex flex-wrap justify-between gap-3 border-t border-slate-800 pt-5">
@@ -2467,7 +2461,6 @@ export default function CicdPipelineVisualizerPage() {
         {activeTab === "monitoring" && <InfoLab title="Production Monitoring Lab" description="Use service-level signals to validate a deployment and identify customer-impacting incidents." items={["Availability — percentage of successful health checks and requests.", "Latency — p50, p95 and p99 response-time trends.", "Traffic — request volume and payment transaction throughput.", "Errors — HTTP 5xx rate, failed transactions and dependency errors.", "Saturation — CPU, memory, Pod capacity and database connection usage.", "Prometheus — scrape application and Kubernetes metrics.", "Grafana — create dashboards for payment request rate, latency and errors.", "Alertmanager — route actionable alerts to the responsible team."]} />}
         {activeTab === "security" && <InfoLab title="DevSecOps Security Lab" description="Security validation is integrated into the delivery pipeline rather than postponed until production." items={["Dependency scanning — identify vulnerable third-party packages.", "Secret scanning — detect accidentally committed credentials.", "SonarQube — analyze bugs, vulnerabilities and maintainability issues.", "Trivy filesystem scan — inspect source dependencies and configuration.", "Trivy image scan — inspect the final container image.", "IAM least privilege — restrict Jenkins push and deployment permissions.", "Container hardening — use minimal images, non-root users and controlled capabilities.", "Kubernetes security — apply RBAC, network policies and secret-management controls.", "Exception management — document owner, reason, compensating control and expiry."]} />}
         {activeTab === "project" && <InfoLab title="Complete Hands-on Payment Application" description="Use this project as a practical learning path. Each milestone corresponds to the 12 pipeline stages." items={["Build a Java Spring Boot payment REST API.", "Create a GitHub repository and feature branch workflow.", "Configure pull request review and branch protection.", "Connect GitHub webhooks to Jenkins.", "Create a Jenkinsfile and Maven build.", "Write JUnit unit and integration tests.", "Configure SonarQube quality gate.", "Add dependency and Trivy security scans.", "Build a versioned Docker image.", "Create an ECR repository and push the image.", "Deploy to EKS using Kubernetes and Helm.", "Connect Argo CD and GitOps deployment configuration.", "Create Prometheus metrics and Grafana dashboards.", "Practice a failed rollout, rollback and production health validation."]} />}
-        {activeTab === "interview" && <InfoLab title="CI/CD Interview Preparation" description="Use these questions to explain the complete delivery lifecycle from source code to production." items={["Explain the complete CI/CD workflow from a developer commit to production.", "What is the difference between continuous integration, delivery and deployment?", "How does a GitHub webhook trigger Jenkins?", "Explain Jenkins controller, agents, executors and workspaces.", "What is the difference between Maven package and verify?", "How do JUnit reports become visible in Jenkins?", "What is a SonarQube quality gate and how is it enforced?", "How do dependency and container image scans differ?", "What is the difference between a Docker image tag and digest?", "How does Jenkins authenticate to Amazon ECR?", "Explain EKS, Deployment, ReplicaSet, Pod and Service.", "How do readiness and liveness probes differ?", "What is Helm and how does Helm rollback work?", "Explain Argo CD sync, drift detection and GitOps.", "How do Prometheus and Grafana work together?", "How would you investigate a production payment API failure?"]} />}
 
         <footer className="mt-8 border-t border-slate-800 py-5 text-center text-xs text-slate-600">
           DevMavox · CI/CD Pipeline Visualizer · Educational simulation — connect real infrastructure separately for live deployments.
