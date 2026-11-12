@@ -40,6 +40,8 @@
     "node_modules",
     "notes-cheat-sheets-backup-20261031-221750",
     "notes-cheat-sheets-backup-20261031-221759",
-    "notes-cheat-sheets-backup-*"
+    "notes-cheat-sheets-backup-*",
+    "**/*backup*/**",
+    "**/notes-retry-backup*/**"
   ]
 }

@@ -21,19 +21,57 @@ function makeLesson(
 }
 
 export const stageFourLessonOverrides: Record<string, CicdTopicLesson> = {
-  "4|Maven Fundamentals": makeLesson(
-    "Maven is a Java build automation and project management tool. It standardizes how developers compile source code, resolve dependencies, run tests, package applications, and prepare releases. Maven uses a declarative project configuration instead of requiring developers to manually write every build operation.",
-    "Maven reduces differences between developer machines and CI/CD servers. Teams use it to create repeatable builds, manage third-party libraries, execute automated tests, and produce deployable JAR or WAR artifacts.",
-    "A Maven project normally contains pom.xml, src/main/java, src/main/resources, src/test/java, and target. The Maven command-line tool reads pom.xml, resolves plugins and dependencies, executes lifecycle phases, and writes generated output into target.",
-    ["Developer checks out the Java project from Git.", "Maven reads the project's pom.xml file.", "Maven resolves required plugins and dependencies.", "The compiler plugin compiles application source code.", "The test plugins execute automated tests.", "The packaging phase creates a JAR or WAR artifact.", "The CI pipeline publishes the generated artifact."],
-    "A payment application uses Maven to compile Java services, download Spring dependencies, execute unit tests, and create payment-service.jar. Jenkins can run mvn clean verify before publishing the artifact.",
-    ["mvn -version", "mvn validate", "mvn compile", "mvn test", "mvn package", "mvn verify", "mvn clean package", "mvn clean verify"],
-    "The pom.xml file defines groupId, artifactId, version, packaging, properties, dependencies, build plugins, and repositories. A typical project uses the Maven compiler plugin and a suitable Java release version.",
-    ["Maven command fails because Java is not installed.", "Dependency resolution fails because the repository is unreachable.", "Compilation fails because the configured Java version is incorrect.", "Tests fail and prevent successful packaging."],
-    ["Check java -version and mvn -version.", "Verify Maven settings and repository connectivity.", "Compare the configured Java release with the installed JDK.", "Run mvn test and inspect the first failing test."],
-    ["Commit pom.xml to source control.", "Use repeatable Maven lifecycle commands in CI.", "Pin important plugin versions.", "Keep credentials outside source-controlled project files.", "Run tests before publishing artifacts."],
-    "Create a small Java Maven project, inspect its directory structure, run mvn clean verify, and identify the generated artifact inside target."
-  ),
+  "4|Maven Fundamentals": {
+    overview: "Apache Maven is a build automation and project management tool mainly used for Java applications. It provides a standard way to describe a project and execute repeatable build operations. Developers use Maven to validate a project, compile application source code, execute automated tests, and generate build output. Maven reads the project definition and coordinates the work required to produce a consistent build.",
+    purpose: "Maven removes the need for every developer to maintain a different manual build procedure. A team can keep its build definition with the application source code and use the same Maven commands on developer workstations and CI agents. This makes build execution easier to reproduce, review, troubleshoot, and automate. Maven is commonly used when Java applications must be built consistently before they are released.",
+    architecture: "A Maven-based project has a project descriptor named pom.xml, application source files, test source files, and generated build output. The Maven command-line interface starts a build request. Maven reads the project descriptor and constructs the project model. It coordinates the required build operations and uses dependencies and plugins when the requested operation needs them. Conventional source directories include src/main/java for application code, src/main/resources for application resources, and src/test/java for test code. Generated output is normally placed in target.",
+    workflow: [
+      "A developer checks out the Java application repository from source control.",
+      "The developer opens a terminal in the project root where pom.xml is located.",
+      "The developer runs a Maven command for the required build operation.",
+      "Maven reads pom.xml and constructs the project model.",
+      "Maven identifies the build work required by the requested command.",
+      "Maven executes the required operations and reports their results.",
+      "Generated files are written into the project's target directory.",
+      "The developer or CI pipeline reviews the result before accepting the build."
+    ],
+    example: "Consider a DevMavox order-service application maintained by a Java development team. The repository contains Java source code, automated tests, and a pom.xml file. A developer runs mvn clean verify from the project root. Maven reads the project definition, performs the requested build work, and reports whether the project completed successfully. A Jenkins agent can execute the same command against a checked-out commit so that the CI result reflects the committed source code rather than a developer's local build output.",
+    commands: [
+      "mvn -version — display the Maven version and Java runtime information used by Maven.",
+      "mvn validate — check whether the project is correctly described and ready for build processing.",
+      "mvn compile — compile the project's main application source code.",
+      "mvn test — execute the project's automated tests.",
+      "mvn package — create the configured distributable package.",
+      "mvn verify — execute the checks required to verify the built project.",
+      "mvn clean verify — remove previous generated output and perform a fresh verification build."
+    ],
+    configuration: "The pom.xml file is the project-level build descriptor Maven reads when executing a project build. It identifies the project and declares the information needed to understand its build. Keep this file in the repository root and commit it to source control. Follow the conventional Maven directory structure so developers, IDEs, and CI agents can locate application code, resources, and tests consistently. Treat target as generated output rather than the source of truth for application code.",
+    failures: [
+      "Maven reports that no POM file is available because the command was executed outside the intended project directory.",
+      "Maven cannot read the project because pom.xml contains malformed XML.",
+      "The build stops because application source code contains compilation errors.",
+      "The requested build operation reports failure because an automated test did not pass.",
+      "A developer assumes that an old file in target represents the result of the latest build even though the current build failed."
+    ],
+    recovery: [
+      "Use Get-Location or pwd to confirm the current directory and verify that the intended pom.xml exists there.",
+      "Read the POM parsing error and correct the malformed XML before running the build again.",
+      "Inspect the first relevant compiler error and correct the reported Java source problem.",
+      "Identify the failing test from the test output and correct the application behavior or test expectation.",
+      "Run mvn clean verify again and confirm that the command finishes successfully before using its generated output.",
+      "Preserve the complete Maven console output when reporting a build failure so the cause can be diagnosed."
+    ],
+    bestPractices: [
+      "Keep the Maven project definition and application source code together in source control.",
+      "Use the standard Maven directory structure unless the project has a documented reason to use another layout.",
+      "Run build commands from the correct project root.",
+      "Use consistent Maven commands in local development and CI pipelines.",
+      "Review the actual command result instead of assuming that an artifact exists because a previous build created one.",
+      "Keep generated build output separate from maintained application source code.",
+      "Read the first meaningful build error before attempting repeated builds."
+    ],
+    exercise: "Create a small Java Maven project and inspect its project root, pom.xml, application source directory, test source directory, and target directory. Run mvn validate, mvn compile, mvn test, and mvn package. Record what each command reports and identify which files are generated by the build. Finally, run mvn clean verify and explain how the same command can be used by a CI agent to check a committed application revision."
+  },
 
   "4|Maven Installation": makeLesson(
     "Maven installation makes the Maven command-line build tool available on a developer workstation or CI agent. Maven requires a compatible Java Development Kit because Maven itself runs on the JVM and Java projects usually require compiler tooling.",
