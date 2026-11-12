@@ -1,0 +1,443 @@
+
+  app\cicd-pipeline-visualizer\page.tsx:1642:    return {
+  app\cicd-pipeline-visualizer\page.tsx:1643:      ...topic,
+  app\cicd-pipeline-visualizer\page.tsx:1644:      ...lesson,
+  app\cicd-pipeline-visualizer\page.tsx:1645:    };
+  app\cicd-pipeline-visualizer\page.tsx:1646:  });
+  app\cicd-pipeline-visualizer\page.tsx:1647:});
+  app\cicd-pipeline-visualizer\page.tsx:1648:export default function CicdPipelineVisualizerPage() {
+  app\cicd-pipeline-visualizer\page.tsx:1649:  const [selectedStage, setSelectedStage] = useState(0);
+> app\cicd-pipeline-visualizer\page.tsx:1650:  const [selectedTopic, setSelectedTopic] = useState(0);
+  app\cicd-pipeline-visualizer\page.tsx:1651:  const [builderStage, setBuilderStage] = useState(0);
+  app\cicd-pipeline-visualizer\page.tsx:1652:  const [selectedFailure, setSelectedFailure] = useState(0);
+  app\cicd-pipeline-visualizer\page.tsx:1653:  const [failureSimulated, setFailureSimulated] = useState(false);
+  app\cicd-pipeline-visualizer\page.tsx:1654:  const [selectedExtraTopic, setSelectedExtraTopic] = useState(0);
+  app\cicd-pipeline-visualizer\page.tsx:1655:  const [statuses, setStatuses] = useState<string[]>(stages.map(() => "pending"));
+  app\cicd-pipeline-visualizer\page.tsx:1656:  const [logs, setLogs] = useState<string[]>(["Pipeline ready. Select Run Pipeline to begin."]);
+  app\cicd-pipeline-visualizer\page.tsx:1657:  const [artifacts, setArtifacts] = useState<string[]>([]);
+  app\cicd-pipeline-visualizer\page.tsx:1658:  const [running, setRunning] = useState(false);
+  app\cicd-pipeline-visualizer\page.tsx:1659:  const [paused, setPaused] = useState(false);
+  app\cicd-pipeline-visualizer\page.tsx:1660:  const [completed, setCompleted] = useState(false);
+  app\cicd-pipeline-visualizer\page.tsx:1661:  const [failureStage, setFailureStage] = useState("none");
+  app\cicd-pipeline-visualizer\page.tsx:1662:  const [activeTab, setActiveTab] = useState("learning");
+  app\cicd-pipeline-visualizer\page.tsx:1663:  const [runNumber, setRunNumber] = useState(0);
+  app\cicd-pipeline-visualizer\page.tsx:1664:  const [durations, setDurations] = useState<number[]>([]);
+  app\cicd-pipeline-visualizer\page.tsx:1665:  const stopRef = useRef(false);
+  app\cicd-pipeline-visualizer\page.tsx:1666:  const pauseRef = useRef(false);
+  app\cicd-pipeline-visualizer\page.tsx:1667:  const runningRef = useRef(false);
+  app\cicd-pipeline-visualizer\page.tsx:1668:
+  app\cicd-pipeline-visualizer\page.tsx:1669:  const stage = stages[selectedStage];
+> app\cicd-pipeline-visualizer\page.tsx:1670:  const topic = stage.topics[selectedTopic] ?? stage.topics[0];
+  app\cicd-pipeline-visualizer\page.tsx:1671:  const successCount = statuses.filter(s => s === "success").length;
+  app\cicd-pipeline-visualizer\page.tsx:1672:  const failedCount = statuses.filter(s => s === "failed").length;
+  app\cicd-pipeline-visualizer\page.tsx:1673:  const progress = Math.round((successCount / stages.length) * 100);
+  app\cicd-pipeline-visualizer\page.tsx:1674:
+  app\cicd-pipeline-visualizer\page.tsx:1675:  useEffect(() => {
+  app\cicd-pipeline-visualizer\page.tsx:1676:    pauseRef.current = paused;
+  app\cicd-pipeline-visualizer\page.tsx:1677:  }, [paused]);
+  app\cicd-pipeline-visualizer\page.tsx:1678:
+  app\cicd-pipeline-visualizer\page.tsx:1679:  const addLog = (message: string) => {
+  app\cicd-pipeline-visualizer\page.tsx:1680:    setLogs(old => [`[${new Date().toLocaleTimeString()}] ${message}`, ...old].slice(0, 100));
+  app\cicd-pipeline-visualizer\page.tsx:1681:  };
+  app\cicd-pipeline-visualizer\page.tsx:1682:
+  app\cicd-pipeline-visualizer\page.tsx:1698:    setPaused(false);
+  app\cicd-pipeline-visualizer\page.tsx:1699:    setCompleted(false);
+  app\cicd-pipeline-visualizer\page.tsx:1700:    setRunNumber(n => n + 1);
+  app\cicd-pipeline-visualizer\page.tsx:1701:
+  app\cicd-pipeline-visualizer\page.tsx:1702:    for (let i = startAt; i < stages.length; i++) {
+  app\cicd-pipeline-visualizer\page.tsx:1703:      if (stopRef.current) break;
+  app\cicd-pipeline-visualizer\page.tsx:1704:
+  app\cicd-pipeline-visualizer\page.tsx:1705:      setSelectedStage(i);
+> app\cicd-pipeline-visualizer\page.tsx:1706:      setSelectedTopic(0);
+  app\cicd-pipeline-visualizer\page.tsx:1707:      setStatuses(old => old.map((s, index) => index < i ? s : index === i ? "running" : "pending"));
+  app\cicd-pipeline-visualizer\page.tsx:1708:      addLog(`Stage ${i + 1}: ${stages[i].name} started.`);
+  app\cicd-pipeline-visualizer\page.tsx:1709:
+  app\cicd-pipeline-visualizer\page.tsx:1710:      const start = Date.now();
+  app\cicd-pipeline-visualizer\page.tsx:1711:      const shouldFail = failureStage === String(i);
+  app\cicd-pipeline-visualizer\page.tsx:1712:
+  app\cicd-pipeline-visualizer\page.tsx:1713:      const continued = await wait(shouldFail ? 1300 : 1100);
+  app\cicd-pipeline-visualizer\page.tsx:1714:      if (!continued) break;
+  app\cicd-pipeline-visualizer\page.tsx:1715:
+  app\cicd-pipeline-visualizer\page.tsx:1716:      if (shouldFail) {
+  app\cicd-pipeline-visualizer\page.tsx:1717:        setStatuses(old => old.map((s, index) => index === i ? "failed" : index > i ? "blocked" : s));
+  app\cicd-pipeline-visualizer\page.tsx:1718:        setDurations(old => [...old, Date.now() - start]);
+  app\cicd-pipeline-visualizer\page.tsx:1927:              <p className="text-xs text-slate-500">Select any stage to explore its lessons and implementation.</p>
+  app\cicd-pipeline-visualizer\page.tsx:1928:            </div>
+  app\cicd-pipeline-visualizer\page.tsx:1929:            <span className="rounded-lg border border-slate-700 px-3 py-1 text-xs text-slate-400">LEFT → RIGHT FLOW</span>
+  app\cicd-pipeline-visualizer\page.tsx:1930:          </div>
+  app\cicd-pipeline-visualizer\page.tsx:1931:          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
+  app\cicd-pipeline-visualizer\page.tsx:1932:            {stages.map((item, index) => (
+  app\cicd-pipeline-visualizer\page.tsx:1933:              <button
+  app\cicd-pipeline-visualizer\page.tsx:1934:                key={item.id}
+> app\cicd-pipeline-visualizer\page.tsx:1935:                onClick={() => { setSelectedStage(index); setSelectedTopic(0); setActiveTab("learning"); }}
+  app\cicd-pipeline-visualizer\page.tsx:1936:                className={`relative rounded-xl border p-3 text-left transition hover:-translate-y-0.5 hover:border-cyan-500/60 ${
+  app\cicd-pipeline-visualizer\page.tsx:1937:                  selectedStage === index ? "border-cyan-400 bg-cyan-500/10 ring-1 ring-cyan-500/30" : statusStyles[statuses[index]]
+  app\cicd-pipeline-visualizer\page.tsx:1938:                }`}
+  app\cicd-pipeline-visualizer\page.tsx:1939:              >
+  app\cicd-pipeline-visualizer\page.tsx:1940:                <div className="flex items-center justify-between">
+  app\cicd-pipeline-visualizer\page.tsx:1941:                  <span className="text-xl">{item.icon}</span>
+  app\cicd-pipeline-visualizer\page.tsx:1942:                  <span className="text-[10px] font-bold">STAGE {String(item.id).padStart(2, "0")}</span>
+  app\cicd-pipeline-visualizer\page.tsx:1943:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:1944:                <div className="mt-2 text-sm font-bold">{item.name}</div>
+  app\cicd-pipeline-visualizer\page.tsx:1945:                <div className="mt-1 text-[11px] text-slate-500">{item.tool}</div>
+  app\cicd-pipeline-visualizer\page.tsx:1946:                <div className="mt-3 text-[10px] font-semibold uppercase tracking-wide">
+  app\cicd-pipeline-visualizer\page.tsx:1947:                  {statuses[index] === "success" ? "✓ Completed" : statuses[index] === "running" ? "● Running" : statuses[index] === "failed" ? "✕ Failed" : statuses[index] === "blocked" ? "⊘ 
+Blocked" : "○ Pending"}
+  app\cicd-pipeline-visualizer\page.tsx:2011:            <aside className="h-fit rounded-2xl border border-slate-800 bg-[#0c1422] p-4">
+  app\cicd-pipeline-visualizer\page.tsx:2012:              <div className="mb-4">
+  app\cicd-pipeline-visualizer\page.tsx:2013:                <div className="text-xs font-bold uppercase tracking-widest text-cyan-400">Course navigation</div>
+  app\cicd-pipeline-visualizer\page.tsx:2014:                <h3 className="mt-2 text-lg font-bold">{stage.name}</h3>
+  app\cicd-pipeline-visualizer\page.tsx:2015:                <p className="mt-1 text-xs text-slate-500">{stage.tool}</p>
+  app\cicd-pipeline-visualizer\page.tsx:2016:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2017:              <div className="space-y-2">
+  app\cicd-pipeline-visualizer\page.tsx:2018:                {stage.topics.map((item, index) => (
+> app\cicd-pipeline-visualizer\page.tsx:2019:                  <button key={item.title} onClick={() => setSelectedTopic(index)} className={`w-full rounded-xl border p-3 text-left text-sm transition ${selectedTopic === index ? 
+"border-cyan-500/60 bg-cyan-500/10 text-cyan-200" : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-600 hover:text-white"}`}>
+  app\cicd-pipeline-visualizer\page.tsx:2020:                    <span className="mr-2 text-xs text-slate-600">{String(index + 1).padStart(2, "0")}</span>{item.title}
+  app\cicd-pipeline-visualizer\page.tsx:2021:                  </button>
+  app\cicd-pipeline-visualizer\page.tsx:2022:                ))}
+  app\cicd-pipeline-visualizer\page.tsx:2023:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2024:              <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950 p-3">
+  app\cicd-pipeline-visualizer\page.tsx:2025:                <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Stage input</div>
+  app\cicd-pipeline-visualizer\page.tsx:2026:                <p className="mt-1 text-xs text-slate-300">{stage.input}</p>
+  app\cicd-pipeline-visualizer\page.tsx:2027:                <div className="mt-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">Stage output</div>
+  app\cicd-pipeline-visualizer\page.tsx:2028:                <p className="mt-1 text-xs text-emerald-300">{stage.output}</p>
+  app\cicd-pipeline-visualizer\page.tsx:2029:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2030:            </aside>
+  app\cicd-pipeline-visualizer\page.tsx:2031:
+  app\cicd-pipeline-visualizer\page.tsx:2055:                <LessonSection title="08 · Common Failures" list={topic.failures} />
+  app\cicd-pipeline-visualizer\page.tsx:2056:                <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
+  app\cicd-pipeline-visualizer\page.tsx:2057:                <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
+  app\cicd-pipeline-visualizer\page.tsx:2058:                <LessonSection title="11 · Hands-on Exercise" content={topic.exercise} />
+  app\cicd-pipeline-visualizer\page.tsx:2059:
+  app\cicd-pipeline-visualizer\page.tsx:2060:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2061:
+  app\cicd-pipeline-visualizer\page.tsx:2062:              <div className="mt-8 flex flex-wrap justify-between gap-3 border-t border-slate-800 pt-5">
+> app\cicd-pipeline-visualizer\page.tsx:2063:                <button disabled={selectedStage === 0} onClick={() => { setSelectedStage(s => s - 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm 
+text-slate-300 disabled:opacity-30">← Previous stage</button>
+  app\cicd-pipeline-visualizer\page.tsx:2064:                <button onClick={() => setActiveTab("simulator")} className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 hover:bg-cyan-400">Open simulator →</button>
+> app\cicd-pipeline-visualizer\page.tsx:2065:                <button disabled={selectedStage === 11} onClick={() => { setSelectedStage(s => s + 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm 
+text-slate-300 disabled:opacity-30">Next stage →</button>
+  app\cicd-pipeline-visualizer\page.tsx:2066:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2067:            </article>
+  app\cicd-pipeline-visualizer\page.tsx:2068:          </section>
+  app\cicd-pipeline-visualizer\page.tsx:2069:        )}
+  app\cicd-pipeline-visualizer\page.tsx:2070:
+  app\cicd-pipeline-visualizer\page.tsx:2071:        {(activeTab === "fundamentals" || activeTab === "architecture-library") && selectedExtraTopicData && (
+  app\cicd-pipeline-visualizer\page.tsx:2072:          <section className="grid gap-5 lg:grid-cols-[300px_minmax(0,1fr)]">
+  app\cicd-pipeline-visualizer\page.tsx:2073:
+  app\cicd-pipeline-visualizer\page.tsx:2074:            <aside className="h-fit rounded-2xl border border-slate-800 bg-[#0c1422] p-4">
+  app\cicd-pipeline-visualizer\page.tsx:2075:              <div className="mb-4">
+  app\cicd-pipeline-visualizer\page.tsx:2076:                <div className="text-xs font-bold uppercase tracking-widest text-cyan-400">
+  app\cicd-pipeline-visualizer\page.tsx:2077:                  {activeTab === "fundamentals" ? "CI/CD FUNDAMENTALS" : "ARCHITECTURE DEEP DIVE"}
+  app\cicd-pipeline-visualizer\page.tsx:2256:              <div className="mt-6">
+  app\cicd-pipeline-visualizer\page.tsx:2257:                <h4 className="font-bold">Related learning topics</h4>
+  app\cicd-pipeline-visualizer\page.tsx:2258:                <div className="mt-3 grid gap-2 md:grid-cols-3">
+  app\cicd-pipeline-visualizer\page.tsx:2259:                  {stages[builderStage].topics.map((topic, index) => (
+  app\cicd-pipeline-visualizer\page.tsx:2260:                    <button
+  app\cicd-pipeline-visualizer\page.tsx:2261:                      key={topic.title}
+  app\cicd-pipeline-visualizer\page.tsx:2262:                      onClick={() => {
+  app\cicd-pipeline-visualizer\page.tsx:2263:                        setSelectedStage(builderStage);
+> app\cicd-pipeline-visualizer\page.tsx:2264:                        setSelectedTopic(index);
+  app\cicd-pipeline-visualizer\page.tsx:2265:                        setActiveTab("learning");
+  app\cicd-pipeline-visualizer\page.tsx:2266:                      }}
+  app\cicd-pipeline-visualizer\page.tsx:2267:                      className="rounded-xl border border-slate-800 bg-slate-950 p-3 text-left text-sm text-slate-300 hover:border-cyan-500/50"
+  app\cicd-pipeline-visualizer\page.tsx:2268:                    >
+  app\cicd-pipeline-visualizer\page.tsx:2269:                      <span className="text-xs text-cyan-400">TOPIC {index + 1}</span>
+  app\cicd-pipeline-visualizer\page.tsx:2270:                      <div className="mt-1 font-semibold">{topic.title}</div>
+  app\cicd-pipeline-visualizer\page.tsx:2271:                    </button>
+  app\cicd-pipeline-visualizer\page.tsx:2272:                  ))}
+  app\cicd-pipeline-visualizer\page.tsx:2273:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2274:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2275:
+  app\cicd-pipeline-visualizer\page.tsx:2276:              <div className="mt-6 flex justify-between gap-3 border-t border-slate-800 pt-5">
+  app\cicd-pipeline-visualizer\page.tsx:2396:                  <Metric label="Pipeline progress" value={`${progress}%`} />
+  app\cicd-pipeline-visualizer\page.tsx:2397:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2398:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2399:
+  app\cicd-pipeline-visualizer\page.tsx:2400:              <div className="rounded-2xl border border-slate-800 bg-[#0c1422] p-5">
+  app\cicd-pipeline-visualizer\page.tsx:2401:                <h3 className="font-bold">Execution stages</h3>
+  app\cicd-pipeline-visualizer\page.tsx:2402:                <div className="mt-4 space-y-2">
+  app\cicd-pipeline-visualizer\page.tsx:2403:                  {stages.map((item, index) => (
+> app\cicd-pipeline-visualizer\page.tsx:2404:                    <button key={item.id} onClick={() => { setSelectedStage(index); setSelectedTopic(0); }} className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left 
+${statusStyles[statuses[index]]}`}>
+  app\cicd-pipeline-visualizer\page.tsx:2405:                      <span className="text-lg">{item.icon}</span>
+  app\cicd-pipeline-visualizer\page.tsx:2406:                      <span className="min-w-0 flex-1"><span className="block text-sm font-bold">{item.id}. {item.name}</span><span className="block truncate text-[11px] 
+opacity-70">{item.tool}</span></span>
+  app\cicd-pipeline-visualizer\page.tsx:2407:                      <span className="text-[10px] font-bold">{statuses[index].toUpperCase()}</span>
+  app\cicd-pipeline-visualizer\page.tsx:2408:                    </button>
+  app\cicd-pipeline-visualizer\page.tsx:2409:                  ))}
+  app\cicd-pipeline-visualizer\page.tsx:2410:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2411:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2412:
+  app\cicd-pipeline-visualizer\page.tsx:2413:              <div className="rounded-2xl border border-slate-800 bg-[#0c1422] p-5">
+  app\cicd-pipeline-visualizer\page.tsx:2414:                <h3 className="font-bold">Pipeline execution logs</h3>
+  app\cicd-pipeline-visualizer\page.tsx:2415:                <div className="mt-3 max-h-80 space-y-2 overflow-y-auto rounded-xl bg-[#050911] p-4 font-mono text-xs">
+  app\cicd-pipeline-visualizer\page.tsx:2416:                  {logs.map((log, i) => <div key={i} className={log.includes("ERROR") || log.includes("FAILED") ? "text-red-300" : log.includes("success") || log.includes("SUCCESS") ? 
+"text-emerald-300" : "text-slate-400"}>{log}</div>)}
+  app\cicd-pipeline-visualizer\page.tsx:2035:                  <div className="text-xs font-bold uppercase tracking-widest text-cyan-400">Stage {stage.id} / 12 · {stage.tool}</div>
+  app\cicd-pipeline-visualizer\page.tsx:2036:                  <h2 className="mt-2 text-2xl font-black">{topic.title}</h2>
+  app\cicd-pipeline-visualizer\page.tsx:2037:                  <p className="mt-2 text-sm text-slate-400">{stage.summary}</p>
+  app\cicd-pipeline-visualizer\page.tsx:2038:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2039:                <span className={`rounded-full border px-3 py-1 text-xs font-bold ${statusStyles[statuses[selectedStage]]}`}>{statuses[selectedStage].toUpperCase()}</span>
+  app\cicd-pipeline-visualizer\page.tsx:2040:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2041:
+  app\cicd-pipeline-visualizer\page.tsx:2042:              <div className="mt-6 space-y-6">
+> app\cicd-pipeline-visualizer\page.tsx:2043:                <LessonSection title="01 · Concept and Definition" content={topic.overview} />
+  app\cicd-pipeline-visualizer\page.tsx:2044:                <LessonSection title="02 · Purpose and Business Value" content={topic.purpose} />
+  app\cicd-pipeline-visualizer\page.tsx:2045:                <LessonSection title="03 · Architecture" content={topic.architecture} />
+  app\cicd-pipeline-visualizer\page.tsx:2046:                <LessonSection title="04 · Production Workflow" list={topic.workflow} />
+  app\cicd-pipeline-visualizer\page.tsx:2047:                <LessonSection title="05 · Real Payment Application Example" content={topic.example} />
+  app\cicd-pipeline-visualizer\page.tsx:2048:                <div>
+  app\cicd-pipeline-visualizer\page.tsx:2049:                  <SectionHeading title="06 · Practical Commands" />
+  app\cicd-pipeline-visualizer\page.tsx:2050:                  <div className="mt-3 space-y-2">
+  app\cicd-pipeline-visualizer\page.tsx:2051:                    {topic.commands.map((command, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"><code 
+className="overflow-x-auto text-xs text-emerald-300">{command}</code><button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 
+hover:text-white">Copy</button></div>)}
+  app\cicd-pipeline-visualizer\page.tsx:2052:                  </div>
+  app\cicd-pipeline-visualizer\page.tsx:2053:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2054:                <LessonSection title="07 · Configuration Example" content={topic.configuration} />
+  app\cicd-pipeline-visualizer\page.tsx:2055:                <LessonSection title="08 · Common Failures" list={topic.failures} />
+  app\cicd-pipeline-visualizer\page.tsx:2036:                  <h2 className="mt-2 text-2xl font-black">{topic.title}</h2>
+  app\cicd-pipeline-visualizer\page.tsx:2037:                  <p className="mt-2 text-sm text-slate-400">{stage.summary}</p>
+  app\cicd-pipeline-visualizer\page.tsx:2038:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2039:                <span className={`rounded-full border px-3 py-1 text-xs font-bold ${statusStyles[statuses[selectedStage]]}`}>{statuses[selectedStage].toUpperCase()}</span>
+  app\cicd-pipeline-visualizer\page.tsx:2040:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2041:
+  app\cicd-pipeline-visualizer\page.tsx:2042:              <div className="mt-6 space-y-6">
+  app\cicd-pipeline-visualizer\page.tsx:2043:                <LessonSection title="01 · Concept and Definition" content={topic.overview} />
+> app\cicd-pipeline-visualizer\page.tsx:2044:                <LessonSection title="02 · Purpose and Business Value" content={topic.purpose} />
+  app\cicd-pipeline-visualizer\page.tsx:2045:                <LessonSection title="03 · Architecture" content={topic.architecture} />
+  app\cicd-pipeline-visualizer\page.tsx:2046:                <LessonSection title="04 · Production Workflow" list={topic.workflow} />
+  app\cicd-pipeline-visualizer\page.tsx:2047:                <LessonSection title="05 · Real Payment Application Example" content={topic.example} />
+  app\cicd-pipeline-visualizer\page.tsx:2048:                <div>
+  app\cicd-pipeline-visualizer\page.tsx:2049:                  <SectionHeading title="06 · Practical Commands" />
+  app\cicd-pipeline-visualizer\page.tsx:2050:                  <div className="mt-3 space-y-2">
+  app\cicd-pipeline-visualizer\page.tsx:2051:                    {topic.commands.map((command, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"><code 
+className="overflow-x-auto text-xs text-emerald-300">{command}</code><button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 
+hover:text-white">Copy</button></div>)}
+  app\cicd-pipeline-visualizer\page.tsx:2052:                  </div>
+  app\cicd-pipeline-visualizer\page.tsx:2053:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2054:                <LessonSection title="07 · Configuration Example" content={topic.configuration} />
+  app\cicd-pipeline-visualizer\page.tsx:2055:                <LessonSection title="08 · Common Failures" list={topic.failures} />
+  app\cicd-pipeline-visualizer\page.tsx:2056:                <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
+  app\cicd-pipeline-visualizer\page.tsx:2037:                  <p className="mt-2 text-sm text-slate-400">{stage.summary}</p>
+  app\cicd-pipeline-visualizer\page.tsx:2038:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2039:                <span className={`rounded-full border px-3 py-1 text-xs font-bold ${statusStyles[statuses[selectedStage]]}`}>{statuses[selectedStage].toUpperCase()}</span>
+  app\cicd-pipeline-visualizer\page.tsx:2040:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2041:
+  app\cicd-pipeline-visualizer\page.tsx:2042:              <div className="mt-6 space-y-6">
+  app\cicd-pipeline-visualizer\page.tsx:2043:                <LessonSection title="01 · Concept and Definition" content={topic.overview} />
+  app\cicd-pipeline-visualizer\page.tsx:2044:                <LessonSection title="02 · Purpose and Business Value" content={topic.purpose} />
+> app\cicd-pipeline-visualizer\page.tsx:2045:                <LessonSection title="03 · Architecture" content={topic.architecture} />
+  app\cicd-pipeline-visualizer\page.tsx:2046:                <LessonSection title="04 · Production Workflow" list={topic.workflow} />
+  app\cicd-pipeline-visualizer\page.tsx:2047:                <LessonSection title="05 · Real Payment Application Example" content={topic.example} />
+  app\cicd-pipeline-visualizer\page.tsx:2048:                <div>
+  app\cicd-pipeline-visualizer\page.tsx:2049:                  <SectionHeading title="06 · Practical Commands" />
+  app\cicd-pipeline-visualizer\page.tsx:2050:                  <div className="mt-3 space-y-2">
+  app\cicd-pipeline-visualizer\page.tsx:2051:                    {topic.commands.map((command, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"><code 
+className="overflow-x-auto text-xs text-emerald-300">{command}</code><button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 
+hover:text-white">Copy</button></div>)}
+  app\cicd-pipeline-visualizer\page.tsx:2052:                  </div>
+  app\cicd-pipeline-visualizer\page.tsx:2053:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2054:                <LessonSection title="07 · Configuration Example" content={topic.configuration} />
+  app\cicd-pipeline-visualizer\page.tsx:2055:                <LessonSection title="08 · Common Failures" list={topic.failures} />
+  app\cicd-pipeline-visualizer\page.tsx:2056:                <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
+  app\cicd-pipeline-visualizer\page.tsx:2057:                <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
+  app\cicd-pipeline-visualizer\page.tsx:2038:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2039:                <span className={`rounded-full border px-3 py-1 text-xs font-bold ${statusStyles[statuses[selectedStage]]}`}>{statuses[selectedStage].toUpperCase()}</span>
+  app\cicd-pipeline-visualizer\page.tsx:2040:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2041:
+  app\cicd-pipeline-visualizer\page.tsx:2042:              <div className="mt-6 space-y-6">
+  app\cicd-pipeline-visualizer\page.tsx:2043:                <LessonSection title="01 · Concept and Definition" content={topic.overview} />
+  app\cicd-pipeline-visualizer\page.tsx:2044:                <LessonSection title="02 · Purpose and Business Value" content={topic.purpose} />
+  app\cicd-pipeline-visualizer\page.tsx:2045:                <LessonSection title="03 · Architecture" content={topic.architecture} />
+> app\cicd-pipeline-visualizer\page.tsx:2046:                <LessonSection title="04 · Production Workflow" list={topic.workflow} />
+  app\cicd-pipeline-visualizer\page.tsx:2047:                <LessonSection title="05 · Real Payment Application Example" content={topic.example} />
+  app\cicd-pipeline-visualizer\page.tsx:2048:                <div>
+  app\cicd-pipeline-visualizer\page.tsx:2049:                  <SectionHeading title="06 · Practical Commands" />
+  app\cicd-pipeline-visualizer\page.tsx:2050:                  <div className="mt-3 space-y-2">
+  app\cicd-pipeline-visualizer\page.tsx:2051:                    {topic.commands.map((command, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"><code 
+className="overflow-x-auto text-xs text-emerald-300">{command}</code><button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 
+hover:text-white">Copy</button></div>)}
+  app\cicd-pipeline-visualizer\page.tsx:2052:                  </div>
+  app\cicd-pipeline-visualizer\page.tsx:2053:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2054:                <LessonSection title="07 · Configuration Example" content={topic.configuration} />
+  app\cicd-pipeline-visualizer\page.tsx:2055:                <LessonSection title="08 · Common Failures" list={topic.failures} />
+  app\cicd-pipeline-visualizer\page.tsx:2056:                <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
+  app\cicd-pipeline-visualizer\page.tsx:2057:                <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
+  app\cicd-pipeline-visualizer\page.tsx:2058:                <LessonSection title="11 · Hands-on Exercise" content={topic.exercise} />
+  app\cicd-pipeline-visualizer\page.tsx:2039:                <span className={`rounded-full border px-3 py-1 text-xs font-bold ${statusStyles[statuses[selectedStage]]}`}>{statuses[selectedStage].toUpperCase()}</span>
+  app\cicd-pipeline-visualizer\page.tsx:2040:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2041:
+  app\cicd-pipeline-visualizer\page.tsx:2042:              <div className="mt-6 space-y-6">
+  app\cicd-pipeline-visualizer\page.tsx:2043:                <LessonSection title="01 · Concept and Definition" content={topic.overview} />
+  app\cicd-pipeline-visualizer\page.tsx:2044:                <LessonSection title="02 · Purpose and Business Value" content={topic.purpose} />
+  app\cicd-pipeline-visualizer\page.tsx:2045:                <LessonSection title="03 · Architecture" content={topic.architecture} />
+  app\cicd-pipeline-visualizer\page.tsx:2046:                <LessonSection title="04 · Production Workflow" list={topic.workflow} />
+> app\cicd-pipeline-visualizer\page.tsx:2047:                <LessonSection title="05 · Real Payment Application Example" content={topic.example} />
+  app\cicd-pipeline-visualizer\page.tsx:2048:                <div>
+  app\cicd-pipeline-visualizer\page.tsx:2049:                  <SectionHeading title="06 · Practical Commands" />
+  app\cicd-pipeline-visualizer\page.tsx:2050:                  <div className="mt-3 space-y-2">
+  app\cicd-pipeline-visualizer\page.tsx:2051:                    {topic.commands.map((command, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"><code 
+className="overflow-x-auto text-xs text-emerald-300">{command}</code><button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 
+hover:text-white">Copy</button></div>)}
+  app\cicd-pipeline-visualizer\page.tsx:2052:                  </div>
+  app\cicd-pipeline-visualizer\page.tsx:2053:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2054:                <LessonSection title="07 · Configuration Example" content={topic.configuration} />
+  app\cicd-pipeline-visualizer\page.tsx:2055:                <LessonSection title="08 · Common Failures" list={topic.failures} />
+  app\cicd-pipeline-visualizer\page.tsx:2056:                <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
+  app\cicd-pipeline-visualizer\page.tsx:2057:                <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
+  app\cicd-pipeline-visualizer\page.tsx:2058:                <LessonSection title="11 · Hands-on Exercise" content={topic.exercise} />
+  app\cicd-pipeline-visualizer\page.tsx:2059:
+  app\cicd-pipeline-visualizer\page.tsx:2043:                <LessonSection title="01 · Concept and Definition" content={topic.overview} />
+  app\cicd-pipeline-visualizer\page.tsx:2044:                <LessonSection title="02 · Purpose and Business Value" content={topic.purpose} />
+  app\cicd-pipeline-visualizer\page.tsx:2045:                <LessonSection title="03 · Architecture" content={topic.architecture} />
+  app\cicd-pipeline-visualizer\page.tsx:2046:                <LessonSection title="04 · Production Workflow" list={topic.workflow} />
+  app\cicd-pipeline-visualizer\page.tsx:2047:                <LessonSection title="05 · Real Payment Application Example" content={topic.example} />
+  app\cicd-pipeline-visualizer\page.tsx:2048:                <div>
+  app\cicd-pipeline-visualizer\page.tsx:2049:                  <SectionHeading title="06 · Practical Commands" />
+  app\cicd-pipeline-visualizer\page.tsx:2050:                  <div className="mt-3 space-y-2">
+> app\cicd-pipeline-visualizer\page.tsx:2051:                    {topic.commands.map((command, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"><code 
+className="overflow-x-auto text-xs text-emerald-300">{command}</code><button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 
+hover:text-white">Copy</button></div>)}
+  app\cicd-pipeline-visualizer\page.tsx:2052:                  </div>
+  app\cicd-pipeline-visualizer\page.tsx:2053:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2054:                <LessonSection title="07 · Configuration Example" content={topic.configuration} />
+  app\cicd-pipeline-visualizer\page.tsx:2055:                <LessonSection title="08 · Common Failures" list={topic.failures} />
+  app\cicd-pipeline-visualizer\page.tsx:2056:                <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
+  app\cicd-pipeline-visualizer\page.tsx:2057:                <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
+  app\cicd-pipeline-visualizer\page.tsx:2058:                <LessonSection title="11 · Hands-on Exercise" content={topic.exercise} />
+  app\cicd-pipeline-visualizer\page.tsx:2059:
+  app\cicd-pipeline-visualizer\page.tsx:2060:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2061:
+  app\cicd-pipeline-visualizer\page.tsx:2062:              <div className="mt-8 flex flex-wrap justify-between gap-3 border-t border-slate-800 pt-5">
+  app\cicd-pipeline-visualizer\page.tsx:2063:                <button disabled={selectedStage === 0} onClick={() => { setSelectedStage(s => s - 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm 
+text-slate-300 disabled:opacity-30">← Previous stage</button>
+  app\cicd-pipeline-visualizer\page.tsx:2046:                <LessonSection title="04 · Production Workflow" list={topic.workflow} />
+  app\cicd-pipeline-visualizer\page.tsx:2047:                <LessonSection title="05 · Real Payment Application Example" content={topic.example} />
+  app\cicd-pipeline-visualizer\page.tsx:2048:                <div>
+  app\cicd-pipeline-visualizer\page.tsx:2049:                  <SectionHeading title="06 · Practical Commands" />
+  app\cicd-pipeline-visualizer\page.tsx:2050:                  <div className="mt-3 space-y-2">
+  app\cicd-pipeline-visualizer\page.tsx:2051:                    {topic.commands.map((command, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"><code 
+className="overflow-x-auto text-xs text-emerald-300">{command}</code><button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 
+hover:text-white">Copy</button></div>)}
+  app\cicd-pipeline-visualizer\page.tsx:2052:                  </div>
+  app\cicd-pipeline-visualizer\page.tsx:2053:                </div>
+> app\cicd-pipeline-visualizer\page.tsx:2054:                <LessonSection title="07 · Configuration Example" content={topic.configuration} />
+  app\cicd-pipeline-visualizer\page.tsx:2055:                <LessonSection title="08 · Common Failures" list={topic.failures} />
+  app\cicd-pipeline-visualizer\page.tsx:2056:                <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
+  app\cicd-pipeline-visualizer\page.tsx:2057:                <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
+  app\cicd-pipeline-visualizer\page.tsx:2058:                <LessonSection title="11 · Hands-on Exercise" content={topic.exercise} />
+  app\cicd-pipeline-visualizer\page.tsx:2059:
+  app\cicd-pipeline-visualizer\page.tsx:2060:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2061:
+  app\cicd-pipeline-visualizer\page.tsx:2062:              <div className="mt-8 flex flex-wrap justify-between gap-3 border-t border-slate-800 pt-5">
+  app\cicd-pipeline-visualizer\page.tsx:2063:                <button disabled={selectedStage === 0} onClick={() => { setSelectedStage(s => s - 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm 
+text-slate-300 disabled:opacity-30">← Previous stage</button>
+  app\cicd-pipeline-visualizer\page.tsx:2064:                <button onClick={() => setActiveTab("simulator")} className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 hover:bg-cyan-400">Open simulator →</button>
+  app\cicd-pipeline-visualizer\page.tsx:2065:                <button disabled={selectedStage === 11} onClick={() => { setSelectedStage(s => s + 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm 
+text-slate-300 disabled:opacity-30">Next stage →</button>
+  app\cicd-pipeline-visualizer\page.tsx:2066:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2047:                <LessonSection title="05 · Real Payment Application Example" content={topic.example} />
+  app\cicd-pipeline-visualizer\page.tsx:2048:                <div>
+  app\cicd-pipeline-visualizer\page.tsx:2049:                  <SectionHeading title="06 · Practical Commands" />
+  app\cicd-pipeline-visualizer\page.tsx:2050:                  <div className="mt-3 space-y-2">
+  app\cicd-pipeline-visualizer\page.tsx:2051:                    {topic.commands.map((command, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"><code 
+className="overflow-x-auto text-xs text-emerald-300">{command}</code><button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 
+hover:text-white">Copy</button></div>)}
+  app\cicd-pipeline-visualizer\page.tsx:2052:                  </div>
+  app\cicd-pipeline-visualizer\page.tsx:2053:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2054:                <LessonSection title="07 · Configuration Example" content={topic.configuration} />
+> app\cicd-pipeline-visualizer\page.tsx:2055:                <LessonSection title="08 · Common Failures" list={topic.failures} />
+  app\cicd-pipeline-visualizer\page.tsx:2056:                <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
+  app\cicd-pipeline-visualizer\page.tsx:2057:                <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
+  app\cicd-pipeline-visualizer\page.tsx:2058:                <LessonSection title="11 · Hands-on Exercise" content={topic.exercise} />
+  app\cicd-pipeline-visualizer\page.tsx:2059:
+  app\cicd-pipeline-visualizer\page.tsx:2060:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2061:
+  app\cicd-pipeline-visualizer\page.tsx:2062:              <div className="mt-8 flex flex-wrap justify-between gap-3 border-t border-slate-800 pt-5">
+  app\cicd-pipeline-visualizer\page.tsx:2063:                <button disabled={selectedStage === 0} onClick={() => { setSelectedStage(s => s - 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm 
+text-slate-300 disabled:opacity-30">← Previous stage</button>
+  app\cicd-pipeline-visualizer\page.tsx:2064:                <button onClick={() => setActiveTab("simulator")} className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 hover:bg-cyan-400">Open simulator →</button>
+  app\cicd-pipeline-visualizer\page.tsx:2065:                <button disabled={selectedStage === 11} onClick={() => { setSelectedStage(s => s + 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm 
+text-slate-300 disabled:opacity-30">Next stage →</button>
+  app\cicd-pipeline-visualizer\page.tsx:2066:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2067:            </article>
+  app\cicd-pipeline-visualizer\page.tsx:2048:                <div>
+  app\cicd-pipeline-visualizer\page.tsx:2049:                  <SectionHeading title="06 · Practical Commands" />
+  app\cicd-pipeline-visualizer\page.tsx:2050:                  <div className="mt-3 space-y-2">
+  app\cicd-pipeline-visualizer\page.tsx:2051:                    {topic.commands.map((command, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"><code 
+className="overflow-x-auto text-xs text-emerald-300">{command}</code><button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 
+hover:text-white">Copy</button></div>)}
+  app\cicd-pipeline-visualizer\page.tsx:2052:                  </div>
+  app\cicd-pipeline-visualizer\page.tsx:2053:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2054:                <LessonSection title="07 · Configuration Example" content={topic.configuration} />
+  app\cicd-pipeline-visualizer\page.tsx:2055:                <LessonSection title="08 · Common Failures" list={topic.failures} />
+> app\cicd-pipeline-visualizer\page.tsx:2056:                <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
+  app\cicd-pipeline-visualizer\page.tsx:2057:                <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
+  app\cicd-pipeline-visualizer\page.tsx:2058:                <LessonSection title="11 · Hands-on Exercise" content={topic.exercise} />
+  app\cicd-pipeline-visualizer\page.tsx:2059:
+  app\cicd-pipeline-visualizer\page.tsx:2060:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2061:
+  app\cicd-pipeline-visualizer\page.tsx:2062:              <div className="mt-8 flex flex-wrap justify-between gap-3 border-t border-slate-800 pt-5">
+  app\cicd-pipeline-visualizer\page.tsx:2063:                <button disabled={selectedStage === 0} onClick={() => { setSelectedStage(s => s - 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm 
+text-slate-300 disabled:opacity-30">← Previous stage</button>
+  app\cicd-pipeline-visualizer\page.tsx:2064:                <button onClick={() => setActiveTab("simulator")} className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 hover:bg-cyan-400">Open simulator →</button>
+  app\cicd-pipeline-visualizer\page.tsx:2065:                <button disabled={selectedStage === 11} onClick={() => { setSelectedStage(s => s + 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm 
+text-slate-300 disabled:opacity-30">Next stage →</button>
+  app\cicd-pipeline-visualizer\page.tsx:2066:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2067:            </article>
+  app\cicd-pipeline-visualizer\page.tsx:2068:          </section>
+  app\cicd-pipeline-visualizer\page.tsx:2049:                  <SectionHeading title="06 · Practical Commands" />
+  app\cicd-pipeline-visualizer\page.tsx:2050:                  <div className="mt-3 space-y-2">
+  app\cicd-pipeline-visualizer\page.tsx:2051:                    {topic.commands.map((command, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"><code 
+className="overflow-x-auto text-xs text-emerald-300">{command}</code><button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 
+hover:text-white">Copy</button></div>)}
+  app\cicd-pipeline-visualizer\page.tsx:2052:                  </div>
+  app\cicd-pipeline-visualizer\page.tsx:2053:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2054:                <LessonSection title="07 · Configuration Example" content={topic.configuration} />
+  app\cicd-pipeline-visualizer\page.tsx:2055:                <LessonSection title="08 · Common Failures" list={topic.failures} />
+  app\cicd-pipeline-visualizer\page.tsx:2056:                <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
+> app\cicd-pipeline-visualizer\page.tsx:2057:                <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
+  app\cicd-pipeline-visualizer\page.tsx:2058:                <LessonSection title="11 · Hands-on Exercise" content={topic.exercise} />
+  app\cicd-pipeline-visualizer\page.tsx:2059:
+  app\cicd-pipeline-visualizer\page.tsx:2060:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2061:
+  app\cicd-pipeline-visualizer\page.tsx:2062:              <div className="mt-8 flex flex-wrap justify-between gap-3 border-t border-slate-800 pt-5">
+  app\cicd-pipeline-visualizer\page.tsx:2063:                <button disabled={selectedStage === 0} onClick={() => { setSelectedStage(s => s - 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm 
+text-slate-300 disabled:opacity-30">← Previous stage</button>
+  app\cicd-pipeline-visualizer\page.tsx:2064:                <button onClick={() => setActiveTab("simulator")} className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 hover:bg-cyan-400">Open simulator →</button>
+  app\cicd-pipeline-visualizer\page.tsx:2065:                <button disabled={selectedStage === 11} onClick={() => { setSelectedStage(s => s + 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm 
+text-slate-300 disabled:opacity-30">Next stage →</button>
+  app\cicd-pipeline-visualizer\page.tsx:2066:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2067:            </article>
+  app\cicd-pipeline-visualizer\page.tsx:2068:          </section>
+  app\cicd-pipeline-visualizer\page.tsx:2069:        )}
+  app\cicd-pipeline-visualizer\page.tsx:2050:                  <div className="mt-3 space-y-2">
+  app\cicd-pipeline-visualizer\page.tsx:2051:                    {topic.commands.map((command, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-[#070d18] p-3"><code 
+className="overflow-x-auto text-xs text-emerald-300">{command}</code><button onClick={() => navigator.clipboard?.writeText(command)} className="shrink-0 rounded-lg border border-slate-700 px-2 py-1 text-[10px] text-slate-400 
+hover:text-white">Copy</button></div>)}
+  app\cicd-pipeline-visualizer\page.tsx:2052:                  </div>
+  app\cicd-pipeline-visualizer\page.tsx:2053:                </div>
+  app\cicd-pipeline-visualizer\page.tsx:2054:                <LessonSection title="07 · Configuration Example" content={topic.configuration} />
+  app\cicd-pipeline-visualizer\page.tsx:2055:                <LessonSection title="08 · Common Failures" list={topic.failures} />
+  app\cicd-pipeline-visualizer\page.tsx:2056:                <LessonSection title="09 · Troubleshooting and Recovery" list={topic.recovery} />
+  app\cicd-pipeline-visualizer\page.tsx:2057:                <LessonSection title="10 · Production Best Practices" list={topic.bestPractices} />
+> app\cicd-pipeline-visualizer\page.tsx:2058:                <LessonSection title="11 · Hands-on Exercise" content={topic.exercise} />
+  app\cicd-pipeline-visualizer\page.tsx:2059:
+  app\cicd-pipeline-visualizer\page.tsx:2060:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2061:
+  app\cicd-pipeline-visualizer\page.tsx:2062:              <div className="mt-8 flex flex-wrap justify-between gap-3 border-t border-slate-800 pt-5">
+  app\cicd-pipeline-visualizer\page.tsx:2063:                <button disabled={selectedStage === 0} onClick={() => { setSelectedStage(s => s - 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm 
+text-slate-300 disabled:opacity-30">← Previous stage</button>
+  app\cicd-pipeline-visualizer\page.tsx:2064:                <button onClick={() => setActiveTab("simulator")} className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 hover:bg-cyan-400">Open simulator →</button>
+  app\cicd-pipeline-visualizer\page.tsx:2065:                <button disabled={selectedStage === 11} onClick={() => { setSelectedStage(s => s + 1); setSelectedTopic(0); }} className="rounded-xl border border-slate-700 px-4 py-2 text-sm 
+text-slate-300 disabled:opacity-30">Next stage →</button>
+  app\cicd-pipeline-visualizer\page.tsx:2066:              </div>
+  app\cicd-pipeline-visualizer\page.tsx:2067:            </article>
+  app\cicd-pipeline-visualizer\page.tsx:2068:          </section>
+  app\cicd-pipeline-visualizer\page.tsx:2069:        )}
+  app\cicd-pipeline-visualizer\page.tsx:2070:
+
+

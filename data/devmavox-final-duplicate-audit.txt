@@ -1,0 +1,162 @@
+DEVMAVOX FINAL DUPLICATE QUESTION AUDIT
+Generated: 11/05/2026 20:19:46
+Total questions: 4250
+Duplicate question groups: 39
+Affected records: 78
+
+DUPLICATE QUESTION: How do you troubleshoot a Grafana dashboard showing no data?
+  Tool: Grafana | Category: Basic Interview Questions | Number: 34
+  Tool: Grafana | Category: Intermediate Interview Questions | Number: 3
+
+DUPLICATE QUESTION: How do you troubleshoot Docker image push failures to Nexus?
+  Tool: Nexus | Category: Intermediate Interview Questions | Number: 18
+  Tool: Nexus | Category: Troubleshooting | Number: 27
+
+DUPLICATE QUESTION: What is a .dockerignore file?
+  Tool: Docker | Category: Basic Interview Questions | Number: 29
+  Tool: Docker | Category: Intermediate Interview Questions | Number: 6
+
+DUPLICATE QUESTION: What is a .gitignore file?
+  Tool: Git | Category: Basic Interview Questions | Number: 35
+  Tool: Git | Category: Intermediate Interview Questions | Number: 23
+
+DUPLICATE QUESTION: What is a CronJob in Kubernetes?
+  Tool: Kubernetes | Category: Basic Interview Questions | Number: 31
+  Tool: Kubernetes | Category: Intermediate Interview Questions | Number: 6
+
+DUPLICATE QUESTION: What is a Docker volume?
+  Tool: Docker | Category: Basic Interview Questions | Number: 19
+  Tool: Docker | Category: Intermediate Interview Questions | Number: 18
+
+DUPLICATE QUESTION: What is a Jenkins Label?
+  Tool: Jenkins | Category: Basic Interview Questions | Number: 34
+  Tool: Jenkins | Category: Intermediate Interview Questions | Number: 6
+
+DUPLICATE QUESTION: What is a Jenkins Pipeline?
+  Tool: Jenkins | Category: Basic Interview Questions | Number: 11
+  Tool: Jenkins | Category: Intermediate Interview Questions | Number: 1
+
+DUPLICATE QUESTION: What is a Jenkins Shared Library?
+  Tool: Jenkins | Category: Basic Interview Questions | Number: 32
+  Tool: Jenkins | Category: Intermediate Interview Questions | Number: 9
+
+DUPLICATE QUESTION: What is a Jenkinsfile?
+  Tool: Jenkins | Category: Basic Interview Questions | Number: 12
+  Tool: Jenkins | Category: Intermediate Interview Questions | Number: 3
+
+DUPLICATE QUESTION: What is a Job in Kubernetes?
+  Tool: Kubernetes | Category: Basic Interview Questions | Number: 30
+  Tool: Kubernetes | Category: Intermediate Interview Questions | Number: 5
+
+DUPLICATE QUESTION: What is a merge conflict in Git?
+  Tool: Git | Category: Basic Interview Questions | Number: 26
+  Tool: Git | Category: Intermediate Interview Questions | Number: 3
+
+DUPLICATE QUESTION: What is a multi-stage Docker build?
+  Tool: Docker | Category: Basic Interview Questions | Number: 28
+  Tool: Docker | Category: Intermediate Interview Questions | Number: 3
+
+DUPLICATE QUESTION: What is a PersistentVolumeClaim?
+  Tool: Kubernetes | Category: Basic Interview Questions | Number: 20
+  Tool: Kubernetes | Category: Intermediate Interview Questions | Number: 19
+
+DUPLICATE QUESTION: What is a Terraform backend?
+  Tool: Terraform | Category: Basic Interview Questions | Number: 13
+  Tool: Terraform | Category: Intermediate Interview Questions | Number: 2
+
+DUPLICATE QUESTION: What is a Terraform data source?
+  Tool: Terraform | Category: Basic Interview Questions | Number: 17
+  Tool: Terraform | Category: Intermediate Interview Questions | Number: 18
+
+DUPLICATE QUESTION: What is a Terraform module?
+  Tool: Terraform | Category: Basic Interview Questions | Number: 21
+  Tool: Terraform | Category: Intermediate Interview Questions | Number: 14
+
+DUPLICATE QUESTION: What is a Terraform provider?
+  Tool: Terraform | Category: Basic Interview Questions | Number: 6
+  Tool: Terraform | Category: Intermediate Interview Questions | Number: 11
+
+DUPLICATE QUESTION: What is an Application Load Balancer?
+  Tool: AWS | Category: Basic Interview Questions | Number: 26
+  Tool: AWS | Category: Intermediate Interview Questions | Number: 11
+
+DUPLICATE QUESTION: What is an Auto Scaling Group?
+  Tool: AWS | Category: Basic Interview Questions | Number: 27
+  Tool: AWS | Category: Intermediate Interview Questions | Number: 9
+
+DUPLICATE QUESTION: What is an AWS Region?
+  Tool: AWS | Category: Basic Interview Questions | Number: 5
+  Tool: AWS | Category: Intermediate Interview Questions | Number: 38
+
+DUPLICATE QUESTION: What is an EBS snapshot?
+  Tool: AWS | Category: Basic Interview Questions | Number: 21
+  Tool: AWS | Category: Intermediate Interview Questions | Number: 7
+
+DUPLICATE QUESTION: What is an RDS Read Replica?
+  Tool: AWS | Category: Basic Interview Questions | Number: 24
+  Tool: AWS | Category: Intermediate Interview Questions | Number: 26
+
+DUPLICATE QUESTION: What is Docker Compose?
+  Tool: Docker | Category: Basic Interview Questions | Number: 30
+  Tool: Docker | Category: Intermediate Interview Questions | Number: 12
+
+DUPLICATE QUESTION: What is Docker port mapping?
+  Tool: Docker | Category: Basic Interview Questions | Number: 15
+  Tool: Docker | Category: Intermediate Interview Questions | Number: 16
+
+DUPLICATE QUESTION: What is host networking in Docker?
+  Tool: Docker | Category: Basic Interview Questions | Number: 18
+  Tool: Docker | Category: Intermediate Interview Questions | Number: 15
+
+DUPLICATE QUESTION: What is S3 versioning?
+  Tool: AWS | Category: Basic Interview Questions | Number: 18
+  Tool: AWS | Category: Intermediate Interview Questions | Number: 22
+
+DUPLICATE QUESTION: What is Terraform state?
+  Tool: Terraform | Category: Basic Interview Questions | Number: 11
+  Tool: Terraform | Category: Intermediate Interview Questions | Number: 1
+
+DUPLICATE QUESTION: What is the difference between a Docker image and a container?
+  Tool: Docker | Category: Basic Interview Questions | Number: 5
+  Tool: Docker | Category: Intermediate Interview Questions | Number: 7
+
+DUPLICATE QUESTION: What is the difference between a Terraform resource and a data source?
+  Tool: Terraform | Category: Basic Interview Questions | Number: 18
+  Tool: Terraform | Category: Intermediate Interview Questions | Number: 19
+
+DUPLICATE QUESTION: What is the difference between a volume and a bind mount?
+  Tool: Docker | Category: Basic Interview Questions | Number: 21
+  Tool: Docker | Category: Intermediate Interview Questions | Number: 19
+
+DUPLICATE QUESTION: What is the difference between an IAM user and an IAM role?
+  Tool: AWS | Category: Basic Interview Questions | Number: 14
+  Tool: AWS | Category: Intermediate Interview Questions | Number: 1
+
+DUPLICATE QUESTION: What is the difference between Declarative and Scripted Pipeline?
+  Tool: Jenkins | Category: Basic Interview Questions | Number: 15
+  Tool: Jenkins | Category: Intermediate Interview Questions | Number: 2
+
+DUPLICATE QUESTION: What is the difference between docker run and docker start?
+  Tool: Docker | Category: Basic Interview Questions | Number: 12
+  Tool: Docker | Category: Intermediate Interview Questions | Number: 10
+
+DUPLICATE QUESTION: What is the difference between git fetch and git pull?
+  Tool: Git | Category: Basic Interview Questions | Number: 24
+  Tool: Git | Category: Intermediate Interview Questions | Number: 1
+
+DUPLICATE QUESTION: What is the difference between git reset and git revert?
+  Tool: Git | Category: Basic Interview Questions | Number: 34
+  Tool: Git | Category: Intermediate Interview Questions | Number: 9
+
+DUPLICATE QUESTION: What is the difference between git switch and git checkout?
+  Tool: Git | Category: Basic Interview Questions | Number: 18
+  Tool: Git | Category: Intermediate Interview Questions | Number: 38
+
+DUPLICATE QUESTION: What is the difference between Terraform workspaces and separate environment directories?
+  Tool: Terraform | Category: Basic Interview Questions | Number: 29
+  Tool: Terraform | Category: Intermediate Interview Questions | Number: 25
+
+DUPLICATE QUESTION: What is the Jenkins Workspace?
+  Tool: Jenkins | Category: Basic Interview Questions | Number: 23
+  Tool: Jenkins | Category: Intermediate Interview Questions | Number: 29
+

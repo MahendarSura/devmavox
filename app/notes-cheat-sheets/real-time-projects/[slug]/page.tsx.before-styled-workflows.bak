@@ -1,0 +1,86 @@
+import { notFound } from "next/navigation";
+import fs from "node:fs";
+import path from "node:path";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import NotesRenderer from "../../NotesRenderer";
+import projectWorkflows from "../project-workflows";
+import deploymentChecklists from "../deployment-checklists";
+import cicdRollback from "../cicd-rollback";
+
+const topics = {
+  "project-workflows": projectWorkflows,
+  "deployment-checklists": deploymentChecklists,
+  "cicd-rollback": cicdRollback,
+};
+
+export function generateStaticParams() {
+  return Object.keys(topics).map((slug) => ({ slug }));
+}
+
+export default async function ProjectTopicPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const data = topics[slug as keyof typeof topics];
+  if (!data) notFound();
+
+  // Use the new complete Markdown content for the existing Project Workflows route.
+  if (slug === "project-workflows") {
+    const markdownPath = path.join(
+      process.cwd(),
+      "docs",
+      "real-time-devops-project-workflow.md"
+    );
+
+    const markdownContent = fs.readFileSync(markdownPath, "utf8");
+
+    return (
+      <main className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100 sm:px-8">
+        <div className="mx-auto max-w-5xl">
+          <p className="mt-8 text-sm uppercase tracking-widest text-cyan-300">
+            Learning Notes
+          </p>
+
+          <article className="mt-6 rounded-2xl border border-slate-800 bg-slate-900 p-6 sm:p-8">
+            <div className="prose prose-invert max-w-none text-slate-300 leading-relaxed
+              prose-headings:text-cyan-200 prose-strong:text-white
+              prose-a:text-cyan-300 prose-code:text-green-300
+              prose-pre:overflow-x-auto prose-pre:rounded-xl
+              prose-pre:border prose-pre:border-slate-700
+              prose-pre:bg-black prose-pre:p-4
+              prose-li:marker:text-cyan-400">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {markdownContent}
+              </ReactMarkdown>
+            </div>
+          </article>
+
+          <div className="mt-8">
+            <a
+              href="/notes-cheat-sheets/real-time-projects"
+              className="text-cyan-300 hover:text-cyan-200"
+            >
+              ← Back to Real-Time Project Notes
+            </a>
+          </div>
+        </div>
+      </main>
+    );
+  }
+  return (
+    <NotesRenderer
+      backHref="/notes-cheat-sheets/real-time-projects"
+      backLabel="Real-Time Project Notes"
+      data={{
+        ...data,
+        title: slug
+          .split("-")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" "),
+      }}
+    />
+  );
+}
+
+
+
+

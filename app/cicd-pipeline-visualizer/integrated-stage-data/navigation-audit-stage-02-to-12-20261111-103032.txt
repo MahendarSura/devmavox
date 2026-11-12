@@ -1,0 +1,318 @@
+DEVAMVOX CI/CD PIPELINE VISUALIZER
+NAVIGATION AUDIT: STAGES 02-12
+Generated: 2026-11-11 10:30:32
+Mode: READ ONLY - NO SOURCE FILES MODIFIED
+
+STAGE 02
+Navigations: 16 | Sections: 228
+--------------------------------------------
+ 1. Git and GitHub Fundamentals [14 sections]
+ 2. Repository Management [12 sections]
+ 3. Branching Strategy [16 sections]
+ 4. Commit History [11 sections]
+ 5. Pull Request Lifecycle [15 sections]
+ 6. Code Review [13 sections]
+ 7. Branch Protection Rules [12 sections]
+ 8. Merge Strategies [14 sections]
+ 9. Merge Conflict Resolution [16 sections]
+10. GitHub Webhooks [13 sections]
+11. GitHub Actions Integration [17 sections]
+12. Repository Secrets [12 sections]
+13. Tags and Releases [13 sections]
+14. Release Approval Workflow [12 sections]
+15. Troubleshooting [18 sections]
+16. Production Hands-on Lab [20 sections]
+
+STAGE 03
+Navigations: 17 | Sections: 275
+--------------------------------------------
+ 1. Jenkins Fundamentals [14 sections]
+ 2. Jenkins Architecture [19 sections]
+ 3. Controller and Agents [18 sections]
+ 4. Installation and Setup [14 sections]
+ 5. Credentials Management [16 sections]
+ 6. Plugin Management [13 sections]
+ 7. Webhook Integration [14 sections]
+ 8. Jenkinsfile Fundamentals [15 sections]
+ 9. Declarative Pipeline [18 sections]
+10. Scripted Pipeline [16 sections]
+11. Pipeline Stages and Steps [14 sections]
+12. Parallel Execution [15 sections]
+13. Shared Libraries [17 sections]
+14. Artifacts and Reports [14 sections]
+15. Pipeline Security [19 sections]
+16. Agent Troubleshooting [18 sections]
+17. Production Hands-on Lab [21 sections]
+
+STAGE 04
+Navigations: 16 | Sections: 227
+--------------------------------------------
+ 1. Maven Fundamentals [12 sections]
+ 2. Maven Installation [9 sections]
+ 3. Project Object Model [16 sections]
+ 4. Coordinates and Packaging [11 sections]
+ 5. Dependency Management [17 sections]
+ 6. Dependency Scopes [12 sections]
+ 7. Transitive Dependencies [14 sections]
+ 8. Build Lifecycle [16 sections]
+ 9. Phases and Goals [12 sections]
+10. Maven Plugins [16 sections]
+11. Maven Profiles [13 sections]
+12. Repositories [15 sections]
+13. Spring Boot Packaging [14 sections]
+14. Surefire and Failsafe [13 sections]
+15. Build Troubleshooting [18 sections]
+16. Production Hands-on Lab [19 sections]
+
+STAGE 05
+Navigations: 16 | Sections: 234
+--------------------------------------------
+ 1. Testing Fundamentals [13 sections]
+ 2. JUnit 5 Architecture [14 sections]
+ 3. Test Annotations [12 sections]
+ 4. Assertions [11 sections]
+ 5. Test Lifecycle [12 sections]
+ 6. Parameterized Tests [13 sections]
+ 7. Mockito Fundamentals [15 sections]
+ 8. Mocking Dependencies [16 sections]
+ 9. Service Unit Testing [14 sections]
+10. Controller Testing [15 sections]
+11. Spring Boot Integration Testing [19 sections]
+12. Testcontainers [17 sections]
+13. Code Coverage [14 sections]
+14. Test Reports [12 sections]
+15. Flaky Test Troubleshooting [17 sections]
+16. Production Hands-on Lab [20 sections]
+
+STAGE 06
+Navigations: 17 | Sections: 258
+--------------------------------------------
+ 1. SonarQube Fundamentals [13 sections]
+ 2. SonarQube Architecture [17 sections]
+ 3. Installation and Setup [13 sections]
+ 4. Project Configuration [14 sections]
+ 5. Scanner Configuration [16 sections]
+ 6. Quality Profiles [15 sections]
+ 7. Quality Gates [16 sections]
+ 8. Bug Detection [14 sections]
+ 9. Vulnerability Analysis [18 sections]
+10. Code Smells and Maintainability [16 sections]
+11. Code Duplication [12 sections]
+12. Coverage Integration [14 sections]
+13. Exclusions and Inclusions [12 sections]
+14. Pull Request Decoration [14 sections]
+15. Jenkins Integration [16 sections]
+16. Troubleshooting [18 sections]
+17. Production Hands-on Lab [20 sections]
+
+STAGE 07
+Navigations: 16 | Sections: 251
+--------------------------------------------
+ 1. Trivy Fundamentals [13 sections]
+ 2. Trivy Installation [10 sections]
+ 3. Filesystem Scanning [14 sections]
+ 4. Dependency Scanning [17 sections]
+ 5. Container Image Scanning [18 sections]
+ 6. CVE Database [16 sections]
+ 7. Severity Classification [11 sections]
+ 8. Misconfiguration Scanning [17 sections]
+ 9. Kubernetes Configuration Scanning [18 sections]
+10. Secret Scanning [15 sections]
+11. SBOM Generation [16 sections]
+12. Ignore Policies [13 sections]
+13. CI Pipeline Integration [17 sections]
+14. Vulnerability Remediation [18 sections]
+15. Troubleshooting [17 sections]
+16. Production Hands-on Lab [21 sections]
+
+STAGE 08
+Navigations: 16 | Sections: 268
+--------------------------------------------
+ 1. Docker Fundamentals [14 sections]
+ 2. Docker Architecture [18 sections]
+ 3. Docker Installation [12 sections]
+ 4. Dockerfile Instructions [19 sections]
+ 5. Build Context and .dockerignore [13 sections]
+ 6. Image Layers and Caching [16 sections]
+ 7. BuildKit [15 sections]
+ 8. Multi-stage Builds [17 sections]
+ 9. Container Runtime [18 sections]
+10. Docker Networking [21 sections]
+11. Volumes and Storage [17 sections]
+12. Docker Security [20 sections]
+13. Image Tagging and Digests [12 sections]
+14. Registry Integration [15 sections]
+15. Troubleshooting [19 sections]
+16. Production Hands-on Lab [22 sections]
+
+STAGE 09
+Navigations: 17 | Sections: 262
+--------------------------------------------
+ 1. Amazon ECR Fundamentals [13 sections]
+ 2. ECR Registry Architecture [17 sections]
+ 3. Repository Creation [11 sections]
+ 4. AWS IAM Permissions [18 sections]
+ 5. Docker Authentication [13 sections]
+ 6. Image Tagging [12 sections]
+ 7. Image Push Workflow [15 sections]
+ 8. Image Pull Workflow [14 sections]
+ 9. Immutable Image Tags [13 sections]
+10. Image Digests [12 sections]
+11. Lifecycle Policies [16 sections]
+12. Encryption and Access Control [18 sections]
+13. Image Vulnerability Scanning [17 sections]
+14. Cross-account Access [18 sections]
+15. Registry Replication [15 sections]
+16. Troubleshooting [19 sections]
+17. Production Hands-on Lab [21 sections]
+
+STAGE 10
+Navigations: 22 | Sections: 418
+--------------------------------------------
+ 1. Kubernetes Fundamentals [16 sections]
+ 2. Kubernetes Architecture [21 sections]
+ 3. EKS Architecture [20 sections]
+ 4. Control Plane Components [18 sections]
+ 5. Worker Nodes [17 sections]
+ 6. API Server and etcd [19 sections]
+ 7. Scheduler and Kubelet [18 sections]
+ 8. Pods [17 sections]
+ 9. Deployments and ReplicaSets [18 sections]
+10. Services and Service Discovery [20 sections]
+11. ConfigMaps and Secrets [16 sections]
+12. Health Probes [15 sections]
+13. Requests and Limits [17 sections]
+14. Namespaces and RBAC [19 sections]
+15. Ingress and Load Balancing [21 sections]
+16. Networking and CNI [22 sections]
+17. Persistent Storage [20 sections]
+18. Horizontal Pod Autoscaling [18 sections]
+19. Rolling Updates and Rollbacks [17 sections]
+20. EKS Cluster Operations [22 sections]
+21. Troubleshooting [23 sections]
+22. Production Hands-on Lab [24 sections]
+
+STAGE 11
+Navigations: 21 | Sections: 354
+--------------------------------------------
+ 1. Helm Fundamentals [14 sections]
+ 2. Helm Architecture [17 sections]
+ 3. Chart Structure [16 sections]
+ 4. Chart.yaml and values.yaml [15 sections]
+ 5. Template Functions [18 sections]
+ 6. Template Helpers [14 sections]
+ 7. Chart Dependencies [16 sections]
+ 8. Helm Repositories [13 sections]
+ 9. Release Installation [15 sections]
+10. Upgrade and Rollback [18 sections]
+11. Environment-specific Values [16 sections]
+12. Argo CD Fundamentals [15 sections]
+13. Argo CD Architecture [20 sections]
+14. Application Resources [17 sections]
+15. GitOps Workflow [19 sections]
+16. Automated Sync and Self-healing [18 sections]
+17. Health and Sync Status [16 sections]
+18. Drift Detection [15 sections]
+19. RBAC and Repository Credentials [18 sections]
+20. Troubleshooting [21 sections]
+21. Production Hands-on Lab [23 sections]
+
+STAGE 12
+Navigations: 20 | Sections: 349
+--------------------------------------------
+ 1. Observability Fundamentals [16 sections]
+ 2. Metrics and Monitoring [17 sections]
+ 3. Prometheus Architecture [19 sections]
+ 4. Prometheus Installation [13 sections]
+ 5. Exporters [16 sections]
+ 6. Scrape Configuration [17 sections]
+ 7. Service Discovery [18 sections]
+ 8. PromQL Fundamentals [20 sections]
+ 9. Labels and Metric Types [16 sections]
+10. Recording Rules [14 sections]
+11. Alert Rules [17 sections]
+12. Alertmanager [19 sections]
+13. Grafana Architecture [17 sections]
+14. Data Sources [14 sections]
+15. Dashboard Creation [18 sections]
+16. Dashboard Variables [15 sections]
+17. SLI and SLO Monitoring [20 sections]
+18. Incident Alerting [19 sections]
+19. Troubleshooting [21 sections]
+20. Production Hands-on Lab [23 sections]
+
+============================================
+EXACT DUPLICATE NAVIGATION TITLES
+============================================
+
+Duplicate title: Installation and Setup
+  Stage 03, Position 4
+  Stage 06, Position 3
+
+Duplicate title: Production Hands-on Lab
+  Stage 02, Position 16
+  Stage 03, Position 17
+  Stage 04, Position 16
+  Stage 05, Position 16
+  Stage 06, Position 17
+  Stage 07, Position 16
+  Stage 08, Position 16
+  Stage 09, Position 17
+  Stage 10, Position 22
+  Stage 11, Position 21
+  Stage 12, Position 20
+
+Duplicate title: Troubleshooting
+  Stage 02, Position 15
+  Stage 06, Position 16
+  Stage 07, Position 15
+  Stage 08, Position 15
+  Stage 09, Position 16
+  Stage 10, Position 21
+  Stage 11, Position 20
+  Stage 12, Position 19
+
+============================================
+SIMILAR-TITLE REVIEW CANDIDATES
+============================================
+These are candidates only. Do not delete based on title similarity alone.
+
+Similarity: 66.7% | Shared terms: image, tagging
+  Stage 08, #13: Image Tagging and Digests
+  Stage 09, #6: Image Tagging
+
+Similarity: 66.7% | Shared terms: image, digests
+  Stage 08, #13: Image Tagging and Digests
+  Stage 09, #10: Image Digests
+
+Similarity: 66.7% | Shared terms: service, discovery
+  Stage 10, #10: Services and Service Discovery
+  Stage 12, #7: Service Discovery
+
+Similarity: 50% | Shared terms: pull, request
+  Stage 02, #5: Pull Request Lifecycle
+  Stage 06, #14: Pull Request Decoration
+
+Similarity: 50% | Shared terms: image, scanning
+  Stage 07, #5: Container Image Scanning
+  Stage 09, #13: Image Vulnerability Scanning
+
+Similarity: 50% | Shared terms: image, workflow
+  Stage 09, #7: Image Push Workflow
+  Stage 09, #8: Image Pull Workflow
+
+Similarity: 50% | Shared terms: argo, cd
+  Stage 11, #12: Argo CD Fundamentals
+  Stage 11, #13: Argo CD Architecture
+
+============================================
+AUDIT SUMMARY
+============================================
+Stages audited: 11
+Total navigations: 194
+Total existing sections: 3124
+Exact duplicate groups: 3
+Similar-title candidates: 7
+
+No navigation was deleted, renamed, merged, or modified.
+

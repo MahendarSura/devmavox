@@ -1,0 +1,32 @@
+DEVMAVOX COMPLETE CONTENT AUDIT
+================================
+
+Stages checked                  : 12
+Navigations checked             : 210
+Sections checked                : 2461
+Sections passing screening      : 0
+Sections requiring review       : 2461
+
+MISSING SECTION HEADINGS        : 0
+MISSING EXPLANATIONS            : 0
+EXPLANATIONS BELOW 500 CHARS    : 0
+LOW HEADING/CONTENT MATCH       : 2461
+DUPLICATE HEADINGS              : 0
+DUPLICATE EXPLANATIONS          : 0
+NAVIGATIONS WITHOUT SECTIONS    : 0
+
+ISSUE BREAKDOWN
+---------------
+LOW_HEADING_EXPLANATION_MATCH: 2461
+
+REPORT FILES
+------------
+All sections : C:\Users\mahen\OneDrive\devmavox\app\cicd-pipeline-visualizer\integrated-stage-data\complete-content-audit\all-2461-section-audit.csv
+Flagged only : C:\Users\mahen\OneDrive\devmavox\app\cicd-pipeline-visualizer\integrated-stage-data\complete-content-audit\flagged-sections-only.csv
+All navs     : C:\Users\mahen\OneDrive\devmavox\app\cicd-pipeline-visualizer\integrated-stage-data\complete-content-audit\all-210-navigation-audit.csv
+
+Original JSON files were not modified.
+
+IMPORTANT:
+Keyword matching is a screening heuristic, not proof of semantic correctness.
+Manual or AI technical review is required to confirm topic accuracy.

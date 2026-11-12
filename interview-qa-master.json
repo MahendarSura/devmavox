@@ -1,0 +1,852 @@
+[
+  {
+    "tool": "AWS",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 4,
+    "interviewQuestions": [
+      {
+        "question": "1. What is Amazon Web Services (AWS)?",
+        "answer": "Amazon Web Services, commonly known as AWS, is a cloud computing platform provided by Amazon. It offers services such as virtual servers, storage, databases, networking, security, monitoring and application deployment through the internet.\n\nIn a traditional IT environment, a company must purchase physical servers, networking equipment and storage devices before hosting an application. The company is also responsible for maintaining hardware, replacing failed components and planning infrastructure capacity. This process requires significant investment and time.\n\nAWS solves this problem by providing infrastructure and managed services on demand. For example, an organization developing an online shopping application can use EC2 to run its application, S3 to store images, RDS to manage its database and CloudWatch to monitor the environment. The company can provision these resources when required and pay according to its usage."
+      },
+      {
+        "question": "2. What is cloud computing?",
+        "answer": "Cloud computing is the delivery of computing resources such as servers, storage, databases, networking and software over the internet. Instead of purchasing and maintaining physical infrastructure inside an office or data center, organizations can access computing resources from a cloud provider whenever they need them.\n\nIn a traditional environment, increasing application capacity may require purchasing additional hardware, installing it and configuring the operating system. This process can take days or weeks. Cloud computing makes it possible to provision resources within minutes and adjust capacity based on application demand.\n\nFor example, an e-commerce company may experience heavy traffic during a festival sale. It can increase its cloud server capacity during the sale and reduce it after traffic returns to normal. This flexibility helps organizations improve availability, manage costs and deliver applications faster."
+      },
+      {
+        "question": "3. What is an AWS Region?",
+        "answer": "An AWS Region is a separate geographical area where AWS operates its cloud infrastructure. Each Region contains multiple Availability Zones, which provide isolated infrastructure locations within that geographical area.\n\nWhen creating an AWS resource, such as an EC2 instance, an RDS database or an S3 bucket, we generally select the Region in which the resource should operate. Region selection is important because it affects application latency, regulatory requirements, service availability and data residency.\n\nFor example, if most customers of an application are located in India, an organization may choose an AWS Region in Mumbai to serve them with lower network latency. The organization can also use another Region for disaster recovery, depending on its business continuity requirements."
+      },
+      {
+        "question": "4. What is an Amazon EC2 instance?",
+        "answer": "Amazon EC2 stands for Amazon Elastic Compute Cloud. It is an AWS service that allows us to create and use virtual servers in the cloud. These virtual servers are called EC2 instances and can run operating systems and applications just like physical servers.\n\nIn a traditional company, if we want to host an application, we need to purchase a physical server, install an operating system, configure networking and maintain the hardware. Amazon EC2 removes the need to purchase physical hardware because AWS provides virtual computing capacity on demand.\n\nFor example, imagine we are developing an online shopping application. We can create one EC2 instance for the application, another for testing and additional instances for background services. We can select the operating system, instance type, storage and network configuration while launching each instance."
+      }
+    ]
+  },
+  {
+    "tool": "AWS",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "AWS",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "AWS",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "AWS",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "AWS",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "AWS",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Docker",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 4,
+    "interviewQuestions": [
+      {
+        "question": "1. What is Docker?",
+        "answer": "Docker is a containerization platform that allows developers and operations teams to package applications together with their dependencies into portable units called containers. A container includes the application code, runtime, libraries and required configuration so that the application can run consistently across different environments.\n\nWithout containerization, an application may work on a developer's laptop but fail on a testing or production server because the operating system packages, runtime versions or dependencies are different. This creates environment-related deployment problems and makes application delivery difficult.\n\nDocker helps solve this problem by creating a consistent application environment. For example, a team can package a Java application and its required runtime into a Docker image. The same image can then be used on a developer's machine, a testing server and a production environment without manually installing the same dependencies everywhere."
+      },
+      {
+        "question": "2. What is a Docker image?",
+        "answer": "A Docker image is a read-only template used to create Docker containers. It contains the application code, runtime, system libraries, dependencies and configuration required to start an application. Images are commonly created using instructions written in a Dockerfile.\n\nA Docker image is built in layers. Each instruction in a Dockerfile can create a layer, and Docker can reuse unchanged layers during later builds. This improves build efficiency and reduces unnecessary downloads when the image is rebuilt.\n\nFor example, a team developing a Node.js application can create an image containing a suitable Node.js runtime, application source code and required npm packages. The image can be stored in a registry and downloaded by different servers to create identical application containers."
+      },
+      {
+        "question": "3. What is a Docker container?",
+        "answer": "A Docker container is a running or stopped instance of a Docker image. It provides an isolated environment in which an application and its processes execute. Containers use the host operating system kernel while maintaining isolation through Linux kernel capabilities such as namespaces and control groups.\n\nA Docker image is the template, whereas a container is the actual instance created from that template. We can create multiple containers from the same image, and each container can have its own process, network settings and writable container layer.\n\nFor example, an organization can create three containers from one NGINX image to serve web traffic. These containers can run independently while using the same image as their starting point. If a container stops, the team can create another container from the image."
+      },
+      {
+        "question": "4. What is a Dockerfile?",
+        "answer": "A Dockerfile is a text file that contains instructions for building a Docker image. It defines the base image, working directory, application files, dependencies, exposed ports and startup command required to package an application.\n\nInstead of manually preparing an application environment on every server, developers maintain these instructions in a Dockerfile. Docker reads the instructions and builds an image that can be shared through a container registry and used across development, testing and production environments.\n\nFor example, a Java application Dockerfile may start from an appropriate Java runtime image, copy the application JAR file into the image and define the command to start the application. This makes the application packaging process repeatable and easier to automate in a CI/CD pipeline."
+      }
+    ]
+  },
+  {
+    "tool": "Docker",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Docker",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Docker",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Docker",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Docker",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Docker",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 4,
+    "interviewQuestions": [
+      {
+        "question": "1. What is Kubernetes?",
+        "answer": "Kubernetes is an open-source container orchestration platform used to deploy, manage, scale and monitor containerized applications. It automates many operational activities involved in running containers, including scheduling, restarting failed containers, service discovery and application scaling.\n\nWhen an application runs in only a few Docker containers, teams may manage them manually. However, when a production application contains hundreds of containers distributed across multiple servers, manually managing their lifecycle becomes difficult. Teams need a system that maintains the desired application state and handles failures automatically.\n\nKubernetes provides this orchestration capability. For example, an online shopping application may run separate containers for its frontend, backend and payment services. Kubernetes can schedule these containers on available worker nodes, restart failed workloads and increase replicas when application demand grows."
+      },
+      {
+        "question": "2. What is a Kubernetes Pod?",
+        "answer": "A Pod is the smallest deployable unit in Kubernetes. It represents one or more containers that are scheduled together on the same worker node and share certain resources, such as network identity and optionally storage volumes.\n\nKubernetes does not normally manage an individual application container directly as its primary deployment unit. Instead, it creates and manages Pods. Each Pod receives its own IP address within the cluster network, and containers inside the same Pod can communicate through localhost.\n\nFor example, a simple web application may run inside one container in a Pod. In another design, an application container and a supporting logging container may run together in the same Pod when they need to share lifecycle and resources. Kubernetes controllers can create replacement Pods when existing Pods fail."
+      },
+      {
+        "question": "3. What is a Kubernetes Node?",
+        "answer": "A Kubernetes Node is a worker machine that provides the computing resources required to run Pods. A Node may be a physical server or a virtual machine. It contains the components required to communicate with the Kubernetes control plane and execute container workloads.\n\nA Kubernetes cluster normally contains a control plane and one or more worker nodes. The control plane makes scheduling and cluster-management decisions, while worker nodes run application Pods. Important node components include the kubelet, a container runtime and networking components.\n\nFor example, if a production application requires several backend Pods, Kubernetes schedules those Pods onto suitable worker nodes based on available resources and scheduling rules. If a node becomes unavailable, Kubernetes can detect the problem and reschedule supported workloads onto healthy nodes."
+      },
+      {
+        "question": "4. What is a Kubernetes Deployment?",
+        "answer": "A Kubernetes Deployment is a controller used to manage stateless application workloads through ReplicaSets and Pods. It allows teams to declare the desired number of replicas and the container image that should run in the cluster.\n\nManaging Pods manually is difficult because Pods can fail, be deleted or need replacement during application updates. A Deployment continuously works toward the desired state by creating or replacing Pods and supporting controlled rolling updates and rollbacks.\n\nFor example, if an application needs three running replicas, the Deployment specification declares three replicas. Kubernetes creates the required Pods and maintains that replica count. When a new application image is released, the Deployment can gradually replace old Pods with new ones while controlling the update strategy."
+      }
+    ]
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 4,
+    "interviewQuestions": [
+      {
+        "question": "1. What is Jenkins?",
+        "answer": "Jenkins is an open-source automation server widely used to implement Continuous Integration and Continuous Delivery or Continuous Deployment pipelines. It helps teams automate software build, test, packaging and deployment activities whenever code changes are committed to a source code repository.\n\nWithout automation, developers or operations engineers may need to manually download source code, compile applications, execute tests and deploy packages. Manual activities take time and can introduce inconsistent steps between environments. Jenkins helps standardize these activities through repeatable pipelines.\n\nFor example, when a developer pushes Java application changes to Git, a Jenkins pipeline can automatically retrieve the code, execute Maven build commands, run tests, create an application artifact and deploy it to a testing environment. This reduces manual effort and provides faster feedback to developers."
+      },
+      {
+        "question": "2. What is a Jenkins Pipeline?",
+        "answer": "A Jenkins Pipeline is a sequence of automated stages that defines how an application moves through the software delivery process. It can include source code checkout, compilation, testing, security scanning, artifact creation and deployment.\n\nInstead of configuring every build as a collection of unrelated manual jobs, teams can define the complete workflow as code. A pipeline can be stored in a Jenkinsfile inside the source code repository, which allows the delivery process to be reviewed and version-controlled along with the application.\n\nFor example, a Java application pipeline may contain Checkout, Build, Unit Test, Package and Deploy stages. When a developer commits code, Jenkins executes the stages in the configured order and reports whether the application passed or failed each step."
+      },
+      {
+        "question": "3. What is a Jenkinsfile?",
+        "answer": "A Jenkinsfile is a text file that defines a Jenkins Pipeline using either Declarative Pipeline syntax or Scripted Pipeline syntax. It describes the stages, steps, environment variables, agents and other pipeline behavior required to automate software delivery.\n\nKeeping pipeline definitions in source control provides several advantages. Teams can review changes, track pipeline history, reuse the same delivery definition and restore an earlier version when a pipeline modification causes problems.\n\nFor example, a development team can keep a Jenkinsfile in the root directory of its Git repository. Whenever Jenkins detects a new commit, it can read the Jenkinsfile and execute the defined build and test stages. This approach is commonly known as Pipeline as Code."
+      },
+      {
+        "question": "4. What is a Jenkins Agent?",
+        "answer": "A Jenkins Agent is a machine or execution environment that performs pipeline jobs on behalf of the Jenkins controller. Agents provide the computing resources needed to compile code, run tests, build container images and execute deployment commands.\n\nIn a small setup, the controller may also execute build tasks. In a larger production environment, teams generally separate the controller from agents so that build workloads do not consume resources required for Jenkins management. Different agents can also provide different operating systems and tools.\n\nFor example, a Jenkins controller can schedule a Java build on a Linux agent that contains JDK and Maven. A separate agent with Docker installed can build container images. This arrangement helps distribute workload and provides suitable environments for different pipeline stages."
+      }
+    ]
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Git",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 4,
+    "interviewQuestions": [
+      {
+        "question": "1. What is Git?",
+        "answer": "Git is a distributed version control system used to track changes in source code and other files. It allows multiple developers to work on the same project, maintain different development branches, review changes and restore earlier versions when required.\n\nWithout version control, developers may share source files manually or maintain multiple copies of a project. This can create confusion about which version is latest and makes it difficult to identify who changed a particular file. Git maintains a history of committed changes and supports collaboration through repositories.\n\nFor example, several developers working on an e-commerce application can clone the same Git repository. One developer can work on the login feature while another works on the payment feature. They can commit their changes separately and integrate them into a shared branch after review."
+      },
+      {
+        "question": "2. What is a Git Repository?",
+        "answer": "A Git repository is a storage location that tracks project files and their version history. It contains the project content along with Git metadata that records commits, branches, tags and other version-control information.\n\nA repository can be maintained locally on a developer's computer or hosted on a remote platform such as GitHub, GitLab or Bitbucket. Developers use local repositories to make changes and create commits, then exchange changes with remote repositories through push, pull and fetch operations.\n\nFor example, a company may maintain its application source code in a GitHub repository. Developers clone the repository to their laptops, create feature branches and commit their work. The team can then review and merge approved changes into the main branch."
+      },
+      {
+        "question": "3. What is a Git Commit?",
+        "answer": "A Git commit is a recorded snapshot of changes in a repository. It stores information about the committed project state, the author, the commit message and references to the relevant parent commit or commits.\n\nCommits allow developers to maintain a history of project changes instead of relying on manually saved copies. A meaningful commit message helps other team members understand what was changed and why the change was introduced.\n\nFor example, after fixing a login validation issue, a developer can stage the modified files and create a commit with a message such as Fix login input validation. The commit becomes part of the local repository history and can later be pushed to a remote repository for collaboration."
+      },
+      {
+        "question": "4. What is a Git Branch?",
+        "answer": "A Git branch is an independent line of development in a repository. It allows developers to work on features, bug fixes or experiments without immediately changing the main development line.\n\nBranches make parallel development easier because multiple developers can work on separate tasks at the same time. After the work is completed and reviewed, the changes can be merged into another branch. Teams commonly use branches such as main, development and feature branches according to their workflow.\n\nFor example, a developer working on a payment feature can create a feature branch from the main branch. The developer can commit several changes and test them independently. Once the feature is approved, the team can merge the branch into the target integration branch."
+      }
+    ]
+  },
+  {
+    "tool": "Git",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Git",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Git",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Git",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Git",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Git",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Terraform",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 4,
+    "interviewQuestions": [
+      {
+        "question": "1. What is Terraform?",
+        "answer": "Terraform is an Infrastructure as Code tool developed by HashiCorp. It allows infrastructure teams to define and manage cloud and on-premises resources using configuration files instead of creating every resource manually through graphical consoles.\n\nIn a traditional infrastructure setup, an engineer may need to manually create virtual machines, networks, subnets, security rules and storage resources. Repeating these steps across development, testing and production environments can lead to configuration differences and human errors.\n\nTerraform solves this problem by describing infrastructure in declarative configuration files. For example, an engineer can define an AWS VPC, public and private subnets, security groups and EC2 instances in Terraform files. Terraform can compare the configuration with the current infrastructure and create or update resources to reach the declared state."
+      },
+      {
+        "question": "2. What is Infrastructure as Code?",
+        "answer": "Infrastructure as Code, commonly called IaC, is the practice of managing infrastructure through machine-readable configuration files rather than creating and configuring resources manually. It makes infrastructure deployment repeatable, reviewable and easier to automate.\n\nManual infrastructure creation can produce differences between environments because engineers may select different settings or forget configuration steps. IaC allows teams to store infrastructure definitions in version control and apply consistent configurations across multiple environments.\n\nFor example, a company can define its AWS network, EC2 instances and security groups using Terraform. The same configuration approach can be used to create development and testing environments with controlled variable differences. Engineers can review infrastructure changes before applying them, similar to reviewing application code."
+      },
+      {
+        "question": "3. What is a Terraform Provider?",
+        "answer": "A Terraform Provider is a plugin that allows Terraform to communicate with an infrastructure platform or service. Providers define the resources and data sources that Terraform can manage, and they translate Terraform operations into API requests understood by the target platform.\n\nTerraform itself provides the configuration and execution workflow, but it needs providers to interact with services such as AWS, Azure, Google Cloud, Kubernetes and other supported platforms. A configuration normally declares the required provider and its settings.\n\nFor example, when an engineer wants to create an EC2 instance in AWS, the AWS provider communicates with AWS APIs to perform the required operations. Terraform uses the provider to create, read, update or delete the infrastructure resource according to the configuration."
+      },
+      {
+        "question": "4. What is Terraform State?",
+        "answer": "Terraform State is the information Terraform maintains about the infrastructure resources it manages. It records resource identities and attributes so Terraform can understand the relationship between configuration files and real infrastructure.\n\nWhen Terraform creates a cloud resource, it needs a way to identify that resource during future plan and apply operations. The state file provides this mapping and helps Terraform determine which resources need to be created, modified or destroyed when configuration changes.\n\nFor example, if Terraform creates an EC2 instance, its state records information that identifies the corresponding AWS resource. In team environments, state is commonly stored remotely with appropriate locking and access controls so multiple engineers can collaborate without accidentally modifying state at the same time."
+      }
+    ]
+  },
+  {
+    "tool": "Terraform",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Terraform",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Terraform",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Terraform",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Terraform",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Terraform",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Ansible",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 4,
+    "interviewQuestions": [
+      {
+        "question": "1. What is Ansible?",
+        "answer": "Ansible is an open-source automation tool used for configuration management, application deployment, infrastructure automation and repetitive IT operations. It allows administrators and DevOps engineers to manage multiple servers through automation instructions instead of configuring each machine manually.\n\nIn a traditional environment, an administrator may need to install packages, create users, configure services and update configuration files separately on many servers. Performing these activities manually takes time and can result in inconsistent configurations.\n\nAnsible helps automate these tasks using readable YAML-based playbooks. For example, an engineer can write a playbook to install NGINX, copy a configuration file and start the service on a group of Linux servers. The same automation can be executed repeatedly to maintain a consistent server configuration."
+      },
+      {
+        "question": "2. What is an Ansible Playbook?",
+        "answer": "An Ansible Playbook is a YAML file that defines a sequence of automation tasks to be executed on selected managed hosts. It describes which systems should be targeted, what operations should be performed and which variables or privileges are required.\n\nPlaybooks make automation easier to understand and maintain because tasks are written in a structured, human-readable format. They can be stored in Git, reviewed by team members and reused across development, testing and production environments.\n\nFor example, a playbook can target a group of web servers, install the NGINX package, copy a website configuration file and ensure the NGINX service is running. Ansible executes these tasks according to the playbook and reports the result of each task."
+      },
+      {
+        "question": "3. What is an Ansible Inventory?",
+        "answer": "An Ansible Inventory is a list of managed hosts and groups of hosts that Ansible can target during automation. It tells Ansible which machines are available and can also define connection details and host-specific or group-specific variables.\n\nIn a large environment, organizations may maintain separate groups for web servers, application servers, database servers and testing systems. Inventory groups allow engineers to execute the appropriate automation against the correct set of machines instead of manually specifying every server.\n\nFor example, an inventory may contain a group named webservers with several Linux server addresses. An Ansible playbook can target that group to install security updates or configure NGINX on all its members. Inventory can be static or dynamically generated from supported infrastructure sources."
+      },
+      {
+        "question": "4. What is Ansible Ad Hoc Command?",
+        "answer": "An Ansible Ad Hoc Command is a one-time command used to perform a quick automation task on selected managed hosts without creating a complete playbook. It is useful for simple operational activities and immediate administration tasks.\n\nPlaybooks are more suitable for repeatable workflows containing multiple tasks, conditions and variables. Ad hoc commands are useful when an administrator needs to execute a single operation, such as checking connectivity, collecting system information or restarting a service across a group of servers.\n\nFor example, an engineer can use the Ansible ping module to verify whether managed Linux hosts are reachable through Ansible. The command returns a result for each targeted host, helping the engineer quickly identify systems that are responding or experiencing connection problems."
+      }
+    ]
+  },
+  {
+    "tool": "Ansible",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Ansible",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Ansible",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Ansible",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Ansible",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Ansible",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Linux",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 4,
+    "interviewQuestions": [
+      {
+        "question": "1. What is Linux?",
+        "answer": "Linux is an open-source, Unix-like operating system kernel that is used in many operating system distributions, servers, cloud platforms, containers and embedded devices. A Linux distribution combines the Linux kernel with system utilities, package management tools and other software to provide a complete operating system.\n\nLinux is widely used in DevOps and production infrastructure because it provides powerful command-line tools, scripting capabilities, networking utilities and flexible system administration features. Many web servers, application platforms and cloud workloads run on Linux-based systems.\n\nFor example, a company may host its Java application on an Ubuntu or Amazon Linux server. DevOps engineers connect to the server through SSH, install application dependencies, configure services, inspect logs and monitor resource usage using Linux commands."
+      },
+      {
+        "question": "2. What is the Linux Kernel?",
+        "answer": "The Linux kernel is the core component of a Linux operating system. It manages communication between software and the underlying hardware and provides essential services such as process scheduling, memory management, device management, networking and filesystem support.\n\nApplications do not normally communicate directly with physical hardware. Instead, they use operating system interfaces, and the kernel manages the operations required to access CPU time, memory, storage devices and network interfaces. This separation helps multiple applications share system resources in a controlled manner.\n\nFor example, when a web server receives a network request, the Linux kernel handles important networking operations and makes the received data available to the application. The kernel also schedules the web server process so it can use CPU resources alongside other running processes."
+      },
+      {
+        "question": "3. What is a Linux Shell?",
+        "answer": "A Linux Shell is a command-line interface that allows users to interact with the operating system by entering commands. It acts as a command interpreter and provides features such as command execution, variables, pipes, redirection, scripting and process control.\n\nSystem administrators and DevOps engineers use shells to perform routine operational activities without depending entirely on graphical interfaces. Shells also make it possible to combine commands into scripts so repetitive tasks can be automated and executed consistently.\n\nFor example, an engineer can use a shell to check disk usage, inspect running processes, search application logs and restart a service. A Bash script can combine these operations and run them automatically as part of a scheduled maintenance or monitoring task."
+      },
+      {
+        "question": "4. What is a Linux Process?",
+        "answer": "A Linux process is an instance of a running program. When a program is executed, the operating system creates a process with its own process identifier and manages the resources required for its execution, including memory, CPU scheduling and open files.\n\nA Linux server can run many processes at the same time. These processes may belong to system services, application servers, monitoring agents, scheduled jobs or user commands. Administrators need to understand process behavior to investigate high CPU usage, memory consumption and application failures.\n\nFor example, when a Java application starts on a Linux server, the operating system creates a process for the Java runtime. Engineers can inspect its process ID, resource usage and execution details using process-management commands. If the application becomes unresponsive, they can investigate the process and its logs before deciding on corrective action."
+      }
+    ]
+  },
+  {
+    "tool": "Linux",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Linux",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Linux",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Linux",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Linux",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Linux",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  }
+]

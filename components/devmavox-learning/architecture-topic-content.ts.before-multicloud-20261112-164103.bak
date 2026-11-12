@@ -1,0 +1,1104 @@
+export type ArchitectureSection = {
+  title: string;
+  explanation: string;
+  responsibilities: string[];
+  implementation: string[];
+  productionConsiderations: string[];
+  failureModes: string[];
+  practicalTask: string;
+};
+
+export type ArchitectureTopicContent = {
+  title: string;
+  subtitle: string;
+  summary: string;
+  objectives: string[];
+  diagram: string[];
+  sections: ArchitectureSection[];
+  architectureDecisions: { decision: string; guidance: string }[];
+  interviewQuestions: { question: string; answer: string }[];
+};
+
+export const architectureTopicContent: Record<string, ArchitectureTopicContent> = {
+  "aws-architecture": {
+    title: "AWS Architecture",
+    subtitle: "Designing secure, resilient and scalable workloads on Amazon Web Services",
+    summary:
+      "AWS architecture is the design of cloud infrastructure using services such as VPC, subnets, route tables, EC2, Elastic Load Balancing, Auto Scaling, S3, RDS, IAM and CloudWatch. A production architecture must explain not only which services are present, but also how traffic enters the system, how application components communicate, where data is stored, how identities are controlled, and how the workload behaves during failures. This lesson follows a realistic multi-tier web application deployed across multiple Availability Zones.",
+    objectives: [
+      "Understand the relationship between AWS Regions, Availability Zones and VPC networks.",
+      "Trace a user request through DNS, load balancing, application compute and database services.",
+      "Design public and private network boundaries with controlled outbound connectivity.",
+      "Apply IAM least privilege, encryption, monitoring and backup practices.",
+      "Evaluate high availability, scaling, recovery and cost trade-offs."
+    ],
+    diagram: [
+      "Users / Browsers",
+      "Route 53 DNS",
+      "CloudFront CDN + AWS WAF",
+      "Internet-facing Application Load Balancer",
+      "VPC spanning Availability Zone A and Availability Zone B",
+      "Private application subnets: EC2 Auto Scaling Group",
+      "Private database subnets: Multi-AZ Amazon RDS",
+      "Supporting services: S3, CloudWatch, Systems Manager, IAM"
+    ],
+    sections: [
+      {
+        title: "1. AWS Global Infrastructure and Workload Boundaries",
+        explanation:
+          "An AWS Region is a separate geographic area containing multiple Availability Zones. An Availability Zone is an isolated location made up of one or more data centres with independent power, networking and facilities. A VPC is a logically isolated network that you define inside a Region. Subnets belong to a single Availability Zone, so a resilient design normally places equivalent public and private subnets in at least two Availability Zones. This separation helps reduce the impact of a single-zone failure, but it does not automatically make an application highly available. Compute capacity, load balancer targets, database configuration, dependencies and deployment procedures must also support the design.",
+        responsibilities: [
+          "Region: geographic and service deployment boundary.",
+          "Availability Zone: fault-isolation boundary within a Region.",
+          "VPC: private network boundary for a workload.",
+          "Subnet: IP address range associated with one Availability Zone.",
+          "Security group: stateful virtual firewall attached to supported resources."
+        ],
+        implementation: [
+          "Choose a Region based on latency, service availability, compliance and cost.",
+          "Create a VPC CIDR range that leaves room for future subnets and connected networks.",
+          "Create equivalent subnet tiers across multiple Availability Zones.",
+          "Document CIDR allocations before connecting VPNs, peering or Transit Gateway networks."
+        ],
+        productionConsiderations: [
+          "Avoid overlapping CIDR ranges across connected VPCs and on-premises networks.",
+          "Do not assume that placing an EC2 instance in a VPC makes it privately accessible.",
+          "Review service-specific regional and Availability Zone limitations.",
+          "Use infrastructure as code to keep network layouts consistent."
+        ],
+        failureModes: [
+          "Subnet IP exhaustion prevents new interfaces or resources from being created.",
+          "A single-AZ dependency creates a hidden availability bottleneck.",
+          "Overlapping CIDRs prevent intended network connectivity.",
+          "A Region-specific service dependency complicates disaster recovery."
+        ],
+        practicalTask:
+          "Design a VPC with two Availability Zones. Draw public, private application and private database subnets. Assign a non-overlapping CIDR block to each subnet and explain which resources should be deployed in each tier."
+      },
+      {
+        title: "2. VPC Networking, Routing and Controlled Connectivity",
+        explanation:
+          "A VPC provides the network boundary, but routing determines where packets travel. Each subnet is associated with a route table. A public subnet commonly has a route to an Internet Gateway, while private application subnets do not expose their instances directly to the internet. When private instances need outbound internet access for updates or external APIs, a NAT Gateway can provide translated outbound connectivity. Database subnets should normally have no direct internet route. Security groups control allowed traffic at the resource interface level, while network ACLs provide stateless subnet-level filtering. These controls complement each other and should be designed around explicit application flows rather than broad unrestricted access.",
+        responsibilities: [
+          "Internet Gateway: enables internet routing for eligible VPC resources.",
+          "Route table: selects the next hop for destination traffic.",
+          "NAT Gateway: supports outbound IPv4 connectivity from private subnets.",
+          "Security group: stateful allow rules for resource traffic.",
+          "Network ACL: stateless subnet-level allow and deny rules."
+        ],
+        implementation: [
+          "Associate public subnet route tables with a default route to the Internet Gateway.",
+          "Place NAT Gateways in public subnets and route private application outbound traffic through them.",
+          "Allow inbound application traffic only from the load balancer security group.",
+          "Allow database traffic only from the application security group on the required database port.",
+          "Use VPC endpoints where supported services can be reached privately."
+        ],
+        productionConsiderations: [
+          "A NAT Gateway is Availability Zone scoped; plan resilient routing and cost deliberately.",
+          "Restrict security group sources instead of allowing all network ranges.",
+          "Check both forward and return paths when troubleshooting stateless network ACLs.",
+          "Use VPC Flow Logs to investigate accepted and rejected network traffic."
+        ],
+        failureModes: [
+          "Missing route table association sends traffic through an unintended path.",
+          "A missing NAT route prevents private instances from reaching required external services.",
+          "An incorrect security group rule blocks application-to-database traffic.",
+          "An overly restrictive network ACL blocks return traffic."
+        ],
+        practicalTask:
+          "Create a network flow matrix for browser-to-load-balancer, load-balancer-to-application, application-to-database and application-to-S3 communication. Record source, destination, protocol, port and the security control enforcing each flow."
+      },
+      {
+        title: "3. Application Compute and Elastic Traffic Distribution",
+        explanation:
+          "An Application Load Balancer distributes HTTP and HTTPS requests across registered targets such as EC2 instances or container workloads. Target groups define the backend targets and health checks used to determine whether they can receive traffic. An EC2 Auto Scaling Group maintains the desired number of instances and can adjust capacity using metrics or schedules. In a production design, instances should be replaceable rather than treated as permanent servers. Application configuration and durable data should be externalized so that a failed instance can be replaced without losing business state. Deployment strategies should also account for health checks, connection draining and backward-compatible application changes.",
+        responsibilities: [
+          "Application Load Balancer: listener rules and request distribution.",
+          "Target group: backend registration, ports and health checks.",
+          "Launch template: repeatable EC2 instance configuration.",
+          "Auto Scaling Group: desired, minimum and maximum capacity.",
+          "CloudWatch: metrics and alarms used for scaling and operations."
+        ],
+        implementation: [
+          "Deploy an ALB across public subnets in multiple Availability Zones.",
+          "Register application instances in private subnets through a target group.",
+          "Use launch templates and versioned machine images for consistent instances.",
+          "Configure health checks against an application endpoint that reflects readiness.",
+          "Set scaling policies based on suitable workload signals and capacity limits."
+        ],
+        productionConsiderations: [
+          "Set realistic health-check thresholds and grace periods.",
+          "Keep application sessions external or use carefully designed session affinity.",
+          "Use instance refresh or a controlled deployment process for launch template changes.",
+          "Test scale-out capacity, startup time and dependency connection limits."
+        ],
+        failureModes: [
+          "Unhealthy targets cause 5xx responses or reduced serving capacity.",
+          "Instances fail to launch because of IAM, subnet capacity or quota problems.",
+          "Aggressive scaling policies create oscillation and unnecessary cost.",
+          "Application startup takes longer than the health-check grace period."
+        ],
+        practicalTask:
+          "Design an ALB target group and Auto Scaling Group for a stateless web service. Define minimum, desired and maximum capacity, health-check path, scaling metric and a safe instance replacement procedure."
+      },
+      {
+        title: "4. Data, Object Storage and Database Architecture",
+        explanation:
+          "Application compute should be separated from durable data storage. Amazon S3 is object storage suited to static assets, uploads, backups, logs and data-lake workloads. Amazon RDS provides managed relational database capabilities, including automated backups and Multi-AZ deployment options. A Multi-AZ database deployment is designed for availability and failover; it should not be confused with a read-scaling architecture. Database subnet groups, security groups, encryption keys, backup retention and recovery objectives all contribute to the final design. Applications must handle database connection interruptions and reconnect safely after failover.",
+        responsibilities: [
+          "S3 bucket: durable object storage with access policies and lifecycle controls.",
+          "RDS: managed relational database engine and operational capabilities.",
+          "KMS: key management for supported encryption use cases.",
+          "Secrets Manager: managed storage and rotation workflows for credentials.",
+          "Backup policies: recovery points and retention aligned to business needs."
+        ],
+        implementation: [
+          "Place RDS in private database subnets and restrict access to application security groups.",
+          "Enable encryption at rest and enforce TLS where supported.",
+          "Use Secrets Manager or another approved secret delivery method instead of embedding credentials.",
+          "Configure S3 Block Public Access and narrowly scoped bucket policies.",
+          "Define backup retention and test point-in-time restore procedures."
+        ],
+        productionConsiderations: [
+          "Define RPO and RTO with application owners before choosing recovery mechanisms.",
+          "Test database failover and verify application connection retry behavior.",
+          "Use S3 versioning and lifecycle policies where appropriate.",
+          "Monitor storage growth, connection saturation, latency and backup completion."
+        ],
+        failureModes: [
+          "Database connection pool exhaustion prevents new requests from completing.",
+          "Expired or incorrectly rotated credentials cause authentication failures.",
+          "An overly restrictive bucket policy breaks application object access.",
+          "Backups exist but restore procedures have never been tested."
+        ],
+        practicalTask:
+          "Design a storage plan for a web application that stores user uploads in S3 and transactional records in RDS. Document encryption, access paths, backup retention, recovery tests and secret management."
+      },
+      {
+        title: "5. Identity, Security and Secrets Management",
+        explanation:
+          "AWS security is based on layered controls and explicit identity permissions. IAM users, roles and policies determine which identities can perform actions on which resources. Workloads running on EC2 should normally obtain temporary credentials through an attached IAM role rather than storing long-lived access keys on disk. Security groups, private subnets, encryption, TLS, logging and service policies provide additional boundaries. The principle of least privilege means granting only the actions and resources required for a task. A production security design also needs a process for credential rotation, incident investigation, access review and controlled emergency access.",
+        responsibilities: [
+          "IAM role: temporary permissions assumed by an AWS service or trusted identity.",
+          "IAM policy: defines allowed or denied actions and resources.",
+          "KMS: manages cryptographic keys and key-use permissions.",
+          "Secrets Manager: stores and supports rotation of application secrets.",
+          "CloudTrail: records supported AWS API activity for auditing."
+        ],
+        implementation: [
+          "Attach narrowly scoped IAM roles to EC2 workloads.",
+          "Separate deployment permissions from runtime application permissions.",
+          "Use resource-level permissions and conditions where supported.",
+          "Require encrypted transport and encrypted storage for sensitive data.",
+          "Enable audit logging and protect log retention from unauthorized modification."
+        ],
+        productionConsiderations: [
+          "Review trust policies as carefully as permission policies.",
+          "Avoid wildcard permissions unless the scope is justified and controlled.",
+          "Test permission changes in a non-production environment.",
+          "Create a documented process for access revocation and compromised credentials."
+        ],
+        failureModes: [
+          "AccessDenied errors result from missing actions, resource scope or trust permissions.",
+          "An incorrect role trust relationship prevents a workload from assuming its role.",
+          "A leaked long-lived key creates a credential compromise risk.",
+          "Key policy restrictions prevent expected encryption or decryption operations."
+        ],
+        practicalTask:
+          "Create an IAM permission design for an application that reads selected S3 objects and writes application logs. Separate runtime permissions from CI/CD deployment permissions and explain why each permission is necessary."
+      },
+      {
+        title: "6. Observability, Resilience and Disaster Recovery",
+        explanation:
+          "Production architecture must make service health visible and define how the system recovers from failure. CloudWatch metrics, alarms and logs help teams observe infrastructure and application behavior. CloudTrail provides an audit record of supported API activity, while VPC Flow Logs provide network traffic metadata. Resilience requires eliminating unnecessary single points of failure, setting meaningful health checks, testing failover and controlling dependencies. Disaster recovery adds a wider recovery strategy for regional or major infrastructure events. Backup and restore, pilot light, warm standby and multi-site active-active designs have different recovery times, operational complexity and costs. The correct approach depends on business impact rather than choosing the most expensive option by default.",
+        responsibilities: [
+          "CloudWatch: metrics, logs, dashboards and alarms.",
+          "CloudTrail: AWS API audit history.",
+          "VPC Flow Logs: network interface traffic metadata.",
+          "AWS Backup: policy-driven backup management for supported resources.",
+          "Route 53: DNS routing policies that can support recovery designs."
+        ],
+        implementation: [
+          "Define service-level indicators for availability, latency and error rates.",
+          "Create alarms for target health, compute saturation and database pressure.",
+          "Centralize logs with retention, access control and useful correlation fields.",
+          "Document recovery procedures and ownership for each critical dependency.",
+          "Run restore and failover exercises and record measured recovery times."
+        ],
+        productionConsiderations: [
+          "Set RTO and RPO from business requirements and validate them through exercises.",
+          "Monitor application-level symptoms, not only EC2 CPU utilization.",
+          "Ensure recovery credentials, network routes and DNS changes are available during incidents.",
+          "Avoid assuming that a successful backup job proves that recovery will work."
+        ],
+        failureModes: [
+          "Missing alarms delay detection of application degradation.",
+          "A recovery environment is outdated or missing required configuration.",
+          "DNS caching delays traffic movement during a failover.",
+          "A backup restore exceeds the business recovery time objective."
+        ],
+        practicalTask:
+          "Write a recovery runbook for an application whose primary Availability Zone becomes unavailable. Include detection, traffic handling, database recovery assumptions, validation steps, communication and rollback criteria."
+      }
+    ],
+    architectureDecisions: [
+      {
+        decision: "Single Availability Zone or multiple Availability Zones?",
+        guidance: "Use multiple Availability Zones for production workloads where zone-level failure must not stop the service. A single-zone design may be acceptable for disposable development environments."
+      },
+      {
+        decision: "Public or private application instances?",
+        guidance: "Prefer private application instances behind a public load balancer unless the workload has a specific, reviewed reason to expose compute directly."
+      },
+      {
+        decision: "NAT Gateway or VPC endpoints?",
+        guidance: "Use NAT for required outbound internet access. Consider VPC endpoints for supported AWS services to keep service traffic on private connectivity paths and reduce NAT dependency."
+      },
+      {
+        decision: "Multi-AZ database or read replicas?",
+        guidance: "Choose Multi-AZ for availability and failover requirements. Choose read replicas when supported read-scaling or a separate replication use case is required; validate engine-specific behavior."
+      }
+    ],
+    interviewQuestions: [
+      {
+        question: "Why do production AWS architectures use private subnets for application servers?",
+        answer: "Private subnets reduce direct inbound exposure. Users reach the public load balancer, and the load balancer forwards approved requests to application targets. Security groups restrict backend traffic to the expected source. Private instances can still reach required external services through controlled outbound paths such as NAT or VPC endpoints."
+      },
+      {
+        question: "Does deploying an application across two Availability Zones guarantee high availability?",
+        answer: "No. The application, load balancer targets, database, dependencies, scaling policies and operational procedures must all tolerate a zone failure. A single database dependency or shared external service can still become a single point of failure. High availability must be tested through realistic failure exercises."
+      },
+      {
+        question: "What is the difference between an Internet Gateway and a NAT Gateway?",
+        answer: "An Internet Gateway provides a VPC attachment for internet routing. A NAT Gateway allows resources in private subnets to initiate supported outbound IPv4 connections without accepting unsolicited inbound internet connections through that NAT path. Route tables determine whether traffic uses either gateway."
+      }
+    ]
+  },
+
+  "azure-architecture": {
+    title: "Azure Architecture",
+    subtitle: "Designing enterprise workloads with Microsoft Azure networking, compute, data and identity services",
+    summary:
+      "Azure architecture combines resource organization, virtual networking, identity, compute, storage, databases, traffic management and monitoring into a secure cloud solution. A production design commonly uses a subscription and resource groups to organize resources, a Virtual Network to isolate connectivity, Application Gateway or Azure Front Door to manage application traffic, compute services to run workloads, and managed data services for persistence. Microsoft Entra ID provides identity capabilities, while Azure Monitor and Log Analytics support operational visibility. This lesson builds a realistic multi-tier application architecture and explains the responsibilities and trade-offs of its major components.",
+    objectives: [
+      "Understand Azure tenants, subscriptions, resource groups and regional deployment.",
+      "Design Virtual Networks, subnets, NSGs and private connectivity.",
+      "Trace application traffic through Azure Front Door or Application Gateway to backend services.",
+      "Apply Microsoft Entra ID, managed identities, Key Vault and least privilege.",
+      "Plan monitoring, backup, availability zones and disaster recovery."
+    ],
+    diagram: [
+      "Users / Browsers",
+      "Azure DNS",
+      "Azure Front Door + Web Application Firewall",
+      "Application Gateway or approved ingress layer",
+      "Azure Virtual Network across supported Availability Zones",
+      "Private application tier: App Service integration / VM Scale Sets / AKS",
+      "Private data tier: Azure SQL / managed database services",
+      "Supporting services: Storage Account, Key Vault, Azure Monitor, Log Analytics, Entra ID"
+    ],
+    sections: [
+      {
+        title: "1. Azure Resource Hierarchy and Regional Design",
+        explanation:
+          "Azure resources are organized through a hierarchy that begins with a Microsoft Entra tenant and management groups, followed by subscriptions, resource groups and individual resources. The tenant provides the identity boundary, while subscriptions provide billing, governance and access-control boundaries. A resource group is a logical management container for resources that share a lifecycle or operational purpose; it is not itself a network boundary. Azure Regions are geographic deployment locations, and Availability Zones provide physically separate locations within supported Regions. Enterprise architecture should decide how subscriptions, resource groups, naming, tags, policies and deployment environments are organized before large numbers of resources are created.",
+        responsibilities: [
+          "Microsoft Entra tenant: identity directory and tenant-level boundary.",
+          "Management group: organizes subscriptions for governance.",
+          "Subscription: billing, quota and access-control scope.",
+          "Resource group: lifecycle and management grouping for resources.",
+          "Region and Availability Zone: geographic placement and resilience choices."
+        ],
+        implementation: [
+          "Separate production and non-production environments using an approved subscription strategy.",
+          "Group resources by application, environment or lifecycle ownership.",
+          "Apply consistent naming, tags, resource locks and Azure Policy.",
+          "Check regional availability and service-specific zone support before deployment."
+        ],
+        productionConsiderations: [
+          "Define subscription ownership and quota escalation processes.",
+          "Use policy initiatives to enforce required security and compliance settings.",
+          "Avoid using resource groups as if they were network isolation boundaries.",
+          "Document regional dependencies and the impact of regional service limitations."
+        ],
+        failureModes: [
+          "Quota exhaustion prevents resource creation or scaling.",
+          "Incorrect subscription context deploys resources into the wrong environment.",
+          "A policy assignment blocks a deployment that does not meet governance rules.",
+          "A service selected for a design is unavailable in the chosen Region or zone."
+        ],
+        practicalTask:
+          "Design a subscription and resource-group hierarchy for development, staging and production. Explain which teams own each boundary and how policy, naming, tags and deployment permissions are applied."
+      },
+      {
+        title: "2. Azure Virtual Network and Secure Connectivity",
+        explanation:
+          "An Azure Virtual Network provides private network connectivity for supported Azure resources. A VNet contains one or more subnets, and subnet boundaries can be protected with Network Security Groups. NSGs contain inbound and outbound security rules evaluated by priority. User-defined routes can direct traffic through approved network appliances or connectivity paths. Virtual Network peering connects VNets over the Microsoft backbone, while VPN Gateway and ExpressRoute support different hybrid connectivity models. Private Endpoints allow supported platform services to be reached through private IP addresses in a VNet. Correct DNS configuration is essential because a private endpoint can exist and still be unusable if clients resolve the public service name incorrectly.",
+        responsibilities: [
+          "Virtual Network: private IP address space and network boundary.",
+          "Subnet: logical segmentation within a VNet.",
+          "Network Security Group: priority-based inbound and outbound filtering.",
+          "User-defined route: custom traffic next-hop selection.",
+          "Private Endpoint: private network interface for supported services.",
+          "VPN Gateway / ExpressRoute: hybrid network connectivity options."
+        ],
+        implementation: [
+          "Choose non-overlapping address ranges for VNets and connected networks.",
+          "Separate ingress, application and private data workloads into suitable subnets.",
+          "Apply NSG rules based on explicit source, destination, protocol and port requirements.",
+          "Configure private DNS zones and links for private endpoint name resolution.",
+          "Use peering, VPN or ExpressRoute according to connectivity and operational needs."
+        ],
+        productionConsiderations: [
+          "Review NSG priorities and effective security rules when investigating blocked traffic.",
+          "Plan address space before adding peering or hybrid network connections.",
+          "Validate DNS resolution from the actual client network.",
+          "Understand routing behavior when network virtual appliances and custom routes are present."
+        ],
+        failureModes: [
+          "Overlapping address spaces prevent intended VNet connectivity.",
+          "An NSG rule with higher priority blocks expected traffic.",
+          "Private Endpoint DNS resolves to a public address or the wrong private address.",
+          "A route table sends traffic to an unavailable or incorrectly configured next hop."
+        ],
+        practicalTask:
+          "Design a VNet with ingress, application and data subnets. Create a traffic matrix and specify NSG rules, private endpoint DNS requirements and the route path for application-to-database traffic."
+      },
+      {
+        title: "3. Application Entry, Load Balancing and Compute",
+        explanation:
+          "Azure offers multiple traffic-management and application delivery services, and they solve different problems. Azure Front Door provides global HTTP and HTTPS entry capabilities, while Application Gateway provides regional application delivery and can integrate with Web Application Firewall capabilities. Azure Load Balancer operates at the network transport layer for supported traffic patterns. Backend workloads may run on Azure App Service, Virtual Machine Scale Sets or Azure Kubernetes Service. The correct combination depends on whether the application requires global routing, regional layer-seven routing, network load balancing, container orchestration or managed application hosting. Health probes, backend configuration, TLS certificates, autoscaling and deployment strategy must be designed together.",
+        responsibilities: [
+          "Azure Front Door: global application entry and routing capabilities.",
+          "Application Gateway: regional application traffic distribution and layer-seven routing.",
+          "Azure Load Balancer: layer-four network traffic distribution.",
+          "App Service: managed application hosting platform.",
+          "Virtual Machine Scale Sets: groups of scalable virtual machines.",
+          "AKS: managed Kubernetes control plane with customer-managed workload operations."
+        ],
+        implementation: [
+          "Choose the entry service based on global, regional and protocol requirements.",
+          "Configure backend pools, listeners, routing rules and health probes.",
+          "Deploy application compute into an appropriate network integration model.",
+          "Use managed identities for application access to supported Azure resources.",
+          "Define autoscaling thresholds and safe rolling deployment practices."
+        ],
+        productionConsiderations: [
+          "Do not treat Front Door, Application Gateway and Load Balancer as interchangeable products.",
+          "Validate TLS termination, certificate renewal and end-to-end encryption requirements.",
+          "Check probe paths, response codes and backend readiness behavior.",
+          "Test capacity limits and scale-out time under realistic load."
+        ],
+        failureModes: [
+          "Incorrect backend health probes mark healthy application instances unavailable.",
+          "A listener or routing rule sends traffic to the wrong backend.",
+          "Certificate expiry or TLS mismatch causes connection failures.",
+          "Autoscaling cannot react quickly enough to sudden traffic increases."
+        ],
+        practicalTask:
+          "Choose Azure Front Door, Application Gateway or Load Balancer for three different example workloads. Explain the protocol layer, geographic scope, routing behavior and backend health-check requirements for each choice."
+      },
+      {
+        title: "4. Azure Storage and Managed Data Services",
+        explanation:
+          "Azure storage and database services should be selected according to access patterns, consistency requirements, latency, durability and recovery objectives. Azure Storage Accounts can provide blob, file, queue and table capabilities depending on configuration. Azure SQL Database provides a managed relational database service, while other Azure database products address different data models and workload needs. Storage networking can be restricted with firewall rules and private endpoints. Encryption, identity-based access, backup, redundancy options and retention policies must be planned as part of the architecture. Replication options are not identical to application-level disaster recovery, so recovery behavior must be tested rather than assumed.",
+        responsibilities: [
+          "Storage Account: account-level configuration and supported storage services.",
+          "Blob Storage: object storage for files, media, backups and unstructured data.",
+          "Azure SQL Database: managed relational database platform.",
+          "Private Endpoint: private access path for supported data services.",
+          "Azure Backup: backup capabilities for supported workloads."
+        ],
+        implementation: [
+          "Select storage redundancy based on availability and recovery requirements.",
+          "Disable unnecessary public access and configure network restrictions.",
+          "Use managed identities and role-based data access where supported.",
+          "Enable database backup and configure retention according to business needs.",
+          "Use Key Vault for secrets and certificates where appropriate."
+        ],
+        productionConsiderations: [
+          "Understand the differences between local, zone and geo-redundant storage options.",
+          "Validate database failover and application connection retry behavior.",
+          "Monitor storage capacity, transaction rates and database performance.",
+          "Test data restoration and verify application consistency after recovery."
+        ],
+        failureModes: [
+          "Storage firewall rules block application access.",
+          "A private endpoint exists but DNS resolution is incorrect.",
+          "Database connection limits or resource saturation cause request failures.",
+          "Backup retention does not meet the required recovery objective."
+        ],
+        practicalTask:
+          "Create a storage design for an application with user-uploaded documents and relational transaction data. Specify network access, identity permissions, encryption, redundancy and restore testing."
+      },
+      {
+        title: "5. Microsoft Entra ID, Managed Identity and Key Vault",
+        explanation:
+          "Microsoft Entra ID provides identity and access capabilities used by people, applications and services. Azure role-based access control assigns permissions at scopes such as management groups, subscriptions, resource groups and individual resources. Managed identities allow supported Azure workloads to obtain tokens without storing application credentials in source code or configuration files. Azure Key Vault provides controlled storage for secrets, keys and certificates. A secure design separates human administration, CI/CD deployment identities and runtime workload identities. Role assignments should be narrow, reviewed and monitored, and applications should request only the permissions needed for their functions.",
+        responsibilities: [
+          "Microsoft Entra ID: identity and authentication services.",
+          "Azure RBAC: authorization through role assignments and scopes.",
+          "Managed identity: Azure-managed workload identity.",
+          "Key Vault: protected secrets, keys and certificates.",
+          "Conditional Access: policy-based controls for supported identity scenarios."
+        ],
+        implementation: [
+          "Enable a managed identity for supported application workloads.",
+          "Grant the identity only the required data-plane or management-plane roles.",
+          "Restrict Key Vault access through approved identity and network controls.",
+          "Separate CI/CD service connections from application runtime identities.",
+          "Review privileged role assignments and remove unnecessary permissions."
+        ],
+        productionConsiderations: [
+          "Distinguish authentication failures from authorization failures.",
+          "Check whether a permission is management-plane or data-plane access.",
+          "Plan Key Vault availability, throttling and secret refresh behavior.",
+          "Audit privileged access and define emergency access procedures."
+        ],
+        failureModes: [
+          "A workload cannot acquire a token because its managed identity is not configured correctly.",
+          "A token is valid but the identity lacks the required role assignment.",
+          "A Key Vault firewall or private DNS issue blocks secret retrieval.",
+          "A deployment identity has insufficient scope or an expired credential."
+        ],
+        practicalTask:
+          "Design an identity flow in which an application reads a secret from Key Vault and accesses a storage container. Identify the workload identity, role assignments, network path and audit evidence."
+      },
+      {
+        title: "6. Monitoring, Availability and Disaster Recovery",
+        explanation:
+          "Azure Monitor collects and organizes platform and application telemetry through metrics, logs and alerts. Log Analytics workspaces support querying collected logs, while Application Insights provides application performance monitoring capabilities for supported applications. Availability Zones, zone-redundant services, deployment slots, scale sets and regional recovery patterns can improve resilience when configured correctly. Disaster recovery planning must define recovery point objective and recovery time objective, identify dependencies, document failover authority and test restoration. A multi-region design introduces additional complexity around data replication, consistency, DNS or global routing, secrets, deployment coordination and operational ownership.",
+        responsibilities: [
+          "Azure Monitor: metrics, logs, alerts and monitoring capabilities.",
+          "Log Analytics: centralized log querying and analysis.",
+          "Application Insights: application telemetry and performance analysis.",
+          "Azure Backup: recovery points for supported workloads.",
+          "Azure Site Recovery: disaster recovery capabilities for supported scenarios.",
+          "Front Door or DNS: traffic steering options for suitable recovery designs."
+        ],
+        implementation: [
+          "Define availability and latency indicators for critical application paths.",
+          "Collect platform logs, application logs and diagnostic settings centrally.",
+          "Create actionable alerts with clear ownership and runbook links.",
+          "Document backup, restore, failover and failback procedures.",
+          "Run recovery exercises and measure actual RTO and RPO."
+        ],
+        productionConsiderations: [
+          "Confirm the selected service supports the required zone or regional behavior.",
+          "Avoid alerting only on infrastructure metrics while ignoring user-facing errors.",
+          "Validate data replication lag and consistency before traffic failover.",
+          "Ensure the recovery region contains required quotas, identities, secrets and network connectivity."
+        ],
+        failureModes: [
+          "Missing diagnostic settings leave critical resource activity unobserved.",
+          "Alert thresholds create noise or fail to detect real degradation.",
+          "Recovery resources are unavailable or misconfigured during a regional incident.",
+          "DNS, identity or database dependencies prevent successful failover."
+        ],
+        practicalTask:
+          "Prepare a disaster recovery runbook for a regional application outage. Include detection, decision authority, traffic redirection, database recovery, identity validation, smoke tests and failback conditions."
+      }
+    ],
+    architectureDecisions: [
+      {
+        decision: "Azure Front Door or Application Gateway?",
+        guidance: "Use Front Door when global HTTP application entry and routing are required. Use Application Gateway for regional layer-seven application delivery. Some architectures use both for distinct global and regional responsibilities."
+      },
+      {
+        decision: "App Service, VM Scale Sets or AKS?",
+        guidance: "Choose App Service for managed web application hosting, VM Scale Sets when VM-level control and scaling are needed, and AKS when Kubernetes orchestration is justified by workload and operational requirements."
+      },
+      {
+        decision: "Service endpoint or Private Endpoint?",
+        guidance: "Evaluate service-specific networking requirements. Private Endpoints provide private IP-based connectivity to supported services, but require correct DNS and network design."
+      },
+      {
+        decision: "Single Region or multi-region?",
+        guidance: "Choose multi-region only when business recovery requirements justify the added cost and operational complexity. Define data consistency, failover and failback behavior before implementation."
+      }
+    ],
+    interviewQuestions: [
+      {
+        question: "What is the difference between an Azure subscription and a resource group?",
+        answer: "A subscription is a major management, billing, quota and access-control boundary. A resource group is a logical container used to organize resources that share a lifecycle or management purpose. Resource groups do not automatically isolate network traffic or replace subscription governance."
+      },
+      {
+        question: "What is a managed identity in Azure?",
+        answer: "A managed identity provides an identity for an Azure workload so it can authenticate to supported services without storing long-lived credentials in application code. The identity still needs appropriate authorization, such as an Azure RBAC role or service-specific data permission."
+      },
+      {
+        question: "What is the difference between Azure Front Door and Azure Load Balancer?",
+        answer: "Azure Front Door provides global application entry and HTTP or HTTPS routing capabilities. Azure Load Balancer distributes supported network traffic at layer four. They operate at different layers and solve different traffic-management problems."
+      }
+    ]
+  },
+
+  "gcp-architecture": {
+    title: "GCP Architecture",
+    subtitle: "Designing secure, scalable and resilient workloads on Google Cloud",
+    summary: "Google Cloud Platform architecture combines global infrastructure, regional and zonal resources, Virtual Private Cloud networking, Cloud Load Balancing, Compute Engine, Google Kubernetes Engine, Cloud Run, Cloud Storage, Cloud SQL, IAM, Cloud Monitoring and managed data services. A production design must explain how users enter the platform, how traffic is distributed, how workloads communicate, how identities are authorized, how data is protected, and how the system behaves during regional, zonal and dependency failures. This reference architecture follows a globally accessible application with a regional workload, private application networking, managed data services and centralized operations.",
+    objectives: [
+      "Understand Google Cloud organizations, folders, projects, Regions and Zones.",
+      "Trace application traffic through DNS, global load balancing, serverless or container compute and managed databases.",
+      "Design VPC networks, subnet ranges, firewall policies and private service connectivity.",
+      "Apply IAM, service accounts, workload identity, encryption and audit logging.",
+      "Plan GKE operations, autoscaling, observability, backup and disaster recovery."
+    ],
+    diagram: [
+      "Users and external clients resolve the application domain through Cloud DNS.",
+      "Global external Application Load Balancer receives HTTPS traffic and applies routing policy.",
+      "Cloud Armor evaluates configured edge security policies before application delivery.",
+      "Google Cloud VPC provides regional subnet connectivity and controlled internal communication.",
+      "GKE, Cloud Run or Compute Engine hosts application services according to workload requirements.",
+      "Cloud SQL, Spanner or another managed data service stores persistent application state.",
+      "Cloud Storage stores objects, artifacts, static content and backup exports.",
+      "Cloud Monitoring, Cloud Logging, Cloud Audit Logs and Error Reporting support operations."
+    ],
+    sections: [
+      {
+        title: "1. Google Cloud Resource Hierarchy and Deployment Boundaries",
+        explanation: "Google Cloud resources are organized through an organization, optional folders, projects and individual services. The organization represents the enterprise resource boundary when Cloud Identity or Google Workspace is integrated. Folders help apply policy and delegate administration across business units or environments. Projects provide an important boundary for APIs, billing association, quotas, IAM policy and resource organization. A project is not a network by itself: VPC networks and resources are created within projects, and shared VPC can allow service projects to use centrally managed host-project networking. Regions are geographic locations and Zones are isolated deployment locations within a Region. A resilient design must understand which services are regional, zonal or global instead of assuming every service has the same availability model.",
+        responsibilities: [
+          "Organization: enterprise-wide policy and governance boundary.",
+          "Folder: groups projects and supports inherited policy.",
+          "Project: resource, API, IAM, quota and billing organization boundary.",
+          "Region: geographic deployment location for regional services.",
+          "Zone: isolated location within a Region for zonal resources.",
+          "Shared VPC: centralizes network ownership while allowing service projects to deploy workloads."
+        ],
+        implementation: [
+          "Create separate projects for production, non-production, security and shared services where governance requires isolation.",
+          "Enable only the APIs required by each workload project.",
+          "Define folder hierarchy around operational ownership and policy inheritance.",
+          "Choose Regions based on latency, compliance, service availability and recovery requirements.",
+          "Use Shared VPC when central network administration and delegated application deployment are required."
+        ],
+        productionConsiderations: [
+          "Document project ownership, billing responsibility, quota requirements and service dependencies.",
+          "Test organization policies before applying them broadly because inherited restrictions can block deployments.",
+          "Avoid using one unrestricted project as the boundary for every environment.",
+          "Review service-specific regional, zonal and global availability characteristics.",
+          "Keep emergency administrative access controlled, monitored and periodically tested."
+        ],
+        failureModes: [
+          "An organization policy blocks a deployment or resource configuration.",
+          "A project reaches a service quota and new resources cannot be provisioned.",
+          "A missing API activation causes deployment failures.",
+          "Incorrect Shared VPC permissions prevent service-project workloads from attaching to subnets.",
+          "A zonal dependency causes workload interruption during a zone failure."
+        ],
+        practicalTask: "Design an organization hierarchy for development, staging and production. Identify which policies belong at organization, folder and project level. Explain how a central networking project can provide Shared VPC access to two application projects."
+      },
+      {
+        title: "2. VPC Networking, Subnets and Private Service Access",
+        explanation: "Google Cloud VPC networks are global resources, while their subnetworks are regional. This differs from cloud networking models where a virtual network is restricted to one Region. A subnet can provide IP ranges to resources in its Region, and a VPC can connect workloads across multiple Regions using the same logical network. Firewall rules are associated with the VPC and can use network tags or service accounts as targets. Routes determine packet forwarding, while Cloud NAT provides outbound connectivity for eligible resources that do not have external IP addresses. Private Google Access can allow supported Google APIs to be reached from eligible resources without assigning external IP addresses. Private Service Connect and private service access address different private connectivity patterns and should be selected based on the producer service and consumer requirements.",
+        responsibilities: [
+          "VPC network: global logical network boundary.",
+          "Regional subnet: allocates internal IP ranges to supported resources.",
+          "Firewall rules: control permitted ingress and egress traffic.",
+          "Cloud Router: exchanges dynamic routes for supported hybrid connectivity designs.",
+          "Cloud NAT: provides outbound NAT for resources without external IP addresses.",
+          "Private Google Access: supports private access to eligible Google APIs.",
+          "Private Service Connect: provides private service connectivity using supported endpoints."
+        ],
+        implementation: [
+          "Plan non-overlapping primary and secondary subnet ranges before connecting environments.",
+          "Create regional subnets close to the workloads that consume them.",
+          "Use firewall rules targeted to service accounts or carefully managed network tags.",
+          "Configure Cloud NAT for private workloads that require controlled outbound internet access.",
+          "Enable Private Google Access where private workloads need supported Google APIs.",
+          "Use Cloud Router and Cloud VPN or Cloud Interconnect for appropriate hybrid routing designs."
+        ],
+        productionConsiderations: [
+          "VPC networks are global but subnet ranges are regional; account for this when planning IP allocation.",
+          "Avoid broad ingress rules such as unrestricted access to administrative ports.",
+          "Monitor subnet IP consumption and GKE secondary IP range utilization.",
+          "Review Cloud NAT capacity, logging, port allocation and regional placement.",
+          "Validate DNS, routes, firewall policy and return paths together during connectivity investigations."
+        ],
+        failureModes: [
+          "Overlapping subnet ranges prevent intended hybrid network connectivity.",
+          "Firewall targets do not match the workload service account or network tag.",
+          "GKE Pod IP ranges become exhausted.",
+          "Cloud NAT configuration or port capacity prevents outbound connections.",
+          "Private API access fails because DNS or endpoint requirements are incomplete."
+        ],
+        practicalTask: "Create a network design with two regional subnets, private application instances, a Cloud NAT gateway and restricted firewall rules. Document the route and firewall path for an application connecting to a managed database."
+      },
+      {
+        title: "3. Global Application Entry, Load Balancing and Edge Protection",
+        explanation: "Google Cloud offers global and regional load-balancing products with different traffic types and deployment scopes. An external Application Load Balancer can provide a global HTTP or HTTPS entry point using forwarding rules, target proxies, URL maps, backend services and health checks. Cloud DNS publishes records that direct clients to the application entry point. Cloud CDN can cache eligible content close to users, while Cloud Armor provides configured edge security policies such as application-layer filtering and supported denial-of-service protections. The load balancer does not automatically make the application highly available: backend health, capacity, database dependencies, session handling and regional failure strategy must also be designed and tested.",
+        responsibilities: [
+          "Cloud DNS: publishes and resolves application DNS records.",
+          "External Application Load Balancer: receives and routes HTTP or HTTPS traffic.",
+          "URL map: selects backends based on configured host and path rules.",
+          "Backend service: defines backend targets, balancing and health-check behavior.",
+          "Cloud CDN: caches eligible responses to reduce latency and origin load.",
+          "Cloud Armor: applies configured edge security policies."
+        ],
+        implementation: [
+          "Provision a managed certificate or another supported TLS certificate arrangement.",
+          "Create the forwarding rule, target HTTPS proxy, URL map and backend service.",
+          "Configure health checks that verify application readiness rather than only process existence.",
+          "Attach Cloud Armor policies based on application threat and traffic requirements.",
+          "Enable Cloud CDN only for routes and response types with correct caching behavior.",
+          "Publish DNS records after validating the load-balancer frontend and certificate."
+        ],
+        productionConsiderations: [
+          "Separate liveness from readiness so unhealthy instances are not sent production traffic.",
+          "Set realistic health-check thresholds and understand how quickly backends are removed.",
+          "Do not cache personalized or sensitive responses without explicit cache-control design.",
+          "Test certificate renewal, DNS changes and backend failover procedures.",
+          "Review logs and security policy outcomes during traffic spikes and attack simulations."
+        ],
+        failureModes: [
+          "A health check uses a path that requires authentication and marks every backend unhealthy.",
+          "A URL map routes a host or path to the wrong backend.",
+          "Certificate or DNS configuration prevents successful HTTPS access.",
+          "An overly strict edge security policy blocks legitimate clients.",
+          "Cached content remains stale because cache invalidation or response headers are incorrect."
+        ],
+        practicalTask: "Design a global HTTPS entry point for a web application with separate frontend and API paths. Define backend health checks, Cloud Armor policy goals and a caching strategy that does not expose authenticated user responses."
+      },
+      {
+        title: "4. Compute Platforms: Compute Engine, GKE and Cloud Run",
+        explanation: "Google Cloud provides multiple compute models and they should not be treated as interchangeable. Compute Engine provides virtual machines when operating-system control, specialized agents or legacy software compatibility is required. Google Kubernetes Engine provides managed Kubernetes control-plane capabilities and integrates with Google Cloud networking, identity, logging and monitoring. Cloud Run provides a managed container execution platform for supported request-driven and event-driven services without requiring teams to operate Kubernetes nodes. The correct platform depends on workload behavior, runtime requirements, scaling patterns, deployment model, networking, state management and the team's ability to operate the platform. A production design should avoid selecting Kubernetes merely because containers are used.",
+        responsibilities: [
+          "Compute Engine: virtual machine workloads and operating-system control.",
+          "GKE: Kubernetes orchestration for containerized applications.",
+          "Cloud Run: managed container execution with request or event-driven scaling.",
+          "Managed instance groups: VM fleet management and autoscaling.",
+          "Artifact Registry: stores container images and build artifacts.",
+          "Workload Identity Federation for GKE: maps Kubernetes identities to Google Cloud IAM identities."
+        ],
+        implementation: [
+          "Choose Compute Engine for workloads that need VM-level control or specific operating-system capabilities.",
+          "Use GKE when Kubernetes APIs, scheduling controls or complex multi-service orchestration justify the operational cost.",
+          "Use Cloud Run for suitable stateless services and event-driven container workloads.",
+          "Store images in Artifact Registry and deploy immutable image digests.",
+          "Configure health probes, resource requests, limits and autoscaling according to workload behavior.",
+          "Use service identities and least-privilege IAM rather than embedding service account keys."
+        ],
+        productionConsiderations: [
+          "Measure cold starts, concurrency, startup time and request timeouts for serverless workloads.",
+          "Plan GKE upgrades, node pools, capacity, Pod disruption budgets and workload identity.",
+          "Use multiple zones where supported and required by the selected compute product.",
+          "Separate application configuration from container images and use controlled secret delivery.",
+          "Set resource limits and autoscaling thresholds based on observed CPU, memory and request metrics."
+        ],
+        failureModes: [
+          "A GKE workload cannot schedule because of insufficient node capacity or incompatible constraints.",
+          "A Cloud Run revision fails startup or exceeds its configured request timeout.",
+          "A VM instance group repeatedly recreates unhealthy instances.",
+          "A container image cannot be pulled because Artifact Registry permissions are missing.",
+          "An application depends on local ephemeral storage and loses state during instance replacement."
+        ],
+        practicalTask: "Compare Compute Engine, GKE and Cloud Run for a REST API, a long-running worker and a legacy application. Select the best compute platform for each and explain the scaling, identity and operational trade-offs."
+      },
+      {
+        title: "5. Managed Data, Storage and Application State",
+        explanation: "Google Cloud provides multiple data services with different consistency, scaling and operational models. Cloud SQL is a managed relational database option for supported engines and common application workloads. Spanner is designed for relational workloads requiring horizontal scale and strong consistency across supported configurations. Firestore provides a managed document database for application patterns suited to document data. Cloud Storage provides durable object storage for files, backups, static assets and data-lake workloads. The architecture must define where authoritative application state lives, how transactions work, how data is encrypted, how backups are retained and how recovery is tested. A highly available compute tier cannot compensate for a single fragile or incorrectly configured data dependency.",
+        responsibilities: [
+          "Cloud SQL: managed relational database service for supported engines.",
+          "Spanner: horizontally scalable relational database with strong consistency.",
+          "Firestore: managed document database for suitable application models.",
+          "Cloud Storage: object storage with configurable access and lifecycle controls.",
+          "Secret Manager: stores and controls access to application secrets.",
+          "Cloud KMS: manages cryptographic keys for supported encryption workflows."
+        ],
+        implementation: [
+          "Select the data service based on query patterns, transaction needs, consistency and scale.",
+          "Place database connectivity behind private networking where supported and appropriate.",
+          "Grant application identities only the database and storage permissions they require.",
+          "Configure backup retention, point-in-time recovery options and lifecycle policies.",
+          "Store credentials and sensitive configuration in Secret Manager rather than source code.",
+          "Test restore procedures and validate application compatibility after recovery."
+        ],
+        productionConsiderations: [
+          "Define RPO and RTO for every critical dataset and test them through restore exercises.",
+          "Review database connection limits, pooling, query latency and storage growth.",
+          "Avoid assuming that object versioning alone is a complete backup strategy.",
+          "Use retention and deletion controls appropriate to compliance and business requirements.",
+          "Monitor replication lag, backup failures and storage lifecycle behavior."
+        ],
+        failureModes: [
+          "Connection pool exhaustion causes application requests to fail.",
+          "A database failover causes transient connection errors that the application does not retry safely.",
+          "Incorrect IAM or bucket policy blocks object access.",
+          "A backup exists but cannot be restored within the required recovery objective.",
+          "A schema or query design creates unexpected latency or cost at scale."
+        ],
+        practicalTask: "Design the persistence layer for an e-commerce service. Choose a relational database, object storage and secret-management approach. Define backup frequency, retention, encryption and a recovery test that proves the required RPO and RTO."
+      },
+      {
+        title: "6. IAM, Observability and Operational Governance",
+        explanation: "Google Cloud IAM controls which principals can perform which actions on which resources. Principals can include users, groups, service accounts and federated identities. Roles contain permissions and can be granted at supported resource hierarchy levels. Production systems should prefer predefined or narrowly scoped custom roles over broad primitive roles. Workloads should use attached service accounts or supported federation mechanisms instead of long-lived downloaded keys. Cloud Audit Logs record supported administrative and data-access activity according to configuration and service behavior. Cloud Monitoring and Cloud Logging provide metrics, logs, dashboards, alerts and operational evidence. These capabilities are most useful when teams define service-level indicators, alert ownership, escalation paths and incident runbooks before production incidents occur.",
+        responsibilities: [
+          "IAM: grants permissions to principals through roles and resource policies.",
+          "Service accounts: provide workload identities for supported Google Cloud access.",
+          "Workload Identity Federation: enables supported external identity federation.",
+          "Cloud Audit Logs: records supported administrative and data-access events.",
+          "Cloud Monitoring: provides metrics, dashboards, uptime checks and alerting.",
+          "Cloud Logging: centralizes logs for search, analysis and routing.",
+          "Secret Manager and Cloud KMS: support secret and key-management workflows."
+        ],
+        implementation: [
+          "Map human and workload responsibilities to dedicated groups and service identities.",
+          "Grant the narrowest role at the lowest practical resource scope.",
+          "Use service account impersonation or federation for controlled automation access.",
+          "Enable and review the audit-log categories required by security and compliance.",
+          "Create dashboards for request rate, latency, errors, saturation and dependency health.",
+          "Define actionable alerts with ownership, severity and documented response steps."
+        ],
+        productionConsiderations: [
+          "Review inherited IAM permissions and service-account key usage regularly.",
+          "Protect audit-log sinks and ensure retention meets investigation requirements.",
+          "Avoid alerting on every transient error; use service-level objectives and meaningful thresholds.",
+          "Separate monitoring access from the ability to modify production resources.",
+          "Test incident access and break-glass procedures without weakening normal controls."
+        ],
+        failureModes: [
+          "A workload receives permission denied because its runtime identity is not the expected service account.",
+          "A broad project role exposes more resources than the application requires.",
+          "Audit logs are not routed or retained as expected.",
+          "An alert is noisy, lacks an owner or does not identify a customer-impacting symptom.",
+          "A service-account key is leaked or remains active after its intended use."
+        ],
+        practicalTask: "Create an IAM matrix for a deployment pipeline, application runtime and read-only operations team. Define least-privilege roles, audit-log requirements and three actionable alerts for request failures, latency and database saturation."
+      }
+    ],
+    architectureDecisions: [
+      {
+        decision: "Compute Engine, GKE or Cloud Run?",
+        guidance: "Choose Compute Engine when VM-level control is required, GKE when Kubernetes orchestration and its operational model are justified, and Cloud Run for suitable managed container services. Compare runtime requirements, scaling, networking and team capability before selecting."
+      },
+      {
+        decision: "Cloud SQL or Spanner?",
+        guidance: "Cloud SQL fits many conventional relational workloads. Spanner is appropriate when the workload needs its distributed relational capabilities and scale characteristics. Evaluate schema, query patterns, consistency, regional design and cost."
+      },
+      {
+        decision: "Global VPC or separate VPC networks?",
+        guidance: "A global VPC can simplify communication across regional subnets. Separate networks can provide stronger administrative or environment boundaries. Use Shared VPC, peering or supported connectivity patterns based on ownership and isolation needs."
+      },
+      {
+        decision: "Public IP or private workload connectivity?",
+        guidance: "Prefer private workload addresses when direct public reachability is unnecessary. Use load balancers, Cloud NAT, Private Google Access and private service connectivity according to the actual traffic path."
+      },
+      {
+        decision: "Single Region or multi-region?",
+        guidance: "Use multi-region designs when business recovery objectives justify additional cost and complexity. Define data replication, consistency, failover, failback and operational ownership before implementation."
+      }
+    ],
+    interviewQuestions: [
+      {
+        question: "What is the difference between a Google Cloud Region and a Zone?",
+        answer: "A Region is a geographic deployment area containing multiple Zones. A Zone is an isolated location within a Region where zonal resources can run. Deploying suitable workloads across multiple Zones can reduce exposure to a single-zone failure, but the application, data services and dependencies must also support the required availability behavior."
+      },
+      {
+        question: "Are Google Cloud VPC networks regional?",
+        answer: "No. A Google Cloud VPC network is global, while its subnetworks are regional. This allows resources in different Regions to use the same VPC network when their configurations and service capabilities permit. IP planning, firewall policy, routes and regional service behavior still need careful design."
+      },
+      {
+        question: "What is the purpose of Cloud NAT?",
+        answer: "Cloud NAT provides network address translation for eligible resources that need outbound connectivity without having external IP addresses. It does not make private workloads directly reachable from the internet. Its regional configuration, capacity, logging and route behavior should be monitored."
+      },
+      {
+        question: "When would you choose GKE instead of Cloud Run?",
+        answer: "GKE is suitable when a team needs Kubernetes APIs, scheduling control, cluster-level capabilities or complex orchestration. Cloud Run is useful for supported container workloads when the team prefers a managed execution platform. The choice should reflect application requirements and operational capability, not simply the use of containers."
+      },
+      {
+        question: "How should applications authenticate to Google Cloud services?",
+        answer: "Applications should normally use an attached service account or an appropriate workload identity federation mechanism. The identity receives only the permissions needed for its task. Long-lived service account keys should be avoided where keyless identity options are available."
+      }
+    ]
+  },
+
+  "hybrid-cloud": {
+    title: "Hybrid Cloud",
+    subtitle: "Connecting on-premises infrastructure and public cloud through secure, governed architecture",
+    summary: "Hybrid cloud architecture combines infrastructure operated in a private datacenter or colocation facility with services running in one or more public cloud environments. The design is not simply a VPN connection between two networks. It includes identity federation, DNS, IP address planning, routing, workload placement, data movement, security inspection, observability, operational ownership and recovery procedures. A production hybrid environment must make the connectivity path predictable, prevent overlapping address ranges, protect sensitive traffic, manage dependencies across locations and provide a clear migration and failure strategy. This reference design shows users accessing cloud workloads while selected applications and data services remain on-premises.",
+    objectives: [
+      "Understand hybrid cloud operating models and workload placement decisions.",
+      "Design private connectivity using VPN, dedicated connectivity and redundant paths.",
+      "Plan IP ranges, routing, DNS resolution and firewall boundaries across environments.",
+      "Integrate enterprise identity with cloud IAM and workload identities.",
+      "Manage latency, data movement, observability, failure recovery and migration risk."
+    ],
+    diagram: [
+      "Employees, customers and partner systems enter through approved enterprise access paths.",
+      "Enterprise DNS and identity services provide name resolution and authentication integration.",
+      "On-premises datacenter hosts legacy applications, private databases and selected shared services.",
+      "Redundant VPN or dedicated private connectivity links connect the datacenter to cloud networks.",
+      "Cloud network hub applies routing, segmentation, inspection and controlled connectivity.",
+      "Cloud application workloads run in private subnets or managed container platforms.",
+      "Cloud-managed data and object storage host services selected for cloud migration.",
+      "Central monitoring, security logging, backup and incident response cover both environments."
+    ],
+    sections: [
+      {
+        title: "1. Hybrid Cloud Operating Model and Workload Placement",
+        explanation: "Hybrid cloud is an operating model in which an organization uses both privately operated infrastructure and public cloud services as coordinated parts of its technology estate. Workloads may remain on-premises because of latency, hardware dependencies, regulatory requirements, licensing, data gravity or migration constraints. Other workloads may move to cloud services for elasticity, managed operations or geographic reach. The architecture must define which environment owns each application, database, identity, integration and operational responsibility. A hybrid design can be temporary during migration or a long-term architecture. Teams should avoid treating every workload as portable because application dependencies, storage semantics, network assumptions and licensing may prevent a simple move.",
+        responsibilities: [
+          "On-premises datacenter: hosts retained private infrastructure and services.",
+          "Public cloud landing zone: provides governed accounts, networks and cloud services.",
+          "Workload placement model: records where each application component runs.",
+          "Integration layer: connects applications, messaging, APIs and shared dependencies.",
+          "Operations model: defines ownership across infrastructure and application teams.",
+          "Migration governance: tracks sequencing, dependencies, risk and rollback."
+        ],
+        implementation: [
+          "Inventory applications, databases, integrations, identity dependencies and network flows.",
+          "Classify workloads by latency, data residency, licensing, security and modernization requirements.",
+          "Create a cloud landing zone with separate environments, centralized logging and network controls.",
+          "Document system-of-record ownership for every critical dataset.",
+          "Migrate low-risk dependencies first and validate each migration wave before proceeding.",
+          "Define rollback criteria and an accountable owner for each migration cutover."
+        ],
+        productionConsiderations: [
+          "Avoid moving an application tier without mapping its database, DNS, identity and message-broker dependencies.",
+          "Measure real network latency and throughput before deciding where synchronous services should run.",
+          "Document shared responsibility for patching, backup, monitoring and incident response.",
+          "Track egress costs and cross-environment data transfer volumes.",
+          "Keep architecture decisions and exceptions reviewable as the hybrid estate evolves."
+        ],
+        failureModes: [
+          "A cloud workload depends on an on-premises service that becomes unavailable.",
+          "A migration changes latency enough to break synchronous application timeouts.",
+          "Two teams assume the other environment owns backup or patching.",
+          "An undocumented integration prevents safe application cutover.",
+          "A temporary hybrid connection becomes a permanent undocumented production dependency."
+        ],
+        practicalTask: "Select a legacy application, its database and an external integration. Decide which components remain on-premises and which move to cloud. Draw their dependencies, identify the system of record and write a staged migration and rollback plan."
+      },
+      {
+        title: "2. Private Connectivity, Routing and Network Segmentation",
+        explanation: "Hybrid connectivity commonly uses site-to-site VPN, dedicated private connectivity or a combination of both. VPN tunnels protect traffic over an underlying transport and are useful for initial connectivity, backup paths or lower-throughput requirements. Dedicated connectivity services can provide private network paths with provider-specific service levels and capacity models, but they still require routing, redundancy and security design. Dynamic routing with BGP can exchange prefixes between environments where supported. Network segmentation should separate application, management, data and shared-service traffic. A connected network is not automatically a trusted network: firewall policies, route filters, inspection points and identity-aware controls remain necessary.",
+        responsibilities: [
+          "Site-to-site VPN: encrypted network connectivity over an underlying IP path.",
+          "Dedicated private connection: private connectivity through a provider-supported service.",
+          "BGP: exchanges reachable network prefixes dynamically.",
+          "Cloud network hub: centralizes supported routing and connectivity controls.",
+          "Firewall and inspection layer: enforces permitted traffic and security policy.",
+          "IPAM: coordinates address allocation and prevents overlapping ranges."
+        ],
+        implementation: [
+          "Create an IP address plan for datacenter, cloud VPCs, branches and future acquisitions.",
+          "Establish redundant connectivity paths and document their independent failure domains.",
+          "Configure BGP advertisements and route filters for only the required prefixes.",
+          "Define explicit firewall rules for application-to-database and management traffic.",
+          "Use a hub-and-spoke or transit design when centralized routing is operationally appropriate.",
+          "Test failover by withdrawing or disabling a path in a controlled maintenance exercise."
+        ],
+        productionConsiderations: [
+          "Avoid overlapping CIDRs because they complicate routing and may require address translation.",
+          "Understand bandwidth, packet size, encryption overhead and provider-specific limits.",
+          "Ensure redundant paths do not share a single physical carrier or facility dependency.",
+          "Monitor tunnel status, BGP sessions, route changes, packet loss and latency.",
+          "Document asymmetric routing risks when traffic passes through multiple firewalls."
+        ],
+        failureModes: [
+          "A VPN tunnel is established but the required route is not advertised.",
+          "BGP route filtering removes a required application prefix.",
+          "An IP range overlaps with a cloud subnet and makes routing ambiguous.",
+          "A firewall allows the forward path but blocks return traffic.",
+          "Both redundant links fail because they share a common carrier or datacenter edge."
+        ],
+        practicalTask: "Design a hybrid network connecting an on-premises datacenter to two cloud Regions. Allocate non-overlapping CIDRs, show primary and backup connectivity, identify BGP advertisements and define firewall rules for one application-to-database flow."
+      },
+      {
+        title: "3. DNS, Identity Federation and Access Management",
+        explanation: "Applications in a hybrid environment must resolve names and authenticate users and services across administrative boundaries. DNS forwarding or conditional resolution allows clients in one environment to resolve selected names hosted in another. The design must prevent ambiguous zones, conflicting records and accidental exposure of private names. Identity federation can allow enterprise users to authenticate to cloud platforms using an existing identity provider, while workload identities allow applications to obtain permissions without embedding long-lived credentials. Federation does not automatically grant resource access: authentication establishes identity, while authorization policies determine what that identity may do. Service-to-service trust should be scoped to the required application and resource.",
+        responsibilities: [
+          "Enterprise identity provider: authenticates users and supports federation.",
+          "Cloud IAM: authorizes identities to access cloud resources.",
+          "Workload identity: provides service identity without embedded long-lived secrets.",
+          "DNS forwarding: resolves selected names across network boundaries.",
+          "Private DNS zones: provide internal name resolution for supported services.",
+          "Privileged access management: controls elevated administrative sessions."
+        ],
+        implementation: [
+          "Define the authoritative DNS zone for every application namespace.",
+          "Configure conditional forwarding or supported DNS resolver endpoints between environments.",
+          "Federate enterprise identity with the cloud provider using supported protocols.",
+          "Map groups to least-privilege cloud roles and review inherited permissions.",
+          "Use workload identities or managed identity mechanisms for application-to-cloud access.",
+          "Keep emergency access separate, monitored and tested."
+        ],
+        productionConsiderations: [
+          "Authentication success does not prove the principal has the required resource permissions.",
+          "Protect federation metadata, signing keys and identity-provider administration.",
+          "Avoid duplicate DNS ownership and uncontrolled split-horizon records.",
+          "Monitor privileged role assignments and unusual authentication activity.",
+          "Plan for identity-provider outage behavior and emergency access procedures."
+        ],
+        failureModes: [
+          "Cloud users authenticate successfully but receive authorization errors.",
+          "Conditional DNS forwarding sends queries to the wrong resolver.",
+          "Expired or rotated federation certificates break sign-in.",
+          "A service uses a developer credential instead of its production workload identity.",
+          "A privileged role is granted too broadly or remains after an employee changes roles."
+        ],
+        practicalTask: "Create an identity and DNS flow for an employee accessing a cloud-hosted application that calls an on-premises API. Identify the authentication authority, authorization checks, DNS resolution path and emergency access process."
+      },
+      {
+        title: "4. Application Integration, Data Movement and Latency",
+        explanation: "Hybrid applications often communicate across locations through APIs, message brokers, database replication, file transfer or scheduled synchronization. These patterns have different consistency and failure characteristics. Synchronous calls are easy to understand but make application availability dependent on the remote endpoint and network path. Asynchronous messaging can isolate temporary outages and absorb bursts, but introduces message duplication, ordering, retry and dead-letter handling concerns. Database replication must account for write ownership, replication lag, conflict resolution and failover semantics. Data movement should be encrypted, monitored and designed around the volume, change rate and business recovery objectives.",
+        responsibilities: [
+          "API gateway or integration service: manages supported cross-environment API access.",
+          "Message broker: decouples producers and consumers through asynchronous delivery.",
+          "Replication service: transfers supported data changes between systems.",
+          "Batch transfer pipeline: moves scheduled files or datasets.",
+          "Data ownership model: defines the authoritative writer for each dataset.",
+          "Retry and dead-letter handling: manages transient and persistent processing failures."
+        ],
+        implementation: [
+          "Map every cross-environment call and classify it as synchronous, asynchronous or batch.",
+          "Measure baseline latency, throughput and expected peak traffic.",
+          "Set connection and request timeouts based on measured network behavior.",
+          "Use idempotency keys or equivalent safeguards for retried operations.",
+          "Define message retry limits, dead-letter queues and replay procedures.",
+          "Document database replication direction, lag monitoring and write ownership."
+        ],
+        productionConsiderations: [
+          "Do not assume a successful network connection guarantees acceptable application latency.",
+          "Avoid chatty synchronous calls across a high-latency network boundary.",
+          "Encrypt data in transit and protect credentials used by integration services.",
+          "Monitor queue depth, message age, replication lag and failed transfer volume.",
+          "Test duplicate delivery, delayed delivery and partial network outages."
+        ],
+        failureModes: [
+          "A remote API outage causes request threads to accumulate and exhaust application capacity.",
+          "Retries create duplicate orders or financial transactions.",
+          "Replication lag causes users to read stale data after a cutover.",
+          "A message consumer fails repeatedly and blocks processing.",
+          "Large data transfers saturate the same connection used by business-critical traffic."
+        ],
+        practicalTask: "Design an order-processing integration where the cloud application calls an on-premises inventory service. Replace unnecessary synchronous calls with a suitable asynchronous workflow, define idempotency and retry behavior, and identify the operational metrics needed."
+      },
+      {
+        title: "5. Hybrid Security, Compliance and Operational Visibility",
+        explanation: "Hybrid security must cover both environments and the boundaries between them. Network firewalls alone cannot prove that a user or workload is authorized. Identity, endpoint protection, workload configuration, encryption, vulnerability management, secrets, audit records and data classification all contribute to the control model. Security logs from cloud and on-premises systems should be collected in a governed location with synchronized timestamps and consistent resource identity. Operations teams need a shared view of application health, network paths, database dependencies and security events. Incident response procedures must specify which team can isolate a workload, change a route, rotate credentials or restore data without creating conflicting actions.",
+        responsibilities: [
+          "Security operations: correlates alerts and coordinates incident response.",
+          "Cloud security controls: enforce provider-specific identity and resource policies.",
+          "Datacenter security controls: protect private infrastructure and network boundaries.",
+          "Central logging: collects security and operational events across locations.",
+          "Configuration management: tracks approved system and infrastructure state.",
+          "Backup and recovery: protects data and supports tested restoration."
+        ],
+        implementation: [
+          "Classify workloads and datasets according to business and regulatory requirements.",
+          "Define baseline security controls for both cloud and on-premises systems.",
+          "Centralize relevant audit, firewall, identity and application logs.",
+          "Synchronize time sources so events can be correlated accurately.",
+          "Define incident ownership, escalation contacts and isolation authority.",
+          "Run recovery exercises that include connectivity and identity dependencies."
+        ],
+        productionConsiderations: [
+          "Apply consistent security intent while respecting provider-specific control implementations.",
+          "Protect log integrity, access and retention settings.",
+          "Review privileged access across cloud and datacenter environments together.",
+          "Document data residency, cross-border transfer and retention obligations.",
+          "Test the loss of a cloud link, datacenter service and identity dependency independently."
+        ],
+        failureModes: [
+          "A security incident is missed because logs remain isolated in separate environments.",
+          "Clock drift prevents accurate event correlation.",
+          "A firewall change interrupts business traffic without a tested rollback.",
+          "A recovery plan restores the application but not its identity or DNS dependencies.",
+          "Security controls differ between environments and create an unmonitored gap."
+        ],
+        practicalTask: "Build a hybrid incident-response checklist for suspected credential compromise. Include identity containment, cloud and datacenter log sources, network isolation options, evidence preservation, credential rotation and service restoration checks."
+      },
+      {
+        title: "6. Resilience, Migration Waves and Disaster Recovery",
+        explanation: "Hybrid environments create multiple failure domains: cloud Regions, cloud Zones, datacenter facilities, network carriers, identity providers and shared integration services. A recovery plan must identify which dependencies are required to restore each application. RTO defines the target time to restore a service, while RPO defines the acceptable data-loss window. These objectives must be translated into technical choices such as replication frequency, backup retention, standby capacity, DNS changes and manual recovery steps. Migration waves should be sequenced around dependencies, not only around server counts. A cutover is complete only after application behavior, data consistency, monitoring and operational ownership have been validated.",
+        responsibilities: [
+          "Recovery architecture: defines alternate capacity and restoration dependencies.",
+          "Backup platform: protects recoverable copies of data and configurations.",
+          "Replication: reduces data recovery gaps where supported.",
+          "DNS and traffic management: directs users to the active service location.",
+          "Migration coordinator: manages sequencing, cutover and rollback.",
+          "Application owner: validates business behavior after migration or recovery."
+        ],
+        implementation: [
+          "Define RTO and RPO with business owners for every critical service.",
+          "Map dependencies including DNS, identity, certificates, databases and network connectivity.",
+          "Choose backup, restore, warm standby or active-active patterns based on recovery needs.",
+          "Create migration waves with entry criteria, validation steps and rollback conditions.",
+          "Automate repeatable infrastructure and configuration deployment where practical.",
+          "Run recovery exercises and record actual recovery time and data-loss measurements."
+        ],
+        productionConsiderations: [
+          "A backup is not proven until a restore has been completed and validated.",
+          "DNS failover does not solve data consistency or application dependency failures.",
+          "Avoid active-active writes unless conflict and consistency behavior are explicitly designed.",
+          "Keep recovery credentials and procedures available when the primary identity path is unavailable.",
+          "Review recovery plans after network, application or provider architecture changes."
+        ],
+        failureModes: [
+          "The alternate environment lacks current application configuration or secrets.",
+          "Data replication lag exceeds the agreed RPO.",
+          "DNS changes occur but clients continue using cached records.",
+          "A recovery environment depends on the failed datacenter for authentication.",
+          "A migration rollback is impossible because writes continued in the new environment."
+        ],
+        practicalTask: "Create a recovery plan for a cloud application that depends on an on-premises database. Define RTO and RPO, identify the recovery sequence, decide how writes are controlled during failover and specify the evidence required to approve failback."
+      }
+    ],
+    architectureDecisions: [
+      {
+        decision: "VPN or dedicated private connectivity?",
+        guidance: "VPN is useful for encrypted connectivity over an underlying IP path and can provide backup connectivity. Dedicated connectivity may suit higher-throughput or predictable private network requirements. Compare provider service characteristics, redundancy, cost, routing and operational support."
+      },
+      {
+        decision: "Hub-and-spoke or direct network connections?",
+        guidance: "A hub-and-spoke model centralizes routing and inspection but creates shared dependencies that must be made resilient. Direct connections can be simpler for limited environments but become harder to govern as the number of networks grows."
+      },
+      {
+        decision: "Synchronous API or asynchronous messaging?",
+        guidance: "Use synchronous communication when an immediate response is essential and latency is predictable. Use asynchronous messaging when decoupling, buffering and retry isolation are valuable. Define idempotency, ordering and dead-letter behavior."
+      },
+      {
+        decision: "Keep data on-premises or migrate it?",
+        guidance: "Base the decision on data residency, latency, application compatibility, operational burden, licensing and recovery needs. Document system-of-record ownership and the data consistency strategy before moving application components."
+      },
+      {
+        decision: "Temporary hybrid or permanent hybrid?",
+        guidance: "A temporary hybrid design should include migration milestones and exit criteria. A permanent hybrid model needs long-term ownership, capacity planning, connectivity redundancy, shared observability and recurring disaster-recovery exercises."
+      }
+    ],
+    interviewQuestions: [
+      {
+        question: "What is hybrid cloud architecture?",
+        answer: "Hybrid cloud architecture connects privately operated infrastructure, such as an on-premises datacenter, with public cloud services as a coordinated environment. Applications and data may remain in different locations because of latency, compliance, legacy dependencies or migration strategy. The architecture must cover connectivity, identity, security, data movement and operations."
+      },
+      {
+        question: "What is the difference between VPN and dedicated private connectivity?",
+        answer: "A VPN provides encrypted connectivity over an underlying IP network, commonly the internet. Dedicated private connectivity uses a provider-supported private network path and has its own capacity and service characteristics. Both require routing, redundancy, security controls and monitoring."
+      },
+      {
+        question: "Why is IP address planning important in hybrid cloud?",
+        answer: "Connected networks need compatible, non-overlapping address ranges for predictable routing. Overlapping CIDRs can make destinations ambiguous and complicate VPN, peering and transit connectivity. An IP address management plan should include datacenters, cloud networks, branches and future expansion."
+      },
+      {
+        question: "How do you manage identity across cloud and on-premises systems?",
+        answer: "Organizations commonly integrate an enterprise identity provider with cloud identity and access management through supported federation mechanisms. Human authentication and workload authentication should be handled separately where appropriate. Authorization must still grant only the permissions each identity needs."
+      },
+      {
+        question: "What are RTO and RPO in hybrid disaster recovery?",
+        answer: "RTO is the target time required to restore a service after disruption. RPO is the maximum acceptable data-loss window measured in time. These business objectives guide backup frequency, replication, standby capacity, failover procedures and recovery testing."
+      },
+      {
+        question: "What are common hybrid cloud failure points?",
+        answer: "Common failure points include VPN or dedicated-link outages, incorrect route advertisements, overlapping IP ranges, DNS forwarding problems, identity-provider failures, remote database latency, firewall mismatches and unclear operational ownership. Monitoring should cover the complete application dependency path rather than only the cloud resources."
+      }
+    ]
+  },
+};
+
+export function getArchitectureTopic(topic: string) {
+  const key = topic.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return architectureTopicContent[key] ?? null;
+}
+

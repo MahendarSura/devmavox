@@ -1,0 +1,150 @@
+    1: import { stageTwelveLessonOverrides } from "./cicd-stage-12-lessons";
+    2: import { stageElevenLessonOverrides } from "./cicd-stage-11-lessons";
+    3: import { stageTenLessonOverrides } from "./cicd-stage-10-lessons";
+    4: import { stageNineLessonOverrides } from "./cicd-stage-09-lessons";
+    5: import { stageEightLessonOverrides } from "./cicd-stage-08-lessons";
+    6: import { stageSevenLessonOverrides } from "./cicd-stage-07-lessons";
+    7: import { stageSixLessonOverrides } from "./cicd-stage-06-lessons";
+    8: import { stageFiveLessonOverrides } from "./cicd-stage-05-lessons";
+    9: import { stageFourLessonOverrides } from "./cicd-stage-04-lessons";
+   10: import { stageThreeLessonOverrides } from "./cicd-stage-03-lessons";
+   11: import { stageTwoLessonOverrides } from "./cicd-stage-02-lessons";
+   12: import { stageOneLessonOverrides } from "./cicd-stage-01-lessons";
+   13: // Generated CI/CD topic lesson data.
+   14: export type CicdTopicLesson = {
+   15:   overview: string;
+   16:   purpose: string;
+   17:   architecture: string;
+   18:   workflow: string[];
+   19:   example: string;
+   20:   commands: string[];
+   21:   configuration: string;
+   22:   failures: string[];
+   23:   recovery: string[];
+   24:   bestPractices: string[];
+   25:   exercise: string;
+   26: };
+   27: 
+   28: const lessons: Record<string, CicdTopicLesson> = {
+   29:   "1|Java Fundamentals": {
+   30:     "overview": "This lesson covers Java Fundamentals in the Developer Code stage of a real CI/CD pipeline. It explains the technical concepts, the components involved, how the feature behaves during normal pipeline execution, and how DevOps engineers use it to deliver application changes safely. The topic is connected to a Java application delivery workflow so that beginners can understand where it fits in an actual project.",
+   31:     "purpose": "The purpose of Java Fundamentals is to make the Developer Code stage reliable, repeatable, and understandable. In a production DevOps workflow, engineers use this capability to reduce manual work, improve delivery consistency, detect problems early, and protect application availability. A team should understand when this capability is required, which systems depend on it, what evidence proves that it is working, and what risks can occur when it is configured incorrectly.",
+   32:     "architecture": "In the Developer Code stage, Java Fundamentals works as part of a larger delivery system. Source code, build tools, automation services, configuration, infrastructure, and runtime components exchange information through defined inputs and outputs. Engineers should identify the component that initiates the operation, the component that processes the request, the credentials and permissions required, the resulting artifacts or state changes, and the monitoring signals that confirm completion. The exact architecture depends on the technology used for this topic.",
+   33:     "workflow": [
+   34:       "Identify the application and pipeline stage where Java Fundamentals is required.",
+   35:       "Inspect the existing repository, project configuration, and environment before changing anything.",
+   36:       "Identify the tools, services, permissions, and dependencies required by this topic.",
+   37:       "Prepare the required configuration in a version-controlled and reviewable location.",
+   38:       "Validate configuration syntax and verify that referenced resources exist.",
+   39:       "Execute the relevant operation in a controlled development environment.",
+   40:       "Inspect logs, command output, artifacts, and resulting application state.",
+   41:       "Test the expected success path and verify that downstream pipeline stages can continue."
+   42:     ],
+   43:     "example": "Consider a Java Spring Boot application stored in GitHub and delivered through Jenkins. The team reaches the Developer Code stage and needs to apply Java Fundamentals. The engineer first checks the repository and environment, verifies dependencies and permissions, applies the relevant configuration, and runs the operation. The engineer then examines logs and generated artifacts, confirms the expected state, and verifies that the next CI/CD stage receives the correct output. If the operation fails, the engineer records the exact error and investigates the responsible component instead of blindly rerunning the pipeline.",
+   44:     "commands": [
+   45:       "git status --short  # Inspect repository changes before modifying configuration.",
+   46:       "git diff --check  # Detect whitespace errors in changed files.",
+   47:       "git log -5 --oneline  # Review recent project changes and context.",
+   48:       "git diff  # Inspect the exact configuration or source changes.",
+   49:       "git status  # Confirm the final repository working-tree state."
+   50:     ],
+   51:     "configuration": "Keep the configuration for Java Fundamentals explicit, version controlled, and environment aware. Separate development, staging, and production values where the technology supports environment-specific configuration. Do not place passwords, tokens, private keys, or other secrets directly in source files. Validate all referenced resource names, paths, versions, permissions, and dependency settings before deployment. Document required inputs and expected outputs so another engineer can reproduce the workflow.",
+   52:     "failures": [
+   53:       "Required configuration is missing, malformed, or inconsistent with the target environment.",
+   54:       "A dependency or external service is unavailable when the pipeline executes.",
+   55:       "The execution identity does not have the permissions required for the operation.",
+   56:       "A version mismatch causes incompatible behavior between pipeline components.",
+   57:       "The operation succeeds partially but leaves the application or infrastructure in an unexpected state."
+   58:     ],
+   59:     "recovery": [
+   60:       "Stop repeated execution if it could create duplicate resources or damage production state.",
+   61:       "Capture the complete error message, timestamps, pipeline logs, and affected resource identifiers.",
+   62:       "Verify configuration, versions, dependencies, network connectivity, and permissions.",
+   63:       "Compare the failing environment with the last known working configuration.",
+   64:       "Apply the smallest safe correction, rerun the relevant validation, and confirm the resulting state."
+   65:     ],
+   66:     "bestPractices": [
+   67:       "Keep all maintainable configuration in version control.",
+   68:       "Use separate and least-privilege identities for automation.",
+   69:       "Store sensitive values in an approved secrets manager.",
+   70:       "Pin important tool and dependency versions.",
+   71:       "Validate changes before allowing production execution.",
+   72:       "Record useful logs and preserve evidence for troubleshooting.",
+   73:       "Test recovery and rollback procedures in a non-production environment.",
+   74:       "Document ownership, dependencies, expected results, and operational risks."
+   75:     ],
+   76:     "exercise": "Create a small practice workflow for Java Fundamentals in a non-production project. Identify the required inputs, configuration, permissions, dependencies, and expected outputs. Execute the relevant validation steps, record the results, and deliberately investigate one safe failure condition. Complete the exercise by documenting the root cause, corrective action, and verification evidence. The expected result is a repeatable workflow that another engineer can understand and validate."
+   77:   },
+   78:   "1|Java Project Structure": {
+   79:     "overview": "This lesson covers Java Project Structure in the Developer Code stage of a real CI/CD pipeline. It explains the technical concepts, the components involved, how the feature behaves during normal pipeline execution, and how DevOps engineers use it to deliver application changes safely. The topic is connected to a Java application delivery workflow so that beginners can understand where it fits in an actual project.",
+   80:     "purpose": "The purpose of Java Project Structure is to make the Developer Code stage reliable, repeatable, and understandable. In a production DevOps workflow, engineers use this capability to reduce manual work, improve delivery consistency, detect problems early, and protect application availability. A team should understand when this capability is required, which systems depend on it, what evidence proves that it is working, and what risks can occur when it is configured incorrectly.",
+   81:     "architecture": "In the Developer Code stage, Java Project Structure works as part of a larger delivery system. Source code, build tools, automation services, configuration, infrastructure, and runtime components exchange information through defined inputs and outputs. Engineers should identify the component that initiates the operation, the component that processes the request, the credentials and permissions required, the resulting artifacts or state changes, and the monitoring signals that confirm completion. The exact architecture depends on the technology used for this topic.",
+   82:     "workflow": [
+   83:       "Identify the application and pipeline stage where Java Project Structure is required.",
+   84:       "Inspect the existing repository, project configuration, and environment before changing anything.",
+   85:       "Identify the tools, services, permissions, and dependencies required by this topic.",
+   86:       "Prepare the required configuration in a version-controlled and reviewable location.",
+   87:       "Validate configuration syntax and verify that referenced resources exist.",
+   88:       "Execute the relevant operation in a controlled development environment.",
+   89:       "Inspect logs, command output, artifacts, and resulting application state.",
+   90:       "Test the expected success path and verify that downstream pipeline stages can continue."
+   91:     ],
+   92:     "example": "Consider a Java Spring Boot application stored in GitHub and delivered through Jenkins. The team reaches the Developer Code stage and needs to apply Java Project Structure. The engineer first checks the repository and environment, verifies dependencies and permissions, applies the relevant configuration, and runs the operation. The engineer then examines logs and generated artifacts, confirms the expected state, and verifies that the next CI/CD stage receives the correct output. If the operation fails, the engineer records the exact error and investigates the responsible component instead of blindly rerunning the pipeline.",
+   93:     "commands": [
+   94:       "git status --short  # Inspect repository changes before modifying configuration.",
+   95:       "git diff --check  # Detect whitespace errors in changed files.",
+   96:       "git log -5 --oneline  # Review recent project changes and context.",
+   97:       "git diff  # Inspect the exact configuration or source changes.",
+   98:       "git status  # Confirm the final repository working-tree state."
+   99:     ],
+  100:     "configuration": "Keep the configuration for Java Project Structure explicit, version controlled, and environment aware. Separate development, staging, and production values where the technology supports environment-specific configuration. Do not place passwords, tokens, private keys, or other secrets directly in source files. Validate all referenced resource names, paths, versions, permissions, and dependency settings before deployment. Document required inputs and expected outputs so another engineer can reproduce the workflow.",
+  101:     "failures": [
+  102:       "Required configuration is missing, malformed, or inconsistent with the target environment.",
+  103:       "A dependency or external service is unavailable when the pipeline executes.",
+  104:       "The execution identity does not have the permissions required for the operation.",
+  105:       "A version mismatch causes incompatible behavior between pipeline components.",
+  106:       "The operation succeeds partially but leaves the application or infrastructure in an unexpected state."
+  107:     ],
+  108:     "recovery": [
+  109:       "Stop repeated execution if it could create duplicate resources or damage production state.",
+  110:       "Capture the complete error message, timestamps, pipeline logs, and affected resource identifiers.",
+  111:       "Verify configuration, versions, dependencies, network connectivity, and permissions.",
+  112:       "Compare the failing environment with the last known working configuration.",
+  113:       "Apply the smallest safe correction, rerun the relevant validation, and confirm the resulting state."
+  114:     ],
+  115:     "bestPractices": [
+  116:       "Keep all maintainable configuration in version control.",
+  117:       "Use separate and least-privilege identities for automation.",
+  118:       "Store sensitive values in an approved secrets manager.",
+  119:       "Pin important tool and dependency versions.",
+  120:       "Validate changes before allowing production execution.",
+  121:       "Record useful logs and preserve evidence for troubleshooting.",
+  122:       "Test recovery and rollback procedures in a non-production environment.",
+  123:       "Document ownership, dependencies, expected results, and operational risks."
+  124:     ],
+  125:     "exercise": "Create a small practice workflow for Java Project Structure in a non-production project. Identify the required inputs, configuration, permissions, dependencies, and expected outputs. Execute the relevant validation steps, record the results, and deliberately investigate one safe failure condition. Complete the exercise by documenting the root cause, corrective action, and verification evidence. The expected result is a repeatable workflow that another engineer can understand and validate."
+  126:   },
+  127:   "1|Object-Oriented Programming": {
+  128:     "overview": "This lesson covers Object-Oriented Programming in the Developer Code stage of a real CI/CD pipeline. It explains the technical concepts, the components involved, how the feature behaves during normal pipeline execution, and how DevOps engineers use it to deliver application changes safely. The topic is connected to a Java application delivery workflow so that beginners can understand where it fits in an actual project.",
+  129:     "purpose": "The purpose of Object-Oriented Programming is to make the Developer Code stage reliable, repeatable, and understandable. In a production DevOps workflow, engineers use this capability to reduce manual work, improve delivery consistency, detect problems early, and protect application availability. A team should understand when this capability is required, which systems depend on it, what evidence proves that it is working, and what risks can occur when it is configured incorrectly.",
+  130:     "architecture": "In the Developer Code stage, Object-Oriented Programming works as part of a larger delivery system. Source code, build tools, automation services, configuration, infrastructure, and runtime components exchange information through defined inputs and outputs. Engineers should identify the component that initiates the operation, the component that processes the request, the credentials and permissions required, the resulting artifacts or state changes, and the monitoring signals that confirm completion. The exact architecture depends on the technology used for this topic.",
+  131:     "workflow": [
+  132:       "Identify the application and pipeline stage where Object-Oriented Programming is required.",
+  133:       "Inspect the existing repository, project configuration, and environment before changing anything.",
+  134:       "Identify the tools, services, permissions, and dependencies required by this topic.",
+  135:       "Prepare the required configuration in a version-controlled and reviewable location.",
+  136:       "Validate configuration syntax and verify that referenced resources exist.",
+  137:       "Execute the relevant operation in a controlled development environment.",
+  138:       "Inspect logs, command output, artifacts, and resulting application state.",
+  139:       "Test the expected success path and verify that downstream pipeline stages can continue."
+  140:     ],
+  141:     "example": "Consider a Java Spring Boot application stored in GitHub and delivered through Jenkins. The team reaches the Developer Code stage and needs to apply Object-Oriented Programming. The engineer first checks the repository and environment, verifies dependencies and permissions, applies the relevant configuration, and runs the operation. The engineer then examines logs and generated artifacts, confirms the expected state, and verifies that the next CI/CD stage receives the correct output. If the operation fails, the engineer records the exact error and investigates the responsible component instead of blindly rerunning the pipeline.",
+  142:     "commands": [
+  143:       "git status --short  # Inspect repository changes before modifying configuration.",
+  144:       "git diff --check  # Detect whitespace errors in changed files.",
+  145:       "git log -5 --oneline  # Review recent project changes and context.",
+  146:       "git diff  # Inspect the exact configuration or source changes.",
+  147:       "git status  # Confirm the final repository working-tree state."
+  148:     ],
+  149:     "configuration": "Keep the configuration for Object-Oriented Programming explicit, version controlled, and environment aware. Separate development, staging, and production values where the technology supports environment-specific configuration. Do not place passwords, tokens, private keys, or other secrets directly in source files. Validate all referenced resource names, paths, versions, permissions, and dependency settings before deployment. Document required inputs and expected outputs so another engineer can reproduce the workflow.",
+  150:     "failures": [

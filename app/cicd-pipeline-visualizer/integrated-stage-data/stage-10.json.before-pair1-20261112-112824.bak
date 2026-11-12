@@ -1,0 +1,90 @@
+[
+  {
+    "topicTitle": "Kubernetes Fundamentals",
+    "sections": []
+  },
+  {
+    "topicTitle": "Kubernetes Architecture",
+    "sections": []
+  },
+  {
+    "topicTitle": "EKS Architecture",
+    "sections": []
+  },
+  {
+    "topicTitle": "Control Plane Components",
+    "sections": []
+  },
+  {
+    "topicTitle": "Worker Nodes",
+    "sections": []
+  },
+  {
+    "topicTitle": "API Server and etcd",
+    "sections": []
+  },
+  {
+    "topicTitle": "Scheduler and Kubelet",
+    "sections": []
+  },
+  {
+    "topicTitle": "Pods",
+    "sections": []
+  },
+  {
+    "topicTitle": "Deployments and ReplicaSets",
+    "sections": []
+  },
+  {
+    "topicTitle": "Services and Service Discovery",
+    "sections": []
+  },
+  {
+    "topicTitle": "ConfigMaps and Secrets",
+    "sections": []
+  },
+  {
+    "topicTitle": "Health Probes",
+    "sections": []
+  },
+  {
+    "topicTitle": "Requests and Limits",
+    "sections": []
+  },
+  {
+    "topicTitle": "Namespaces and RBAC",
+    "sections": []
+  },
+  {
+    "topicTitle": "Ingress and Load Balancing",
+    "sections": []
+  },
+  {
+    "topicTitle": "Networking and CNI",
+    "sections": []
+  },
+  {
+    "topicTitle": "Persistent Storage",
+    "sections": []
+  },
+  {
+    "topicTitle": "Horizontal Pod Autoscaling",
+    "sections": []
+  },
+  {
+    "topicTitle": "Rolling Updates and Rollbacks",
+    "sections": []
+  },
+  {
+    "topicTitle": "EKS Cluster Operations",
+    "sections": []
+  },
+  {
+    "topicTitle": "Troubleshooting",
+    "sections": []
+  },
+  {
+    "topicTitle": "Production Hands-on Lab",
+    "sections": []
+  }
+]

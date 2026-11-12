@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#64748b"/></marker></defs>
+<rect width="1200" height="760" rx="24" fill="#0b1220"/>
+<text x='600' y='58' text-anchor='middle' fill='#f8fafc' font-size='30' font-family='Arial' font-weight='700'>Internet Gateway</text>
+<text x='600' y='88' text-anchor='middle' fill='#94a3b8' font-size='15' font-family='Arial'>DevMavox Production Architecture Diagram</text>
+<rect x='49' y='260' width='190' height='110' rx='14' fill='#172554' stroke='#60a5fa' stroke-width='2'/>
+<text x='144' y='305' text-anchor='middle' fill='#eff6ff' font-size='16' font-family='Arial'>Internet Client</text>
+<text x='144' y='332' text-anchor='middle' fill='#93c5fd' font-size='12' font-family='Arial'>Component 1</text>
+<line x1='239' y1='(315)' x2='267' y2='(315)' stroke='#64748b' stroke-width='3' marker-end='url(#arrow)'/>
+<rect x='277' y='260' width='190' height='110' rx='14' fill='#172554' stroke='#60a5fa' stroke-width='2'/>
+<text x='372' y='305' text-anchor='middle' fill='#eff6ff' font-size='16' font-family='Arial'>Internet Gateway</text>
+<text x='372' y='332' text-anchor='middle' fill='#93c5fd' font-size='12' font-family='Arial'>Component 2</text>
+<line x1='467' y1='(315)' x2='495' y2='(315)' stroke='#64748b' stroke-width='3' marker-end='url(#arrow)'/>
+<rect x='505' y='260' width='190' height='110' rx='14' fill='#172554' stroke='#60a5fa' stroke-width='2'/>
+<text x='600' y='305' text-anchor='middle' fill='#eff6ff' font-size='16' font-family='Arial'>Public Subnet Route Table</text>
+<text x='600' y='332' text-anchor='middle' fill='#93c5fd' font-size='12' font-family='Arial'>Component 3</text>
+<line x1='695' y1='(315)' x2='723' y2='(315)' stroke='#64748b' stroke-width='3' marker-end='url(#arrow)'/>
+<rect x='733' y='260' width='190' height='110' rx='14' fill='#172554' stroke='#60a5fa' stroke-width='2'/>
+<text x='828' y='305' text-anchor='middle' fill='#eff6ff' font-size='16' font-family='Arial'>Public IP or Elastic IP</text>
+<text x='828' y='332' text-anchor='middle' fill='#93c5fd' font-size='12' font-family='Arial'>Component 4</text>
+<line x1='923' y1='(315)' x2='951' y2='(315)' stroke='#64748b' stroke-width='3' marker-end='url(#arrow)'/>
+<rect x='961' y='260' width='190' height='110' rx='14' fill='#172554' stroke='#60a5fa' stroke-width='2'/>
+<text x='1056' y='305' text-anchor='middle' fill='#eff6ff' font-size='16' font-family='Arial'>Security Group and Workload</text>
+<text x='1056' y='332' text-anchor='middle' fill='#93c5fd' font-size='12' font-family='Arial'>Component 5</text>
+<rect x='100' y='470' width='1000' height='150' rx='16' fill='#111827' stroke='#475569'/>
+<text x='130' y='510' fill='#f8fafc' font-size='19' font-family='Arial' font-weight='700'>Production controls</text>
+<text x='130' y='550' fill='#cbd5e1' font-size='15' font-family='Arial'>Security: least privilege | Resilience: health checks and recovery | Operations: logs, metrics and alerts</text>
+<text x='130' y='585' fill='#cbd5e1' font-size='15' font-family='Arial'>Failure review: Assuming gateway attachment alone grants access, missing public addresses, missing routes and overly permissive security rules</text>
+</svg>

@@ -1,0 +1,264 @@
+[
+  {
+    "topicTitle": "Amazon ECR Fundamentals",
+    "sections": [
+      {
+        "id": "stage-09-topic-1-section-1",
+        "title": "Amazon ECR Purpose and Container Image Lifecycle",
+        "content": "Amazon Elastic Container Registry (Amazon ECR) is a managed container image registry in AWS. It stores, manages, and distributes container images and compatible artifacts used by services such as Amazon ECS, Amazon EKS, AWS Fargate, and EC2-based container platforms. A typical lifecycle begins when a developer or CI pipeline builds an image, authenticates to ECR, tags the image with a repository reference, and pushes it to a registry. Deployment systems later authenticate and pull the approved image to run workloads. ECR removes the need for an organization to operate its own registry servers, while AWS manages the underlying service infrastructure. Teams remain responsible for repository design, access permissions, image governance, retention, and release traceability."
+      },
+      {
+        "id": "stage-09-topic-1-section-2",
+        "title": "Private and Public ECR Registry Models",
+        "content": "Amazon ECR provides private and public repository models for different distribution requirements. Private ECR repositories are designed for controlled access within AWS accounts and can be accessed by authorized identities and workloads. They are commonly used for internal application images, approved base images, and organization-specific build artifacts. Amazon ECR Public supports publishing images for broader distribution through public repositories and galleries. The choice affects authentication, visibility, access governance, and distribution strategy. A private repository should be the default for proprietary application images and internal dependencies. Public publication requires an explicit review of image contents, licensing, secrets, metadata, and support expectations because published artifacts may be accessible to external consumers."
+      },
+      {
+        "id": "stage-09-topic-1-section-3",
+        "title": "AWS Account, Region, and Registry Endpoint Identity",
+        "content": "An Amazon ECR private registry is associated with an AWS account and an AWS Region. A private registry URI commonly follows the form ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com, where the account identifier and Region determine the registry endpoint. A repository name is appended to this endpoint to form a complete image reference. This structure matters in multi-account and multi-Region deployments because an image in one account or Region is not automatically the same resource as an image with a similar name elsewhere. Always verify the AWS account, Region, registry endpoint, and repository before pushing or pulling. Incorrect endpoint selection can cause authentication errors, accidental publication to the wrong account, or deployment of an unintended artifact."
+      },
+      {
+        "id": "stage-09-topic-1-section-4",
+        "title": "ECR Repositories, Image Manifests, and Layers",
+        "content": "An ECR repository stores image manifests and the content layers referenced by those manifests. A manifest describes image configuration and the layers required to assemble the image, while layers contain filesystem changes produced during image construction. Container clients use the registry API to retrieve the manifest and then download the referenced layers. Shared layer content can reduce repeated transfer and storage work when images have common base layers, subject to registry implementation and retention behavior. Understanding manifests and layers helps explain why an image is more than a single compressed file. It also helps operators investigate missing manifests, incomplete pushes, architecture mismatches, and unexpected storage usage. Use image metadata and digest information when tracing the exact artifact stored in ECR."
+      },
+      {
+        "id": "stage-09-topic-1-section-5",
+        "title": "Supported Container Formats and Artifact Compatibility",
+        "content": "Amazon ECR supports container image workflows based on Docker and OCI-compatible image formats. OCI image manifests and indexes provide standardized structures for describing image configuration and platform-specific content. This compatibility allows common container tooling to build, tag, push, inspect, and pull images using ECR as the registry endpoint. Teams should still validate the client version, image format, manifest type, and target runtime when introducing new build tools or multi-platform workflows. A successful push does not guarantee that every older runtime can consume every manifest format. Test the published artifact with the actual deployment platform and record the image digest and supported architectures as part of release verification."
+      },
+      {
+        "id": "stage-09-topic-1-section-6",
+        "title": "ECR Integration with Docker and Build Pipelines",
+        "content": "Docker and CI tools interact with ECR through standard registry operations. A build pipeline first obtains AWS credentials through an approved identity mechanism, requests an ECR authorization token, and uses the returned credentials to authenticate its container client. It then tags the image with the complete ECR repository URI and pushes it. Build jobs should use narrowly scoped permissions and should not store long-lived AWS access keys in source code or pipeline YAML. Separate build permissions from deployment pull permissions wherever possible. Capture the source commit, pipeline execution, image tag, and digest so the artifact can be traced from source to deployment. This makes ECR a controlled artifact distribution point in a repeatable CI/CD process."
+      },
+      {
+        "id": "stage-09-topic-1-section-7",
+        "title": "ECR Image Scanning and Supply-Chain Visibility",
+        "content": "Container images may contain vulnerable operating-system packages, application dependencies, and bundled tools. Amazon ECR provides image scanning capabilities that can identify known vulnerabilities in supported image contents. Depending on the configured scanning mode and service capabilities, findings may be available when an image is pushed or through continuous scanning workflows. A scan result is evidence for risk assessment, not a guarantee that an image is secure. Teams should evaluate severity, exploitability, package usage, available fixes, and deployment exposure. Establish a remediation process that rebuilds images with patched dependencies and republishes approved artifacts. Connect scan findings to release governance so critical issues can be blocked or require documented approval before production deployment."
+      },
+      {
+        "id": "stage-09-topic-1-section-8",
+        "title": "ECR Pricing, Storage, and Data Transfer Considerations",
+        "content": "ECR operating cost depends on factors such as stored image data, data transfer, and the selected AWS Region and service configuration. Frequent CI builds can create many tagged images and retain layers that are no longer needed, increasing storage consumption over time. Cross-Region or internet data transfer may introduce additional cost depending on the traffic path and AWS pricing rules. Use repository lifecycle policies to manage eligible image retention, but protect release artifacts that are required for production rollback or compliance. Monitor repository growth and review build practices that generate unnecessary duplicate artifacts. For accurate budgeting, consult current AWS pricing for the specific Region, transfer pattern, and features in use rather than relying on a fixed estimate."
+      },
+      {
+        "id": "stage-09-topic-1-section-9",
+        "title": "ECR Operational Responsibilities and Service Boundaries",
+        "content": "Amazon ECR is a managed AWS service, but adopting it does not remove all registry administration responsibilities. AWS operates the service infrastructure, while the customer configures repository access, identity policies, encryption choices, lifecycle rules, image scanning, replication, and operational monitoring. The application team remains responsible for producing trustworthy images and maintaining their dependencies. Platform teams should define repository naming, account and Region strategy, access boundaries, retention standards, and incident ownership. Production teams should know how to identify a deployed digest, retrieve a previous release, and respond when image pulls fail. A clear responsibility model prevents gaps between cloud administration, CI pipeline ownership, security governance, and application operations."
+      }
+    ]
+  },
+  {
+    "topicTitle": "ECR Registry Architecture",
+    "sections": [
+      {
+        "id": "stage-09-topic-2-section-1",
+        "title": "ECR Registry Endpoint Structure and Resource Hierarchy",
+        "content": "Amazon ECR private registry architecture begins with an AWS account and Region-specific registry endpoint. Within the registry, repositories organize related container images, and each repository can contain multiple image tags and digests. A complete private image reference combines the registry endpoint, repository name, and tag or digest. This hierarchy is important when designing naming conventions and permissions because policies can be scoped to particular repositories or registry resources. Separate repositories can represent different applications, services, or trust boundaries. Avoid relying on ambiguous repository names across accounts and Regions. Document the canonical registry URI for each environment and ensure deployment configuration selects the intended account, Region, repository, and immutable artifact identifier."
+      },
+      {
+        "id": "stage-09-topic-2-section-2",
+        "title": "Account and Region Boundaries in Multi-Environment Design",
+        "content": "ECR resources are Regional, and private registry access is associated with AWS account boundaries. Organizations commonly separate development, testing, staging, and production workloads into different accounts or use a controlled shared-services account for approved images. A multi-account design can reduce accidental access between environments and support independent administrative ownership. A multi-Region design can improve image availability near workloads and support recovery objectives. These choices introduce requirements for cross-account policies, replication, identity configuration, and consistent naming. Define which account owns the source image, which accounts may consume it, and how approved digests move between Regions. Avoid assuming that a repository name in another account automatically grants access to the original repository."
+      },
+      {
+        "id": "stage-09-topic-2-section-3",
+        "title": "Repository Boundaries and Naming Architecture",
+        "content": "Repository design should reflect application ownership, release lifecycle, and security boundaries. A repository per application or independently governed component often makes permissions, retention, and audit responsibilities easier to understand. Use consistent naming conventions that identify the owning team or platform area without encoding temporary details that frequently change. Avoid creating a separate repository for every build number; tags are normally better suited to identifying versions within a repository. Repository names should be stable and predictable so CI pipelines and deployment manifests can refer to them consistently. Document naming rules and ownership metadata, and review repository sprawl periodically. Good repository boundaries simplify access reviews, lifecycle management, and investigation of unexpected image publication."
+      },
+      {
+        "id": "stage-09-topic-2-section-4",
+        "title": "Registry API, Authentication Token, and Client Interaction",
+        "content": "Docker-compatible clients communicate with ECR through registry APIs to authenticate, upload manifests, and transfer image layers. For private ECR, an AWS identity with the required permissions obtains an authorization token through the ECR API. The token is then used by the container client to authenticate to the registry endpoint. The authorization token is temporary and should be refreshed according to its validity period and the execution environment's authentication workflow. AWS API authorization and registry authentication are related but distinct steps: the caller must be allowed to obtain the token, and the resulting identity must also have the required repository actions. Troubleshooting should identify whether failure occurs during AWS credential resolution, token retrieval, registry login, or image transfer."
+      },
+      {
+        "id": "stage-09-topic-2-section-5",
+        "title": "IAM Policy Evaluation for Registry Operations",
+        "content": "ECR access is governed through AWS identity and resource policies. Identity policies grant actions to IAM users, roles, or federated identities, while repository policies can grant access to specified principals and accounts. Effective access may also be affected by permission boundaries, service control policies, session policies, and explicit denies. A push workflow typically needs permission to obtain an authorization token and perform the required layer upload and image publication operations. A pull workflow needs the corresponding download and image retrieval permissions. Do not solve an access failure by granting broad administrator privileges. Identify the denied action from the error or audit evidence and add the narrowest required permission to the intended principal and repository scope."
+      },
+      {
+        "id": "stage-09-topic-2-section-6",
+        "title": "Image Manifest and Layer Distribution Architecture",
+        "content": "An ECR image is represented through a manifest or image index that references configuration metadata and content layers. During a push, the client checks which layers need uploading, transfers missing content, and publishes the manifest that connects those layers into an image reference. During a pull, the client retrieves the manifest and downloads the required layers. This model allows images to share common layers and supports efficient distribution. Multi-platform images use an index that references platform-specific manifests, allowing compatible clients to select the correct architecture. When investigating a missing image or platform error, inspect the repository manifest and digest rather than relying only on a tag name. This distinction helps isolate publishing problems from runtime compatibility problems."
+      },
+      {
+        "id": "stage-09-topic-2-section-7",
+        "title": "Private Connectivity with VPC Endpoints",
+        "content": "Workloads in private networks may need to access ECR without relying on public internet routing. AWS provides VPC endpoint options for ECR API and Docker registry access, and image layer transfer may also involve the relevant AWS storage service endpoint configuration. Correct endpoint setup depends on the network design, DNS behavior, security groups, route configuration, and the workload's Region. A missing or misconfigured endpoint can produce authentication or layer-download failures even when IAM permissions are correct. Validate endpoint policies and network reachability from the actual build agent or runtime host. Use private connectivity where it meets security and operational requirements, and document all required endpoints for each deployment Region."
+      },
+      {
+        "id": "stage-09-topic-2-section-8",
+        "title": "Encryption, Logging, and Registry Governance Architecture",
+        "content": "ECR repository architecture should include data protection and audit requirements. ECR supports encryption of stored image data, with repository configuration determining the applicable encryption arrangement and key-management integration. Organizations should evaluate key ownership, rotation responsibilities, access to encryption keys, and the operational impact of key policy changes. Audit and monitoring design should capture relevant AWS API activity, repository changes, image publication events, and access-policy modifications. CloudTrail can provide visibility into supported API activity, while monitoring and alerting can help identify unexpected operations. Define who can create repositories, change policies, publish images, and delete artifacts. Governance should be applied consistently across accounts and Regions rather than relying on individual teams to configure repositories independently."
+      },
+      {
+        "id": "stage-09-topic-2-section-9",
+        "title": "Replication and Availability Across Regions and Accounts",
+        "content": "ECR replication can distribute images from a source registry to destination registries in supported accounts and Regions. This can reduce repeated manual pushes and improve image availability near deployment environments. Replication configuration must be designed around source and destination ownership, repository selection, permissions, and regional requirements. Replication is not a substitute for validating that the destination image is usable by its intended runtime identity. Confirm that expected repositories and image digests appear in destination registries and understand propagation timing. Include replication health and destination access in release verification. For disaster recovery, document how workloads switch to an alternate registry location and how the organization confirms that required production images are available there."
+      },
+      {
+        "id": "stage-09-topic-2-section-10",
+        "title": "Reference Architecture for Secure CI/CD Image Distribution",
+        "content": "A secure ECR reference architecture separates image creation, image storage, and image consumption. A CI role builds and tests an image, scans it, and pushes it to a controlled source repository. The pipeline records the resulting digest and source revision. Promotion workflows then make the approved artifact available to staging and production accounts through controlled cross-account access or registry replication. Runtime identities receive pull-only permissions and retrieve the approved digest. Repository policies, IAM roles, encryption settings, audit logging, lifecycle rules, and vulnerability governance enforce the platform standards. The design should also include private network access where required, recovery copies in appropriate Regions, and documented ownership. Validate the architecture with a complete push, promotion, pull, and rollback exercise before production adoption."
+      }
+    ]
+  },
+  {
+    "topicTitle": "Repository Creation",
+    "sections": [
+      {
+        "id": "stage-09-topic-3-section-1",
+        "title": "ECR Repository Purpose and Resource Model",
+        "content": "An Amazon Elastic Container Registry repository is a logical location for storing and organizing container images. A repository belongs to an AWS account and Region and is addressed through a registry URI that includes the account identifier, regional ECR endpoint, and repository name. Images pushed to the repository are identified by tags and content digests. Repository boundaries help teams separate applications, environments, and ownership responsibilities. Before creating a repository, decide its naming convention, expected image volume, access model, encryption requirements, scanning policy, and retention needs. For example, a team may create separate repositories for an API, worker service, and frontend rather than placing every application image in one shared repository. A clear repository model improves IAM policy design, auditability, lifecycle management, and release traceability."
+      },
+      {
+        "id": "stage-09-topic-3-section-2",
+        "title": "Creating Repositories with the AWS CLI",
+        "content": "The AWS CLI can create an ECR repository using the create-repository operation. First confirm the active AWS identity with aws sts get-caller-identity and select the intended Region. Then run aws ecr create-repository with a repository name and Region, for example aws ecr create-repository --repository-name platform/orders-api --region ap-south-1. The response includes the repository ARN, URI, registry identifier, and creation metadata. These values should be captured by automation rather than manually reconstructed wherever possible. Repository creation requires the appropriate ECR control-plane permission, such as ecr:CreateRepository. A pipeline should handle the case where a repository already exists deliberately, instead of treating every creation error as success. Validate the resulting repository URI before using it in image tagging or push commands."
+      },
+      {
+        "id": "stage-09-topic-3-section-3",
+        "title": "Repository Naming, Namespaces, and Team Organization",
+        "content": "Repository names should communicate application ownership and purpose while remaining stable across releases. ECR supports repository names containing path-like namespace segments, which can organize repositories by team or product area, such as payments/transaction-api or platform/observability-agent. Define consistent rules for lowercase names, separators, environment boundaries, and application identifiers. Avoid encoding frequently changing deployment details into repository names when tags or release metadata are more suitable. Decide whether development and production images should use separate repositories or whether one immutable artifact should be promoted across environments. The choice affects access policies, lifecycle rules, scanning configuration, and operational ownership. Document repository naming conventions so developers and automation create predictable resources instead of introducing ad hoc names."
+      },
+      {
+        "id": "stage-09-topic-3-section-4",
+        "title": "Repository Configuration: Encryption and Image Scanning",
+        "content": "ECR repositories support configuration choices that affect how stored images are protected and inspected. Repository encryption can use the supported default encryption behavior or a configured AWS KMS key, depending on the organization's security and compliance requirements. When a customer-managed KMS key is selected, the key policy and IAM permissions must allow the required ECR operations. Image scanning can be configured according to the scanning features and settings available in the account and Region. Teams should decide whether scan-on-push or continuous scanning behavior is required and how findings will be reviewed. Configure these controls as part of repository provisioning so newly created repositories do not depend on manual follow-up. Verify the effective repository settings after creation using the ECR describe-repositories operation."
+      },
+      {
+        "id": "stage-09-topic-3-section-5",
+        "title": "Creating Repositories with Infrastructure as Code",
+        "content": "Infrastructure as Code makes repository configuration repeatable and reviewable. In Terraform, an aws_ecr_repository resource can define the repository name, image mutability setting, encryption configuration, and image scanning configuration. CloudFormation provides an AWS::ECR::Repository resource for the same general purpose. Store repository definitions in version control and apply changes through a controlled deployment workflow. Use reusable modules when multiple services require consistent security and lifecycle settings, but expose only the options that teams genuinely need to configure. Review plan output before applying changes, particularly when changing encryption keys or repository names. Avoid creating the same repository through both manual CLI commands and infrastructure automation because unmanaged differences can cause drift and confusing ownership."
+      },
+      {
+        "id": "stage-09-topic-3-section-6",
+        "title": "Repository Policies and Resource-Level Access",
+        "content": "An ECR repository can have a repository policy that grants specified principals permission to perform supported repository operations. This is especially useful when another AWS account or external workload needs access to a particular repository. Repository policies complement identity-based IAM policies; the effective permission depends on the applicable policies, principal identity, and AWS authorization rules. Grant only the actions required by the consumer, such as image retrieval operations for a deployment system. Do not grant push or administrative permissions to consumers that only need to pull images. Review the policy using get-repository-policy and validate the principal account and role identifiers carefully. Repository policies should be version-controlled or otherwise audited so access changes can be traced and reviewed."
+      },
+      {
+        "id": "stage-09-topic-3-section-7",
+        "title": "Repository Discovery, Inspection, and Configuration Verification",
+        "content": "After creating a repository, verify that it exists in the intended AWS account and Region. Use aws ecr describe-repositories with the repository name and Region to inspect its URI, ARN, encryption configuration, image tag mutability, and scanning configuration where returned. Use list-images to inspect image identifiers and describe-images to retrieve metadata about specific tags or digests. Confirm that the repository belongs to the expected account by checking the registry identifier and active AWS identity. These checks are important when multiple AWS profiles, roles, and Regions are used by developers or CI agents. Treat a successful create-repository response as only the first step; configuration verification ensures that the actual resource matches the intended deployment design."
+      },
+      {
+        "id": "stage-09-topic-3-section-8",
+        "title": "Repository Provisioning Automation and Idempotency",
+        "content": "A reliable provisioning script should be safe to execute repeatedly. Before creating a repository, automation can query whether the expected repository already exists and then compare its effective configuration with the desired configuration. If it is missing, create it; if it exists, report its current settings and apply only approved changes. Do not silently ignore access-denied, invalid-parameter, or wrong-Region errors as though the resource already existed. Capture the repository URI and ARN as outputs for later build and deployment stages. Keep account and Region selection explicit, and use a dedicated automation role with narrowly scoped permissions. Include validation for encryption, mutability, scanning, and repository policy so provisioning produces a known and reviewable state."
+      },
+      {
+        "id": "stage-09-topic-3-section-9",
+        "title": "Repository Deletion, Recovery Planning, and Operational Ownership",
+        "content": "Deleting an ECR repository can permanently remove the images stored in it, so repository cleanup must be treated as a controlled operational change. The delete-repository operation normally requires the repository to be empty unless force deletion is explicitly requested. Before deletion, identify workloads, deployment manifests, rollback procedures, and other accounts that depend on the repository. Confirm that required images have been retained or copied to an approved destination and that recovery expectations are understood. Establish ownership for repository lifecycle, access reviews, vulnerability remediation, retention policy, and incident escalation. For production repositories, use change approval and audit logging before destructive operations. A repository should not be removed merely because its application is temporarily inactive or its latest deployment uses another image."
+      }
+    ]
+  },
+  {
+    "topicTitle": "AWS IAM Permissions",
+    "sections": [
+      {
+        "id": "stage-09-topic-4-section-1",
+        "title": "IAM Authorization Model for Amazon ECR",
+        "content": "Amazon ECR authorization combines AWS identity-based permissions, repository resource policies, and the service-specific authorization behavior of the requested operation. IAM identities such as users and roles receive policies that allow or deny actions on ECR resources. Repository policies can grant access to principals that need to interact with a particular repository, including principals from another account. A successful Docker push or pull requires more than a valid AWS login: the identity must be authorized for the relevant ECR API operations and image-layer transfer workflow. Start permission analysis by identifying the caller identity, account, Region, registry, repository, and exact failed action. This avoids granting broad administrator access when only one repository permission is missing. Always evaluate explicit denies and applicable organizational controls as part of the investigation."
+      },
+      {
+        "id": "stage-09-topic-4-section-2",
+        "title": "Identity-Based Policies for ECR Operations",
+        "content": "Identity-based IAM policies can be attached to users, groups, or roles to grant ECR permissions. For example, a build role may need permission to obtain an authorization token and upload image layers, while a deployment role may need permission to retrieve image manifests and layers. Use actions that match the actual workflow rather than granting every ECR action. The Resource element should be scoped to the relevant repository ARN when the action supports resource-level permissions. Some actions, including obtaining an ECR authorization token, require a wildcard resource because the permission is not scoped to an individual repository in the same way. Separate token authorization from repository-level push or pull permissions. Review AWS service authorization documentation when building policies because supported resource types and condition keys vary by action."
+      },
+      {
+        "id": "stage-09-topic-4-section-3",
+        "title": "ECR Authorization Token and GetAuthorizationToken Permission",
+        "content": "Docker clients use an ECR authorization token to authenticate to a private registry. The AWS identity generally needs the ecr:GetAuthorizationToken permission to obtain this token. This action is commonly granted with Resource set to \"*\" because it is not restricted to one repository ARN in the policy statement. The token is temporary and is used by the Docker client for registry authentication; it does not independently grant unrestricted access to every repository. Actual image operations still require the relevant repository permissions. A common mistake is granting GetAuthorizationToken alone and expecting Docker push or pull to work. Build a policy with a separate statement for token retrieval and another appropriately scoped statement for the repository operations required by the workload."
+      },
+      {
+        "id": "stage-09-topic-4-section-4",
+        "title": "Least-Privilege Permissions for Image Push Workflows",
+        "content": "An image publisher requires permissions for the ECR upload workflow. Common repository-level actions include ecr:BatchCheckLayerAvailability, ecr:InitiateLayerUpload, ecr:UploadLayerPart, ecr:CompleteLayerUpload, and ecr:PutImage. The identity also needs ecr:GetAuthorizationToken to authenticate the Docker client. Scope repository-level actions to the specific repository ARN rather than every repository in the account whenever practical. A CI role that publishes one application's image should not automatically receive permission to overwrite unrelated service images. Consider whether the workflow also needs repository discovery or metadata inspection and grant those actions only when required. Test the policy with the real pipeline identity and review CloudTrail or error details when authorization fails. Keep publisher permissions separate from deployment-only pull permissions."
+      },
+      {
+        "id": "stage-09-topic-4-section-5",
+        "title": "Least-Privilege Permissions for Image Pull Workflows",
+        "content": "A workload that retrieves an image from ECR should receive read-only permissions appropriate to the pull workflow. Common repository actions include ecr:BatchCheckLayerAvailability, ecr:BatchGetImage, and ecr:GetDownloadUrlForLayer, together with ecr:GetAuthorizationToken. Scope repository access to the image repository or repositories required by the workload. Do not grant ecr:PutImage or layer-upload permissions to a runtime identity that only downloads images. Depending on the deployment platform, the permissions may be attached to an EC2 instance role, task execution role, node role, or another supported workload identity. Verify which identity actually performs the image pull; it may differ from the application process identity. This distinction is important when debugging a deployment that cannot retrieve a private image."
+      },
+      {
+        "id": "stage-09-topic-4-section-6",
+        "title": "IAM Roles for EC2, ECS, EKS, and CI Workloads",
+        "content": "ECR access should be granted to the AWS identity used by the component performing the registry operation. An EC2-based build agent may use an instance profile role, while an ECS task commonly relies on its task execution role for image retrieval. EKS image pulls from private ECR repositories are generally performed by the node's container runtime using the node's AWS permissions, subject to the cluster configuration and platform features in use. A CI system may assume a dedicated role through federation or an approved credentials provider. Do not assume that the application container's own role is automatically the identity used to pull its image before startup. Identify the exact principal, inspect its attached policies, and test the required ECR operation from the same execution context."
+      },
+      {
+        "id": "stage-09-topic-4-section-7",
+        "title": "Repository Resource Policies and Cross-Account Authorization",
+        "content": "A repository policy can allow a principal in another AWS account to access a specific ECR repository. The consuming account may also need an identity-based policy that permits the required ECR actions. Cross-account access therefore requires coordinated authorization on both sides, with the repository owner granting access and the consumer identity being allowed to use it. For image pulls, grant only the required read operations; for publishing, add write operations only when the external publisher is trusted and expected to push. Validate the account ID, role ARN, repository ARN, and Region. Use get-repository-policy to inspect the effective repository policy and review CloudTrail records when access is denied. Avoid wildcard principals unless a carefully designed condition restricts the intended access."
+      },
+      {
+        "id": "stage-09-topic-4-section-8",
+        "title": "IAM Policy Conditions, Boundaries, and Explicit Denies",
+        "content": "IAM authorization may be affected by conditions, permissions boundaries, session policies, service control policies, and explicit deny statements. A policy that appears to allow an ECR action may still be ineffective when another applicable policy denies it or limits the role's maximum permissions. Conditions can restrict access using supported context keys, such as principal or network-related attributes where applicable to the service and action. Do not add condition keys without verifying that ECR supplies them for the operation being evaluated. When troubleshooting, inspect the full role policy set, boundary, assumed-role session, and organization-level controls. Use IAM policy simulation where appropriate, then confirm behavior with a controlled request using the same principal. This method is more reliable than repeatedly adding broad permissions."
+      },
+      {
+        "id": "stage-09-topic-4-section-9",
+        "title": "Diagnosing ECR AccessDenied Errors with AWS Evidence",
+        "content": "An AccessDenied error should be analyzed using the failed operation and caller identity. Run aws sts get-caller-identity in the same shell or CI job that performs the ECR operation to confirm the active account and assumed role. Capture the Region, repository ARN, command, timestamp, and exact AWS error message without exposing credentials. Check whether the required action is allowed by identity policies and repository policies, and then review permissions boundaries and organization-level restrictions. CloudTrail event history can help identify the principal, API action, and resource involved in a failed request when the event is recorded. Do not respond to every denial by attaching AdministratorAccess. Correct the narrow missing permission and repeat the operation using the intended role."
+      },
+      {
+        "id": "stage-09-topic-4-section-10",
+        "title": "IAM Governance, Access Review, and Production Policy Testing",
+        "content": "Production ECR permissions should be reviewed as part of the application's software supply-chain controls. Maintain separate roles for repository administration, image publishing, image retrieval, and human troubleshooting where practical. Use infrastructure code or policy-as-code checks to review changes before deployment, and identify wildcard resource statements that could be narrowed. Remove unused identities and rotate credentials according to the organization's security requirements. Test both expected success and expected denial cases so a policy does not grant more access than intended. Keep an auditable mapping between each pipeline or runtime component and the AWS role it assumes. During periodic reviews, confirm that repository permissions still match application ownership, deployment architecture, and cross-account dependencies."
+      }
+    ]
+  },
+  {
+    "topicTitle": "Docker Authentication",
+    "sections": []
+  },
+  {
+    "topicTitle": "Image Tagging",
+    "sections": []
+  },
+  {
+    "topicTitle": "Image Push Workflow",
+    "sections": []
+  },
+  {
+    "topicTitle": "Image Pull Workflow",
+    "sections": []
+  },
+  {
+    "topicTitle": "Immutable Image Tags",
+    "sections": []
+  },
+  {
+    "topicTitle": "Image Digests",
+    "sections": []
+  },
+  {
+    "topicTitle": "Lifecycle Policies",
+    "sections": []
+  },
+  {
+    "topicTitle": "Encryption and Access Control",
+    "sections": []
+  },
+  {
+    "topicTitle": "Image Vulnerability Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "Cross-account Access",
+    "sections": []
+  },
+  {
+    "topicTitle": "Registry Replication",
+    "sections": []
+  },
+  {
+    "topicTitle": "Troubleshooting",
+    "sections": []
+  },
+  {
+    "topicTitle": "Production Hands-on Lab",
+    "sections": []
+  }
+]

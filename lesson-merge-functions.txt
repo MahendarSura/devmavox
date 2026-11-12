@@ -1,0 +1,51 @@
+10388: function mergeStageOverrides(
+10389:   stageId: number,
+10390:   overrides: Record<string, unknown>
+10391: ): number {
+10392:   let merged = 0;
+10393: 
+10394:   for (const [rawKey, rawLesson] of Object.entries(overrides)) {
+10395:     if (!rawLesson || typeof rawLesson !== "object") continue;
+10396: 
+10397:     const separator = rawKey.indexOf("|");
+10398:     const topicTitle = (
+10399:       separator >= 0 ? rawKey.slice(separator + 1) : rawKey
+10400:     ).trim();
+10401: 
+10402:     if (!topicTitle) continue;
+10403: 
+10404:     lessons[`${stageId}|${topicTitle}`] =
+10405:       convertLatestLesson(rawLesson);
+10406: 
+10407:     merged++;
+10408:   }
+10409: 
+10410:   return merged;
+10411: }
+10412: 
+10413: export const stageOverrideCounts = [
+10414:   mergeStageOverrides(1, stageOneLessonOverrides),
+10415:   mergeStageOverrides(2, stageTwoLessonOverrides),
+10416:   mergeStageOverrides(3, stageThreeLessonOverrides),
+10417:   mergeStageOverrides(4, stageFourLessonOverrides),
+10418:   mergeStageOverrides(5, stageFiveLessonOverrides),
+10419:   mergeStageOverrides(6, stageSixLessonOverrides),
+10420:   mergeStageOverrides(7, stageSevenLessonOverrides),
+10421:   mergeStageOverrides(8, stageEightLessonOverrides),
+10422:   mergeStageOverrides(9, stageNineLessonOverrides),
+10423:   mergeStageOverrides(10, stageTenLessonOverrides),
+10424:   mergeStageOverrides(11, stageElevenLessonOverrides),
+10425:   mergeStageOverrides(12, stageTwelveLessonOverrides)
+10426: ];
+10427: 
+10428: export const stageOverrideTotal = stageOverrideCounts.reduce(
+10429:   (total, count) => total + count,
+10430:   0
+10431: );
+10432: 
+10433: export function getCicdTopicLesson(stageId: number, title: string): CicdTopicLesson | undefined {
+10434:   return lessons[String(stageId) + "|" + title];
+10435: }
+10436: 
+10437: export const cicdTopicLessonCount = Object.keys(lessons).length;
+10438: 

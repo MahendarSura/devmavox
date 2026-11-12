@@ -1,0 +1,179 @@
+[
+  {
+    "topicTitle": "Observability Fundamentals",
+    "sections": [
+      {
+        "id": "stage-12-topic-1-section-1",
+        "title": "Observability: Purpose, Scope, and Engineering Value",
+        "content": "Observability is the engineering discipline of understanding the internal condition of a running system by examining the information it produces. In a distributed application, a request may travel through a browser, API gateway, application service, message queue, database, and external dependency. A failure in any one component can affect the final user experience. Observability provides the evidence needed to understand what happened across that entire request path. It is broader than simply checking whether a server is running. Engineers use observability to investigate latency, errors, resource saturation, dependency failures, unexpected behavior, and changes in system performance. A mature implementation combines metrics, logs, traces, events, and contextual metadata so that different evidence sources can explain the same incident. For example, a payment API may report a high response time metric, traces may reveal that database queries consume most of the request duration, and logs may identify a connection-pool timeout. These signals become useful when they are correlated around the same service, environment, request, and time window. Observability supports operational decisions such as whether to scale a service, roll back a release, repair a dependency, or change an application design. Its practical value is faster diagnosis, reduced recovery time, improved reliability, and evidence-based engineering rather than guesswork."
+      },
+      {
+        "id": "stage-12-topic-1-section-2",
+        "title": "The Three Core Signals: Metrics, Logs, and Traces",
+        "content": "Metrics, logs, and traces are complementary signals used to understand application behavior. Metrics are numerical measurements collected over time, such as request rate, error percentage, CPU utilization, memory consumption, and queue depth. They are efficient for detecting trends, comparing behavior, and triggering alerts. Logs are timestamped records describing individual application or infrastructure events. A structured log can contain a severity level, service name, environment, request identifier, error code, and message. Logs are especially useful when an engineer needs the exact event or error details behind an observed problem. Traces represent the journey of an individual request through multiple services. A distributed trace contains spans, and each span describes an operation with timing and contextual information. Traces can reveal which service or dependency contributes most to end-to-end latency. Consider an online shopping request that becomes slow. A metric identifies that checkout latency increased, a trace identifies a slow inventory service call, and a correlated log explains that the inventory service is retrying a database connection. No single signal provides the complete explanation in every situation. Effective observability connects these signals using consistent service names, environment labels, timestamps, trace identifiers, and deployment metadata. Teams should select the signal that answers the immediate question while preserving the ability to move between related evidence."
+      },
+      {
+        "id": "stage-12-topic-1-section-3",
+        "title": "Observability Versus Traditional Monitoring",
+        "content": "Traditional monitoring commonly checks predefined conditions that engineers already know may fail. Examples include whether a process is running, whether disk usage exceeds a threshold, or whether an HTTP endpoint returns a successful response. These checks are valuable for known failure modes and operational health. Observability extends this approach by helping engineers investigate conditions they did not explicitly predict in advance. In a distributed system, an unexpected combination of application behavior, dependency latency, traffic patterns, and deployment changes may cause an incident that a simple host-level alert cannot explain. Monitoring can tell an operator that an error threshold was crossed, while observability helps investigate which requests failed, which service was involved, what changed recently, and how the failure propagated. The distinction is not that monitoring is obsolete; monitoring is an important operational use of observability data. A useful engineering model is to use monitoring for detection and observability for investigation and understanding. For example, a CPU alert can identify a saturated Kubernetes node, but metrics by pod, logs from the affected application, and traces from slow requests can help establish whether the root cause is a traffic spike, inefficient code, a memory-related restart loop, or a downstream dependency. Production teams need both predictable health checks and the diagnostic depth to investigate unfamiliar failure patterns."
+      },
+      {
+        "id": "stage-12-topic-1-section-4",
+        "title": "Instrumentation: Producing Reliable Telemetry",
+        "content": "Instrumentation is the process of adding or enabling the mechanisms that produce telemetry from applications, services, and infrastructure. It may be implemented through application libraries, framework integrations, agents, exporters, runtime instrumentation, or platform-provided collectors. Good instrumentation measures important behavior without introducing excessive overhead or exposing sensitive information. Application instrumentation should capture meaningful events such as request duration, response status, database operation duration, queue processing time, and dependency failures. Infrastructure instrumentation may collect CPU, memory, disk, network, container, and node measurements. Distributed tracing instrumentation creates spans around important operations and propagates trace context between services so that a single request can be followed across process boundaries. OpenTelemetry is commonly used to standardize the generation and export of metrics, traces, and logs across different languages and platforms. Teams should define stable service identity attributes, deployment environment, service version, and operation names. They should avoid uncontrolled high-cardinality attributes such as unique user identifiers or arbitrary request values. Instrumentation must also consider sampling, collection frequency, network overhead, retention, and data privacy. Before deploying instrumentation broadly, test its effect on application latency, CPU usage, memory consumption, and telemetry volume. Reliable instrumentation produces data that is accurate, consistently named, secure, and useful during real production incidents."
+      },
+      {
+        "id": "stage-12-topic-1-section-5",
+        "title": "Telemetry Collection, Processing, and Export Pipelines",
+        "content": "A telemetry pipeline moves observability data from its source to systems where engineers can query, visualize, and analyze it. The source may be an application SDK, a host agent, a Kubernetes integration, or an exporter exposing infrastructure measurements. A collector can receive telemetry, attach resource attributes, filter unwanted records, batch data, apply transformations, and export it to one or more backends. OpenTelemetry Collector is a common implementation for receiving and forwarding telemetry using supported receivers, processors, and exporters. Prometheus commonly collects metrics by scraping configured HTTP endpoints, while log and trace systems may receive data through push-based protocols or collector pipelines. Processing should preserve useful context such as service name, environment, region, cluster, namespace, and version. Teams should decide where filtering and sampling happen because removing useful attributes or records too early can make incident investigation impossible. Batching and compression can reduce network overhead, while queues and retry policies can improve resilience during temporary backend outages. However, persistent queues need capacity limits and monitoring so that telemetry does not consume all available disk space. A production pipeline should monitor its own health, including dropped records, export failures, queue utilization, processing latency, and collector resource usage. Treating telemetry collection as a production service prevents observability blind spots during the very incidents when diagnostic evidence is most important."
+      },
+      {
+        "id": "stage-12-topic-1-section-6",
+        "title": "Context and Correlation Across Distributed Services",
+        "content": "Context and correlation allow engineers to connect telemetry that describes different parts of the same system activity. A request identifier can connect related application logs, while a trace identifier can connect spans created by multiple services during one distributed request. Resource attributes identify the environment in which telemetry was produced, such as a Kubernetes cluster, namespace, workload, service, region, or deployment version. Consistent naming is essential: if one component identifies itself as checkout-api and another uses checkout_service for the same logical service, dashboards and queries become harder to maintain. Distributed tracing depends on context propagation. When a service calls another service, it should pass the trace context through the relevant protocol or messaging mechanism. Asynchronous processing requires deliberate propagation through message headers or equivalent metadata. Correlation must not rely on sensitive personal information or place secrets into labels and log fields. For example, an order request may pass through an API gateway, checkout service, payment service, and notification worker. A shared trace context allows the team to examine the complete operation, while service and version attributes help identify whether failures began after a particular deployment. Teams should standardize attribute names, validate propagation in integration tests, and confirm that sampled traces retain enough context to explain production behavior."
+      },
+      {
+        "id": "stage-12-topic-1-section-7",
+        "title": "Observability for Kubernetes and Cloud-Native Workloads",
+        "content": "Cloud-native observability must account for workloads that are created, replaced, scaled, and rescheduled dynamically. A Kubernetes pod may have a short lifetime, so engineers cannot depend only on manually inspecting a specific container or node. Useful telemetry should identify the cluster, namespace, workload, pod, container, node, and application service where appropriate. Kubernetes platform metrics can describe pod readiness, restart counts, resource requests, resource limits, node conditions, and scheduling behavior. Application metrics and traces explain whether a workload is actually serving requests correctly. Container logs provide runtime evidence, while Kubernetes events can reveal scheduling failures, image-pull errors, failed probes, and resource-pressure conditions. Cloud environments add dimensions such as account or project, region, availability zone, managed database, load balancer, and cloud service health. Collection should be designed to handle ephemeral resources and changing endpoints. Service discovery integrations help monitoring systems find current targets as workloads scale or move. Teams must also avoid generating a separate permanent time series for every short-lived pod when workload-level aggregation is sufficient. A practical investigation might combine node pressure metrics, pod restart history, application error rates, and deployment events to determine whether a service outage resulted from insufficient capacity, a bad release, or a dependency failure. Cloud-native observability requires automation, consistent metadata, and collection strategies that adapt to changing infrastructure."
+      },
+      {
+        "id": "stage-12-topic-1-section-8",
+        "title": "Telemetry Quality, Cardinality, Sampling, and Cost Control",
+        "content": "Telemetry is useful only when its quality, volume, and operational cost are controlled. Incorrect timestamps, inconsistent units, missing labels, duplicate measurements, and unclear metric names can lead to misleading dashboards and alerts. Cardinality describes the number of distinct combinations of label values or attributes. A metric labeled with a unique request ID, email address, or unbounded URL can create an enormous number of time series, increasing storage, memory, and query costs. Engineers should prefer bounded dimensions such as service, environment, method, status class, and region. Distributed tracing often uses sampling because recording every request may be too expensive at high traffic volumes. Head-based sampling makes a decision near trace creation, while tail-based sampling can retain traces based on completed trace characteristics, such as errors or unusually high latency. Sampling policies should preserve important error and slow-request evidence without creating an uncontrolled data stream. Retention policies should reflect operational and compliance requirements, and access controls should protect sensitive telemetry. Teams should track ingestion volume, active series, dropped data, storage growth, query performance, and collector resource usage. Cost optimization must not remove the evidence required for incident response. A responsible strategy combines useful instrumentation, bounded attributes, appropriate sampling, tiered retention, and regular reviews of telemetry value."
+      },
+      {
+        "id": "stage-12-topic-1-section-9",
+        "title": "Building an Observability Strategy and Operational Maturity",
+        "content": "An observability strategy defines what teams need to understand, how telemetry will be produced, where it will be stored, and how it will support operational decisions. Start with critical user journeys and services rather than collecting every possible metric without a clear purpose. Identify service ownership, dependencies, expected behavior, failure impact, and the questions an on-call engineer must answer during an incident. Establish naming conventions, resource attributes, instrumentation standards, access controls, retention requirements, and dashboard ownership. Define service-level indicators for important user-facing behavior and use them to guide alerting and reliability improvements. Build dashboards that show service health, traffic, errors, latency, and saturation, then provide links to relevant logs and traces for investigation. Run incident exercises to confirm that telemetry is available when dependencies fail, workloads restart, traffic increases, or deployments introduce regressions. Measure operational outcomes such as time to detect, time to diagnose, time to recover, alert quality, and recurring incident frequency. Observability maturity is not measured by the number of dashboards or tools installed. It is demonstrated by whether teams can reliably detect customer-impacting problems, explain system behavior, make safe recovery decisions, and prevent repeated failures. Review the strategy as architecture and traffic patterns evolve, and continuously improve instrumentation based on real incident findings."
+      }
+    ]
+  },
+  {
+    "topicTitle": "Metrics and Monitoring",
+    "sections": [
+      {
+        "id": "stage-12-topic-2-section-1",
+        "title": "Metrics: Definition, Purpose, and Measurement Model",
+        "content": "A metric is a numerical measurement that describes a property of a system at a particular time or over a defined interval. Metrics help engineers understand how much work a service is handling, how reliably it responds, and whether infrastructure resources are approaching their limits. Common examples include HTTP request count, request duration, error count, CPU utilization, memory consumption, disk usage, and message queue depth. A metric normally has a name, a value, a timestamp, and optional labels or attributes that describe the context of the measurement. For example, an HTTP request counter may be separated by service, HTTP method, and response status class. A time series is the sequence of measurements for one metric name and one specific label combination. Monitoring systems store and query these time series to calculate rates, averages, percentiles, ratios, and trends. Engineers must understand what the value represents and its unit before creating alerts or dashboards. A latency metric expressed in seconds must not be interpreted as milliseconds, and a counter that only increases must be queried differently from a gauge that can rise and fall. Good metric design starts with an operational question, selects an appropriate measurement, defines meaningful labels, and documents its unit and interpretation."
+      },
+      {
+        "id": "stage-12-topic-2-section-2",
+        "title": "The Four Golden Signals: Latency, Traffic, Errors, and Saturation",
+        "content": "The four golden signals provide a practical starting point for monitoring user-facing services. Latency measures how long requests take to complete and should distinguish successful requests from failed requests when possible. Traffic measures the amount of demand reaching a service, such as requests per second, transactions per minute, or messages processed per second. Errors measure unsuccessful operations, including HTTP failures, application exceptions, rejected requests, and failed dependency calls. Saturation indicates how close a resource or service is to its practical capacity, such as CPU pressure, memory pressure, thread-pool exhaustion, connection-pool usage, or queue backlog. These signals must be interpreted together. A service may have low latency because traffic has unexpectedly stopped, so latency alone does not prove health. A rising request rate combined with increasing latency and queue depth may indicate that capacity is insufficient. A sudden error increase after a deployment may indicate a software regression rather than infrastructure exhaustion. Dashboards should show these signals over compatible time windows and allow drill-down by service, endpoint, region, and deployment version where those dimensions are bounded. The golden signals are not a replacement for domain-specific measurements, but they help teams build a consistent first view of service health and identify which direction an investigation should take."
+      },
+      {
+        "id": "stage-12-topic-2-section-3",
+        "title": "Metric Types: Counter, Gauge, Histogram, and Summary",
+        "content": "Metric types determine how measurements behave and how monitoring queries should interpret them. A counter is cumulative and normally increases until the process restarts or the metric is reset. Examples include total HTTP requests, processed messages, and application errors. Engineers commonly calculate a rate over a time range to understand how quickly a counter is increasing. A gauge represents a value that can move up or down, such as current memory usage, active connections, queue length, or temperature. A histogram records observations in configurable buckets and also maintains a count and sum, allowing latency or size distributions to be analyzed and aggregated across instances. A summary calculates configured quantiles within an instrumented process and exposes count and sum, but its quantile values generally cannot be aggregated meaningfully across multiple instances. Choosing the wrong type can create misleading monitoring results. For example, applying a rate calculation to a current-memory gauge does not answer the same question as measuring memory usage itself. For request latency, histograms are often useful when teams need fleet-wide percentile calculations and aggregation. Metric type, unit, bucket boundaries, reset behavior, and aggregation rules should be documented before dashboards and alert rules depend on the measurement."
+      },
+      {
+        "id": "stage-12-topic-2-section-4",
+        "title": "Time Series, Labels, Dimensions, and Cardinality",
+        "content": "A time series is identified by a metric name and its complete set of label values. Labels add context that allows engineers to filter, group, and compare measurements. For example, a request counter might use labels for service, environment, HTTP method, and response status. The same metric name with a different label combination represents a different time series. This flexibility is powerful, but every additional label dimension can multiply the number of series stored by the monitoring system. Cardinality becomes dangerous when labels contain unbounded or highly variable values, such as user IDs, session tokens, request IDs, full URLs, or arbitrary error messages. A service receiving millions of unique request identifiers can create an enormous number of time series and increase memory usage, ingestion load, query latency, and storage cost. Teams should prefer bounded labels with known value sets and use logs or traces for high-detail request-specific information. Label names should be consistent across services so that queries and dashboards can be reused. Before adding a label, estimate its possible number of values and consider whether it materially improves an operational decision. Monitor active series, churn, and ingestion volume so that cardinality growth is detected before it affects monitoring availability."
+      },
+      {
+        "id": "stage-12-topic-2-section-5",
+        "title": "Metric Collection Models: Pull, Push, and Agent-Based Collection",
+        "content": "Monitoring systems collect measurements through different collection models. In a pull model, the monitoring server periodically requests metrics from an endpoint exposed by an application or exporter. Prometheus commonly uses this approach, which allows the server to control scrape intervals, target discovery, and collection status. In a push model, an application or agent sends measurements to a receiving endpoint or gateway. Push collection can be useful for short-lived jobs or environments where inbound scraping is difficult, but it requires careful handling of delivery failures, authentication, and stale data. Agent-based collection runs a local process that gathers host, container, application, or cloud measurements and forwards them to a central backend. Agents can provide consistent collection across many machines, but their resource use and configuration must be managed. The correct model depends on network boundaries, workload lifetime, infrastructure ownership, and backend capabilities. For example, a long-running Kubernetes service may expose a scrape endpoint, while a short-lived batch task may need a push gateway or telemetry collector. Regardless of the model, teams should monitor collection success, missing targets, scrape duration, data freshness, and dropped measurements. A successful application request does not prove that its metrics are being collected, so telemetry pipeline health must be monitored independently."
+      },
+      {
+        "id": "stage-12-topic-2-section-6",
+        "title": "Scrape Intervals, Evaluation Windows, and Data Resolution",
+        "content": "A scrape interval determines how frequently a monitoring system collects measurements from a target. A shorter interval can reveal rapid changes sooner, but it increases network traffic, ingestion volume, storage consumption, and processing work. A longer interval reduces collection overhead but may miss brief spikes or delay detection. The interval should reflect the behavior being monitored, the required detection speed, and the cost of collecting the data. Query windows and rate ranges must be chosen with the scrape interval in mind. For example, calculating a rate over an extremely short range may produce insufficient samples and unstable results. Alert evaluation intervals determine how frequently rule expressions are evaluated, while a pending duration can require a condition to remain true before an alert fires. These are separate controls and should not be confused with the scrape interval. Dashboards also use query resolution and time ranges that affect the amount of data returned. A useful production design applies different collection frequencies to different workloads instead of choosing the shortest possible interval for every target. Teams should validate the effect of configuration changes on ingestion, query performance, alert delay, and storage. Documenting these timing choices makes it easier to understand why a short-lived event appeared in application logs but was not visible in a sampled metric graph."
+      },
+      {
+        "id": "stage-12-topic-2-section-7",
+        "title": "Monitoring Dashboards, Trends, and Operational Views",
+        "content": "A monitoring dashboard presents measurements in a form that helps engineers make operational decisions. A useful service dashboard begins with a concise overview of traffic, latency, errors, and saturation, then provides deeper panels for dependencies, resource consumption, and workload behavior. Graphs should use clear titles, correct units, readable time ranges, and meaningful legends. A request-rate graph should identify whether it represents requests per second or a cumulative count. A latency panel should state whether it shows an average, maximum, or percentile, because these measurements answer different questions. Dashboards should support filtering by environment, service, region, namespace, or deployment where those labels are available and bounded. Avoid adding every available metric simply because it exists; panels should answer a specific operational question. A production overview may show service health and SLO consumption, while a Kubernetes dashboard may focus on node pressure, pod readiness, restarts, and resource limits. An application team may need endpoint-level latency and dependency failures. Dashboard panels should link to related logs, traces, runbooks, and alert details so that detection can lead directly to investigation. Review dashboards during incident exercises and remove panels that are misleading, duplicated, or no longer useful."
+      },
+      {
+        "id": "stage-12-topic-2-section-8",
+        "title": "Thresholds, Baselines, and Anomaly Detection",
+        "content": "Monitoring conditions can be evaluated using fixed thresholds, historical baselines, or statistical anomaly methods. A fixed threshold is straightforward: alert when disk usage exceeds a defined percentage or when an error ratio remains above an acceptable limit. Fixed thresholds work well for clear resource limits and operational boundaries, but they can generate noise when normal behavior changes with traffic or time of day. A baseline compares current behavior with an established normal range, such as the typical request rate for a particular service during a known period. Anomaly detection uses statistical or machine-learning methods to identify unusual patterns, but its output depends on data quality, seasonality, and the model's assumptions. Teams should avoid treating every unusual metric as an incident. A sudden traffic increase may be a successful product launch, while a smaller error increase may be a serious payment failure. Thresholds should reflect customer impact, capacity limits, and service objectives. Use a pending duration or multi-window evaluation when short spikes should not page an engineer. Review thresholds after traffic growth, architecture changes, and incident learnings. Every alert condition should have a clear explanation of what is measured, why the condition matters, and what action the responder should take."
+      },
+      {
+        "id": "stage-12-topic-2-section-9",
+        "title": "Monitoring Reliability, Data Gaps, and Alert Quality",
+        "content": "Monitoring itself is a production dependency and must be operated reliably. A missing metric can mean that an application stopped reporting, a scrape target became unavailable, a network path failed, a collector queue filled, or a backend rejected incoming samples. Engineers should distinguish a true zero value from missing data. A service reporting zero errors is different from a service that has stopped exposing metrics entirely. Target availability, scrape duration, sample ingestion, collector errors, backend health, query latency, and rule evaluation failures should be monitored. Alert quality also matters. Alerts that fire too often, lack ownership, or provide no actionable context create alert fatigue. A good alert identifies the affected service, environment, severity, observed condition, duration, and relevant dashboard or runbook. Page only when a human response is required; route lower-priority symptoms to tickets or dashboards. Group related alerts to avoid sending many notifications for one underlying failure. Test notification delivery and escalation paths rather than assuming that a configured rule will reach the correct person. During incident reviews, identify whether missing telemetry, delayed alerts, noisy thresholds, or unclear ownership increased recovery time. Monitoring reliability and alert quality should be improved with the same discipline used for application reliability."
+      },
+      {
+        "id": "stage-12-topic-2-section-10",
+        "title": "A Practical Metrics Strategy for Production Services",
+        "content": "A production metrics strategy begins by identifying the service's critical operations and the decisions engineers need to make when those operations degrade. Define a small set of service-level measurements for request volume, successful completion, latency distribution, and resource saturation. Add domain-specific metrics such as payment authorization failures, order processing backlog, deployment duration, or message-consumer lag when they represent meaningful business or operational behavior. Select metric types correctly, use consistent units, and document labels with bounded value sets. Establish scrape intervals, retention, query access, dashboard ownership, and alert evaluation policies according to service criticality. Validate metric behavior during normal traffic, load tests, deployments, dependency failures, and recovery. Ensure that counter resets, missing targets, histogram bucket design, and aggregation behavior are understood before relying on percentile or rate calculations. Build alerts around customer impact and service objectives rather than arbitrary dashboard values. Track telemetry volume and cardinality so that monitoring cost remains predictable as the system scales. Finally, review metrics during post-incident analysis: remove measurements that do not support decisions, add missing evidence that would have shortened diagnosis, and update runbooks when operational thresholds or dependencies change. A successful metrics strategy is one that helps teams detect meaningful degradation early and take the correct action with confidence."
+      }
+    ]
+  },
+  {
+    "topicTitle": "Prometheus Architecture",
+    "sections": []
+  },
+  {
+    "topicTitle": "Prometheus Installation",
+    "sections": []
+  },
+  {
+    "topicTitle": "Exporters",
+    "sections": []
+  },
+  {
+    "topicTitle": "Scrape Configuration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Service Discovery",
+    "sections": []
+  },
+  {
+    "topicTitle": "PromQL Fundamentals",
+    "sections": []
+  },
+  {
+    "topicTitle": "Labels and Metric Types",
+    "sections": []
+  },
+  {
+    "topicTitle": "Recording Rules",
+    "sections": []
+  },
+  {
+    "topicTitle": "Alert Rules",
+    "sections": []
+  },
+  {
+    "topicTitle": "Alertmanager",
+    "sections": []
+  },
+  {
+    "topicTitle": "Grafana Architecture",
+    "sections": []
+  },
+  {
+    "topicTitle": "Data Sources",
+    "sections": []
+  },
+  {
+    "topicTitle": "Dashboard Creation",
+    "sections": []
+  },
+  {
+    "topicTitle": "Dashboard Variables",
+    "sections": []
+  },
+  {
+    "topicTitle": "SLI and SLO Monitoring",
+    "sections": []
+  },
+  {
+    "topicTitle": "Incident Alerting",
+    "sections": []
+  },
+  {
+    "topicTitle": "Troubleshooting",
+    "sections": []
+  },
+  {
+    "topicTitle": "Production Hands-on Lab",
+    "sections": []
+  }
+]

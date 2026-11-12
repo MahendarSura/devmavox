@@ -1,0 +1,4 @@
+"Tool","Topic","Path","Status","Details"
+"argocd","applications","C:\Users\mahen\OneDrive\devmavox\app\notes-cheat-sheets\troubleshooting\argocd\topics\applications.ts","FAILED","Section validation failed: 2. Application Manifest Structure"
+"argocd","applicationsets","C:\Users\mahen\OneDrive\devmavox\app\notes-cheat-sheets\troubleshooting\argocd\topics\applicationsets.ts","FAILED","Generated content is incomplete: minimum 7 sections required."
+"argocd","architecture","C:\Users\mahen\OneDrive\devmavox\app\notes-cheat-sheets\troubleshooting\argocd\topics\architecture.ts","FAILED","Section validation failed: 1. Introduction & Purpose"

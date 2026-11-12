@@ -1,0 +1,70 @@
+[
+  {
+    "topicTitle": "SonarQube Fundamentals",
+    "sections": []
+  },
+  {
+    "topicTitle": "SonarQube Architecture",
+    "sections": []
+  },
+  {
+    "topicTitle": "Installation and Setup",
+    "sections": []
+  },
+  {
+    "topicTitle": "Project Configuration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Scanner Configuration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Quality Profiles",
+    "sections": []
+  },
+  {
+    "topicTitle": "Quality Gates",
+    "sections": []
+  },
+  {
+    "topicTitle": "Bug Detection",
+    "sections": []
+  },
+  {
+    "topicTitle": "Vulnerability Analysis",
+    "sections": []
+  },
+  {
+    "topicTitle": "Code Smells and Maintainability",
+    "sections": []
+  },
+  {
+    "topicTitle": "Code Duplication",
+    "sections": []
+  },
+  {
+    "topicTitle": "Coverage Integration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Exclusions and Inclusions",
+    "sections": []
+  },
+  {
+    "topicTitle": "Pull Request Decoration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Jenkins Integration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Troubleshooting",
+    "sections": []
+  },
+  {
+    "topicTitle": "Production Hands-on Lab",
+    "sections": []
+  }
+]

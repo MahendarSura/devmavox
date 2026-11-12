@@ -1,0 +1,639 @@
+DEVMAVOX DUPLICATE QUESTION FULL DETAILS
+Total JSON groups: 117
+
+==================================================
+DUPLICATE GROUP: 1
+==================================================
+TOOL: Grafana
+CATEGORY: Basic Interview Questions
+NUMBER: 34
+QUESTION: How do you troubleshoot a Grafana dashboard showing no data?
+ANSWER: Verify the dashboard time range and selected data source. Inspect the panel query and test it in Explore. Check whether the data source is reachable and whether the underlying system is collecting data. For Prometheus, inspect target status and query the metric directly. Correct the source, query, or time-range issue.
+
+TOOL: Grafana
+CATEGORY: Intermediate Interview Questions
+NUMBER: 3
+QUESTION: How do you troubleshoot a Grafana dashboard showing No Data?
+ANSWER: Start by checking the dashboard time range, refresh interval, selected data source, and template variables. Open the affected panel, inspect its query, and use Query Inspector to review the request, response, errors, and returned series. Run the metric query directly in Prometheus to determine whether the metric exists independently of Grafana. Check label filters, metric names, time range, datasource selection, and transformations that may remove returned data. A dashboard may also reference a renamed metric after an application deployment. Test a simple query such as up to distinguish a datasource problem from a panel-specific problem. Correct the query or datasource and verify that the panel returns expected values over the incident time window.
+
+==================================================
+DUPLICATE GROUP: 2
+==================================================
+TOOL: Nexus
+CATEGORY: Intermediate Interview Questions
+NUMBER: 18
+QUESTION: How do you troubleshoot Docker image push failures to Nexus?
+ANSWER: Start by capturing the exact Docker client error and checking the registry URL, repository connector, TLS certificate, authentication, and repository permissions. Confirm that the Docker repository is hosted and configured for the expected image push workflow. Verify that the user has deployment permissions and that the target image name and tag follow the repository's expected path. Inspect Nexus request logs and storage capacity for upload failures. If a reverse proxy is used, check request size limits, timeouts, header forwarding, and TLS termination. Test with a small image and a controlled account. Confirm the pushed manifest and layers can be pulled back successfully before using the repository in a production pipeline.
+
+TOOL: Nexus
+CATEGORY: Troubleshooting
+NUMBER: 27
+QUESTION: How do you troubleshoot Docker image push failures to Nexus?
+ANSWER: Verify the Docker repository connector, registry hostname, TLS configuration, image tag, and user permissions. Check reverse proxy support for required request methods and large uploads. Inspect Nexus logs and Docker client output for the exact failure. For Nexus troubleshooting, collect the repository request details, Nexus application logs, task history, storage and blob-store status, and relevant client-side output. Compare the failing operation with a successful repository operation, make changes through supported administration procedures, and verify artifact integrity and client access after recovery. Document the root cause and preventive controls.
+
+==================================================
+DUPLICATE GROUP: 3
+==================================================
+TOOL: Docker
+CATEGORY: Basic Interview Questions
+NUMBER: 29
+QUESTION: What is a .dockerignore file?
+ANSWER: A .dockerignore file excludes files and directories from the build context sent to the builder. It commonly excludes version-control metadata, local dependencies, temporary files, test output, and secret files. A smaller build context improves build speed and reduces the chance of accidentally copying sensitive or irrelevant content into an image. Ignore patterns should be reviewed alongside Dockerfile COPY instructions.
+
+TOOL: Docker
+CATEGORY: Intermediate Interview Questions
+NUMBER: 6
+QUESTION: What is a .dockerignore file?
+ANSWER: A `.dockerignore` file specifies files and directories that should be excluded from the Docker build context. It reduces unnecessary data transfer and prevents accidental inclusion of sensitive or irrelevant files. For example, teams commonly exclude `.git`, local environment files, test reports, and `node_modules` when those files are not required by the build.
+
+==================================================
+DUPLICATE GROUP: 4
+==================================================
+TOOL: Git
+CATEGORY: Basic Interview Questions
+NUMBER: 35
+QUESTION: What is a .gitignore file?
+ANSWER: A .gitignore file tells Git which untracked files and directories should be ignored. It is commonly used for generated files, local environment settings, build output, temporary files, and dependency directories that should not be committed to the repository.
+
+For example, a Java project may ignore target build output, while a Node.js project may ignore node_modules and local environment files. This keeps the repository cleaner and reduces the risk of accidentally sharing machine-specific or sensitive files.
+
+A .gitignore rule does not automatically stop tracking a file that Git already tracks. If a sensitive file has already been committed, developers must remove it from tracking and address any exposed credentials separately.
+
+TOOL: Git
+CATEGORY: Intermediate Interview Questions
+NUMBER: 23
+QUESTION: What is a .gitignore file?
+ANSWER: A .gitignore file defines untracked files and directories that Git should normally ignore. It is used to exclude generated output, local configuration, caches, and temporary files from source control. It does not automatically stop tracking a file that was already committed; that requires removing it from the index while retaining it locally when appropriate.
+
+==================================================
+DUPLICATE GROUP: 5
+==================================================
+TOOL: Kubernetes
+CATEGORY: Basic Interview Questions
+NUMBER: 31
+QUESTION: What is a CronJob in Kubernetes?
+ANSWER: A CronJob creates Jobs on a recurring schedule using cron-style syntax. It is useful for periodic tasks such as reports, cleanup operations, and scheduled data processing. Configuration includes the schedule and policies controlling concurrency and missed schedules. Teams should make jobs safe to retry, monitor failed executions, and set history limits to prevent unnecessary accumulation of completed Job objects.
+
+TOOL: Kubernetes
+CATEGORY: Intermediate Interview Questions
+NUMBER: 6
+QUESTION: What is a CronJob in Kubernetes?
+ANSWER: A CronJob creates Jobs on a recurring schedule using a cron-style schedule expression. Teams use it for scheduled backups, cleanup tasks, reports, and periodic maintenance. For example, a CronJob can run a database backup script every night, with concurrency and history settings controlling how scheduled executions are handled.
+
+==================================================
+DUPLICATE GROUP: 6
+==================================================
+TOOL: Docker
+CATEGORY: Basic Interview Questions
+NUMBER: 19
+QUESTION: What is a Docker volume?
+ANSWER: A Docker volume is a managed storage location whose lifecycle is independent of an individual container. Volumes are commonly used for databases, uploads, and other data that must survive container replacement. Docker manages the volume mount location, and the same volume can be attached to a replacement container. Backups, permissions, and recovery procedures are still required because a volume alone is not a backup.
+
+TOOL: Docker
+CATEGORY: Intermediate Interview Questions
+NUMBER: 18
+QUESTION: What is a Docker volume?
+ANSWER: A Docker volume is a Docker-managed storage location that persists independently of an individual container's writable layer. Volumes are useful for database files, application state, and shared data. For example, a database container can store its data in a named volume so replacing the container does not automatically remove the database files.
+
+==================================================
+DUPLICATE GROUP: 7
+==================================================
+TOOL: Jenkins
+CATEGORY: Basic Interview Questions
+NUMBER: 34
+QUESTION: What is a Jenkins Label?
+ANSWER: A Jenkins label identifies a controller or agent node, or a group of nodes, for scheduling purposes. A pipeline can request an agent using a label that represents a capability such as Linux, Windows, Docker, or a particular toolchain. Jenkins schedules the workload on an eligible node matching the label expression. Accurate labels help route builds to the correct operating system and execution environment.
+
+TOOL: Jenkins
+CATEGORY: Intermediate Interview Questions
+NUMBER: 6
+QUESTION: What is a Jenkins label?
+ANSWER: A label is a name assigned to one or more Jenkins nodes so jobs can select suitable execution environments. A pipeline can use an agent label such as linux, docker, or maven to request a matching agent. Labels help separate workloads and ensure builds run on machines with the required operating system and tools.
+
+==================================================
+DUPLICATE GROUP: 8
+==================================================
+TOOL: Jenkins
+CATEGORY: Basic Interview Questions
+NUMBER: 11
+QUESTION: What is a Jenkins Pipeline?
+ANSWER: A Jenkins Pipeline is a collection of automated steps that define the software delivery workflow. It can include source checkout, compilation, testing, security scanning, packaging, artifact publishing, and deployment. Pipeline execution can be controlled through stages, conditions, parallel branches, and post-build actions. Storing the pipeline definition in source control helps teams review, version, and maintain their CI/CD process.
+
+TOOL: Jenkins
+CATEGORY: Intermediate Interview Questions
+NUMBER: 1
+QUESTION: What is a Jenkins Pipeline?
+ANSWER: A Jenkins Pipeline is a defined sequence of stages and steps that automates software delivery activities such as checkout, build, test, security scanning, and deployment. It can be written using Declarative or Scripted Pipeline syntax in a Jenkinsfile. For example, a Java application pipeline can check out Git code, run Maven tests, build a JAR, create a Docker image, and deploy it to Kubernetes.
+
+==================================================
+DUPLICATE GROUP: 9
+==================================================
+TOOL: Jenkins
+CATEGORY: Basic Interview Questions
+NUMBER: 32
+QUESTION: What is a Jenkins Shared Library?
+ANSWER: A Jenkins Shared Library is reusable pipeline code that can be maintained separately and imported by multiple Jenkinsfiles. It helps organizations standardize common operations such as building applications, running tests, publishing artifacts, and deploying services. Shared libraries reduce duplicated pipeline logic and make centralized improvements possible. They should be version-controlled, reviewed, and tested because a change to shared code can affect many pipelines.
+
+TOOL: Jenkins
+CATEGORY: Intermediate Interview Questions
+NUMBER: 9
+QUESTION: What is a Jenkins shared library?
+ANSWER: A Jenkins Shared Library provides reusable pipeline code that can be shared across multiple repositories and jobs. It commonly contains global variables, reusable steps, and supporting Groovy classes. For example, an organization can create a standard deployment function that handles image tagging, approvals, and Kubernetes rollout checks for many application pipelines.
+
+==================================================
+DUPLICATE GROUP: 10
+==================================================
+TOOL: Jenkins
+CATEGORY: Basic Interview Questions
+NUMBER: 12
+QUESTION: What is a Jenkinsfile?
+ANSWER: A Jenkinsfile is a text file that defines a Jenkins Pipeline using the Pipeline syntax. It is commonly stored in the root directory of an application's source-code repository. When Jenkins checks out the repository, it can read the Jenkinsfile and execute the defined workflow. Keeping pipeline definitions alongside application code makes pipeline changes traceable and allows teams to review them through normal code-review practices.
+
+TOOL: Jenkins
+CATEGORY: Intermediate Interview Questions
+NUMBER: 3
+QUESTION: What is a Jenkinsfile?
+ANSWER: A Jenkinsfile is a text file that defines a Jenkins Pipeline as code. It is usually stored in the application's source-code repository so pipeline changes can be reviewed and version-controlled alongside application changes. A Jenkinsfile can define agents, environment variables, stages, post-build actions, and deployment steps.
+
+==================================================
+DUPLICATE GROUP: 11
+==================================================
+TOOL: Kubernetes
+CATEGORY: Basic Interview Questions
+NUMBER: 30
+QUESTION: What is a Job in Kubernetes?
+ANSWER: A Job creates Pods that run a task to completion and tracks whether the required number of successful completions has occurred. Jobs are suitable for one-off operations such as data processing, migrations, and batch tasks. Retry behavior, parallelism, completion count, and deadlines can be configured. The task should handle retries safely because an interrupted or failed Pod may run again.
+
+TOOL: Kubernetes
+CATEGORY: Intermediate Interview Questions
+NUMBER: 5
+QUESTION: What is a Job in Kubernetes?
+ANSWER: A Job creates one or more Pods and tracks successful completion of a finite task. It is useful for database migrations, batch processing, data imports, and one-time administrative operations. A Job can define retry behavior and completion requirements so Kubernetes can manage task execution.
+
+==================================================
+DUPLICATE GROUP: 12
+==================================================
+TOOL: Git
+CATEGORY: Basic Interview Questions
+NUMBER: 26
+QUESTION: What is a merge conflict in Git?
+ANSWER: A merge conflict occurs when Git cannot automatically combine changes from different branches or commits. This commonly happens when two developers modify the same lines of a file in different ways, or when one change deletes a file that another change modifies.
+
+Git marks the conflicting sections in the affected files and pauses the integration until a developer decides which content should remain. The developer reviews the changes, edits the file to the correct final version, stages the resolved file, and completes the merge.
+
+For example, two developers may update the same application configuration value differently. The team must understand the intended configuration before selecting or combining the changes. Simply removing conflict markers without checking the logic can introduce defects.
+
+TOOL: Git
+CATEGORY: Intermediate Interview Questions
+NUMBER: 3
+QUESTION: What is a merge conflict in Git?
+ANSWER: A merge conflict occurs when Git cannot automatically combine changes, commonly because different branches modify overlapping lines or incompatible parts of a file. Git marks the conflicted sections so a developer can review and choose the correct final content. After resolving the file, the developer stages it and completes the merge or rebase operation.
+
+==================================================
+DUPLICATE GROUP: 13
+==================================================
+TOOL: Docker
+CATEGORY: Basic Interview Questions
+NUMBER: 28
+QUESTION: What is a multi-stage Docker build?
+ANSWER: A multi-stage build uses multiple FROM instructions so build tools and intermediate artifacts can be separated from the final runtime image. For example, a compiler and source tree can exist in a builder stage, while only the compiled binary is copied into a smaller runtime stage. This reduces final image size and attack surface and avoids shipping unnecessary development dependencies.
+
+TOOL: Docker
+CATEGORY: Intermediate Interview Questions
+NUMBER: 3
+QUESTION: What is a multi-stage Docker build?
+ANSWER: A multi-stage build uses multiple FROM statements in one Dockerfile so build tools and intermediate files can remain outside the final image. The final stage copies only the required runtime artifacts from an earlier stage. For example, a Java application can be compiled in a Maven builder image and copied as a JAR into a smaller JRE runtime image.
+
+==================================================
+DUPLICATE GROUP: 14
+==================================================
+TOOL: Kubernetes
+CATEGORY: Basic Interview Questions
+NUMBER: 20
+QUESTION: What is a PersistentVolumeClaim?
+ANSWER: A PersistentVolumeClaim is a request for storage by a user or workload. It specifies requirements such as capacity, access mode, and optionally a StorageClass. Kubernetes binds the claim to a suitable PersistentVolume or triggers dynamic provisioning when configured. Pods reference PVCs to mount persistent storage, and a Pending claim often indicates a mismatch in storage class, capacity, access mode, or provisioner.
+
+TOOL: Kubernetes
+CATEGORY: Intermediate Interview Questions
+NUMBER: 19
+QUESTION: What is a PersistentVolumeClaim?
+ANSWER: A PersistentVolumeClaim is a request for storage by a Kubernetes workload. It specifies requirements such as capacity and access modes, and Kubernetes binds it to a suitable PersistentVolume or provisions storage dynamically through a StorageClass. Pods reference the claim rather than directly depending on a particular storage device.
+
+==================================================
+DUPLICATE GROUP: 15
+==================================================
+TOOL: Terraform
+CATEGORY: Basic Interview Questions
+NUMBER: 13
+QUESTION: What is a Terraform backend?
+ANSWER: A Terraform backend defines where Terraform stores its state and how state operations are handled. Terraform supports local state storage as well as remote backends that store state in an external system.
+
+For example, an organization can configure an S3-based backend to store Terraform state centrally. This allows team members and CI/CD pipelines to work with the same infrastructure state instead of maintaining separate local copies.
+
+A backend is important for collaboration and operational safety. Teams should configure appropriate access permissions, encryption, backup or recovery arrangements, and state locking where supported by the selected backend.
+
+TOOL: Terraform
+CATEGORY: Intermediate Interview Questions
+NUMBER: 2
+QUESTION: What is a Terraform backend?
+ANSWER: A backend determines where Terraform stores state and how operations such as state locking are handled. The local backend stores state on the local filesystem, while remote backends can store state centrally for team collaboration. A production team commonly uses an approved remote backend to avoid separate developers applying conflicting local state.
+
+==================================================
+DUPLICATE GROUP: 16
+==================================================
+TOOL: Terraform
+CATEGORY: Basic Interview Questions
+NUMBER: 17
+QUESTION: What is a Terraform data source?
+ANSWER: A Terraform data source allows Terraform to read information about an existing object or external system without managing that object as a resource. It is useful when infrastructure configuration depends on information that already exists.
+
+For example, a Terraform project may need to find an existing AWS VPC or retrieve information about an approved AMI. An AWS data source can query the provider for that information and expose the result to other configuration blocks.
+
+A data source reads information rather than creating the object it describes. This helps teams connect newly provisioned infrastructure with existing shared resources.
+
+TOOL: Terraform
+CATEGORY: Intermediate Interview Questions
+NUMBER: 18
+QUESTION: What is a Terraform data source?
+ANSWER: A data source reads information about an existing object or external system without declaring that Terraform should create that object. For example, an AWS data source can look up an existing VPC or an approved AMI. The returned information can then be used as input to resources defined in the configuration.
+
+==================================================
+DUPLICATE GROUP: 17
+==================================================
+TOOL: Terraform
+CATEGORY: Basic Interview Questions
+NUMBER: 21
+QUESTION: What is a Terraform module?
+ANSWER: A Terraform module is a collection of Terraform configuration files organized together to manage related infrastructure. A module can contain resources, variables, outputs, and other module references.
+
+Modules help teams reuse common infrastructure patterns instead of copying the same configuration into many projects. For example, an organization can create a reusable VPC module that defines subnets, route tables, and gateways according to its approved network design.
+
+A root module is the main working directory from which Terraform runs. It can call child modules to organize larger infrastructure projects into smaller and easier-to-maintain components.
+
+TOOL: Terraform
+CATEGORY: Intermediate Interview Questions
+NUMBER: 14
+QUESTION: What is a Terraform module?
+ANSWER: A Terraform module is a collection of Terraform configuration files that work together as a reusable unit. The root module is the main working directory, while child modules can encapsulate common infrastructure patterns. For example, a networking module can create VPCs, subnets, route tables, and related resources consistently across environments.
+
+==================================================
+DUPLICATE GROUP: 18
+==================================================
+TOOL: Terraform
+CATEGORY: Basic Interview Questions
+NUMBER: 6
+QUESTION: What is a Terraform provider?
+ANSWER: A Terraform provider is a plugin that allows Terraform to communicate with an external platform or service. Providers contain the functionality required to create, read, update, and delete resources through that platform's API.
+
+For example, the AWS provider allows Terraform to manage AWS resources such as EC2 instances, VPCs, S3 buckets, and security groups. The Kubernetes provider allows Terraform to manage supported Kubernetes resources.
+
+A provider is configured in Terraform files, and Terraform installs the required provider plugin during initialization. Provider versions should be controlled so that infrastructure automation behaves consistently across developer machines and CI/CD systems.
+
+TOOL: Terraform
+CATEGORY: Intermediate Interview Questions
+NUMBER: 11
+QUESTION: What is a Terraform provider?
+ANSWER: A provider is a plugin that allows Terraform to interact with an infrastructure platform or service through its API. Providers expose resources and data sources for systems such as AWS, Azure, Kubernetes, and GitHub. Provider configuration can include authentication, region, and version constraints.
+
+==================================================
+DUPLICATE GROUP: 19
+==================================================
+TOOL: AWS
+CATEGORY: Basic Interview Questions
+NUMBER: 26
+QUESTION: What is an Application Load Balancer?
+ANSWER: An Application Load Balancer operates at the application layer and supports HTTP and HTTPS routing. It can route requests using hostnames, URL paths, and other supported conditions, making it useful for microservices and multiple web applications. It forwards traffic to target groups and uses health checks to identify healthy targets. Teams commonly configure TLS listeners and controlled communication between the load balancer and backend services.
+
+TOOL: AWS
+CATEGORY: Intermediate Interview Questions
+NUMBER: 11
+QUESTION: What is an Application Load Balancer?
+ANSWER: An Application Load Balancer operates at the HTTP and HTTPS application layer and routes requests using rules such as host headers, URL paths, and HTTP methods. It supports features such as TLS termination, redirects, and integration with target groups. For example, requests to api.example.com can be routed to an API target group while requests to shop.example.com go to a frontend target group.
+
+==================================================
+DUPLICATE GROUP: 20
+==================================================
+TOOL: AWS
+CATEGORY: Basic Interview Questions
+NUMBER: 27
+QUESTION: What is an Auto Scaling Group?
+ANSWER: An EC2 Auto Scaling Group maintains a desired number of EC2 instances and can adjust capacity within configured minimum and maximum limits. Scaling policies can respond to metrics such as average CPU utilization or application load. The group can replace instances that fail configured health checks and distribute capacity across Availability Zones. A good design includes tested startup procedures, health checks, and suitable scaling thresholds.
+
+TOOL: AWS
+CATEGORY: Intermediate Interview Questions
+NUMBER: 9
+QUESTION: What is an Auto Scaling group?
+ANSWER: An EC2 Auto Scaling group maintains a desired number of instances and can add or remove instances based on scaling policies and health checks. It improves availability and helps match compute capacity to application demand. For example, a web application can scale from two to six EC2 instances when CPU utilization or an appropriate load metric increases.
+
+==================================================
+DUPLICATE GROUP: 21
+==================================================
+TOOL: AWS
+CATEGORY: Basic Interview Questions
+NUMBER: 5
+QUESTION: What is an AWS Region?
+ANSWER: An AWS Region is a separate geographic area where AWS operates infrastructure across multiple Availability Zones. Resources such as EC2 instances and many databases are created in a selected Region. Organizations choose Regions based on latency, compliance, service availability, and cost. Multi-Region architectures can support disaster recovery, but require deliberate planning for data replication, DNS, application dependencies, and failover.
+
+TOOL: AWS
+CATEGORY: Intermediate Interview Questions
+NUMBER: 38
+QUESTION: What is an AWS Region?
+ANSWER: An AWS Region is a separate geographic area containing multiple Availability Zones. Choosing a Region affects latency, service availability, data residency, and cost. Organizations commonly deploy applications near their users while considering compliance and disaster recovery requirements.
+
+==================================================
+DUPLICATE GROUP: 22
+==================================================
+TOOL: AWS
+CATEGORY: Basic Interview Questions
+NUMBER: 21
+QUESTION: What is an EBS snapshot?
+ANSWER: An EBS snapshot is a point-in-time backup of an EBS volume stored by AWS. Snapshots can be used to restore data, create new volumes, and support reusable machine images. Subsequent snapshots are incremental, storing changed blocks rather than duplicating all data. Applications with active databases may require application-aware consistency steps before snapshots are taken.
+
+TOOL: AWS
+CATEGORY: Intermediate Interview Questions
+NUMBER: 7
+QUESTION: What is an EBS snapshot?
+ANSWER: An EBS snapshot is a point-in-time backup of an EBS volume stored and managed by AWS. Snapshots are incremental after the first snapshot, so subsequent snapshots generally store only changed blocks. For example, a production database volume can be backed up using scheduled snapshots before maintenance, and a new volume can later be created from a suitable snapshot.
+
+==================================================
+DUPLICATE GROUP: 23
+==================================================
+TOOL: AWS
+CATEGORY: Basic Interview Questions
+NUMBER: 24
+QUESTION: What is an RDS Read Replica?
+ANSWER: An RDS Read Replica is a replication target that can serve read-only queries for supported database engines and configurations. It can help scale read-heavy workloads by moving reporting or other read traffic away from the primary database. Replication is generally asynchronous, so a replica may lag behind the source. Applications must consider replication delay before sending consistency-sensitive reads to a replica.
+
+TOOL: AWS
+CATEGORY: Intermediate Interview Questions
+NUMBER: 26
+QUESTION: What is an RDS read replica?
+ANSWER: An RDS read replica is a read-only database copy that receives changes from a source database through replication. It helps scale read-heavy workloads and can be promoted in supported recovery scenarios, but replication lag and engine-specific behavior must be considered. For example, an application can send reporting queries to a read replica while transactional writes continue against the primary database.
+
+==================================================
+DUPLICATE GROUP: 24
+==================================================
+TOOL: Docker
+CATEGORY: Basic Interview Questions
+NUMBER: 30
+QUESTION: What is Docker Compose?
+ANSWER: Docker Compose is a tool for defining and running multi-container applications using a YAML configuration file. A Compose file can describe services, networks, volumes, environment settings, and dependencies. Developers use it to start a local stack containing an API, database, and cache through a repeatable workflow. Compose is especially useful for development and testing environments.
+
+TOOL: Docker
+CATEGORY: Intermediate Interview Questions
+NUMBER: 12
+QUESTION: What is Docker Compose?
+ANSWER: Docker Compose is a tool for defining and managing multi-container applications using a Compose YAML file. It describes services, networks, volumes, environment settings, and dependencies. For example, a developer can define a web application, database, and cache in one Compose project and start them together with `docker compose up`.
+
+==================================================
+DUPLICATE GROUP: 25
+==================================================
+TOOL: Docker
+CATEGORY: Basic Interview Questions
+NUMBER: 15
+QUESTION: What is Docker port mapping?
+ANSWER: Port mapping publishes a container port on the host so clients can reach a service through the host network. The -p hostPort:containerPort option configures this mapping, such as -p 8080:80. The application inside the container must listen on the appropriate port and interface. Publishing a port can expose a service beyond the host, so firewall rules and bind-address choices should be reviewed.
+
+TOOL: Docker
+CATEGORY: Intermediate Interview Questions
+NUMBER: 16
+QUESTION: What is Docker port mapping?
+ANSWER: Port mapping publishes a container port through a port on the Docker host. For example, `docker run -p 8080:80 nginx` maps host port 8080 to container port 80. Engineers use port mapping to expose containerized services to clients while controlling which host interfaces and ports are published.
+
+==================================================
+DUPLICATE GROUP: 26
+==================================================
+TOOL: Docker
+CATEGORY: Basic Interview Questions
+NUMBER: 18
+QUESTION: What is host networking in Docker?
+ANSWER: Host networking allows a container to use the host's network namespace instead of receiving a separate isolated network namespace. This can reduce network translation overhead, but it also reduces network isolation and changes how ports are handled. Port publishing is not used in the usual way with host mode. It should be selected only when the workload has a clear need and the security implications are understood.
+
+TOOL: Docker
+CATEGORY: Intermediate Interview Questions
+NUMBER: 15
+QUESTION: What is host networking in Docker?
+ANSWER: Host networking allows a container to use the host's network namespace instead of receiving a separate container network namespace. This removes normal bridge-network isolation and can improve certain networking use cases, but it introduces port conflicts and security considerations. It should be selected only when the application genuinely requires host network behavior.
+
+==================================================
+DUPLICATE GROUP: 27
+==================================================
+TOOL: AWS
+CATEGORY: Basic Interview Questions
+NUMBER: 18
+QUESTION: What is S3 versioning?
+ANSWER: S3 Versioning preserves multiple versions of an object when the same key is overwritten or deleted. It helps recover from accidental changes and provides protection against some forms of user error. Versioning does not replace a complete backup strategy because permissions, lifecycle rules, and malicious deletion still require consideration. Teams often combine versioning with controlled deletion permissions and lifecycle management.
+
+TOOL: AWS
+CATEGORY: Intermediate Interview Questions
+NUMBER: 22
+QUESTION: What is S3 versioning?
+ANSWER: S3 versioning stores multiple versions of an object in a bucket instead of simply replacing the previous object version. It helps recover from accidental deletion or overwrite, although lifecycle rules and delete-marker behavior must be understood. For example, a team can restore an earlier application artifact or configuration file after an incorrect upload.
+
+==================================================
+DUPLICATE GROUP: 28
+==================================================
+TOOL: Terraform
+CATEGORY: Basic Interview Questions
+NUMBER: 11
+QUESTION: What is Terraform state?
+ANSWER: Terraform state is information maintained by Terraform to remember the infrastructure resources it manages and their relationship with the configuration. It maps Terraform resource addresses to real infrastructure objects and stores information needed for future planning and updates.
+
+When Terraform creates an EC2 instance, it records the resource information in the state. During a later plan, Terraform uses this information to understand which real resource corresponds to the resource declared in the configuration.
+
+State is important because Terraform uses it to determine what needs to change. It can contain sensitive information, so access must be controlled and state storage must be protected.
+
+TOOL: Terraform
+CATEGORY: Intermediate Interview Questions
+NUMBER: 1
+QUESTION: What is Terraform state?
+ANSWER: Terraform state is a record that maps Terraform resource addresses in configuration to real infrastructure objects. Terraform uses it to understand what it manages and to calculate changes during planning. State can contain sensitive values, so it must be stored securely with appropriate access controls and encryption.
+
+==================================================
+DUPLICATE GROUP: 29
+==================================================
+TOOL: Docker
+CATEGORY: Basic Interview Questions
+NUMBER: 5
+QUESTION: What is the difference between a Docker image and a container?
+ANSWER: An image is the packaged template, while a container is an instance created from that image. Multiple containers can run from the same image with separate runtime state and configuration. The image is normally immutable, whereas a running container has a writable layer for changes made during execution. Rebuilding and redeploying an image is generally more reliable than manually modifying a running container.
+
+TOOL: Docker
+CATEGORY: Intermediate Interview Questions
+NUMBER: 7
+QUESTION: What is the difference between a Docker image and a container?
+ANSWER: A Docker image is an immutable template containing application files, dependencies, and configuration used to create containers. A container is a running or stopped instance created from an image with its own writable layer and runtime configuration. Multiple containers can be created from the same image while maintaining separate runtime state.
+
+==================================================
+DUPLICATE GROUP: 30
+==================================================
+TOOL: Terraform
+CATEGORY: Basic Interview Questions
+NUMBER: 18
+QUESTION: What is the difference between a Terraform resource and a data source?
+ANSWER: A Terraform resource is used to create and manage an infrastructure object. Terraform records the resource in its state and can plan changes or deletion based on the configuration.
+
+A data source is used to read information about an existing object or external system. It does not normally create or take ownership of the object it reads.
+
+For example, an AWS EC2 resource can create a new virtual machine, while an AWS AMI data source can look up an approved machine image that already exists. The resource can then use the image information returned by the data source when creating the instance.
+
+TOOL: Terraform
+CATEGORY: Intermediate Interview Questions
+NUMBER: 19
+QUESTION: What is the difference between a Terraform resource and a data source?
+ANSWER: A resource declares an object that Terraform manages through create, update, and delete operations. A data source reads information about an existing object or external system without managing its lifecycle. A configuration might create an EC2 instance resource while reading an existing VPC through a data source.
+
+==================================================
+DUPLICATE GROUP: 31
+==================================================
+TOOL: Docker
+CATEGORY: Basic Interview Questions
+NUMBER: 21
+QUESTION: What is the difference between a volume and a bind mount?
+ANSWER: A named volume is managed by Docker and is generally preferred for persistent container data, while a bind mount maps a particular host path into the container. Volumes are easier to manage consistently across Docker environments, whereas bind mounts provide direct access to known host files. The choice depends on whether the application needs Docker-managed storage or deliberate access to host files.
+
+TOOL: Docker
+CATEGORY: Intermediate Interview Questions
+NUMBER: 19
+QUESTION: What is the difference between a volume and a bind mount?
+ANSWER: A named volume is managed by Docker and is suitable for persistent application data, while a bind mount maps a specific host filesystem path into a container. Bind mounts are commonly used during development to expose source code or configuration files. Production data storage often uses managed volumes or an appropriate external storage service rather than relying on arbitrary host paths.
+
+==================================================
+DUPLICATE GROUP: 32
+==================================================
+TOOL: AWS
+CATEGORY: Basic Interview Questions
+NUMBER: 14
+QUESTION: What is the difference between an IAM user and an IAM role?
+ANSWER: An IAM user is an identity that can have long-term credentials such as a password or access keys. An IAM role is an identity with permissions that can be assumed to obtain temporary credentials. Roles are commonly used by EC2 applications, CI/CD systems, and federated employees. Using roles reduces the need to distribute permanent access keys across servers and automation pipelines.
+
+TOOL: AWS
+CATEGORY: Intermediate Interview Questions
+NUMBER: 1
+QUESTION: What is the difference between an IAM user and an IAM role?
+ANSWER: An IAM user represents a long-term identity, while an IAM role provides temporary credentials that are assumed by trusted users, applications, or AWS services. Roles are preferred for EC2 applications because the instance can obtain temporary credentials through an instance profile instead of storing access keys. For example, an EC2-hosted application can assume a role with permission to read a specific S3 bucket.
+
+==================================================
+DUPLICATE GROUP: 33
+==================================================
+TOOL: Jenkins
+CATEGORY: Basic Interview Questions
+NUMBER: 15
+QUESTION: What is the difference between Declarative and Scripted Pipeline?
+ANSWER: Declarative Pipeline uses a structured syntax with predefined sections and validation rules, making common CI/CD workflows easier to read and maintain. Scripted Pipeline provides more direct Groovy programming flexibility for advanced or dynamic workflows. Declarative pipelines are generally a good starting point for standard delivery processes, while Scripted pipelines may be useful for specialized logic. Both execute through Jenkins Pipeline infrastructure and can use shared pipeline capabilities.
+
+TOOL: Jenkins
+CATEGORY: Intermediate Interview Questions
+NUMBER: 2
+QUESTION: What is the difference between Declarative and Scripted Pipeline?
+ANSWER: Declarative Pipeline uses a structured syntax with sections such as pipeline, agent, stages, and steps. Scripted Pipeline uses Groovy-based programming syntax and provides more flexibility for complex logic. Declarative is generally easier to maintain for standard CI/CD workflows, while Scripted can be useful for advanced dynamic pipeline behavior.
+
+==================================================
+DUPLICATE GROUP: 34
+==================================================
+TOOL: Docker
+CATEGORY: Basic Interview Questions
+NUMBER: 12
+QUESTION: What is the difference between docker run and docker start?
+ANSWER: docker run creates a new container from an image and starts it, while docker start starts an existing stopped container. Running docker run repeatedly can create multiple containers unless a fixed name causes a conflict. docker start reuses the existing container configuration and writable layer. Engineers can use docker ps -a to inspect stopped containers before deciding whether to restart or recreate one.
+
+TOOL: Docker
+CATEGORY: Intermediate Interview Questions
+NUMBER: 10
+QUESTION: What is the difference between docker run and docker start?
+ANSWER: `docker run` creates a new container from an image and starts it, while `docker start` starts an existing stopped container. Use `docker run` when creating a new container with its required configuration, and `docker start` when restarting a previously created container. Commands such as `docker ps -a` help identify existing stopped containers.
+
+==================================================
+DUPLICATE GROUP: 35
+==================================================
+TOOL: Git
+CATEGORY: Basic Interview Questions
+NUMBER: 24
+QUESTION: What is the difference between git fetch and git pull?
+ANSWER: git fetch downloads updates from a remote repository and updates remote-tracking references, but it does not automatically integrate those changes into the current local branch.
+
+git pull normally performs a fetch and then integrates the fetched changes into the current branch through merge or a configured rebase operation. Therefore, pull can change the current branch and may produce merge conflicts.
+
+For example, an engineer investigating changes in origin/main can first run git fetch origin and review the incoming commits. Once the changes are understood, the engineer can choose to merge or rebase them instead of immediately integrating them through git pull.
+
+TOOL: Git
+CATEGORY: Intermediate Interview Questions
+NUMBER: 1
+QUESTION: What is the difference between git fetch and git pull?
+ANSWER: git fetch downloads new commits and references from a remote repository without automatically merging them into the current branch. git pull performs a fetch and then integrates the fetched changes using the configured merge or rebase behavior. Engineers often use fetch first to inspect remote changes before deciding how to integrate them.
+
+==================================================
+DUPLICATE GROUP: 36
+==================================================
+TOOL: Git
+CATEGORY: Basic Interview Questions
+NUMBER: 34
+QUESTION: What is the difference between git reset and git revert?
+ANSWER: git reset moves the current branch reference to another commit and may change the staging area or working directory depending on the selected option. It is commonly used to adjust local history before changes are shared.
+
+git revert creates a new commit that reverses the effect of an earlier commit. It preserves the existing commit history and is generally safer for changes that have already been shared with a team.
+
+For example, if a developer has made an incorrect local commit that has not been pushed, reset may be suitable. If an incorrect commit has already reached a shared production branch, revert is usually preferred because it records the correction without rewriting shared history.
+
+TOOL: Git
+CATEGORY: Intermediate Interview Questions
+NUMBER: 9
+QUESTION: What is the difference between git reset and git revert?
+ANSWER: git reset moves the current branch reference and can change the staging area or working tree depending on the selected mode. git revert creates a new commit that reverses an earlier commit. Revert is usually preferred for undoing changes already shared with a team, while reset is commonly used for local history cleanup.
+
+==================================================
+DUPLICATE GROUP: 37
+==================================================
+TOOL: Git
+CATEGORY: Basic Interview Questions
+NUMBER: 18
+QUESTION: What is the difference between git switch and git checkout?
+ANSWER: Both git switch and git checkout can be used to change branches. However, git switch was introduced to provide a more focused command for branch switching and branch creation.
+
+The older git checkout command supports several different operations, including switching branches and restoring files. Because it performs multiple types of tasks, its behavior can be less obvious to beginners. Git provides git restore for many file-restoration operations.
+
+For example, git switch main changes to the main branch, while git switch -c feature/payment creates and switches to a new branch. Using the focused commands makes everyday Git operations easier to understand.
+
+TOOL: Git
+CATEGORY: Intermediate Interview Questions
+NUMBER: 38
+QUESTION: What is the difference between git switch and git checkout?
+ANSWER: git switch is a command focused on switching branches and creating branches, while git checkout is an older multi-purpose command used for branch switching and restoring files. Using switch for branch operations and restore for file restoration makes commands clearer. Both remain useful in modern Git workflows.
+
+==================================================
+DUPLICATE GROUP: 38
+==================================================
+TOOL: Terraform
+CATEGORY: Basic Interview Questions
+NUMBER: 29
+QUESTION: What is the difference between Terraform workspaces and separate environment directories?
+ANSWER: Terraform workspaces use the same configuration directory with different named state instances. They can be useful when environments share the same infrastructure structure but need separate state.
+
+Separate environment directories maintain different configuration directories for environments such as development, testing, and production. This approach allows each environment to have its own configuration files and potentially different infrastructure definitions.
+
+For example, a small project may use workspaces for similar test environments. A large organization may prefer separate directories or repositories when production requires different network rules, resource sizes, approval controls, or account boundaries.
+
+TOOL: Terraform
+CATEGORY: Intermediate Interview Questions
+NUMBER: 25
+QUESTION: What is the difference between Terraform workspaces and separate environment directories?
+ANSWER: Workspaces separate state instances while reusing the same configuration, whereas separate environment directories can hold distinct configuration, variables, and backend settings. Workspaces can be convenient for similar environments, while separate directories or root modules provide clearer separation for environments with significantly different requirements. The correct approach depends on the organization's isolation and governance model.
+
+==================================================
+DUPLICATE GROUP: 39
+==================================================
+TOOL: Jenkins
+CATEGORY: Basic Interview Questions
+NUMBER: 23
+QUESTION: What is the Jenkins Workspace?
+ANSWER: A Jenkins workspace is a directory on the controller or agent where a job performs its operations. It commonly contains checked-out source code, temporary build files, test output, and generated artifacts during execution. Each job uses a workspace associated with the node where its build runs. Workspace cleanup and storage management are important because accumulated files can consume disk space and affect future builds.
+
+TOOL: Jenkins
+CATEGORY: Intermediate Interview Questions
+NUMBER: 29
+QUESTION: What is the Jenkins workspace?
+ANSWER: A Jenkins workspace is the directory where a job checks out source code and performs build operations on its assigned node. It can contain source files, temporary files, test reports, and generated artifacts. Workspace cleanup and correct file permissions help prevent stale files, disk exhaustion, and cross-build contamination.
+
+========== FINAL TOTALS ==========
+Duplicate groups: 39
+Affected records: 78

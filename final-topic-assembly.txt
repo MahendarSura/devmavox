@@ -1,0 +1,18 @@
+ 1631: // Expanded stage-specific learning syllabus. Existing stage IDs and simulator remain intact.
+ 1632: stages.forEach((stage) => {
+ 1633:   stage.topics = buildCicdStageTopics(stage.id).map((topic) => {
+ 1634:     const lesson = getCicdTopicLesson(stage.id, topic.title);
+ 1635: 
+ 1636:     if (!lesson) {
+ 1637:       throw new Error(
+ 1638:         `Missing CI/CD lesson for stage ${stage.id}: ${topic.title}`
+ 1639:       );
+ 1640:     }
+ 1641: 
+ 1642:     return {
+ 1643:       ...topic,
+ 1644:       ...lesson,
+ 1645:     };
+ 1646:   });
+ 1647: });
+ 1648: export default function CicdPipelineVisualizerPage() {

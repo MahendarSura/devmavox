@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="980" viewBox="0 0 1400 980">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071426"/>
+      <stop offset="1" stop-color="#102b45"/>
+    </linearGradient>
+    <linearGradient id="cloudA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1d4ed8"/>
+      <stop offset="1" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="cloudB" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f766e"/>
+      <stop offset="1" stop-color="#134e4a"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#000000" flood-opacity=".35"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0 0 L9 3 L0 6 Z" fill="#67e8f9"/>
+    </marker>
+    <style>
+      .heading{font:700 30px Arial;fill:#f8fafc}
+      .sub{font:15px Arial;fill:#cbd5e1}
+      .node{font:700 19px Arial;fill:#f8fafc}
+      .small{font:14px Arial;fill:#dbeafe}
+      .label{font:700 15px Arial;fill:#67e8f9;letter-spacing:1px}
+      .line{fill:none;stroke:#67e8f9;stroke-width:3;marker-end:url(#arrow)}
+      .panel{stroke-width:2;rx:18;filter:url(#shadow)}
+    </style>
+  </defs>
+  <rect width="1400" height="980" fill="url(#bg)"/>
+  <text x="700" y="55" text-anchor="middle" class="heading">DEV M A V O X  |  MULTI-CLOUD REFERENCE ARCHITECTURE</text>
+  <text x="700" y="83" text-anchor="middle" class="sub">Global traffic · Federated identity · Cross-cloud connectivity · Governed data · Unified operations</text>
+
+  <rect x="475" y="115" width="450" height="78" rx="16" fill="#164e63" stroke="#67e8f9" class="panel"/>
+  <text x="700" y="146" text-anchor="middle" class="node">Global Users and Clients</text>
+  <text x="700" y="172" text-anchor="middle" class="small">Browsers · Mobile · Enterprise users</text>
+
+  <path d="M700 193 V225" class="line"/>
+  <rect x="390" y="230" width="620" height="86" rx="16" fill="#312e81" stroke="#a5b4fc" class="panel"/>
+  <text x="700" y="263" text-anchor="middle" class="node">Global DNS and Federated Identity</text>
+  <text x="700" y="290" text-anchor="middle" class="small">Health-aware routing · Enterprise identity · Provider authorization</text>
+
+  <path d="M700 316 V350" class="line"/>
+  <rect x="390" y="355" width="620" height="82" rx="16" fill="#881337" stroke="#fb7185" class="panel"/>
+  <text x="700" y="388" text-anchor="middle" class="node">Global Security and Policy Layer</text>
+  <text x="700" y="414" text-anchor="middle" class="small">WAF · DDoS protection · TLS · Segmentation · Governance</text>
+
+  <path d="M700 437 V470 H350 V505" class="line"/>
+  <path d="M700 470 H1050 V505" class="line"/>
+  <rect x="445" y="465" width="510" height="65" rx="14" fill="#4c1d95" stroke="#c4b5fd" class="panel"/>
+  <text x="700" y="491" text-anchor="middle" class="node">Cross-Cloud Connectivity Hub</text>
+  <text x="700" y="514" text-anchor="middle" class="small">VPN · Private interconnect · Controlled routing</text>
+
+  <rect x="95" y="540" width="510" height="220" rx="20" fill="url(#cloudA)" stroke="#60a5fa" class="panel"/>
+  <text x="350" y="577" text-anchor="middle" class="label">CLOUD PROVIDER A</text>
+  <rect x="145" y="600" width="410" height="58" rx="12" fill="#1e40af" stroke="#93c5fd"/>
+  <text x="350" y="635" text-anchor="middle" class="node">Application Workloads</text>
+  <rect x="145" y="680" width="195" height="52" rx="10" fill="#172554" stroke="#60a5fa"/>
+  <text x="242" y="712" text-anchor="middle" class="small">Private Services</text>
+  <rect x="360" y="680" width="195" height="52" rx="10" fill="#172554" stroke="#60a5fa"/>
+  <text x="457" y="712" text-anchor="middle" class="small">Managed Platform</text>
+
+  <rect x="795" y="540" width="510" height="220" rx="20" fill="url(#cloudB)" stroke="#5eead4" class="panel"/>
+  <text x="1050" y="577" text-anchor="middle" class="label">CLOUD PROVIDER B</text>
+  <rect x="845" y="600" width="410" height="58" rx="12" fill="#115e59" stroke="#99f6e4"/>
+  <text x="1050" y="635" text-anchor="middle" class="node">Independent or Recovery Workloads</text>
+  <rect x="845" y="680" width="195" height="52" rx="10" fill="#134e4a" stroke="#5eead4"/>
+  <text x="942" y="712" text-anchor="middle" class="small">Private Services</text>
+  <rect x="1060" y="680" width="195" height="52" rx="10" fill="#134e4a" stroke="#5eead4"/>
+  <text x="1157" y="712" text-anchor="middle" class="small">Managed Platform</text>
+
+  <path d="M350 760 V790 H700 V815" class="line"/>
+  <path d="M1050 760 V790 H700" fill="none" stroke="#67e8f9" stroke-width="3"/>
+  <rect x="390" y="820" width="620" height="70" rx="16" fill="#78350f" stroke="#fbbf24" class="panel"/>
+  <text x="700" y="850" text-anchor="middle" class="node">Data and Integration Layer</text>
+  <text x="700" y="875" text-anchor="middle" class="small">API contracts · Event exchange · Controlled replication · Data ownership</text>
+
+  <rect x="390" y="915" width="620" height="48" rx="12" fill="#334155" stroke="#94a3b8"/>
+  <text x="700" y="945" text-anchor="middle" class="small">Unified Observability · Security Audit · FinOps · Recovery Operations</text>
+</svg>

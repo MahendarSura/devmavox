@@ -1,0 +1,204 @@
+# DevMavox: Normalize all non-Docker glossary learning content to the Docker 17-section structure.
+# Run from: C:\Users\mahen\OneDrive\devmavox
+$ErrorActionPreference = "Stop"
+
+$root = (Get-Location).Path
+$target = Join-Path $root "app\devops-glossary\glossary-data.ts"
+
+if (-not (Test-Path $target)) {
+    throw "Cannot find $target. Open the DevMavox project root in VS Code and run this script there."
+}
+
+$source = [System.IO.File]::ReadAllText($target, [System.Text.Encoding]::UTF8)
+$marker = "export function slugify(value: string): string {"
+
+if (($source.Split($marker).Count - 1) -ne 1) {
+    throw "Expected exactly one slugify insertion point. No source file was changed."
+}
+
+if ($source.Contains("DEVMAvox_DOCKER_STYLE_17_SECTION_NORMALIZER")) {
+    throw "The 17-section normalizer already exists. No changes made."
+}
+
+$backupDir = Join-Path $root ("glossary-17-section-backup-" + (Get-Date -Format "yyyyMMdd-HHmmss"))
+New-Item -ItemType Directory -Path $backupDir | Out-Null
+Copy-Item $target (Join-Path $backupDir "glossary-data.ts")
+
+$block = @'
+/* DEVMAvox_DOCKER_STYLE_17_SECTION_NORMALIZER */
+const dockerStyle17Titles = [
+  "1. Purpose – Why Is It Used?",
+  "2. Real-Time Project Example",
+  "3. How It Works – Workflow",
+  "4. Practical Commands",
+  "5. Common Mistakes",
+  "6. Configuration Examples",
+  "7. Troubleshooting",
+  "8. Best Practices",
+  "9. Security Considerations",
+  "10. Related Concepts",
+  "11. Architecture & Internals",
+  "12. Implementation – Hands-on",
+  "13. Production Use Cases",
+  "14. Monitoring & Observability",
+  "15. Recovery & Incident Management",
+  "16. Automation & CI/CD Integration",
+  "17. Performance & Capacity",
+];
+
+const dockerStyle17Telugu = (name: string, topic: string) =>
+  `${name} లో ${topic} ను అమలు చేసేటప్పుడు project requirement, dependencies, permissions మరియు environment ను ముందుగా పరిశీలించాలి. Change చేసిన తర్వాత logs, status, metrics మరియు application behaviour ద్వారా ఫలితాన్ని validate చేయాలి. Production లో అమలు చేసే ముందు staging లో పరీక్షించి rollback విధానాన్ని సిద్ధంగా ఉంచాలి.`;
+
+const dockerStyle17English = (name: string, topic: string, context: string) =>
+  `For ${name}, ${topic.toLowerCase()} must be handled according to the technology's actual role in the project. ${context} Validate prerequisites, permissions, dependencies and the resulting runtime behaviour. Test changes outside production first, monitor the result and document the operational evidence.`;
+
+function normalizeDockerStyle17(term: GlossaryTerm): void {
+  if (!term.learningContent || term.learningContent.length < 13) return;
+  if (term.learningContent.length === 17) return;
+
+  const old = term.learningContent;
+  // Reuse the original 13 section objects; no original explanations, examples,
+  // commands or details are deleted. Reorder them to match the Docker layout.
+  const ordered = [
+    old[0],  // Purpose
+    old[2],  // Real-time project example
+    old[1],  // How it works
+    old[5],  // Practical commands
+    old[7],  // Common mistakes
+    old[6],  // Configuration examples
+    old[8],  // Troubleshooting
+    old[9],  // Best practices
+    old[10], // Security considerations
+    old[12], // Related concepts
+    old[3],  // Architecture / components
+    old[4],  // Step-by-step workflow
+    old[11], // Interview points retained under production use cases
+  ];
+
+  const base = ordered.map((section, index) => ({
+    ...section,
+    title: dockerStyle17Titles[index],
+  }));
+
+  const commands = term.commands?.length ? term.commands : [];
+  const related = term.related?.length ? term.related : [];
+  const workflow = term.workflow?.length ? term.workflow : [];
+  const project = term.project || "the production application";
+  const definition = term.definition || `${term.name} supports a defined part of the DevOps lifecycle.`;
+
+  const extras: GlossaryLearningSection[] = [
+    {
+      title: dockerStyle17Titles[13],
+      items: [{
+        title: `${term.name} – Monitoring & Observability`,
+        explanation: `Monitor ${term.name} by collecting the signals that show whether its responsibility is working correctly. Track relevant availability, success/failure counts, latency, resource consumption and dependency health where those signals apply. Establish a baseline, alert on actionable thresholds and correlate metrics with logs and deployment changes. In ${project}, validate both component health and the user-visible outcome.`,
+        teluguExplanation: `${term.name} monitoring కోసం దాని పని సరిగ్గా జరుగుతోందో తెలియజేసే metrics, logs, status మరియు dependency health పరిశీలించాలి. అవసరమైన చోట availability, success/failure count, latency మరియు resource usage track చేయాలి. Baseline నిర్ణయించి actionable alerts configure చేసి, incident సమయంలో logs మరియు recent deployments తో metrics correlate చేయాలి. ${project} లో component health మాత్రమే కాకుండా user-visible result కూడా validate చేయాలి.`,
+        details: [
+          `Monitoring objective: verify the expected behaviour of ${term.name}.`,
+          "Record baseline values before changing thresholds.",
+          "Correlate alerts with logs, metrics, traces and deployment history where available.",
+          "Alert on actionable symptoms; avoid noisy alerts without an owner.",
+        ],
+        ...(commands.length ? { commands } : {}),
+      }],
+    },
+    {
+      title: dockerStyle17Titles[14],
+      items: [{
+        title: `${term.name} – Recovery & Incident Management`,
+        explanation: `When ${term.name} fails, identify the affected scope, capture timestamps and error evidence, and compare the current state with the last known-good state. Use the project's documented recovery procedure, restore required configuration or dependencies, and validate the service before declaring recovery. For ${project}, define ownership, escalation, rollback criteria and post-incident follow-up.`,
+        teluguExplanation: `${term.name} లో failure వచ్చినప్పుడు affected scope గుర్తించి timestamps, errors మరియు logs సేకరించాలి. Current state ను last known-good state తో compare చేయాలి. Project recovery procedure ప్రకారం configuration లేదా dependencies restore చేసి, service ఆరోగ్యంగా ఉందని validate చేసిన తర్వాతే recovery complete అని ప్రకటించాలి. ${project} కోసం ownership, escalation, rollback criteria మరియు incident తర్వాత follow-up define చేయాలి.`,
+        details: [
+          "Preserve logs, events and recent-change evidence before corrective actions.",
+          "Prefer a known-good rollback or documented restore procedure.",
+          "Validate dependencies and end-to-end application behaviour after recovery.",
+          "Record root cause, customer impact and preventive actions.",
+          ...(term.troubleshooting || []).slice(0, 3),
+        ],
+      }],
+    },
+    {
+      title: dockerStyle17Titles[15],
+      items: [{
+        title: `${term.name} – Automation & CI/CD Integration`,
+        explanation: `Integrate ${term.name} into the delivery workflow at the stage where it provides value. Version-control its configuration when appropriate, validate changes automatically, use scoped credentials and make pipeline failures visible. ${project} should promote the same reviewed configuration or artifact through controlled environments, with approval and rollback gates for production changes.`,
+        teluguExplanation: `${term.name} ను project delivery workflow లో అవసరమైన stage వద్ద integrate చేయాలి. Configuration ను అవసరమైనప్పుడు version control లో ఉంచి, changes ను automated validation ద్వారా పరీక్షించాలి. Scoped credentials ఉపయోగించి pipeline failures స్పష్టంగా కనిపించేలా చేయాలి. ${project} లో reviewed configuration లేదా artifact ను controlled environments ద్వారా promote చేసి, production changes కు approval మరియు rollback gates ఉంచాలి.`,
+        details: [
+          "Trigger automation from reviewed source or configuration changes.",
+          "Validate syntax, policy, tests and prerequisites before deployment.",
+          "Use least-privilege service identities and protected secrets.",
+          "Keep pipeline output, artifact versions and deployment evidence traceable.",
+          ...workflow.slice(0, 3),
+        ],
+      }],
+    },
+    {
+      title: dockerStyle17Titles[16],
+      items: [{
+        title: `${term.name} – Performance & Capacity`,
+        explanation: `Evaluate ${term.name} against the workload it supports in ${project}. Identify the relevant bottleneck rather than increasing resources blindly. Review throughput, latency, queue depth, CPU, memory, storage, connection limits or concurrency according to the technology. Load-test meaningful changes, define capacity thresholds and verify that scaling does not create downstream pressure.`,
+        teluguExplanation: `${project} లో ${term.name} పై పడే workload ఆధారంగా performance మరియు capacity evaluate చేయాలి. కారణం గుర్తించకుండా resources పెంచకూడదు. Technology కి సంబంధించిన throughput, latency, queue depth, CPU, memory, storage, connection limits లేదా concurrency పరిశీలించాలి. ముఖ్యమైన changes ను load test చేసి capacity thresholds నిర్ణయించాలి. Scaling వల్ల downstream services పై అదనపు ఒత్తిడి రాకుండా verify చేయాలి.`,
+        details: [
+          `Performance context: ${definition}`,
+          "Measure a baseline and compare results after each change.",
+          "Check both the component and its upstream/downstream dependencies.",
+          "Set capacity limits, scaling thresholds and a safe saturation response.",
+          ...(related.length ? [`Related capacity dependencies: ${related.join(", ")}`] : []),
+        ],
+      }],
+    },
+  ];
+
+  term.learningContent = [...base, ...extras];
+}
+
+// Apply to every glossary category except Docker. Docker content is deliberately untouched.
+for (const category of glossaryCategories) {
+  if (category.slug === "containers-docker") continue;
+  for (const term of category.terms) normalizeDockerStyle17(term);
+}
+
+'@
+
+$updated = $source.Replace($marker, $block + $marker)
+[System.IO.File]::WriteAllText($target, $updated, [System.Text.UTF8Encoding]::new($false))
+
+Write-Host "`nBackup: $backupDir" -ForegroundColor Green
+Write-Host "Updated: app\devops-glossary\glossary-data.ts" -ForegroundColor Green
+
+# Validate the injected 17-section structure and compile the project.
+$check = [System.IO.File]::ReadAllText($target, [System.Text.Encoding]::UTF8)
+$required = @(
+  "1. Purpose – Why Is It Used?",
+  "2. Real-Time Project Example",
+  "3. How It Works – Workflow",
+  "4. Practical Commands",
+  "5. Common Mistakes",
+  "6. Configuration Examples",
+  "7. Troubleshooting",
+  "8. Best Practices",
+  "9. Security Considerations",
+  "10. Related Concepts",
+  "11. Architecture & Internals",
+  "12. Implementation – Hands-on",
+  "13. Production Use Cases",
+  "14. Monitoring & Observability",
+  "15. Recovery & Incident Management",
+  "16. Automation & CI/CD Integration",
+  "17. Performance & Capacity"
+)
+$missing = @($required | Where-Object { -not $check.Contains($_) })
+if ($missing.Count -gt 0) {
+    Copy-Item (Join-Path $backupDir "glossary-data.ts") $target -Force
+    throw "Validation failed; original file restored. Missing headings: $($missing -join ', ')"
+}
+
+Write-Host "`nRunning TypeScript validation..." -ForegroundColor Cyan
+npx tsc --noEmit
+if ($LASTEXITCODE -ne 0) {
+    Copy-Item (Join-Path $backupDir "glossary-data.ts") $target -Force
+    throw "TypeScript validation failed. Original glossary-data.ts restored from backup."
+}
+
+Write-Host "`nSUCCESS: non-Docker glossary content is normalized to the Docker-style 17-section layout." -ForegroundColor Green
+Write-Host "Docker category and Docker source files were not modified." -ForegroundColor Green

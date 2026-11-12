@@ -1,4 +1,6 @@
 import Link from "next/link";
+import ArchitectureTopicPage from "./ArchitectureTopicPage";
+import { getArchitectureTopic } from "./architecture-topic-content";
 import { notFound } from "next/navigation";
 import {
   featureCatalog,
@@ -359,8 +361,26 @@ export default function FeatureExplorer({
   }
 
   if (slug.length === 3) {
+
+
     const topic = subcategory.topics.find((item) => slugify(item) === slug[2]);
     if (!topic) notFound();
+
+    if (featureId === "architecture-diagram-library") {
+      const architectureContent = getArchitectureTopic(topic);
+
+      if (architectureContent) {
+        return (
+          <ArchitectureTopicPage
+            content={architectureContent}
+            categoryName={category.name}
+            subcategoryName={subcategory.name}
+            categorySlug={slug[0]}
+            subcategorySlug={slug[1]}
+          />
+        );
+      }
+    }
 
     return (
       <PageFrame feature={feature} eyebrow="Individual Topic" title={topic} description={`This is the dedicated topic space for ${topic}. The detailed learning material will be added in the next content phase.`}>
@@ -396,3 +416,4 @@ export default function FeatureExplorer({
 
   notFound();
 }
+

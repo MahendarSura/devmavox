@@ -1,0 +1,82 @@
+[
+  {
+    "topicTitle": "Observability Fundamentals",
+    "sections": []
+  },
+  {
+    "topicTitle": "Metrics and Monitoring",
+    "sections": []
+  },
+  {
+    "topicTitle": "Prometheus Architecture",
+    "sections": []
+  },
+  {
+    "topicTitle": "Prometheus Installation",
+    "sections": []
+  },
+  {
+    "topicTitle": "Exporters",
+    "sections": []
+  },
+  {
+    "topicTitle": "Scrape Configuration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Service Discovery",
+    "sections": []
+  },
+  {
+    "topicTitle": "PromQL Fundamentals",
+    "sections": []
+  },
+  {
+    "topicTitle": "Labels and Metric Types",
+    "sections": []
+  },
+  {
+    "topicTitle": "Recording Rules",
+    "sections": []
+  },
+  {
+    "topicTitle": "Alert Rules",
+    "sections": []
+  },
+  {
+    "topicTitle": "Alertmanager",
+    "sections": []
+  },
+  {
+    "topicTitle": "Grafana Architecture",
+    "sections": []
+  },
+  {
+    "topicTitle": "Data Sources",
+    "sections": []
+  },
+  {
+    "topicTitle": "Dashboard Creation",
+    "sections": []
+  },
+  {
+    "topicTitle": "Dashboard Variables",
+    "sections": []
+  },
+  {
+    "topicTitle": "SLI and SLO Monitoring",
+    "sections": []
+  },
+  {
+    "topicTitle": "Incident Alerting",
+    "sections": []
+  },
+  {
+    "topicTitle": "Troubleshooting",
+    "sections": []
+  },
+  {
+    "topicTitle": "Production Hands-on Lab",
+    "sections": []
+  }
+]

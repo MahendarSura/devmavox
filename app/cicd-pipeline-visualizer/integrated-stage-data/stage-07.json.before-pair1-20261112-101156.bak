@@ -1,0 +1,66 @@
+[
+  {
+    "topicTitle": "Trivy Fundamentals",
+    "sections": []
+  },
+  {
+    "topicTitle": "Trivy Installation",
+    "sections": []
+  },
+  {
+    "topicTitle": "Filesystem Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "Dependency Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "Container Image Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "CVE Database",
+    "sections": []
+  },
+  {
+    "topicTitle": "Severity Classification",
+    "sections": []
+  },
+  {
+    "topicTitle": "Misconfiguration Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "Kubernetes Configuration Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "Secret Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "SBOM Generation",
+    "sections": []
+  },
+  {
+    "topicTitle": "Ignore Policies",
+    "sections": []
+  },
+  {
+    "topicTitle": "CI Pipeline Integration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Vulnerability Remediation",
+    "sections": []
+  },
+  {
+    "topicTitle": "Troubleshooting",
+    "sections": []
+  },
+  {
+    "topicTitle": "Production Hands-on Lab",
+    "sections": []
+  }
+]

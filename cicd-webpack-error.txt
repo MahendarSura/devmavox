@@ -1,0 +1,353 @@
+
+> devmavox@0.1.0 build
+> next build --webpack
+
+Γû▓ Next.js 16.4.0 (webpack)
+- Environments: .env.local
+ΓÜá Warning: Next.js ignored package-lock.json in C:\Users\mahen because it is outside the current Git repository (C:\Users\mahen\OneDrive\devmavox).
+ To use this directory, set `outputFileTracingRoot` in your Next.js config.
+
+Γ£ô Running next.config.ts took 190ms
+- Experiments (use with caution):
+  ┬╖ cpus: 2
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 28.4s
+  Running TypeScript ...
+  Finished TypeScript in 7.5s ...
+  Collecting page data using 2 workers ...
+  Generating static pages using 2 workers (0/1458) ...
+DEVMAVOX CI/CD CURRICULUM VALIDATION PASSED
+Stages: 12
+Topics: 36
+Learning sections: 396
+Sections per topic: 11
+Expanded topics processed before curriculum filtering: 40
+Generated section fields processed before curriculum filtering: 440
+Interview question content: removed
+  Generating static pages using 2 workers (364/1458) 
+  Generating static pages using 2 workers (728/1458) 
+  Generating static pages using 2 workers (1093/1458) 
+Γ£ô Generating static pages using 2 workers (1458/1458) in 62s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+Γöî Γùï /
+Γö£ Γùï /_not-found
+Γö£ ╞Æ /api/interview-pdfs
+Γö£ Γùï /architecture-diagram-library
+Γö£   /architecture-diagram-library/[...slug]
+Γöé Γö£ ΓùÅ /architecture-diagram-library/cloud-architecture
+Γöé Γö£ ΓùÅ /architecture-diagram-library/cloud-architecture/cloud-providers
+Γöé Γö£ ΓùÅ /architecture-diagram-library/cloud-architecture/cloud-providers/aws-architecture
+Γöé Γöö ΓùÅ [+52 more paths]
+Γö£ Γùï /architecture-library
+Γö£ Γùï /calculator
+Γö£ Γùï /career-center
+Γö£ Γùï /cicd-pipeline-visualizer
+Γö£ Γùï /cicd-visualizer
+Γö£ Γùï /cloud-cost
+Γö£ Γùï /cloud-cost-lab
+Γö£   /cloud-cost-lab/[...slug]
+Γöé Γö£ ΓùÅ /cloud-cost-lab/cloud-billing
+Γöé Γö£ ΓùÅ /cloud-cost-lab/cloud-billing/billing-fundamentals
+Γöé Γö£ ΓùÅ /cloud-cost-lab/cloud-billing/billing-fundamentals/cloud-billing-models
+Γöé Γöö ΓùÅ [+40 more paths]
+Γö£ Γùï /command-explorer
+Γö£   /command-explorer/[...slug]
+Γöé Γö£ ΓùÅ /command-explorer/linux
+Γöé Γö£ ΓùÅ /command-explorer/linux/file-operations
+Γöé Γö£ ΓùÅ /command-explorer/linux/file-operations/pwd
+Γöé Γöö ΓùÅ [+117 more paths]
+Γö£ Γùï /contact
+Γö£ Γùï /daily-challenge
+Γö£ Γùï /daily-devops-challenge
+Γö£   /daily-devops-challenge/[...slug]
+Γöé Γö£ ΓùÅ /daily-devops-challenge/linux
+Γöé Γö£ ΓùÅ /daily-devops-challenge/linux/linux-challenges
+Γöé Γö£ ΓùÅ /daily-devops-challenge/linux/linux-challenges/file-operations
+Γöé Γöö ΓùÅ [+50 more paths]
+Γö£ Γùï /devops-ai-assistant
+Γö£   /devops-ai-assistant/[...slug]
+Γöé Γö£ ΓùÅ /devops-ai-assistant/learning-assistant
+Γöé Γö£ ΓùÅ /devops-ai-assistant/learning-assistant/concept-support
+Γöé Γö£ ΓùÅ /devops-ai-assistant/learning-assistant/concept-support/concept-explanation
+Γöé Γöö ΓùÅ [+31 more paths]
+Γö£ Γùï /devops-career-center
+Γö£   /devops-career-center/[...slug]
+Γöé Γö£ ΓùÅ /devops-career-center/career-paths
+Γöé Γö£ ΓùÅ /devops-career-center/career-paths/engineering-roles
+Γöé Γö£ ΓùÅ /devops-career-center/career-paths/engineering-roles/devops-engineer
+Γöé Γöö ΓùÅ [+43 more paths]
+Γö£ Γùï /devops-glossary
+Γö£   /devops-glossary/[category]
+Γöé Γö£ ΓùÅ /devops-glossary/devops-fundamentals
+Γöé Γö£ ΓùÅ /devops-glossary/cloud-computing-aws
+Γöé Γö£ ΓùÅ /devops-glossary/containers-docker
+Γöé Γöö ΓùÅ [+9 more paths]
+Γö£ ╞Æ /devops-glossary/[category]/[term]
+Γö£ Γùï /devops-knowledge-base
+Γö£   /devops-knowledge-base/[...slug]
+Γöé Γö£ ΓùÅ /devops-knowledge-base/devops-foundations
+Γöé Γö£ ΓùÅ /devops-knowledge-base/devops-foundations/engineering-foundations
+Γöé Γö£ ΓùÅ /devops-knowledge-base/devops-foundations/engineering-foundations/devops
+Γöé Γöö ΓùÅ [+59 more paths]
+Γö£ Γùï /devops-learning-roadmap
+Γö£ Γùï /devops-learning-roadmap/ansible
+Γö£ Γùï /devops-learning-roadmap/argocd
+Γö£ Γùï /devops-learning-roadmap/aws
+Γö£ Γùï /devops-learning-roadmap/cloudwatch
+Γö£ Γùï /devops-learning-roadmap/docker
+Γö£ Γùï /devops-learning-roadmap/eks
+Γö£ Γùï /devops-learning-roadmap/git
+Γö£ Γùï /devops-learning-roadmap/github-actions
+Γö£ Γùï /devops-learning-roadmap/grafana
+Γö£ Γùï /devops-learning-roadmap/helm
+Γö£ Γùï /devops-learning-roadmap/jenkins
+Γö£ Γùï /devops-learning-roadmap/jira
+Γö£ Γùï /devops-learning-roadmap/kubernetes
+Γö£ Γùï /devops-learning-roadmap/linux
+Γö£ Γùï /devops-learning-roadmap/maven
+Γö£ Γùï /devops-learning-roadmap/nexus
+Γö£ Γùï /devops-learning-roadmap/prometheus
+Γö£ Γùï /devops-learning-roadmap/slack
+Γö£ Γùï /devops-learning-roadmap/terraform
+Γö£ Γùï /devops-learning-roadmap/tomcat
+Γö£ Γùï /devsecops-lab
+Γö£ Γùï /devsecops-security-lab
+Γö£   /devsecops-security-lab/[...slug]
+Γöé Γö£ ΓùÅ /devsecops-security-lab/security-foundations
+Γöé Γö£ ΓùÅ /devsecops-security-lab/security-foundations/core-principles
+Γöé Γö£ ΓùÅ /devsecops-security-lab/security-foundations/core-principles/cia-triad
+Γöé Γöö ΓùÅ [+56 more paths]
+Γö£ Γùï /explore-courses
+Γö£ Γùï /git-workflow-simulator
+Γö£   /git-workflow-simulator/[...slug]
+Γöé Γö£ ΓùÅ /git-workflow-simulator/git-basics
+Γöé Γö£ ΓùÅ /git-workflow-simulator/git-basics/repository-fundamentals
+Γöé Γö£ ΓùÅ /git-workflow-simulator/git-basics/repository-fundamentals/repository
+Γöé Γöö ΓùÅ [+41 more paths]
+Γö£ Γùï /hands-on-labs
+Γö£ Γùï /incident-simulator
+Γö£   /incident-simulator/[...slug]
+Γöé Γö£ ΓùÅ /incident-simulator/linux-incidents
+Γöé Γö£ ΓùÅ /incident-simulator/linux-incidents/system-resource-incidents
+Γöé Γö£ ΓùÅ /incident-simulator/linux-incidents/system-resource-incidents/high-cpu-usage
+Γöé Γöö ΓùÅ [+40 more paths]
+Γö£ Γùï /interview
+Γö£ Γùï /knowledge-base
+Γö£ Γùï /monitoring-playground
+Γö£   /monitoring-playground/[...slug]
+Γöé Γö£ ΓùÅ /monitoring-playground/monitoring-fundamentals
+Γöé Γö£ ΓùÅ /monitoring-playground/monitoring-fundamentals/observability-signals
+Γöé Γö£ ΓùÅ /monitoring-playground/monitoring-fundamentals/observability-signals/metrics
+Γöé Γöö ΓùÅ [+49 more paths]
+Γö£ Γùï /notes & cheatsheest
+Γö£ Γùï /notes-cheat-sheets
+Γö£ Γùï /notes-cheat-sheets/interview-revision
+Γö£   /notes-cheat-sheets/interview-revision/[slug]
+Γöé Γö£ Γùï /notes-cheat-sheets/interview-revision/interview-qa
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/interview-revision/quick-revision
+Γöé Γöö ΓùÅ /notes-cheat-sheets/interview-revision/important-comparisons
+Γö£ Γùï /notes-cheat-sheets/interview-revision/interview-qa
+Γö£   /notes-cheat-sheets/interview-revision/interview-qa/[category]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/interview-revision/interview-qa/basic
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/interview-revision/interview-qa/intermediate
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/interview-revision/interview-qa/advanced
+Γöé Γöö ΓùÅ [+4 more paths]
+Γö£   /notes-cheat-sheets/interview-revision/interview-qa/[category]/[tool]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/interview-revision/interview-qa/basic/aws
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/interview-revision/interview-qa/basic/docker
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/interview-revision/interview-qa/basic/kubernetes
+Γöé Γöö ΓùÅ [+116 more paths]
+Γö£ Γùï /notes-cheat-sheets/real-time-projects
+Γö£   /notes-cheat-sheets/real-time-projects/[slug]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/real-time-projects/project-workflows
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/real-time-projects/deployment-checklists
+Γöé Γöö ΓùÅ /notes-cheat-sheets/real-time-projects/cicd-rollback
+Γö£   /notes-cheat-sheets/real-time-projects/[slug]/[workflow]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/real-time-projects/project-workflows/docker-compose
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/real-time-projects/project-workflows/kubernetes
+Γöé Γöö ΓùÅ /notes-cheat-sheets/real-time-projects/project-workflows/monitoring
+Γö£ Γùï /notes-cheat-sheets/revised-commands
+Γö£ Γùï /notes-cheat-sheets/technical-concepts
+Γö£   /notes-cheat-sheets/technical-concepts/[slug]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/technical-concepts/how-it-works
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/technical-concepts/architecture-flow
+Γöé Γöö ΓùÅ /notes-cheat-sheets/technical-concepts/real-time-examples
+Γö£ Γùï /notes-cheat-sheets/troubleshooting
+Γö£   /notes-cheat-sheets/troubleshooting/[slug]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/error-messages
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/root-causes
+Γöé Γöö ΓùÅ /notes-cheat-sheets/troubleshooting/troubleshooting-steps
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/ansible
+Γö£   /notes-cheat-sheets/troubleshooting/ansible/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/ansible/ad-hoc-commands
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/ansible/collections
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/ansible/error-handling
+Γöé Γöö ΓùÅ [+12 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/argocd
+Γö£   /notes-cheat-sheets/troubleshooting/argocd/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/argocd/applications
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/argocd/applicationsets
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/argocd/architecture
+Γöé Γöö ΓùÅ [+12 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/aws
+Γö£   /notes-cheat-sheets/troubleshooting/aws/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/aws/auto-scaling
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/aws/cloudwatch
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/aws/ec2
+Γöé Γöö ΓùÅ [+15 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/cicd
+Γö£   /notes-cheat-sheets/troubleshooting/cicd/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/cicd/artifact-management
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/cicd/build-automation
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/cicd/deployment-strategies
+Γöé Γöö ΓùÅ [+12 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/database
+Γö£   /notes-cheat-sheets/troubleshooting/database/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/database/backup-restore
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/database/connections
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/database/fundamentals
+Γöé Γöö ΓùÅ [+12 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/docker
+Γö£   /notes-cheat-sheets/troubleshooting/docker/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/docker/fundamentals
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/docker/installation
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/docker/images
+Γöé Γöö ΓùÅ [+9 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/git-github
+Γö£   /notes-cheat-sheets/troubleshooting/git-github/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/git-github/authentication-ssh
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/git-github/branches-merging
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/git-github/fundamentals
+Γöé Γöö ΓùÅ [+12 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/helm
+Γö£   /notes-cheat-sheets/troubleshooting/helm/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/helm/chart-structure
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/helm/charts
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/helm/debugging
+Γöé Γöö ΓùÅ [+11 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/jenkins
+Γö£   /notes-cheat-sheets/troubleshooting/jenkins/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/jenkins/agents-nodes
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/jenkins/build-troubleshooting
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/jenkins/credentials
+Γöé Γöö ΓùÅ [+11 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/kubernetes
+Γö£   /notes-cheat-sheets/troubleshooting/kubernetes/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/kubernetes/architecture
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/kubernetes/autoscaling
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/kubernetes/cluster-components
+Γöé Γöö ΓùÅ [+20 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/linux
+Γö£   /notes-cheat-sheets/troubleshooting/linux/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/linux/disk-storage
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/linux/filesystem
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/linux/fundamentals
+Γöé Γöö ΓùÅ [+11 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/monitoring
+Γö£   /notes-cheat-sheets/troubleshooting/monitoring/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/monitoring/alerting
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/monitoring/alertmanager
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/monitoring/centralized-logging
+Γöé Γöö ΓùÅ [+12 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/networking
+Γö£   /notes-cheat-sheets/troubleshooting/networking/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/networking/connectivity-troubleshooting
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/networking/dhcp
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/networking/dns
+Γöé Γöö ΓùÅ [+12 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/nginx-apache
+Γö£   /notes-cheat-sheets/troubleshooting/nginx-apache/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/nginx-apache/502-503-errors
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/nginx-apache/dns-routing
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/nginx-apache/fundamentals
+Γöé Γöö ΓùÅ [+11 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/production-incidents
+Γö£   /notes-cheat-sheets/troubleshooting/production-incidents/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/production-incidents/application-down
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/production-incidents/cloud-outages
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/production-incidents/container-failure
+Γöé Γöö ΓùÅ [+13 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/security
+Γö£   /notes-cheat-sheets/troubleshooting/security/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/security/compliance
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/security/container-security
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/security/devsecops
+Γöé Γöö ΓùÅ [+13 more paths]
+Γö£ Γùï /notes-cheat-sheets/troubleshooting/terraform
+Γö£   /notes-cheat-sheets/troubleshooting/terraform/[topic]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/terraform/data-sources
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/terraform/fundamentals
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/troubleshooting/terraform/import-migration
+Γöé Γöö ΓùÅ [+13 more paths]
+Γö£ Γùï /notes-cheat-sheets/yaml-configuration
+Γö£   /notes-cheat-sheets/yaml-configuration/[slug]
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/yaml-configuration/yaml-files
+Γöé Γö£ ΓùÅ /notes-cheat-sheets/yaml-configuration/configuration-examples
+Γöé Γöö ΓùÅ /notes-cheat-sheets/yaml-configuration/best-practices
+Γö£ Γùï /portfolio-builder
+Γö£   /portfolio-builder/[...slug]
+Γöé Γö£ ΓùÅ /portfolio-builder/profile
+Γöé Γö£ ΓùÅ /portfolio-builder/profile/professional-introduction
+Γöé Γö£ ΓùÅ /portfolio-builder/profile/professional-introduction/professional-summary
+Γöé Γöö ΓùÅ [+37 more paths]
+Γö£ Γùï /projects
+Γö£ Γùï /quiz
+Γö£ Γùï /real-time-projects
+Γö£   /real-time-projects/[id]
+Γöé Γö£ ΓùÅ /real-time-projects/project1
+Γöé Γö£ ΓùÅ /real-time-projects/project2
+Γöé Γö£ ΓùÅ /real-time-projects/project3
+Γöé Γöö ΓùÅ [+7 more paths]
+Γö£ Γùï /study-planner
+Γö£   /study-planner/[...slug]
+Γöé Γö£ ΓùÅ /study-planner/learning-goals
+Γöé Γö£ ΓùÅ /study-planner/learning-goals/goal-setup
+Γöé Γö£ ΓùÅ /study-planner/learning-goals/goal-setup/career-goal
+Γöé Γöö ΓùÅ [+37 more paths]
+Γö£ Γùï /tech-version-compatibility
+Γö£   /tech-version-compatibility/[...slug]
+Γöé Γö£ ΓùÅ /tech-version-compatibility/kubernetes-ecosystem
+Γöé Γö£ ΓùÅ /tech-version-compatibility/kubernetes-ecosystem/kubernetes-components
+Γöé Γö£ ΓùÅ /tech-version-compatibility/kubernetes-ecosystem/kubernetes-components/kubernetes
+Γöé Γöö ΓùÅ [+43 more paths]
+Γö£ Γùï /troubleshooting-center
+Γö£ ╞Æ /troubleshooting-center/[tool]/[...topic]
+Γö£ Γùï /troubleshooting-center/ansible
+Γö£ Γùï /troubleshooting-center/argocd
+Γö£ Γùï /troubleshooting-center/aws
+Γö£ Γùï /troubleshooting-center/databases
+Γö£ Γùï /troubleshooting-center/docker
+Γö£ Γùï /troubleshooting-center/eks
+Γö£ Γùï /troubleshooting-center/github
+Γö£ Γùï /troubleshooting-center/gradle
+Γö£ Γùï /troubleshooting-center/helm
+Γö£ Γùï /troubleshooting-center/jenkins
+Γö£ Γùï /troubleshooting-center/kubernetes
+Γö£ Γùï /troubleshooting-center/linux
+Γö£ Γùï /troubleshooting-center/maven
+Γö£ Γùï /troubleshooting-center/monitoring
+Γö£ Γùï /troubleshooting-center/networking
+Γö£ Γùï /troubleshooting-center/nexus
+Γö£ Γùï /troubleshooting-center/nginx
+Γö£ Γùï /troubleshooting-center/production
+Γö£ Γùï /troubleshooting-center/security
+Γö£ Γùï /troubleshooting-center/terraform
+Γö£ Γùï /troubleshooting-center/tomcat
+Γö£ Γùï /version-compatibility
+Γö£ Γùï /yaml-config-playground
+Γö£   /yaml-config-playground/[...slug]
+Γöé Γö£ ΓùÅ /yaml-config-playground/yaml-fundamentals
+Γöé Γö£ ΓùÅ /yaml-config-playground/yaml-fundamentals/core-syntax
+Γöé Γö£ ΓùÅ /yaml-config-playground/yaml-fundamentals/core-syntax/syntax-and-structure
+Γöé Γöö ΓùÅ [+51 more paths]
+Γöö Γùï /yaml-playground
+
+
+Γùï  (Static)   prerendered as static content
+ΓùÅ  (SSG)      prerendered as static HTML (uses generateStaticParams)
+╞Æ  (Dynamic)  server-rendered on demand
+

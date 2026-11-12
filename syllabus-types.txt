@@ -1,0 +1,35 @@
+    1: export type ExpandedTopic = {
+    2:   title: string;
+    3:   overview: string;
+    4:   purpose: string;
+    5:   architecture: string;
+    6:   workflow: string[];
+    7:   example: string;
+    8:   commands: string[];
+    9:   configuration: string;
+   10:   failures: string[];
+   11:   recovery: string[];
+   12:   bestPractices: string[];
+   13:   exercise: string;
+   14: };
+   15: 
+   16: const syllabus: Record<number, string[]> = {
+   17:   1: [
+   18:     "Java Fundamentals", "Java Project Structure", "Object-Oriented Programming",
+   19:     "Collections and Generics", "Exception Handling", "JVM Architecture",
+   20:     "Memory Management and Garbage Collection", "Maven Project Integration",
+   21:     "Spring Boot Fundamentals", "Spring Boot Application Structure",
+   22:     "Dependency Injection", "REST API Development", "Application Properties",
+   23:     "Profiles and Environment Configuration", "Logging and Actuator",
+   24:     "Production Hands-on Lab"
+   25:   ],
+   26:   2: [
+   27:     "Git and GitHub Fundamentals", "Repository Management", "Branching Strategy",
+   28:     "Commit History", "Pull Request Lifecycle", "Code Review",
+   29:     "Branch Protection Rules", "Merge Strategies", "Merge Conflict Resolution",
+   30:     "GitHub Webhooks", "GitHub Actions Integration", "Repository Secrets",
+   31:     "Tags and Releases", "Release Approval Workflow", "Troubleshooting",
+   32:     "Production Hands-on Lab"
+   33:   ],
+   34:   3: [
+   35:     "Jenkins Fundamentals", "Jenkins Architecture", "Controller and Agents",

@@ -1,0 +1,22 @@
+
+File                                                EnglishMapping TeluguMapping EnglishRows T
+                                                                                             e
+                                                                                             l
+                                                                                             u
+                                                                                             g
+                                                                                             u
+                                                                                             R
+                                                                                             o
+                                                                                             w
+                                                                                             s
+----                                                -------------- ------------- ----------- -
+cloud-aws-category-learning-content.ts                           0             1           0 0
+devsecops-security-category-learning-content.ts                  1             1           1 1
+fundamentals-category-learning-content.ts                        1             1           1 1
+gitops-category-learning-content.ts                              1             1           1 1
+iac-category-learning-content.ts                                 1             1           1 1
+linux-category-learning-content.ts                               1             1           1 1
+monitoring-category-learning-content.ts                          1             1           1 1
+production-reliability-category-learning-content.ts              1             1           1 1
+
+

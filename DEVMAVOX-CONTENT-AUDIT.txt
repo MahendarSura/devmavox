@@ -1,0 +1,65 @@
+**********************
+PowerShell transcript start
+Start time: 20261110142703
+Username: MAHENDRA\mahen
+RunAs User: MAHENDRA\mahen
+Configuration Name: 
+Machine: MAHENDRA (Microsoft Windows NT 10.0.26300.0)
+Host Application: C:\Program Files\WindowsApps\Microsoft.PowerShell_7.6.9.0_x64__8wekyb3d8bbwe\pwsh.dll -noexit -command try { . "c:\Users\mahen\AppData\Local\Programs\Microsoft VS Code\e646868227\resources\app\out\vs\workbench\contrib\terminal\common\scripts\shellIntegration.ps1" } catch {}
+Process ID: 14296
+PSVersion: 7.6.9
+PSEdition: Core
+GitCommitId: 7.6.9
+OS: Microsoft Windows 10.0.26300
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+DEV MAVOX CONTENT AUDIT
+Project: C:\Users\mahen\OneDrive\devmavox
+
+========== INTEGRATED STAGE DATA ==========
+stage-01.json: Topics=16, Sections=233, Expected=233, PASS
+stage-02.json: Topics=16, Sections=228, Expected=228, PASS
+stage-03.json: Topics=17, Sections=275, Expected=275, PASS
+stage-04.json: Topics=16, Sections=227, Expected=227, PASS
+stage-05.json: Topics=16, Sections=234, Expected=234, PASS
+stage-06.json: Topics=17, Sections=258, Expected=258, PASS
+stage-07.json: Topics=16, Sections=251, Expected=251, PASS
+stage-08.json: Topics=16, Sections=268, Expected=268, PASS
+stage-09.json: Topics=17, Sections=262, Expected=262, PASS
+stage-10.json: Topics=22, Sections=418, Expected=418, PASS
+stage-11.json: Topics=21, Sections=354, Expected=354, PASS
+stage-12.json: Topics=20, Sections=349, Expected=349, PASS
+
+----- INTEGRATED STAGE DATA SUMMARY -----
+Stage files : 12
+Topics      : 210
+Sections    : 3357
+Empty       : 0
+Below 250 characters : 0
+Repeated content hashes : 434
+
+========== GENERATED TOPIC LESSONS ==========
+
+----- GENERATED TOPIC LESSONS SUMMARY -----
+Stage files : 0
+Topics      : 0
+Sections    : 0
+Empty       : 0
+Below 250 characters : 0
+Repeated content hashes : 0
+
+========== LOCALHOST CHECK ==========
+http://localhost:3000/cicd-pipeline-visualizer : HTTP 200
+HTML response characters: 63627
+PS>TerminatingError(Invoke-WebRequest): "No connection could be made because the target machine actively refused it."
+http://localhost:3001/cicd-pipeline-visualizer : Not reachable
+
+Audit report: .\DEVMAVOX-CONTENT-AUDIT.txt
+**********************
+PowerShell transcript end
+End time: 20261110142712
+**********************

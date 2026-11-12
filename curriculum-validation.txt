@@ -1,0 +1,171 @@
+ 1480:   const stage = stages.find((item: any) => Number(item.id) === stageId);
+ 1481:   const profile = devMavoxBulkProfiles[stageId];
+ 1482: 
+ 1483:   if (!stage || !Array.isArray(stage.topics) || stage.topics.length < 3) {
+ 1484:     throw new Error(`Stage ${stageId} must exist and contain exactly 3 topics.`);
+ 1485:   }
+ 1486: 
+ 1487:   if (!profile) {
+ 1488:     throw new Error(`Missing detailed profile for stage ${stageId}.`);
+ 1489:   }
+ 1490: 
+ 1491:   stage.topics.forEach((topic: any, index: number) => {
+ 1492:     const focus = profile.focus[index];
+ 1493:     const title = topic.title || `Topic ${index + 1}`;
+ 1494: 
+ 1495:     const details = {
+ 1496:       overview:
+ 1497:         `${title} in ${profile.tool} focuses on ${focus}. ` +
+ 1498:         `In a real delivery pipeline, this area determines how the application moves from a source change to a verified, deployable result. ` +
+ 1499:         `The team must understand the inputs, execution steps, generated evidence and failure conditions. ` +
+ 1500:         `Operators should be able to identify which component owns each action and how to prove that the action completed correctly. ` +
+ 1501:         `This topic connects implementation details with reliability, security and repeatable production delivery.`,
+ 1502: 
+ 1503:       purpose:
+ 1504:         `The business purpose of ${title} is to make ${String(focus ?? title ?? "the release process").toLowerCase()} predictable and auditable. ` +
+ 1505:         `Without this control, teams can release untested changes, lose traceability or discover configuration problems only after deployment. ` +
+ 1506:         `A controlled implementation reduces manual work, shortens investigation time and provides evidence for release decisions. ` +
+ 1507:         `For a payment application, the team must be able to connect a source commit to the exact build, validation result and production behavior. ` +
+ 1508:         `The expected outcome is not merely a green pipeline; it is a repeatable process with clear ownership and measurable results.`,
+ 1509: 
+ 1510:       architecture:
+ 1511:         `${profile.architecture} ` +
+ 1512:         `For the topic '${title}', identify the upstream input, the responsible service or controller, the configuration boundary and the downstream output. ` +
+ 1513:         `Record the identity used by the component, the network path, the relevant logs and the state that proves completion. ` +
+ 1514:         `In production, separate control-plane coordination from workload execution and avoid giving one component unnecessary privileges. ` +
+ 1515:         `The design should also define timeout behavior, retry boundaries, failure reporting and a safe recovery path.`,
+ 1516: 
+ 1517:       workflow: [
+ 1518:         `Start with the purpose of '${title}' and identify the exact source, configuration or runtime object being processed.`,
+ 1519:         `Verify prerequisites such as tool version, identity permissions, network connectivity, required files and target environment.`,
+ 1520:         `Execute the operation using a version-controlled configuration and capture its input revision or artifact identifier.`,
+ 1521:         `Inspect the component's status, logs and generated output instead of relying only on the command exit message.`,
+ 1522:         `Validate the result from the downstream consumer's perspective, including health, permissions and expected application behavior.`,
+ 1523:         `Record the outcome, evidence and any corrective action so the same procedure can be repeated during an incident.`
+ 1524:       ],
+ 1525: 
+ 1526:       example:
+ 1527:         `${profile.example} ` +
+ 1528:         `For '${title}', the engineer records the source commit, the configuration revision and the generated artifact identifier. ` +
+ 1529:         `The team checks the operation's status and verifies the result at the next pipeline boundary. ` +
+ 1530:         `If validation fails, promotion stops and the failure is investigated before any production change is approved.`,
+ 1531: 
+ 1532:       commands: profile.commands.concat([
+ 1533:         `# Inspect the relevant ${profile.tool} configuration and execution output`,
+ 1534:         `# Capture the exact version, target, status and artifact identifier before promotion`
+ 1535:       ]),
+ 1536: 
+ 1537:       configuration:
+ 1538:         `${profile.configuration}\n\n` +
+ 1539:         `Operational checks for '${title}':\n` +
+ 1540:         `- Keep environment-specific values outside reusable application logic.\n` +
+ 1541:         `- Inject credentials through the approved secret-management mechanism.\n` +
+ 1542:         `- Pin tool and dependency versions where reproducibility matters.\n` +
+ 1543:         `- Set explicit timeouts and resource boundaries for long-running operations.\n` +
+ 1544:         `- Record the source revision and immutable artifact reference used by the release.`,
+ 1545: 
+ 1546:       failures: profile.failures.concat([
+ 1547:         `The operation reports success, but the downstream stage receives an unexpected version or incomplete output.`,
+ 1548:         `A configuration change works in one environment but fails in another because an implicit default differs.`
+ 1549:       ]),
+ 1550: 
+ 1551:       recovery: profile.recovery.concat([
+ 1552:         `Compare the last known-good run with the failed run, including revisions, environment variables, tool versions and permissions.`,
+ 1553:         `Reproduce the failure in a non-production environment, correct the root cause and rerun validation before promoting the result.`
+ 1554:       ]),
+ 1555: 
+ 1556:       bestPractices: profile.bestPractices.concat([
+ 1557:         `Keep configuration and operational procedures in version control with peer review.`,
+ 1558:         `Attach logs, test results and artifact identifiers to the pipeline run for later audit and incident investigation.`,
+ 1559:         `Make recovery reversible and verify application health after every corrective action.`
+ 1560:       ]),
+ 1561: 
+ 1562:       exercise: profile.exercise.concat([
+ 1563:         `Document the expected successful result and at least two failure symptoms for '${title}'.`,
+ 1564:         `Perform a controlled failure in a test environment, collect evidence, apply recovery and verify the final state.`
+ 1565:       ]),
+ 1566:     };
+ 1567: 
+ 1568:     for (const field of devMavoxRequiredFields) {
+ 1569:       if (!(field in details)) {
+ 1570:         throw new Error(`Missing ${field} for stage ${stageId}, topic ${index + 1}.`);
+ 1571:       }
+ 1572:     }
+ 1573: 
+ 1574:     Object.assign(topic, details);
+ 1575:     devMavoxUpdatedTopics++;
+ 1576:     devMavoxUpdatedSections += devMavoxRequiredFields.length;
+ 1577:   });
+ 1578: }
+ 1579: 
+ 1580: /*
+ 1581:  * Final learning model:
+ 1582:  * 12 stages x exactly 3 topics x exactly 11 learning sections = 396 sections.
+ 1583:  * Extra historical topics are intentionally excluded from the 12-stage curriculum.
+ 1584:  */
+ 1585: for (const stage of stages) {
+ 1586:   if (!Array.isArray(stage.topics) || stage.topics.length < 3) {
+ 1587:     throw new Error(`Stage ${stage.id} must contain at least 3 topics before curriculum normalization.`);
+ 1588:   }
+ 1589: 
+ 1590:   if (stage.topics.length > 3) {
+ 1591:     stage.topics.splice(3);
+ 1592:   }
+ 1593: 
+ 1594:   for (const topic of stage.topics) {
+ 1595:     delete (topic as any).interview;
+ 1596:   }
+ 1597: }
+ 1598: 
+ 1599: const finalTopicCount = stages.reduce((total, item) => total + item.topics.length, 0);
+ 1600: const finalSectionCount = finalTopicCount * 11;
+ 1601: const requiredTopicFields = [
+ 1602:   "overview", "purpose", "architecture", "workflow", "example",
+ 1603:   "commands", "configuration", "failures", "recovery",
+ 1604:   "bestPractices", "exercise"
+ 1605: ];
+ 1606: 
+ 1607: if (stages.length !== 12 || finalTopicCount !== 36 || finalSectionCount !== 396) {
+ 1608:   throw new Error(`CI/CD curriculum validation failed: ${stages.length} stages, ${finalTopicCount} topics, ${finalSectionCount} sections.`);
+ 1609: }
+ 1610: 
+ 1611: for (const stage of stages) {
+ 1612:   for (const topic of stage.topics) {
+ 1613:     for (const field of requiredTopicFields) {
+ 1614:       if (!(field in topic) || (topic as any)[field] == null) {
+ 1615:         throw new Error(`Missing learning section '${field}' in Stage ${stage.id}, topic '${topic.title}'.`);
+ 1616:       }
+ 1617:     }
+ 1618:   }
+ 1619: }
+ 1620: 
+ 1621: console.log("DEVMAVOX CI/CD CURRICULUM VALIDATION PASSED");
+ 1622: console.log("Stages: " + stages.length);
+ 1623: console.log("Topics: " + finalTopicCount);
+ 1624: console.log("Learning sections: " + finalSectionCount);
+ 1625: console.log("Sections per topic: 11");
+ 1626: console.log("Expanded topics processed before curriculum filtering: " + devMavoxUpdatedTopics);
+ 1627: console.log("Generated section fields processed before curriculum filtering: " + devMavoxUpdatedSections);
+ 1628: console.log("Interview question content: removed");
+ 1629: // END DEVMAVOX_BULK_CONTENT_STAGES_3_TO_12
+ 1630: 
+ 1631: // Expanded stage-specific learning syllabus. Existing stage IDs and simulator remain intact.
+ 1632: stages.forEach((stage) => {
+ 1633:   stage.topics = buildCicdStageTopics(stage.id).map((topic) => {
+ 1634:     const lesson = getCicdTopicLesson(stage.id, topic.title);
+ 1635: 
+ 1636:     if (!lesson) {
+ 1637:       throw new Error(
+ 1638:         `Missing CI/CD lesson for stage ${stage.id}: ${topic.title}`
+ 1639:       );
+ 1640:     }
+ 1641: 
+ 1642:     return {
+ 1643:       ...topic,
+ 1644:       ...lesson,
+ 1645:     };
+ 1646:   });
+ 1647: });
+ 1648: export default function CicdPipelineVisualizerPage() {
+ 1649:   const [selectedStage, setSelectedStage] = useState(0);
+ 1650:   const [selectedTopic, setSelectedTopic] = useState(0);
