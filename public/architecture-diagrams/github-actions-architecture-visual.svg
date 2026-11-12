@@ -1,33 +1,103 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
-<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#64748b"/></marker></defs>
-<rect width="1200" height="760" rx="24" fill="#0b1220"/>
-<text x='600' y='58' text-anchor='middle' fill='#f8fafc' font-size='30' font-family='Arial' font-weight='700'>GitHub Actions</text>
-<text x='600' y='88' text-anchor='middle' fill='#94a3b8' font-size='15' font-family='Arial'>DevMavox Production Architecture Diagram</text>
-<rect x='35' y='260' width='190' height='110' rx='14' fill='#172554' stroke='#60a5fa' stroke-width='2'/>
-<text x='130' y='305' text-anchor='middle' fill='#eff6ff' font-size='16' font-family='Arial'>Git Push or Pull Request</text>
-<text x='130' y='332' text-anchor='middle' fill='#93c5fd' font-size='12' font-family='Arial'>Component 1</text>
-<line x1='225' y1='(315)' x2='253' y2='(315)' stroke='#64748b' stroke-width='3' marker-end='url(#arrow)'/>
-<rect x='263' y='260' width='190' height='110' rx='14' fill='#172554' stroke='#60a5fa' stroke-width='2'/>
-<text x='358' y='305' text-anchor='middle' fill='#eff6ff' font-size='16' font-family='Arial'>Workflow Trigger</text>
-<text x='358' y='332' text-anchor='middle' fill='#93c5fd' font-size='12' font-family='Arial'>Component 2</text>
-<line x1='453' y1='(315)' x2='481' y2='(315)' stroke='#64748b' stroke-width='3' marker-end='url(#arrow)'/>
-<rect x='491' y='260' width='190' height='110' rx='14' fill='#172554' stroke='#60a5fa' stroke-width='2'/>
-<text x='586' y='305' text-anchor='middle' fill='#eff6ff' font-size='16' font-family='Arial'>Jobs and Dependencies</text>
-<text x='586' y='332' text-anchor='middle' fill='#93c5fd' font-size='12' font-family='Arial'>Component 3</text>
-<line x1='681' y1='(315)' x2='709' y2='(315)' stroke='#64748b' stroke-width='3' marker-end='url(#arrow)'/>
-<rect x='719' y='260' width='190' height='110' rx='14' fill='#172554' stroke='#60a5fa' stroke-width='2'/>
-<text x='814' y='305' text-anchor='middle' fill='#eff6ff' font-size='16' font-family='Arial'>Hosted or Self-Hosted Runner</text>
-<text x='814' y='332' text-anchor='middle' fill='#93c5fd' font-size='12' font-family='Arial'>Component 4</text>
-<line x1='909' y1='(315)' x2='937' y2='(315)' stroke='#64748b' stroke-width='3' marker-end='url(#arrow)'/>
-<rect x='947' y='260' width='190' height='110' rx='14' fill='#172554' stroke='#60a5fa' stroke-width='2'/>
-<text x='1042' y='305' text-anchor='middle' fill='#eff6ff' font-size='16' font-family='Arial'>Build and Test</text>
-<text x='1042' y='332' text-anchor='middle' fill='#93c5fd' font-size='12' font-family='Arial'>Component 5</text>
-<line x1='1137' y1='(315)' x2='1165' y2='(315)' stroke='#64748b' stroke-width='3' marker-end='url(#arrow)'/>
-<rect x='1175' y='260' width='190' height='110' rx='14' fill='#172554' stroke='#60a5fa' stroke-width='2'/>
-<text x='1270' y='305' text-anchor='middle' fill='#eff6ff' font-size='16' font-family='Arial'>Artifact and Deploy</text>
-<text x='1270' y='332' text-anchor='middle' fill='#93c5fd' font-size='12' font-family='Arial'>Component 6</text>
-<rect x='100' y='470' width='1000' height='150' rx='16' fill='#111827' stroke='#475569'/>
-<text x='130' y='510' fill='#f8fafc' font-size='19' font-family='Arial' font-weight='700'>Production controls</text>
-<text x='130' y='550' fill='#cbd5e1' font-size='15' font-family='Arial'>Security: least privilege | Resilience: health checks and recovery | Operations: logs, metrics and alerts</text>
-<text x='130' y='585' fill='#cbd5e1' font-size='15' font-family='Arial'>Failure review: Compromised actions, excessive token permissions, runner persistence, secret exposure and race conditions between workflows</text>
+<svg xmlns='http://www.w3.org/2000/svg' width='1240' height='960' viewBox='0 0 1240 960'>
+<defs><linearGradient id='bg' x2='0' y2='1'><stop stop-color='#0b1930'/><stop offset='1' stop-color='#07111f'/></linearGradient><marker id='arr' markerWidth='10' markerHeight='10' refX='8' refY='4' orient='auto'><path d='M0 0 L0 8 L9 4Z' fill='#cbd5e1'/></marker></defs>
+<rect width='100%' height='100%' fill='url(#bg)'/>
+<text x='55' y='48' fill='#67e8f9' font-size='16' font-weight='700' letter-spacing='3'>DEVMAVOX · PRODUCTION REFERENCE ARCHITECTURE</text>
+<text x='55' y='105' fill='white' font-size='34' font-weight='800'>GitHub Actions Architecture</text>
+<text x='55' y='145' fill='#94a3b8' font-size='15'>Component topology · trust boundaries · directional service relationships</text>
+<rect x='55' y='175' width='273' height='44' rx='9' fill='#12324a' stroke='#64748b' stroke-opacity='.65'/>
+<text x='67' y='202' fill='#e2e8f0' font-size='12' font-weight='700'>GITHUB CONTROL PLANE</text>
+<rect x='340' y='175' width='273' height='44' rx='9' fill='#19334b' stroke='#64748b' stroke-opacity='.65'/>
+<text x='352' y='202' fill='#e2e8f0' font-size='12' font-weight='700'>WORKFLOW GOVERNANCE</text>
+<rect x='625' y='175' width='273' height='44' rx='9' fill='#183b35' stroke='#64748b' stroke-opacity='.65'/>
+<text x='637' y='202' fill='#e2e8f0' font-size='12' font-weight='700'>RUNNER EXECUTION</text>
+<rect x='910' y='175' width='273' height='44' rx='9' fill='#382b4c' stroke='#64748b' stroke-opacity='.65'/>
+<text x='922' y='202' fill='#e2e8f0' font-size='12' font-weight='700'>ARTIFACT AND RELEASE</text>
+<path d='M 235 325 C 427.5 325, 427.5 325, 620 325' fill='none' stroke='#a5b4fc' stroke-width='2.5' marker-end='url(#arr)' opacity='.9'/>
+<rect x='382.5' y='312' width='90' height='22' rx='6' fill='#111f34' stroke='#475569'/>
+<text x='427.5' y='327' fill='#cbd5e1' text-anchor='middle' font-size='10'>Trigger</text>
+<path d='M 620 325 C 427.5 325, 427.5 520, 235 520' fill='none' stroke='#a5b4fc' stroke-width='2.5' marker-end='url(#arr)' opacity='.9'/>
+<rect x='382.5' y='409.5' width='90' height='22' rx='6' fill='#111f34' stroke='#475569'/>
+<text x='427.5' y='424.5' fill='#cbd5e1' text-anchor='middle' font-size='10'>Dispatch</text>
+<path d='M 1005 325 C 1005 325, 1005 715, 1005 715' fill='none' stroke='#a5b4fc' stroke-width='2.5' marker-end='url(#arr)' opacity='.9'/>
+<rect x='960' y='507' width='90' height='22' rx='6' fill='#111f34' stroke='#475569'/>
+<text x='1005' y='522' fill='#cbd5e1' text-anchor='middle' font-size='10'>Federated identity</text>
+<path d='M 235 520 C 427.5 520, 427.5 520, 620 520' fill='none' stroke='#a5b4fc' stroke-width='2.5' marker-end='url(#arr)' opacity='.9'/>
+<rect x='382.5' y='507' width='90' height='22' rx='6' fill='#111f34' stroke='#475569'/>
+<text x='427.5' y='522' fill='#cbd5e1' text-anchor='middle' font-size='10'>Execute</text>
+<path d='M 620 520 C 812.5 520, 812.5 520, 1005 520' fill='none' stroke='#a5b4fc' stroke-width='2.5' marker-end='url(#arr)' opacity='.9'/>
+<rect x='767.5' y='507' width='90' height='22' rx='6' fill='#111f34' stroke='#475569'/>
+<text x='812.5' y='522' fill='#cbd5e1' text-anchor='middle' font-size='10'>Validate</text>
+<path d='M 1005 520 C 620 520, 620 715, 235 715' fill='none' stroke='#a5b4fc' stroke-width='2.5' marker-end='url(#arr)' opacity='.9'/>
+<rect x='575' y='604.5' width='90' height='22' rx='6' fill='#111f34' stroke='#475569'/>
+<text x='620' y='619.5' fill='#cbd5e1' text-anchor='middle' font-size='10'>Publish</text>
+<path d='M 235 715 C 427.5 715, 427.5 715, 620 715' fill='none' stroke='#a5b4fc' stroke-width='2.5' marker-end='url(#arr)' opacity='.9'/>
+<rect x='382.5' y='702' width='90' height='22' rx='6' fill='#111f34' stroke='#475569'/>
+<text x='427.5' y='717' fill='#cbd5e1' text-anchor='middle' font-size='10'>Release candidate</text>
+<path d='M 620 715 C 812.5 715, 812.5 715, 1005 715' fill='none' stroke='#a5b4fc' stroke-width='2.5' marker-end='url(#arr)' opacity='.9'/>
+<rect x='767.5' y='702' width='90' height='22' rx='6' fill='#111f34' stroke='#475569'/>
+<text x='812.5' y='717' fill='#cbd5e1' text-anchor='middle' font-size='10'>Approved deploy</text>
+<g>
+<rect x='65' y='250' width='340' height='150' rx='13' fill='#12243a' stroke='#38bdf8' stroke-width='2.5'/>
+<rect x='65' y='250' width='8' height='150' rx='4' fill='#38bdf8'/>
+<text x='88' y='290' fill='#f8fafc' font-size='19' font-weight='700'>GitHub Repository</text>
+<text x='88' y='323' fill='#cbd5e1' font-size='13'>Push and pull request events</text>
+<text x='88' y='365' fill='#38bdf8' font-size='11' font-weight='700'>EDGE</text>
+</g>
+<g>
+<rect x='450' y='250' width='340' height='150' rx='13' fill='#12243a' stroke='#34d399' stroke-width='2.5'/>
+<rect x='450' y='250' width='8' height='150' rx='4' fill='#34d399'/>
+<text x='473' y='290' fill='#f8fafc' font-size='19' font-weight='700'>Workflow YAML</text>
+<text x='473' y='323' fill='#cbd5e1' font-size='13'>Jobs permissions and dependencies</text>
+<text x='473' y='365' fill='#34d399' font-size='11' font-weight='700'>COMPUTE</text>
+</g>
+<g>
+<rect x='835' y='250' width='340' height='150' rx='13' fill='#12243a' stroke='#fb7185' stroke-width='2.5'/>
+<rect x='835' y='250' width='8' height='150' rx='4' fill='#fb7185'/>
+<text x='858' y='290' fill='#f8fafc' font-size='19' font-weight='700'>OIDC Federation</text>
+<text x='858' y='323' fill='#cbd5e1' font-size='13'>Short-lived cloud credentials</text>
+<text x='858' y='365' fill='#fb7185' font-size='11' font-weight='700'>SECURITY</text>
+</g>
+<g>
+<rect x='65' y='445' width='340' height='150' rx='13' fill='#12243a' stroke='#34d399' stroke-width='2.5'/>
+<rect x='65' y='445' width='8' height='150' rx='4' fill='#34d399'/>
+<text x='88' y='485' fill='#f8fafc' font-size='19' font-weight='700'>Hosted / Self-hosted Runner</text>
+<text x='88' y='518' fill='#cbd5e1' font-size='13'>Isolated job execution</text>
+<text x='88' y='560' fill='#34d399' font-size='11' font-weight='700'>COMPUTE</text>
+</g>
+<g>
+<rect x='450' y='445' width='340' height='150' rx='13' fill='#12243a' stroke='#34d399' stroke-width='2.5'/>
+<rect x='450' y='445' width='8' height='150' rx='4' fill='#34d399'/>
+<text x='473' y='485' fill='#f8fafc' font-size='19' font-weight='700'>Build and Test Jobs</text>
+<text x='473' y='518' fill='#cbd5e1' font-size='13'>Parallel validation</text>
+<text x='473' y='560' fill='#34d399' font-size='11' font-weight='700'>COMPUTE</text>
+</g>
+<g>
+<rect x='835' y='445' width='340' height='150' rx='13' fill='#12243a' stroke='#fb7185' stroke-width='2.5'/>
+<rect x='835' y='445' width='8' height='150' rx='4' fill='#fb7185'/>
+<text x='858' y='485' fill='#f8fafc' font-size='19' font-weight='700'>Code and Image Scanning</text>
+<text x='858' y='518' fill='#cbd5e1' font-size='13'>Supply-chain security</text>
+<text x='858' y='560' fill='#fb7185' font-size='11' font-weight='700'>SECURITY</text>
+</g>
+<g>
+<rect x='65' y='640' width='340' height='150' rx='13' fill='#12243a' stroke='#c084fc' stroke-width='2.5'/>
+<rect x='65' y='640' width='8' height='150' rx='4' fill='#c084fc'/>
+<text x='88' y='680' fill='#f8fafc' font-size='19' font-weight='700'>Package / Container Registry</text>
+<text x='88' y='713' fill='#cbd5e1' font-size='13'>Build outputs</text>
+<text x='88' y='755' fill='#c084fc' font-size='11' font-weight='700'>DATA</text>
+</g>
+<g>
+<rect x='450' y='640' width='340' height='150' rx='13' fill='#12243a' stroke='#fb7185' stroke-width='2.5'/>
+<rect x='450' y='640' width='8' height='150' rx='4' fill='#fb7185'/>
+<text x='473' y='680' fill='#f8fafc' font-size='19' font-weight='700'>Environment Approval</text>
+<text x='473' y='713' fill='#cbd5e1' font-size='13'>Protected deployment gate</text>
+<text x='473' y='755' fill='#fb7185' font-size='11' font-weight='700'>SECURITY</text>
+</g>
+<g>
+<rect x='835' y='640' width='340' height='150' rx='13' fill='#12243a' stroke='#34d399' stroke-width='2.5'/>
+<rect x='835' y='640' width='8' height='150' rx='4' fill='#34d399'/>
+<text x='858' y='680' fill='#f8fafc' font-size='19' font-weight='700'>Cloud Deployment</text>
+<text x='858' y='713' fill='#cbd5e1' font-size='13'>Approved release</text>
+<text x='858' y='755' fill='#34d399' font-size='11' font-weight='700'>COMPUTE</text>
+</g>
+<text x='55' y='925' fill='#94a3b8' font-size='12'>Reference design only · Validate CIDRs, IAM, availability, quotas and recovery objectives before production deployment.</text>
 </svg>
