@@ -1598,36 +1598,9 @@ for (const stage of stages) {
   }
 }
 
-const finalTopicCount = stages.reduce((total, item) => total + item.topics.length, 0);
-const finalSectionCount = finalTopicCount * 11;
-const requiredTopicFields = [
-  "overview", "purpose", "architecture", "workflow", "example",
-  "commands", "configuration", "failures", "recovery",
-  "bestPractices", "exercise"
-];
-
-if (stages.length !== 12 || finalTopicCount !== 36 || finalSectionCount !== 396) {
-  throw new Error(`CI/CD curriculum validation failed: ${stages.length} stages, ${finalTopicCount} topics, ${finalSectionCount} sections.`);
+if (stages.length !== 12) {
+  throw new Error(`CI/CD pipeline must contain 12 stages; found ${stages.length}.`);
 }
-
-for (const stage of stages) {
-  for (const topic of stage.topics) {
-    for (const field of requiredTopicFields) {
-      if (!(field in topic) || (topic as any)[field] == null) {
-        throw new Error(`Missing learning section '${field}' in Stage ${stage.id}, topic '${topic.title}'.`);
-      }
-    }
-  }
-}
-
-console.log("DEVMAVOX CI/CD CURRICULUM VALIDATION PASSED");
-console.log("Stages: " + stages.length);
-console.log("Topics: " + finalTopicCount);
-console.log("Learning sections: " + finalSectionCount);
-console.log("Sections per topic: 11");
-console.log("Expanded topics processed before curriculum filtering: " + devMavoxUpdatedTopics);
-console.log("Generated section fields processed before curriculum filtering: " + devMavoxUpdatedSections);
-console.log("Interview question content: removed");
 // END DEVMAVOX_BULK_CONTENT_STAGES_3_TO_12
 
 // Expanded stage-specific learning syllabus with individually mapped navigation lessons.
@@ -1660,7 +1633,75 @@ stages.forEach((stage) => {
       sections: freshTopic.sections,
     };
   });
-});
+})
+
+// Validate the complete stage-wise lesson data that is rendered in the Learning Center.
+const expectedNavigationCounts: Record<number, number> = {
+  1: 16, 2: 16, 3: 17, 4: 16, 5: 16, 6: 17,
+  7: 16, 8: 16, 9: 17, 10: 22, 11: 21, 12: 20,
+};
+const verifiedSectionIds = new Set<string>();
+let verifiedNavigationCount = 0;
+let verifiedSectionCount = 0;
+
+for (const stage of stages) {
+  const lessons = freshStageLessons[stage.id as keyof typeof freshStageLessons] as unknown as Array<{
+    topicTitle: string;
+    sections: Array<{ id?: string; title?: string; content?: string }>;
+  }>;
+  const expectedCount = expectedNavigationCounts[stage.id];
+
+  if (!Array.isArray(lessons) || lessons.length !== expectedCount) {
+    throw new Error(`Stage ${stage.id} expected ${expectedCount} lesson navigations; found ${lessons?.length ?? 0}.`);
+  }
+  if (stage.topics.length !== expectedCount) {
+    throw new Error(`Stage ${stage.id} rendered topic count does not match its lesson data.`);
+  }
+
+  for (let topicIndex = 0; topicIndex < expectedCount; topicIndex++) {
+    const topic = stage.topics[topicIndex];
+    const lesson = lessons[topicIndex];
+
+    if (topic.title !== lesson.topicTitle) {
+      throw new Error(`Stage ${stage.id} navigation order mismatch at item ${topicIndex + 1}: '${topic.title}' vs '${lesson.topicTitle}'.`);
+    }
+    if (!Array.isArray(lesson.sections) || lesson.sections.length === 0) {
+      throw new Error(`Missing sections for Stage ${stage.id}: ${lesson.topicTitle}.`);
+    }
+
+    const sectionTitles = new Set<string>();
+    for (const section of lesson.sections) {
+      if (!section.id || !section.title || typeof section.content !== "string" || !section.content.trim()) {
+        throw new Error(`Incomplete section metadata in Stage ${stage.id}: ${lesson.topicTitle}.`);
+      }
+      if (section.content.trim().length < 500) {
+        throw new Error(`Section below 500 characters in Stage ${stage.id}: ${lesson.topicTitle} / ${section.title}.`);
+      }
+      if (verifiedSectionIds.has(section.id)) {
+        throw new Error(`Duplicate global section ID: ${section.id}.`);
+      }
+      if (sectionTitles.has(section.title)) {
+        throw new Error(`Duplicate section heading in Stage ${stage.id}: ${lesson.topicTitle} / ${section.title}.`);
+      }
+      verifiedSectionIds.add(section.id);
+      sectionTitles.add(section.title);
+      verifiedSectionCount++;
+    }
+    verifiedNavigationCount++;
+  }
+}
+
+if (verifiedNavigationCount !== 210) {
+  throw new Error(`Expected 210 learning navigations; validated ${verifiedNavigationCount}.`);
+}
+console.log("DEVMAVOX STAGE-WISE LEARNING DATA VALIDATION PASSED");
+console.log("Stages: " + stages.length);
+console.log("Navigation topics: " + verifiedNavigationCount);
+console.log("Detailed learning sections: " + verifiedSectionCount);
+console.log("Minimum section content length: 500 characters");
+console.log("Section IDs: globally unique");
+console.log("Navigation titles and order: matched to the rendered syllabus");
+;
 export default function CicdPipelineVisualizerPage() {
   const [selectedStage, setSelectedStage] = useState(0);
   const [selectedTopic, setSelectedTopic] = useState(0);

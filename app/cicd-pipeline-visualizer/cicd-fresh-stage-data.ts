@@ -1,5 +1,5 @@
 // Generated DevMavox CI/CD lesson data
-// 210 navigation topics and 3,357 lesson sections
+// 210 navigation topics and 2,461 lesson sections
 
 import stage01 from './integrated-stage-data/stage-01.json';
 import stage02 from './integrated-stage-data/stage-02.json';
