@@ -58,7 +58,10 @@ export default function ArchitectureTopicPage({
           </div>
         </header>
         <ArchitectureDiagramViewer
+          key={content.title}
           provider={content.title.toLowerCase().includes("azure") ? "azure" : content.title.toLowerCase().includes("gcp") ? "gcp" : content.title.toLowerCase().includes("hybrid") ? "hybrid" : content.title.toLowerCase().includes("multi-cloud") ? "multicloud" : "aws"}
+          topicTitle={content.title}
+          diagram={content.diagram}
         />
 
         <section className="mt-8 rounded-2xl border border-slate-800 bg-slate-900/80 p-6">
@@ -79,7 +82,7 @@ export default function ArchitectureTopicPage({
           </p>
           <h2 className="mt-2 text-2xl font-bold text-white">How the components connect</h2>
           <p className="mt-2 text-sm leading-7 text-slate-400">
-            Read the flow from the user entry point toward application compute and persistent data. Each layer has a specific responsibility and security boundary.
+            Follow the {content.title} architecture flow below. Each step represents a topic-specific component, responsibility or operational boundary.
           </p>
           <div className="mt-6 space-y-2">
             {content.diagram.map((item, index) => (

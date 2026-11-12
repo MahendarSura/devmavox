@@ -370,12 +370,44 @@ const MODES = [
 type Mode = typeof MODES[number]["id"];
 
 export default function ArchitectureDiagramViewer({
-  provider
+  provider,
+  topicTitle,
+  diagram
 }: {
   provider: Provider;
+  topicTitle?: string;
+  diagram?: string[];
 }) {
-  const nodes = provider === "multicloud" ? MULTICLOUD_NODES : provider === "azure" ? AZURE_NODES : provider === "gcp" ? GCP_NODES : provider === "hybrid" ? HYBRID_NODES : AWS_NODES;
-  const [selectedId, setSelectedId] = useState("alb");
+  const providerNodes = provider === "multicloud" ? MULTICLOUD_NODES : provider === "azure" ? AZURE_NODES : provider === "gcp" ? GCP_NODES : provider === "hybrid" ? HYBRID_NODES : AWS_NODES;
+
+  const topicNodes: DiagramNode[] = (diagram ?? []).map((step, index) => {
+    const value = step.toLowerCase();
+
+    const layer: Layer =
+      /dns|user|client|internet|edge|cdn|ingress/.test(value) ? "edge" :
+      /network|vpc|subnet|route|gateway|firewall|load balanc|connectivity/.test(value) ? "network" :
+      /database|storage|s3|persistent|state|backup|queue|data/.test(value) ? "data" :
+      /security|iam|identity|secret|policy|monitor|logging|audit|observability/.test(value) ? "security" :
+      "compute";
+
+    return {
+      id: `topic-${index}`,
+      title: step,
+      subtitle: `Architecture flow · Step ${String(index + 1).padStart(2, "0")}`,
+      detail: `${topicTitle ?? "Architecture"}: ${step}. This is a topic-specific architecture element. Review its dependencies, access boundaries, configuration, operational health and failure behavior in the technical sections below.`,
+      layer,
+      x: 250,
+      y: 45 + index * 92,
+      width: 500,
+      height: 64
+    };
+  });
+
+  const nodes = topicNodes.length > 0 ? topicNodes : providerNodes;
+  const diagramHeight = topicNodes.length > 0 ? Math.max(720, topicNodes.length * 92 + 110) : 720;
+  const exportBaseName = (topicTitle || provider).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+  const [selectedId, setSelectedId] = useState("topic-0");
   const [mode, setMode] = useState<Mode>("overview");
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -412,7 +444,7 @@ export default function ArchitectureDiagramViewer({
     const clone = original.cloneNode(true) as SVGSVGElement;
     clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
     clone.setAttribute("width", "1600");
-    clone.setAttribute("height", "1152");
+    clone.setAttribute("height", String(diagramHeight));
 
     const source = new XMLSerializer().serializeToString(clone);
     const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
@@ -420,7 +452,7 @@ export default function ArchitectureDiagramViewer({
     const link = document.createElement("a");
 
     link.href = url;
-    link.download = `${provider}-architecture-diagram.svg`;
+    link.download = `${exportBaseName}-architecture-diagram.svg`;
     link.click();
 
     URL.revokeObjectURL(url);
@@ -433,7 +465,7 @@ export default function ArchitectureDiagramViewer({
     const clone = original.cloneNode(true) as SVGSVGElement;
     clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
     clone.setAttribute("width", "1600");
-    clone.setAttribute("height", "1152");
+    clone.setAttribute("height", String(diagramHeight));
 
     const source = new XMLSerializer().serializeToString(clone);
     const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
@@ -456,7 +488,7 @@ export default function ArchitectureDiagramViewer({
             const pngUrl = URL.createObjectURL(png);
             const link = document.createElement("a");
             link.href = pngUrl;
-            link.download = `${provider}-architecture-diagram.png`;
+            link.download = `${exportBaseName}-architecture-diagram.png`;
             link.click();
             URL.revokeObjectURL(pngUrl);
           }
@@ -537,7 +569,7 @@ export default function ArchitectureDiagramViewer({
               Interactive architecture visualizer
             </p>
             <h2 className="mt-2 text-2xl font-black text-white">
-              {provider === "azure" ? "Microsoft Azure" : provider === "gcp" ? "Google Cloud Platform" : provider === "hybrid" ? "Hybrid Cloud" : provider === "multicloud" ? "Multi-Cloud Architecture" : "Amazon Web Services"} · Reference Design
+              {topicTitle || (provider === "azure" ? "Microsoft Azure" : provider === "gcp" ? "Google Cloud Platform" : provider === "hybrid" ? "Hybrid Cloud" : provider === "multicloud" ? "Multi-Cloud Architecture" : "Amazon Web Services")} · Reference Design
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-400">
               Select a component to understand its responsibility. Drag the diagram to pan,
@@ -549,11 +581,12 @@ export default function ArchitectureDiagramViewer({
           </span>
         </div>
 
-        <img
-          src={`/architecture-diagrams/${provider}-architecture-visual.svg`}
-          alt={`${provider.toUpperCase()} cloud architecture visual illustration`}
-          className="mt-5 max-h-44 w-full rounded-2xl border border-slate-800 bg-[#07111f] object-cover"
-        />
+        <div className="mt-5 rounded-xl border border-cyan-500/20 bg-[#07111f] p-4">
+          <p className="text-sm font-bold text-cyan-200">{topicTitle || "Architecture"} · Topic-specific component flow</p>
+          <p className="mt-2 text-xs leading-6 text-slate-400">
+            The interactive diagram below is generated from this topic's own architecture flow, not from a shared AWS illustration.
+          </p>
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 p-4">
@@ -594,9 +627,9 @@ export default function ArchitectureDiagramViewer({
         <div className="overflow-hidden rounded-2xl border border-slate-800 bg-[#081525]">
           <svg
             ref={svgRef}
-            viewBox="0 0 1000 720"
+            viewBox={`0 0 1000 ${diagramHeight}`}
             role="img"
-            aria-label={`${provider} reference architecture diagram`}
+            aria-label={`${topicTitle || provider} topic-specific architecture diagram`}
             className="block h-auto w-full select-none"
             style={{ cursor: dragging ? "grabbing" : "grab", touchAction: "none" }}
             onPointerDown={startPan}
@@ -617,25 +650,31 @@ export default function ArchitectureDiagramViewer({
             <rect width="1000" height="720" fill="url(#architecture-background)" />
 
             <g transform={`translate(${pan.x} ${pan.y}) scale(${zoom})`}>
-              <rect x="65" y="365" width="870" height="245" rx="22" fill="#0f2740" fillOpacity="0.42" stroke="#38bdf8" strokeWidth="2" strokeDasharray="10 7" />
-              <text x="90" y="390" fill="#7dd3fc" fontSize="16" fontWeight="700">
-                {provider === "azure" ? "AZURE VIRTUAL NETWORK" : provider === "gcp" ? "GOOGLE CLOUD GLOBAL VPC" : provider === "hybrid" ? "HYBRID CONNECTIVITY BOUNDARY" : provider === "multicloud" ? "CROSS-CLOUD CONNECTIVITY BOUNDARY" : "AWS VPC · PRIVATE NETWORK BOUNDARY"}
-              </text>
+              {topicNodes.length === 0 && (
+                <>
+                  <rect x="65" y="365" width="870" height="245" rx="22" fill="#0f2740" fillOpacity="0.42" stroke="#38bdf8" strokeWidth="2" strokeDasharray="10 7" />
+                  <text x="90" y="390" fill="#7dd3fc" fontSize="16" fontWeight="700">
+                    {provider === "azure" ? "AZURE VIRTUAL NETWORK" : provider === "gcp" ? "GOOGLE CLOUD GLOBAL VPC" : provider === "hybrid" ? "HYBRID CONNECTIVITY BOUNDARY" : provider === "multicloud" ? "CROSS-CLOUD CONNECTIVITY BOUNDARY" : "AWS VPC · PRIVATE NETWORK BOUNDARY"}
+                  </text>
+                  <rect x="100" y="405" width="340" height="185" rx="14" fill="#0b332d" fillOpacity="0.28" stroke="#34d399" strokeOpacity="0.5" />
+                  <rect x="560" y="405" width="340" height="185" rx="14" fill="#0b332d" fillOpacity="0.28" stroke="#34d399" strokeOpacity="0.5" />
+                  <text x="120" y="430" fill="#6ee7b7" fontSize="13" fontWeight="700">FAILURE DOMAIN A</text>
+                  <text x="580" y="430" fill="#6ee7b7" fontSize="13" fontWeight="700">FAILURE DOMAIN B</text>
+                  {connect(500, 89, 500, 110, "users-dns")}
+                  {connect(500, 174, 500, 195, "dns-edge")}
+                  {connect(500, 259, 500, 280, "edge-gateway")}
+                  {connect(500, 344, 270, 395, "gateway-app-a")}
+                  {connect(500, 344, 730, 395, "gateway-app-b")}
+                  {connect(270, 481, 500, 525, "app-a-db")}
+                  {connect(730, 481, 500, 525, "app-b-db")}
+                  {connect(500, 597, 500, 625, "db-ops")}
+                </>
+              )}
 
-              <rect x="100" y="405" width="340" height="185" rx="14" fill="#0b332d" fillOpacity="0.28" stroke="#34d399" strokeOpacity="0.5" />
-              <rect x="560" y="405" width="340" height="185" rx="14" fill="#0b332d" fillOpacity="0.28" stroke="#34d399" strokeOpacity="0.5" />
-
-              <text x="120" y="430" fill="#6ee7b7" fontSize="13" fontWeight="700">FAILURE DOMAIN A</text>
-              <text x="580" y="430" fill="#6ee7b7" fontSize="13" fontWeight="700">FAILURE DOMAIN B</text>
-
-              {connect(500, 89, 500, 110, "users-dns")}
-              {connect(500, 174, 500, 195, "dns-edge")}
-              {connect(500, 259, 500, 280, "edge-gateway")}
-              {connect(500, 344, 270, 395, "gateway-app-a")}
-              {connect(500, 344, 730, 395, "gateway-app-b")}
-              {connect(270, 481, 500, 525, "app-a-db")}
-              {connect(730, 481, 500, 525, "app-b-db")}
-              {connect(500, 597, 500, 625, "db-ops")}
+              {topicNodes.length > 0 && topicNodes.slice(0, -1).map((node, index) => {
+                const next = topicNodes[index + 1];
+                return connect(500, node.y + node.height, 500, next.y, `topic-flow-${index}`);
+              })}
 
               {nodes.map((node) => {
                 const colors = COLORS[node.layer];
@@ -723,9 +762,7 @@ export default function ArchitectureDiagramViewer({
       </div>
 
       <div className="border-t border-slate-800 px-5 py-4 text-xs leading-6 text-slate-500">
-        Reference design for learning purposes. Actual production topology depends on workload,
-        service availability, network configuration, security requirements and recovery objectives.
-        The two application zones shown are logical failure domains, not a guarantee of automatic failover.
+        {topicTitle || "This architecture"} reference flow is intended for technical learning. Validate actual service capabilities, dependencies, security boundaries and recovery behavior before using a design in production.
       </div>
     </section>
   );
