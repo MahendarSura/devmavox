@@ -1,0 +1,280 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2100" height="1450" viewBox="0 0 2100 1450">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#071526"/>
+    <stop offset="100%" stop-color="#101d32"/>
+  </linearGradient>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="5" orient="auto">
+    <path d="M0 0 L0 10 L11 5 Z" fill="#dce8f5"/>
+  </marker>
+  <marker id="orangeArrow" markerWidth="12" markerHeight="12" refX="10" refY="5" orient="auto">
+    <path d="M0 0 L0 10 L11 5 Z" fill="#f59e0b"/>
+  </marker>
+  <marker id="greenArrow" markerWidth="12" markerHeight="12" refX="10" refY="5" orient="auto">
+    <path d="M0 0 L0 10 L11 5 Z" fill="#34d399"/>
+  </marker>
+  <marker id="blueArrow" markerWidth="12" markerHeight="12" refX="10" refY="5" orient="auto">
+    <path d="M0 0 L0 10 L11 5 Z" fill="#60a5fa"/>
+  </marker>
+  <style>
+    text{font-family:Arial,Helvetica,sans-serif}
+    .main{fill:#f8fafc;font-size:27px;font-weight:bold}
+    .sub{fill:#9fb3c8;font-size:15px}
+    .zone{fill:#0d2034;stroke:#66819d;stroke-width:2;stroke-dasharray:9 6}
+    .public{fill:#302716;stroke:#f59e0b;stroke-width:2}
+    .private{fill:#102b3a;stroke:#38bdf8;stroke-width:2}
+    .data{fill:#172c28;stroke:#34d399;stroke-width:2}
+    .service{fill:#172b43;stroke:#8ba7c5;stroke-width:1.5}
+    .edge{fill:#3b2b19;stroke:#f59e0b;stroke-width:2}
+    .security{fill:#30213b;stroke:#c084fc;stroke-width:2}
+    .ops{fill:#18352d;stroke:#34d399;stroke-width:2}
+    .title{fill:#fff;font-size:18px;font-weight:bold}
+    .detail{fill:#cbd5e1;font-size:13px}
+    .small{fill:#94a3b8;font-size:12px}
+    .flow{fill:none;stroke:#dce8f5;stroke-width:3;marker-end:url(#arrow)}
+    .outbound{fill:none;stroke:#f59e0b;stroke-width:3;marker-end:url(#orangeArrow)}
+    .internal{fill:none;stroke:#34d399;stroke-width:3;marker-end:url(#greenArrow)}
+    .management{fill:none;stroke:#60a5fa;stroke-width:2.5;stroke-dasharray:8 6;marker-end:url(#blueArrow)}
+    .backup{fill:none;stroke:#c084fc;stroke-width:2.5;stroke-dasharray:7 5;marker-end:url(#arrow)}
+  </style>
+</defs>
+
+<rect width="2100" height="1450" fill="url(#bg)"/>
+
+<text x="55" y="52" fill="#f59e0b" font-size="18" font-weight="bold">DEVMAVOX · CLOUD ARCHITECTURE LIBRARY</text>
+<text x="55" y="100" class="main" font-size="34">AWS Production EKS — Highly Available Application Platform</text>
+<text x="55" y="130" class="sub">Reference deployment · Multi-AZ · Private Kubernetes · Segmented ingress · Resilient data · Centralized operations</text>
+
+<!-- AWS REGION -->
+<rect x="45" y="160" width="1570" height="1190" rx="24" fill="#0b1b2d" stroke="#e69b35" stroke-width="3"/>
+<text x="75" y="198" fill="#fbbf24" font-size="22" font-weight="bold">AWS CLOUD · REGION A (PRODUCTION)</text>
+
+<!-- DNS AND EDGE -->
+<rect x="75" y="225" width="260" height="100" rx="14" class="edge"/>
+<text x="95" y="260" class="title">Route 53</text>
+<text x="95" y="285" class="detail">DNS records · Health checks</text>
+<text x="95" y="305" class="detail">Failover routing policy</text>
+
+<rect x="390" y="225" width="290" height="100" rx="14" class="edge"/>
+<text x="410" y="260" class="title">CloudFront + AWS WAF</text>
+<text x="410" y="285" class="detail">TLS edge · CDN caching</text>
+<text x="410" y="305" class="detail">Layer-7 request protection</text>
+
+<rect x="735" y="225" width="250" height="100" rx="14" class="security"/>
+<text x="755" y="260" class="title">ACM Certificates</text>
+<text x="755" y="285" class="detail">TLS certificate lifecycle</text>
+<text x="755" y="305" class="detail">HTTPS listener integration</text>
+
+<path d="M335 275 H390" class="flow"/>
+<path d="M680 275 H735" class="management"/>
+
+<!-- EKS CONTROL PLANE -->
+<rect x="1050" y="215" width="510" height="125" rx="16" class="security"/>
+<text x="1075" y="250" class="title">Amazon EKS — AWS-managed control plane</text>
+<text x="1075" y="278" class="detail">Kubernetes API server · Scheduler · Controllers</text>
+<text x="1075" y="302" class="detail">Private API endpoint · Cluster authentication</text>
+<text x="1075" y="324" class="small">Control plane managed by AWS, not deployed as worker nodes in the VPC</text>
+
+<!-- VPC -->
+<rect x="75" y="370" width="1485" height="930" rx="22" fill="#0c1a2a" stroke="#60a5fa" stroke-width="3"/>
+<text x="105" y="410" fill="#93c5fd" font-size="22" font-weight="bold">VPC · 10.20.0.0/16 · Production network boundary</text>
+
+<!-- AZ A -->
+<rect x="105" y="445" width="690" height="820" rx="18" class="zone"/>
+<text x="130" y="480" fill="#e2e8f0" font-size="20" font-weight="bold">Availability Zone A</text>
+
+<!-- AZ B -->
+<rect x="825" y="445" width="705" height="820" rx="18" class="zone"/>
+<text x="850" y="480" fill="#e2e8f0" font-size="20" font-weight="bold">Availability Zone B</text>
+
+<!-- PUBLIC SUBNET A -->
+<rect x="130" y="505" width="640" height="175" rx="14" class="public"/>
+<text x="150" y="535" fill="#fbbf24" font-size="16" font-weight="bold">PUBLIC SUBNET A · 10.20.1.0/24</text>
+
+<rect x="155" y="555" width="270" height="95" rx="12" class="edge"/>
+<text x="175" y="588" class="title">ALB node · AZ-A</text>
+<text x="175" y="614" class="detail">HTTPS listener · Target group</text>
+<text x="175" y="635" class="detail">Health checks</text>
+
+<rect x="465" y="555" width="270" height="95" rx="12" class="edge"/>
+<text x="485" y="588" class="title">NAT Gateway · AZ-A</text>
+<text x="485" y="614" class="detail">Elastic IP · Outbound SNAT</text>
+<text x="485" y="635" class="detail">Private subnet egress</text>
+
+<!-- PUBLIC SUBNET B -->
+<rect x="850" y="505" width="655" height="175" rx="14" class="public"/>
+<text x="870" y="535" fill="#fbbf24" font-size="16" font-weight="bold">PUBLIC SUBNET B · 10.20.2.0/24</text>
+
+<rect x="875" y="555" width="270" height="95" rx="12" class="edge"/>
+<text x="895" y="588" class="title">ALB node · AZ-B</text>
+<text x="895" y="614" class="detail">Cross-zone request routing</text>
+<text x="895" y="635" class="detail">Independent AZ entry</text>
+
+<rect x="1185" y="555" width="285" height="95" rx="12" class="edge"/>
+<text x="1205" y="588" class="title">NAT Gateway · AZ-B</text>
+<text x="1205" y="614" class="detail">Elastic IP · Outbound SNAT</text>
+<text x="1205" y="635" class="detail">AZ-local egress path</text>
+
+<!-- INTERNET GATEWAY -->
+<rect x="585" y="445" width="455" height="45" rx="10" fill="#382b1b" stroke="#f59e0b" stroke-width="1.5"/>
+<text x="610" y="474" fill="#fcd34d" font-size="16" font-weight="bold">Internet Gateway · Public route table</text>
+
+<!-- PRIVATE APP SUBNET A -->
+<rect x="130" y="710" width="640" height="280" rx="14" class="private"/>
+<text x="150" y="742" fill="#7dd3fc" font-size="16" font-weight="bold">PRIVATE APPLICATION SUBNET A · 10.20.11.0/24</text>
+
+<rect x="155" y="765" width="280" height="90" rx="12" class="service"/>
+<text x="175" y="798" class="title">EKS managed node group A</text>
+<text x="175" y="823" class="detail">Private worker nodes · Kubelet</text>
+<text x="175" y="843" class="detail">Cluster autoscaler / Karpenter</text>
+
+<rect x="465" y="765" width="270" height="90" rx="12" class="service"/>
+<text x="485" y="798" class="title">Application pods · AZ-A</text>
+<text x="485" y="823" class="detail">Frontend · API · Worker</text>
+<text x="485" y="843" class="detail">Pod security · Network policies</text>
+
+<rect x="155" y="875" width="280" height="85" rx="12" class="security"/>
+<text x="175" y="908" class="title">Pod Identity / IRSA</text>
+<text x="175" y="933" class="detail">Scoped workload IAM roles</text>
+
+<rect x="465" y="875" width="270" height="85" rx="12" class="service"/>
+<text x="485" y="908" class="title">EBS CSI / EFS CSI</text>
+<text x="485" y="933" class="detail">Persistent volume integration</text>
+
+<!-- PRIVATE APP SUBNET B -->
+<rect x="850" y="710" width="655" height="280" rx="14" class="private"/>
+<text x="870" y="742" fill="#7dd3fc" font-size="16" font-weight="bold">PRIVATE APPLICATION SUBNET B · 10.20.12.0/24</text>
+
+<rect x="875" y="765" width="280" height="90" rx="12" class="service"/>
+<text x="895" y="798" class="title">EKS managed node group B</text>
+<text x="895" y="823" class="detail">Independent worker capacity</text>
+<text x="895" y="843" class="detail">AZ-aware pod placement</text>
+
+<rect x="1185" y="765" width="285" height="90" rx="12" class="service"/>
+<text x="1205" y="798" class="title">Application pods · AZ-B</text>
+<text x="1205" y="823" class="detail">Replicated frontend / API</text>
+<text x="1205" y="843" class="detail">Readiness and liveness probes</text>
+
+<rect x="875" y="875" width="280" height="85" rx="12" class="security"/>
+<text x="895" y="908" class="title">Secrets Manager + KMS</text>
+<text x="895" y="933" class="detail">Encrypted runtime secrets</text>
+
+<rect x="1185" y="875" width="285" height="85" rx="12" class="service"/>
+<text x="1205" y="908" class="title">VPC endpoints</text>
+<text x="1205" y="933" class="detail">ECR · S3 · STS · CloudWatch</text>
+
+<!-- DATA SUBNET A -->
+<rect x="130" y="1020" width="640" height="220" rx="14" class="data"/>
+<text x="150" y="1052" fill="#6ee7b7" font-size="16" font-weight="bold">PRIVATE DATABASE SUBNET A · 10.20.21.0/24</text>
+
+<rect x="180" y="1080" width="250" height="110" rx="12" class="ops"/>
+<text x="200" y="1115" class="title">Amazon RDS Primary</text>
+<text x="200" y="1142" class="detail">Writer endpoint · AZ-A</text>
+<text x="200" y="1165" class="detail">Encrypted storage</text>
+
+<rect x="465" y="1080" width="270" height="110" rx="12" class="security"/>
+<text x="485" y="1115" class="title">DB security group</text>
+<text x="485" y="1142" class="detail">Only approved EKS pods</text>
+<text x="485" y="1165" class="detail">Restricted DB port access</text>
+
+<!-- DATA SUBNET B -->
+<rect x="850" y="1020" width="655" height="220" rx="14" class="data"/>
+<text x="870" y="1052" fill="#6ee7b7" font-size="16" font-weight="bold">PRIVATE DATABASE SUBNET B · 10.20.22.0/24</text>
+
+<rect x="900" y="1080" width="270" height="110" rx="12" class="ops"/>
+<text x="920" y="1115" class="title">RDS Multi-AZ Standby</text>
+<text x="920" y="1142" class="detail">Synchronous replication</text>
+<text x="920" y="1165" class="detail">Automatic failover target</text>
+
+<rect x="1200" y="1080" width="270" height="110" rx="12" class="security"/>
+<text x="1220" y="1115" class="title">RDS subnet group</text>
+<text x="1220" y="1142" class="detail">Private DB placement</text>
+<text x="1220" y="1165" class="detail">No public database access</text>
+
+<!-- TRAFFIC FLOWS -->
+<path d="M680 325 C700 360 500 400 290 555" class="flow"/>
+<path d="M680 325 C760 365 1000 400 1010 555" class="flow"/>
+<text x="710" y="390" fill="#e2e8f0" font-size="13">HTTPS ingress</text>
+
+<path d="M290 650 C300 700 570 710 600 765" class="flow"/>
+<path d="M1010 650 C1020 700 1280 710 1320 765" class="flow"/>
+<text x="365" y="700" fill="#e2e8f0" font-size="13">ALB target group → ingress / service</text>
+
+<path d="M600 855 C600 900 300 900 300 1080" class="internal"/>
+<path d="M1320 855 C1320 900 1040 900 1040 1080" class="internal"/>
+<text x="500" y="1005" fill="#6ee7b7" font-size="13">Application → database writer endpoint</text>
+
+<path d="M600 765 C650 710 600 690 600 650" class="outbound"/>
+<path d="M1320 765 C1370 710 1325 690 1325 650" class="outbound"/>
+<text x="1375" y="730" fill="#fbbf24" font-size="12">AZ-local egress</text>
+
+<path d="M735 918 C800 940 850 940 875 918" class="management"/>
+<text x="780" y="970" fill="#93c5fd" font-size="12">Private service access</text>
+
+<path d="M430 1135 H900" class="backup"/>
+<text x="610" y="1120" fill="#d8b4fe" font-size="12">Multi-AZ synchronous standby replication</text>
+
+<!-- CONTROL PLANE CONNECTION -->
+<path d="M1300 340 C1300 385 1300 405 1300 445" class="management"/>
+<path d="M1300 445 C1300 485 1080 490 1080 765" class="management"/>
+<text x="1320" y="390" fill="#93c5fd" font-size="12">Private API / control traffic</text>
+
+<!-- OUTSIDE VPC: OPERATIONS -->
+<rect x="1650" y="160" width="405" height="470" rx="18" fill="#102a27" stroke="#34d399" stroke-width="2"/>
+<text x="1680" y="200" fill="#6ee7b7" font-size="20" font-weight="bold">OPERATIONS & SECURITY</text>
+
+<rect x="1680" y="230" width="345" height="80" rx="12" class="ops"/>
+<text x="1700" y="263" class="title">Amazon CloudWatch</text>
+<text x="1700" y="287" class="detail">Container Insights · Metrics · Alarms</text>
+
+<rect x="1680" y="330" width="345" height="80" rx="12" class="ops"/>
+<text x="1700" y="363" class="title">CloudWatch Logs</text>
+<text x="1700" y="387" class="detail">Application · EKS · VPC flow logs</text>
+
+<rect x="1680" y="430" width="345" height="80" rx="12" class="security"/>
+<text x="1700" y="463" class="title">CloudTrail + AWS Config</text>
+<text x="1700" y="487" class="detail">API audit · Configuration history</text>
+
+<rect x="1680" y="530" width="345" height="75" rx="12" class="security"/>
+<text x="1700" y="562" class="title">IAM Identity Center</text>
+<text x="1700" y="585" class="detail">Operator SSO · Least privilege</text>
+
+<path d="M1560 800 C1610 760 1630 270 1680 270" class="management"/>
+<path d="M1560 820 C1620 780 1630 370 1680 370" class="management"/>
+<path d="M1560 840 C1630 800 1640 470 1680 470" class="management"/>
+
+<!-- BACKUP AND DR -->
+<rect x="1650" y="680" width="405" height="330" rx="18" fill="#2b1e37" stroke="#c084fc" stroke-width="2"/>
+<text x="1680" y="720" fill="#d8b4fe" font-size="20" font-weight="bold">BACKUP & RECOVERY</text>
+
+<rect x="1680" y="750" width="345" height="75" rx="12" class="security"/>
+<text x="1700" y="781" class="title">AWS Backup</text>
+<text x="1700" y="805" class="detail">RDS / EBS backup policies</text>
+
+<rect x="1680" y="845" width="345" height="75" rx="12" class="service"/>
+<text x="1700" y="876" class="title">Amazon S3 Backup Vault</text>
+<text x="1700" y="900" class="detail">Versioning · Object Lock · Lifecycle</text>
+
+<rect x="1680" y="940" width="345" height="50" rx="12" class="security"/>
+<text x="1700" y="971" class="title">Cross-Region DR copy</text>
+
+<path d="M1470 1135 C1590 1135 1590 790 1680 790" class="backup"/>
+<path d="M1850 825 V845" class="backup"/>
+<path d="M1850 920 V940" class="backup"/>
+
+<!-- LEGEND -->
+<rect x="1650" y="1050" width="405" height="300" rx="18" fill="#14243a" stroke="#64748b" stroke-width="2"/>
+<text x="1680" y="1090" class="title">ARCHITECTURE LEGEND</text>
+<path d="M1685 1130 H1780" class="flow"/>
+<text x="1800" y="1135" class="detail">User request / ingress</text>
+<path d="M1685 1175 H1780" class="outbound"/>
+<text x="1800" y="1180" class="detail">Outbound internet egress</text>
+<path d="M1685 1220 H1780" class="internal"/>
+<text x="1800" y="1225" class="detail">Application / data flow</text>
+<path d="M1685 1265 H1780" class="management"/>
+<text x="1800" y="1270" class="detail">Management / telemetry</text>
+<path d="M1685 1310 H1780" class="backup"/>
+<text x="1800" y="1315" class="detail">Backup / replication</text>
+
+<text x="75" y="1385" fill="#94a3b8" font-size="13">Design note: RDS Multi-AZ standby is for availability, not a read-scaling replica. Validate CIDRs, route tables, security groups, endpoint policies, IAM permissions, backup retention and tested recovery objectives for the actual workload.</text>
+</svg>
