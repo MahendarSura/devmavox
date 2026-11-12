@@ -76,7 +76,7 @@ web02 ansible_host=192.168.1.21
 [dbservers]
 db01 ansible_host=192.168.1.30
 
-[all:vars]
+[all${":"}vars]
 ansible_user=ubuntu
 ansible_ssh_private_key_file=~/.ssh/devops_key
 
@@ -673,7 +673,7 @@ app03 ansible_host=192.168.10.13
 [monitoring]
 monitor01 ansible_host=192.168.10.30
 
-[appservers:vars]
+[appservers${":"}vars]
 ansible_user=deploy
 
 # Separate groups by operational role.

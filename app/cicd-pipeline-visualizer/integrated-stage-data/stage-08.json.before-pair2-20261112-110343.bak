@@ -1,0 +1,163 @@
+[
+  {
+    "topicTitle": "Docker Fundamentals",
+    "sections": [
+      {
+        "id": "stage-8-topic-1-section-1",
+        "title": "Understanding Containerization and the Docker Model",
+        "content": "Containerization is an approach to packaging an application together with the libraries, runtime dependencies, configuration, and supporting files it needs to execute. Docker provides tools for building, distributing, and running these packaged environments as containers. Instead of installing every application dependency directly onto a server, a team can define the environment in an image and start containers from that image whenever required. Containers share the host operating-system kernel while maintaining isolated process, filesystem, and network views. This generally makes them lighter to start and operate than complete virtual machines, although containers still consume CPU, memory, storage, and network resources. Docker does not automatically make an application secure or portable in every situation. Compatibility still depends on the operating system, architecture, kernel features, external services, and runtime configuration. In a DevOps workflow, containerization helps developers and operations teams use a consistent application package across development, testing, and deployment environments."
+      },
+      {
+        "id": "stage-8-topic-1-section-2",
+        "title": "Containers Compared with Virtual Machines",
+        "content": "A virtual machine runs a guest operating system on virtualized hardware managed by a hypervisor. Each virtual machine normally includes its own operating-system kernel and system services, which provides a strong separation boundary but adds memory, storage, and startup overhead. A container instead isolates application processes while sharing the host kernel. The container image contains the application filesystem and required user-space components, but it does not normally contain a separate bootable kernel. This allows containers to start quickly and makes it practical to run many application instances on a host. The trade-off is that containers depend on compatible host-kernel capabilities and require careful configuration of isolation and privileges. Virtual machines remain useful when workloads need different kernels or stronger infrastructure separation. Containers are especially useful for packaging microservices, build agents, APIs, and repeatable test environments. In production, organizations may run containers inside virtual machines to combine infrastructure isolation with application-level packaging."
+      },
+      {
+        "id": "stage-8-topic-1-section-3",
+        "title": "Docker Images, Containers, and the Relationship Between Them",
+        "content": "A Docker image is a read-only template used to create containers. It contains a filesystem assembled from image layers and metadata such as the default command, environment settings, and working directory. A container is a runtime instance created from an image. When Docker creates a container, it adds a writable layer for runtime changes while retaining the underlying image layers as shared read-only data. Multiple containers can be created from the same image without rebuilding the application package for each instance. Changes made inside one container do not normally modify the original image or another container. If a container is removed, data stored only in its writable layer is also removed. Important application data should therefore be placed in persistent volumes or external storage. Understanding this distinction prevents common operational mistakes, such as expecting a changed container to update an image or assuming that files written inside a temporary container will survive its removal."
+      },
+      {
+        "id": "stage-8-topic-1-section-4",
+        "title": "Container Lifecycle and Essential Docker Operations",
+        "content": "A container follows a lifecycle that begins when it is created from an image and proceeds through runtime states such as created, running, paused, stopped, and removed. The docker create command prepares a container without starting its main process, while docker start starts an existing container. The docker run command combines creation and startup in one operation. Administrators use docker ps to inspect running containers and docker ps -a to include stopped containers. The docker stop command requests a graceful shutdown by sending a termination signal and allowing a configured timeout before forced termination. The docker kill command can terminate a container more abruptly. The docker restart command stops and starts a container again, while docker rm removes a stopped container. A container usually exits when its configured primary process finishes or fails. Production operators should inspect exit codes, logs, restart policies, health checks, and resource conditions instead of repeatedly restarting an unhealthy application without identifying the cause."
+      },
+      {
+        "id": "stage-8-topic-1-section-5",
+        "title": "Dockerfiles, Build Contexts, and Image Creation",
+        "content": "A Dockerfile is a text-based set of instructions that describes how to construct an application image. Common instructions include FROM for the base image, WORKDIR for the working directory, COPY for adding files, RUN for build-time commands, ENV for environment variables, EXPOSE for documenting an intended listening port, and CMD or ENTRYPOINT for defining container startup behavior. Docker sends a build context to the builder, which contains the files available to instructions such as COPY and ADD. An unnecessarily large context increases transfer time and can accidentally include credentials, local dependencies, or generated files. A .dockerignore file excludes unwanted paths from that context. The docker build command creates an image from the Dockerfile and context, while modern BuildKit-based builds provide improved caching and build capabilities. A reliable Dockerfile should use reproducible dependency installation, minimize unnecessary layers and packages, avoid embedding secrets, and produce a predictable runtime command. Teams should test the built image rather than assuming that a successful image build proves the application works correctly."
+      },
+      {
+        "id": "stage-8-topic-1-section-6",
+        "title": "Image Layers, Build Cache, and Efficient Builds",
+        "content": "Docker images are assembled from filesystem layers that represent changes introduced during image construction. Layers can be reused by multiple images and containers, reducing repeated storage and build work. Docker's build cache can reuse a previous instruction result when the instruction and its relevant inputs have not changed. The order of Dockerfile instructions therefore affects build efficiency. For example, copying dependency manifests and installing dependencies before copying frequently changing application source can allow the dependency layer to remain cached during ordinary source-code changes. If an instruction or its inputs change, later dependent layers may need to be rebuilt. A large RUN instruction that downloads packages and leaves temporary files behind can increase image size even when those files are no longer needed. Multi-stage builds can keep compilers and build tools out of the final runtime image. Efficient builds should balance cache reuse, clarity, reproducibility, and security rather than optimizing only for the smallest possible image."
+      },
+      {
+        "id": "stage-8-topic-1-section-7",
+        "title": "Image Registries, Tags, and Immutable Digests",
+        "content": "A container registry stores and distributes container images so that build systems, developers, and deployment platforms can retrieve the same application package. Docker Hub is a public registry, while organizations may operate private registries or use managed cloud registry services. An image reference commonly includes a registry hostname, namespace, repository name, and tag. Tags such as development, staging, or version numbers make images easier to identify, but a tag can be reassigned to point to different image content. A digest identifies image content using a cryptographic content identifier and is therefore more suitable for recording the exact artifact that was tested and approved. A release pipeline should build an image, publish it to an authorized registry, capture its digest, scan that exact artifact, and deploy the same digest. Registry credentials should be supplied through protected authentication mechanisms, and access should follow least privilege. Avoid embedding credentials in image layers or source-controlled configuration."
+      },
+      {
+        "id": "stage-8-topic-1-section-8",
+        "title": "Container Networking and Persistent Storage Basics",
+        "content": "Containers often need network communication with other containers, host services, and external systems. Docker provides network drivers such as bridge, host, none, and overlay, each supporting different connectivity and isolation requirements. A user-defined bridge network is commonly useful for connecting related containers on one Docker host, because containers on that network can communicate using Docker-provided name resolution. Publishing a container port with a host-to-container port mapping makes a service reachable through the host network interface, subject to firewall and routing rules. Container storage also requires deliberate planning. The writable container layer is temporary and should not be treated as durable application storage. Volumes provide persistent storage managed by Docker, while bind mounts connect a host path to a container path. Database files, uploaded documents, and other important state should use an appropriate persistent storage design with backups and access controls. Networking and storage choices should be documented because incorrect port exposure or mount permissions can cause both outages and security risks."
+      },
+      {
+        "id": "stage-8-topic-1-section-9",
+        "title": "Running Containers Reliably in Development and Production",
+        "content": "A container that starts successfully is not necessarily ready to serve production traffic. Reliable operation requires suitable health checks, resource limits, logging, restart behavior, configuration management, and monitoring. Applications should normally write operational logs to standard output and standard error so that the container platform can collect them. Environment variables or mounted configuration files can supply environment-specific settings, but sensitive values should be provided through a secret-management mechanism rather than baked into the image. CPU and memory limits help prevent one container from consuming all host resources, although limits must be selected using workload measurements. Health checks can report whether an application is functioning, but they should test meaningful application behavior and avoid excessive dependencies. Restart policies can recover from certain process failures, but they cannot replace root-cause analysis or orchestration. Before release, teams should scan images, use trusted base images, run with minimal privileges, test graceful shutdown, and verify that persistent data and external dependencies behave as expected."
+      }
+    ]
+  },
+  {
+    "topicTitle": "Docker Architecture",
+    "sections": [
+      {
+        "id": "stage-8-topic-2-section-1",
+        "title": "Docker Client-Server Architecture and Request Flow",
+        "content": "Docker commonly follows a client-server architecture. The Docker client is the command-line interface or another application that sends requests to the Docker daemon through a supported API. When an operator runs a command such as docker run, the client sends the requested operation to the daemon rather than directly creating operating-system processes itself. The daemon evaluates the request, checks the required image and configuration, and coordinates container creation through the runtime components. The Docker client and daemon may run on the same host or communicate across a secured remote connection. This separation allows automation systems and user interfaces to control Docker through a consistent interface. It also means that a command can fail because of daemon availability, API compatibility, authorization, or connectivity even when the client executable is installed correctly. Operators should distinguish client-side errors from daemon-side failures by checking the Docker context, daemon status, API response, and relevant service logs."
+      },
+      {
+        "id": "stage-8-topic-2-section-2",
+        "title": "Docker Engine Components and Their Responsibilities",
+        "content": "Docker Engine is the platform that provides the APIs and services used to build, manage, and run containers. Its architecture includes the Docker client, Docker daemon, image and container management capabilities, and integrations with lower-level container runtime components. The daemon, commonly called dockerd, manages Docker objects such as images, containers, networks, and volumes. It receives API requests and coordinates the operations required to satisfy them. The client provides the interface through which users and automation systems issue commands. Container execution is delegated through runtime interfaces to components responsible for preparing and starting processes. Image-building capabilities use a builder such as BuildKit in modern workflows. These components have separate responsibilities, so a problem in image construction is not necessarily a runtime failure, and a daemon API problem is not necessarily an application defect. Understanding these boundaries helps administrators identify the correct service, log source, permission, or configuration setting during troubleshooting."
+      },
+      {
+        "id": "stage-8-topic-2-section-3",
+        "title": "The Role of containerd and runc in Container Execution",
+        "content": "Docker Engine commonly uses containerd as a container runtime management component and runc as a low-level runtime implementation. When Docker receives a request to start a container, dockerd coordinates the operation with containerd. Containerd manages container lifecycle operations and related resources, including image transfer and snapshot integration. For an actual container process, containerd can invoke a runtime such as runc. Runc implements the Open Container Initiative runtime specification and uses operating-system facilities to configure the process environment, namespaces, control groups, mounts, and other runtime settings. These layers separate high-level Docker object management from lower-level process creation. Not every Docker installation has an identical internal deployment arrangement, and additional runtime integrations may be used. When a container fails to start, operators should identify which layer returned the error instead of assuming every failure originates in dockerd. Service status, runtime logs, storage state, and host-kernel support provide useful evidence."
+      },
+      {
+        "id": "stage-8-topic-2-section-4",
+        "title": "Open Container Initiative Standards and Runtime Compatibility",
+        "content": "The Open Container Initiative, commonly called OCI, defines standards that support interoperability across container technologies. Important specifications include the image specification, runtime specification, and distribution specification. The image specification describes how an image is represented through manifests, configuration metadata, and filesystem layers. The runtime specification describes how a container should be configured and executed on a host. The distribution specification addresses how container content can be transferred and stored through registries. These standards help different tools exchange container images and runtime configurations without requiring every component to use one vendor-specific implementation. Docker images and many other container images follow OCI-compatible formats, while runtimes such as runc implement the OCI runtime specification. Compatibility still depends on supported features, architecture, operating-system requirements, and implementation versions. In a DevOps environment, OCI standards make it easier to use different builders, registries, runtimes, and orchestration platforms within a consistent software delivery process."
+      },
+      {
+        "id": "stage-8-topic-2-section-5",
+        "title": "Linux Namespaces and Container Isolation",
+        "content": "Linux namespaces provide isolation by presenting processes with separate views of selected operating-system resources. Depending on the namespaces configured for a container, its processes can see an isolated process identifier space, network interfaces, mount points, hostname, inter-process communication resources, and user identifiers. This helps one container operate without directly seeing all resources available to other containers on the same host. Namespaces do not create a separate kernel; container processes still rely on the host kernel. Isolation therefore depends on correct kernel behavior, runtime configuration, permissions, and security controls. A privileged container or excessive host mounts can weaken the intended separation. User namespaces can help map container identities to different host identities, reducing the impact of some permission mistakes. Administrators should understand which namespaces are enabled and avoid granting unnecessary capabilities or host access. Namespace isolation is an important part of container security, but it must be combined with access control, seccomp, mandatory access controls where available, and safe image practices."
+      },
+      {
+        "id": "stage-8-topic-2-section-6",
+        "title": "Control Groups and Container Resource Management",
+        "content": "Linux control groups, commonly called cgroups, provide mechanisms for accounting for and controlling resource usage by groups of processes. Container runtimes use cgroups to apply resource policies such as CPU allocation, memory limits, and process-related controls. Without suitable resource controls, a container with excessive memory consumption can contribute to host memory pressure and potentially affect unrelated workloads. A memory limit can cause the container's processes to be terminated when the configured limit is exceeded, depending on the host and cgroup behavior. CPU limits influence how much processing time a workload can receive, while CPU shares or weights influence relative scheduling under contention. Docker exposes resource configuration options when creating or updating containers. Administrators should select limits based on observed workload behavior and application requirements rather than choosing arbitrary values. During an incident, inspect container metrics, host memory pressure, cgroup configuration, and termination information to distinguish an application defect from resource exhaustion."
+      },
+      {
+        "id": "stage-8-topic-2-section-7",
+        "title": "Image Manifests, Content Digests, and Layer Storage",
+        "content": "A container image is represented through metadata and filesystem content that can be distributed and reconstructed by an image-capable runtime. An image manifest identifies the configuration and layers associated with an image, while a configuration object records information such as the default command, environment, and runtime settings. Content digests provide identifiers derived from the content itself, allowing clients and registries to verify that retrieved objects match the expected data. Image layers represent filesystem changes and can be reused across images when the content is identical. The local image store maintains the content and metadata needed to create containers. The precise storage implementation depends on the Docker version, operating system, and configured storage backend. Administrators should avoid manually editing internal image-store files because doing so can corrupt metadata or leave the daemon in an inconsistent state. Use Docker-supported commands to inspect, pull, build, tag, and remove images, and use immutable digests when recording release artifacts."
+      },
+      {
+        "id": "stage-8-topic-2-section-8",
+        "title": "BuildKit and the Modern Docker Image Build Process",
+        "content": "BuildKit is a modern build engine used by Docker to execute image build instructions with improved performance and build features. It processes the build definition, evaluates dependencies between build steps, and uses caching where the relevant inputs allow safe reuse. BuildKit supports capabilities such as parallel execution of independent build stages, efficient transfer of build context, cache import and export, and controlled access to build-time secrets. A Dockerfile can use multiple stages to separate compilation from the final runtime image. Build-time secrets should be mounted through supported secret mechanisms rather than passed as ordinary build arguments that may be recorded in build metadata or layers. Build cache is useful for speed, but teams must understand cache invalidation and ensure that security-sensitive updates are not hidden by an inappropriate cache strategy. Build logs and builder configuration help distinguish a build-engine problem from a Docker daemon or runtime problem. Reproducible builds should also pin dependencies and record the inputs used to create the final image."
+      },
+      {
+        "id": "stage-8-topic-2-section-9",
+        "title": "Docker Networking Architecture and Network Drivers",
+        "content": "Docker networking connects containers to one another, the host, and external networks through network objects and drivers. On Linux, bridge networking commonly uses virtual Ethernet interfaces, a software bridge, routing, and network address translation where required. Docker can configure container network endpoints and provide name resolution on user-defined networks. Host networking uses the host network namespace rather than a separate container network namespace, which changes isolation and port behavior. The none driver provides a container with no ordinary external network connectivity through Docker networking. Overlay networking can connect workloads across multiple hosts when the required networking infrastructure is available. Port publishing creates a mapping from a host port to a container port; it does not mean the application is automatically secure or reachable from every network. Firewalls, routing, DNS, address allocation, and host configuration all affect connectivity. Operators should inspect network membership, endpoint configuration, published ports, and host firewall rules when diagnosing communication failures."
+      },
+      {
+        "id": "stage-8-topic-2-section-10",
+        "title": "Storage Drivers, Volumes, and Filesystem Mounts",
+        "content": "Docker separates image filesystem layers from the writable filesystem changes made by a running container. A storage driver or snapshotter manages how image layers and container writable filesystems are represented on the host. The exact implementation varies by platform and Docker configuration, so administrators should use supported inspection commands rather than assuming a particular storage driver. Volumes provide persistent storage managed independently from a container's writable layer. Bind mounts expose a specified host path inside the container and are useful for development or controlled access to host files, but they require careful permission and path management. Mounting a host directory over an image directory can hide files that were originally present in the image. Database and application state should be stored using an appropriate persistence design with backup, recovery, and access-control procedures. When investigating storage problems, inspect available disk capacity, inode usage, mount options, ownership, volume metadata, and daemon logs before deleting data or changing internal storage directories."
+      }
+    ]
+  },
+  {
+    "topicTitle": "Docker Installation",
+    "sections": []
+  },
+  {
+    "topicTitle": "Dockerfile Instructions",
+    "sections": []
+  },
+  {
+    "topicTitle": "Build Context and .dockerignore",
+    "sections": []
+  },
+  {
+    "topicTitle": "Image Layers and Caching",
+    "sections": []
+  },
+  {
+    "topicTitle": "BuildKit",
+    "sections": []
+  },
+  {
+    "topicTitle": "Multi-stage Builds",
+    "sections": []
+  },
+  {
+    "topicTitle": "Container Runtime",
+    "sections": []
+  },
+  {
+    "topicTitle": "Docker Networking",
+    "sections": []
+  },
+  {
+    "topicTitle": "Volumes and Storage",
+    "sections": []
+  },
+  {
+    "topicTitle": "Docker Security",
+    "sections": []
+  },
+  {
+    "topicTitle": "Image Tagging and Digests",
+    "sections": []
+  },
+  {
+    "topicTitle": "Registry Integration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Troubleshooting",
+    "sections": []
+  },
+  {
+    "topicTitle": "Production Hands-on Lab",
+    "sections": []
+  }
+]

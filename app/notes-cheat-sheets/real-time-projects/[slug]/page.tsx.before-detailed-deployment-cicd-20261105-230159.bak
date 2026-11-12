@@ -1,0 +1,133 @@
+import { notFound } from "next/navigation";
+import NotesRenderer from "../../NotesRenderer";
+import projectWorkflows from "../project-workflows";
+import deploymentChecklists from "../deployment-checklists";
+import cicdRollback from "../cicd-rollback";
+
+const topics = {
+  "project-workflows": projectWorkflows,
+  "deployment-checklists": deploymentChecklists,
+  "cicd-rollback": cicdRollback,
+};
+
+export function generateStaticParams() {
+  return Object.keys(topics).map((slug) => ({ slug }));
+}
+
+function ProjectWorkflowsOverview() {
+  const workflows = [
+    {
+      number: "01",
+      slug: "docker-compose",
+      label: "Docker Compose",
+      detail: "Application Architecture",
+      description: "Frontend, backend and database architecture with Docker Compose.",
+    },
+    {
+      number: "02",
+      slug: "kubernetes",
+      label: "Kubernetes",
+      detail: "Application Delivery",
+      description: "Container deployment, Services, health checks and rollout management.",
+    },
+    {
+      number: "03",
+      slug: "monitoring",
+      label: "Monitoring",
+      detail: "Incident Response",
+      description: "Production monitoring, alerting, troubleshooting and incident recovery.",
+    },
+  ];
+
+  return (
+    <main className="min-h-screen bg-[#080d18] px-4 py-10 text-slate-100 sm:px-8 sm:py-14">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-10 border-b border-slate-800 pb-8">
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-cyan-400">
+            Learning Notes / Real-Time Projects
+          </p>
+
+          <h1 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-5xl">
+            Real-Time DevOps Project Workflows
+          </h1>
+
+          <div className="mt-4 h-1 w-24 rounded-full bg-cyan-400" />
+
+          <p className="mt-5 max-w-4xl text-base leading-8 text-slate-300 sm:text-lg">
+            Explore practical DevOps workflows covering application architecture,
+            Kubernetes delivery and production monitoring. Select a workflow to
+            open its complete step-by-step guide.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {workflows.map((item) => (
+            <a
+              key={item.number}
+              href={`/notes-cheat-sheets/real-time-projects/project-workflows/${item.slug}`}
+              className="group block rounded-2xl border border-slate-700/80 bg-slate-900/90 p-6 shadow-xl transition duration-200 hover:-translate-y-1 hover:border-cyan-400 hover:bg-slate-800"
+            >
+              <p className="text-sm font-bold tracking-wider text-cyan-400">
+                WORKFLOW {item.number}
+              </p>
+
+              <h2 className="mt-4 text-xl font-bold text-white transition group-hover:text-cyan-300">
+                {item.label}
+              </h2>
+
+              <p className="mt-2 text-sm font-semibold text-cyan-300">
+                {item.detail}
+              </p>
+
+              <p className="mt-4 text-sm leading-7 text-slate-400">
+                {item.description}
+              </p>
+
+              <div className="mt-6 border-t border-slate-700 pt-4 text-sm font-semibold text-cyan-400">
+                OPEN WORKFLOW →
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <div className="mt-10 text-center">
+          <a
+            href="/notes-cheat-sheets/real-time-projects"
+            className="inline-flex rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-5 py-3 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-500/20"
+          >
+            ← Back to Real-Time Project Notes
+          </a>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+export default async function ProjectTopicPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const data = topics[slug as keyof typeof topics];
+
+  if (!data) notFound();
+
+  if (slug === "project-workflows") {
+    return <ProjectWorkflowsOverview />;
+  }
+
+  return (
+    <NotesRenderer
+      backHref="/notes-cheat-sheets/real-time-projects"
+      backLabel="Real-Time Project Notes"
+      data={{
+        ...data,
+        title: slug
+          .split("-")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" "),
+      }}
+    />
+  );
+}

@@ -1,0 +1,392 @@
+DEVMAVOX DATASET AUDIT DETAILS
+Total groups: 117
+
+========== SHORT ANSWERS ==========
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 4 | LENGTH: 238
+QUESTION: What is a panel in Grafana?
+ANSWER: A panel is an individual visualization or information component inside a dashboard. Each panel normally uses a query against a data source. One panel may display CPU utilization, another memory consumption, and another application errors.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 5 | LENGTH: 223
+QUESTION: What is a Grafana data source?
+ANSWER: A data source is an external system from which Grafana retrieves information. Examples include Prometheus, Loki, Elasticsearch, InfluxDB, and supported SQL databases. Prometheus can provide metrics while Loki provides logs.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 6 | LENGTH: 230
+QUESTION: What is the difference between Grafana and Prometheus?
+ANSWER: Prometheus collects, stores, and queries time-series metrics. Grafana connects to data sources and visualizes their information. For example, Prometheus collects Linux CPU usage, while Grafana displays that information as a graph.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 7 | LENGTH: 180
+QUESTION: What is a Grafana organization?
+ANSWER: An organization is a logical separation used to manage dashboards, data sources, users, and permissions within a Grafana installation. It can help separate teams or business units.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 8 | LENGTH: 237
+QUESTION: What are folders in Grafana?
+ANSWER: Folders organize dashboards into logical groups. Teams can group dashboards by application, environment, infrastructure component, or business unit. For example, folders can separate Kubernetes, AWS, database, and application dashboards.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 10 | LENGTH: 223
+QUESTION: What is a dashboard time range?
+ANSWER: The dashboard time range controls the period of data displayed by panels. Users can select periods such as the last 15 minutes or last 24 hours. During an incident, engineers can narrow the time range to the failure window.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 11 | LENGTH: 220
+QUESTION: What is Grafana Explore?
+ANSWER: Explore is an interface for investigating data sources without first creating or modifying a dashboard. Engineers can write queries and inspect metrics or logs. It is useful for testing a PromQL query during an incident.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 13 | LENGTH: 226
+QUESTION: What is a contact point in Grafana?
+ANSWER: A contact point defines where Grafana sends alert notifications. It can contain an integration such as email or a supported messaging service. Critical production alerts can be routed to an operations notification destination.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 15 | LENGTH: 238
+QUESTION: What is alert grouping in Grafana?
+ANSWER: Alert grouping combines related alert instances into a single notification instead of sending separate notifications for every alert. It reduces notification noise during large incidents, such as multiple Kubernetes pods failing together.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 16 | LENGTH: 222
+QUESTION: What is a Grafana annotation?
+ANSWER: An annotation marks an event on a dashboard timeline. It helps engineers correlate metric changes with deployments, configuration changes, incidents, or maintenance. A deployment event can be marked on an error-rate graph.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 17 | LENGTH: 235
+QUESTION: What is dashboard provisioning in Grafana?
+ANSWER: Dashboard provisioning allows dashboards to be managed through configuration files or supported provisioning mechanisms. Teams can store dashboard definitions in version control and deploy them consistently across Grafana environments.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 18 | LENGTH: 244
+QUESTION: What is a Grafana plugin?
+ANSWER: A plugin extends Grafana with additional functionality. Plugins can provide data-source integrations, visualization panels, or application features. Organizations should review compatibility and security before installing plugins in production.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 19 | LENGTH: 225
+QUESTION: What is Grafana authentication?
+ANSWER: Authentication verifies a user's identity before allowing access to Grafana. Depending on configuration, Grafana can use local accounts or supported external identity providers such as an organization's single sign-on system.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 20 | LENGTH: 240
+QUESTION: What is the difference between authentication and authorization in Grafana?
+ANSWER: Authentication verifies who a user is, while authorization determines what that user is allowed to do. Grafana uses authentication to establish identity and roles or permissions to control access to dashboards and administrative operations.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 21 | LENGTH: 237
+QUESTION: What are Grafana roles?
+ANSWER: Grafana roles define levels of access for users. Common built-in roles include Viewer, Editor, and Admin. A Viewer generally reads dashboards, an Editor can modify permitted resources, and an Admin has broader administrative permissions.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 22 | LENGTH: 229
+QUESTION: What is a Grafana snapshot?
+ANSWER: A snapshot captures a point-in-time view of dashboard data and visualizations. It can be useful when sharing a temporary monitoring view. Teams should review sharing settings because snapshots may contain operational information.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 23 | LENGTH: 208
+QUESTION: What is a Stat panel in Grafana?
+ANSWER: A Stat panel displays a summarized numeric value, often representing the latest value or a calculated query result. A dashboard can show the current number of healthy application instances or failed requests.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 24 | LENGTH: 207
+QUESTION: What is a Gauge panel in Grafana?
+ANSWER: A Gauge panel displays a numeric value using a visual gauge. It is useful when a measurement has meaningful thresholds. For example, a dashboard can display disk utilization and highlight high storage usage.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 25 | LENGTH: 196
+QUESTION: What is a Time series panel in Grafana?
+ANSWER: A Time series panel displays values over time. It is commonly used for CPU utilization, memory usage, request rates, latency, and network traffic. Engineers can identify when a metric spike began.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 27 | LENGTH: 220
+QUESTION: What is a data-source query in Grafana?
+ANSWER: A data-source query requests information from a configured source. The query language depends on the source, such as PromQL for Prometheus or LogQL for Loki. A panel can query CPU metrics and display the returned values.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 29 | LENGTH: 184
+QUESTION: What is Loki in Grafana?
+ANSWER: Loki is a log aggregation system commonly used with Grafana to collect and query logs. It indexes log labels and allows engineers to explore application and infrastructure log streams.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 30 | LENGTH: 228
+QUESTION: What is LogQL?
+ANSWER: LogQL is the query language used to query logs and metric expressions in Grafana Loki. It supports selecting log streams using labels and filtering or parsing log content. Engineers can filter production logs for error messages.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 31 | LENGTH: 213
+QUESTION: What is Grafana alert evaluation?
+ANSWER: Alert evaluation periodically runs the queries and conditions defined in an alert rule. Grafana uses the results to determine whether an alert instance is normal, pending, or firing according to its configuration.
+
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 32 | LENGTH: 248
+QUESTION: What is a dashboard refresh interval?
+ANSWER: The refresh interval determines how often Grafana refreshes panel data. A shorter interval provides more frequent updates but can increase query load on data sources. A live operations dashboard may refresh more frequently than a historical report.
+
+TOOL: Maven | CATEGORY: Basic Interview Questions | NUMBER:  | LENGTH: 221
+QUESTION: What is artifactId in Maven?
+ANSWER: artifactId identifies a specific project or module within a Maven group. For example, payment-service can be the artifactId of a payment application. It is used with groupId and version to identify the resulting artifact.
+
+TOOL: Maven | CATEGORY: Basic Interview Questions | NUMBER:  | LENGTH: 226
+QUESTION: What is version in Maven?
+ANSWER: The version field identifies a particular release or development version of a Maven artifact. Examples include 1.0.0 and 2.1.0-SNAPSHOT. Versioning helps teams manage releases, dependency compatibility, and artifact retrieval.
+
+TOOL: Maven | CATEGORY: Basic Interview Questions | NUMBER:  | LENGTH: 245
+QUESTION: What is a Maven dependency?
+ANSWER: A dependency is an external library or module required by a Maven project. Dependencies are declared in pom.xml using coordinates and optional scope information. Maven resolves the required artifacts from local or configured remote repositories.
+
+TOOL: Maven | CATEGORY: Basic Interview Questions | NUMBER:  | LENGTH: 222
+QUESTION: What is the Maven build lifecycle?
+ANSWER: A Maven build lifecycle is an ordered sequence of phases used to perform project tasks. The main built-in lifecycles are default, clean, and site. Invoking a lifecycle phase executes the preceding phases in that lifecycle.
+
+TOOL: Maven | CATEGORY: Basic Interview Questions | NUMBER:  | LENGTH: 247
+QUESTION: What are the main phases of the Maven default lifecycle?
+ANSWER: Important phases include validate, compile, test, package, verify, install, and deploy. They represent progressively later stages of a build. For example, package creates the project artifact, while install places it in the local Maven repository.
+
+TOOL: Maven | CATEGORY: Basic Interview Questions | NUMBER:  | LENGTH: 231
+QUESTION: What does mvn clean do?
+ANSWER: The clean lifecycle removes files generated by previous builds, normally from the project's target directory. It helps avoid accidentally using stale compiled classes or packaged outputs. It is commonly run before a fresh CI build.
+
+TOOL: Maven | CATEGORY: Basic Interview Questions | NUMBER:  | LENGTH: 224
+QUESTION: What does mvn test do?
+ANSWER: The test phase runs unit tests using the configured testing framework and Maven test plugins, commonly Surefire. It executes earlier required lifecycle phases first. A failed test normally causes the build to report failure.
+
+TOOL: Maven | CATEGORY: Basic Interview Questions | NUMBER:  | LENGTH: 247
+QUESTION: What does mvn package do?
+ANSWER: The package phase creates the distributable artifact, such as a JAR or WAR, according to the project's packaging configuration. Earlier required lifecycle phases are executed first. The generated artifact is commonly found in the target directory.
+
+TOOL: Maven | CATEGORY: Basic Interview Questions | NUMBER:  | LENGTH: 218
+QUESTION: What is a Maven goal?
+ANSWER: A goal is an individual task provided by a Maven plugin. For example, the compiler plugin provides a compile goal, while the Surefire plugin provides a test goal. A lifecycle phase can trigger one or more plugin goals.
+
+TOOL: Maven | CATEGORY: Basic Interview Questions | NUMBER:  | LENGTH: 225
+QUESTION: What is a parent POM?
+ANSWER: A parent POM is a Maven project model inherited by child projects. It can centralize dependency versions, plugin configuration, properties, and shared build rules. This reduces duplicated configuration across related modules.
+
+TOOL: Maven | CATEGORY: Basic Interview Questions | NUMBER:  | LENGTH: 229
+QUESTION: What is the Maven Surefire plugin?
+ANSWER: The Surefire plugin runs unit tests during the Maven test phase. It integrates with common Java testing frameworks and reports test results. Engineers inspect Surefire reports when unit tests fail in local builds or CI pipelines.
+
+TOOL: Nexus | CATEGORY: Basic Interview Questions | NUMBER:  | LENGTH: 245
+QUESTION: What is an artifact in Nexus?
+ANSWER: An artifact is a packaged software component stored in a repository. Examples include JAR files, WAR files, npm packages, and container images. Build systems publish artifacts to Nexus so other projects or deployment pipelines can retrieve them.
+
+TOOL: Nexus | CATEGORY: Basic Interview Questions | NUMBER:  | LENGTH: 236
+QUESTION: What is a component in Nexus?
+ANSWER: A component represents a packaged software item stored in a repository. It may contain multiple assets, such as a JAR and its POM file. Nexus provides component information that helps users identify, inspect, and manage stored packages.
+
+========== DUPLICATE GROUPS ==========
+
+DUPLICATE GROUP: 1
+TOOL: Grafana | CATEGORY: Basic Interview Questions | NUMBER: 34
+QUESTION: How do you troubleshoot a Grafana dashboard showing no data?
+TOOL: Grafana | CATEGORY: Intermediate Interview Questions | NUMBER: 3
+QUESTION: How do you troubleshoot a Grafana dashboard showing No Data?
+
+DUPLICATE GROUP: 2
+TOOL: Nexus | CATEGORY: Intermediate Interview Questions | NUMBER: 18
+QUESTION: How do you troubleshoot Docker image push failures to Nexus?
+TOOL: Nexus | CATEGORY: Troubleshooting | NUMBER: 27
+QUESTION: How do you troubleshoot Docker image push failures to Nexus?
+
+DUPLICATE GROUP: 3
+TOOL: Docker | CATEGORY: Basic Interview Questions | NUMBER: 29
+QUESTION: What is a .dockerignore file?
+TOOL: Docker | CATEGORY: Intermediate Interview Questions | NUMBER: 6
+QUESTION: What is a .dockerignore file?
+
+DUPLICATE GROUP: 4
+TOOL: Git | CATEGORY: Basic Interview Questions | NUMBER: 35
+QUESTION: What is a .gitignore file?
+TOOL: Git | CATEGORY: Intermediate Interview Questions | NUMBER: 23
+QUESTION: What is a .gitignore file?
+
+DUPLICATE GROUP: 5
+TOOL: Kubernetes | CATEGORY: Basic Interview Questions | NUMBER: 31
+QUESTION: What is a CronJob in Kubernetes?
+TOOL: Kubernetes | CATEGORY: Intermediate Interview Questions | NUMBER: 6
+QUESTION: What is a CronJob in Kubernetes?
+
+DUPLICATE GROUP: 6
+TOOL: Docker | CATEGORY: Basic Interview Questions | NUMBER: 19
+QUESTION: What is a Docker volume?
+TOOL: Docker | CATEGORY: Intermediate Interview Questions | NUMBER: 18
+QUESTION: What is a Docker volume?
+
+DUPLICATE GROUP: 7
+TOOL: Jenkins | CATEGORY: Basic Interview Questions | NUMBER: 34
+QUESTION: What is a Jenkins Label?
+TOOL: Jenkins | CATEGORY: Intermediate Interview Questions | NUMBER: 6
+QUESTION: What is a Jenkins label?
+
+DUPLICATE GROUP: 8
+TOOL: Jenkins | CATEGORY: Basic Interview Questions | NUMBER: 11
+QUESTION: What is a Jenkins Pipeline?
+TOOL: Jenkins | CATEGORY: Intermediate Interview Questions | NUMBER: 1
+QUESTION: What is a Jenkins Pipeline?
+
+DUPLICATE GROUP: 9
+TOOL: Jenkins | CATEGORY: Basic Interview Questions | NUMBER: 32
+QUESTION: What is a Jenkins Shared Library?
+TOOL: Jenkins | CATEGORY: Intermediate Interview Questions | NUMBER: 9
+QUESTION: What is a Jenkins shared library?
+
+DUPLICATE GROUP: 10
+TOOL: Jenkins | CATEGORY: Basic Interview Questions | NUMBER: 12
+QUESTION: What is a Jenkinsfile?
+TOOL: Jenkins | CATEGORY: Intermediate Interview Questions | NUMBER: 3
+QUESTION: What is a Jenkinsfile?
+
+DUPLICATE GROUP: 11
+TOOL: Kubernetes | CATEGORY: Basic Interview Questions | NUMBER: 30
+QUESTION: What is a Job in Kubernetes?
+TOOL: Kubernetes | CATEGORY: Intermediate Interview Questions | NUMBER: 5
+QUESTION: What is a Job in Kubernetes?
+
+DUPLICATE GROUP: 12
+TOOL: Git | CATEGORY: Basic Interview Questions | NUMBER: 26
+QUESTION: What is a merge conflict in Git?
+TOOL: Git | CATEGORY: Intermediate Interview Questions | NUMBER: 3
+QUESTION: What is a merge conflict in Git?
+
+DUPLICATE GROUP: 13
+TOOL: Docker | CATEGORY: Basic Interview Questions | NUMBER: 28
+QUESTION: What is a multi-stage Docker build?
+TOOL: Docker | CATEGORY: Intermediate Interview Questions | NUMBER: 3
+QUESTION: What is a multi-stage Docker build?
+
+DUPLICATE GROUP: 14
+TOOL: Kubernetes | CATEGORY: Basic Interview Questions | NUMBER: 20
+QUESTION: What is a PersistentVolumeClaim?
+TOOL: Kubernetes | CATEGORY: Intermediate Interview Questions | NUMBER: 19
+QUESTION: What is a PersistentVolumeClaim?
+
+DUPLICATE GROUP: 15
+TOOL: Terraform | CATEGORY: Basic Interview Questions | NUMBER: 13
+QUESTION: What is a Terraform backend?
+TOOL: Terraform | CATEGORY: Intermediate Interview Questions | NUMBER: 2
+QUESTION: What is a Terraform backend?
+
+DUPLICATE GROUP: 16
+TOOL: Terraform | CATEGORY: Basic Interview Questions | NUMBER: 17
+QUESTION: What is a Terraform data source?
+TOOL: Terraform | CATEGORY: Intermediate Interview Questions | NUMBER: 18
+QUESTION: What is a Terraform data source?
+
+DUPLICATE GROUP: 17
+TOOL: Terraform | CATEGORY: Basic Interview Questions | NUMBER: 21
+QUESTION: What is a Terraform module?
+TOOL: Terraform | CATEGORY: Intermediate Interview Questions | NUMBER: 14
+QUESTION: What is a Terraform module?
+
+DUPLICATE GROUP: 18
+TOOL: Terraform | CATEGORY: Basic Interview Questions | NUMBER: 6
+QUESTION: What is a Terraform provider?
+TOOL: Terraform | CATEGORY: Intermediate Interview Questions | NUMBER: 11
+QUESTION: What is a Terraform provider?
+
+DUPLICATE GROUP: 19
+TOOL: AWS | CATEGORY: Basic Interview Questions | NUMBER: 26
+QUESTION: What is an Application Load Balancer?
+TOOL: AWS | CATEGORY: Intermediate Interview Questions | NUMBER: 11
+QUESTION: What is an Application Load Balancer?
+
+DUPLICATE GROUP: 20
+TOOL: AWS | CATEGORY: Basic Interview Questions | NUMBER: 27
+QUESTION: What is an Auto Scaling Group?
+TOOL: AWS | CATEGORY: Intermediate Interview Questions | NUMBER: 9
+QUESTION: What is an Auto Scaling group?
+
+DUPLICATE GROUP: 21
+TOOL: AWS | CATEGORY: Basic Interview Questions | NUMBER: 5
+QUESTION: What is an AWS Region?
+TOOL: AWS | CATEGORY: Intermediate Interview Questions | NUMBER: 38
+QUESTION: What is an AWS Region?
+
+DUPLICATE GROUP: 22
+TOOL: AWS | CATEGORY: Basic Interview Questions | NUMBER: 21
+QUESTION: What is an EBS snapshot?
+TOOL: AWS | CATEGORY: Intermediate Interview Questions | NUMBER: 7
+QUESTION: What is an EBS snapshot?
+
+DUPLICATE GROUP: 23
+TOOL: AWS | CATEGORY: Basic Interview Questions | NUMBER: 24
+QUESTION: What is an RDS Read Replica?
+TOOL: AWS | CATEGORY: Intermediate Interview Questions | NUMBER: 26
+QUESTION: What is an RDS read replica?
+
+DUPLICATE GROUP: 24
+TOOL: Docker | CATEGORY: Basic Interview Questions | NUMBER: 30
+QUESTION: What is Docker Compose?
+TOOL: Docker | CATEGORY: Intermediate Interview Questions | NUMBER: 12
+QUESTION: What is Docker Compose?
+
+DUPLICATE GROUP: 25
+TOOL: Docker | CATEGORY: Basic Interview Questions | NUMBER: 15
+QUESTION: What is Docker port mapping?
+TOOL: Docker | CATEGORY: Intermediate Interview Questions | NUMBER: 16
+QUESTION: What is Docker port mapping?
+
+DUPLICATE GROUP: 26
+TOOL: Docker | CATEGORY: Basic Interview Questions | NUMBER: 18
+QUESTION: What is host networking in Docker?
+TOOL: Docker | CATEGORY: Intermediate Interview Questions | NUMBER: 15
+QUESTION: What is host networking in Docker?
+
+DUPLICATE GROUP: 27
+TOOL: AWS | CATEGORY: Basic Interview Questions | NUMBER: 18
+QUESTION: What is S3 versioning?
+TOOL: AWS | CATEGORY: Intermediate Interview Questions | NUMBER: 22
+QUESTION: What is S3 versioning?
+
+DUPLICATE GROUP: 28
+TOOL: Terraform | CATEGORY: Basic Interview Questions | NUMBER: 11
+QUESTION: What is Terraform state?
+TOOL: Terraform | CATEGORY: Intermediate Interview Questions | NUMBER: 1
+QUESTION: What is Terraform state?
+
+DUPLICATE GROUP: 29
+TOOL: Docker | CATEGORY: Basic Interview Questions | NUMBER: 5
+QUESTION: What is the difference between a Docker image and a container?
+TOOL: Docker | CATEGORY: Intermediate Interview Questions | NUMBER: 7
+QUESTION: What is the difference between a Docker image and a container?
+
+DUPLICATE GROUP: 30
+TOOL: Terraform | CATEGORY: Basic Interview Questions | NUMBER: 18
+QUESTION: What is the difference between a Terraform resource and a data source?
+TOOL: Terraform | CATEGORY: Intermediate Interview Questions | NUMBER: 19
+QUESTION: What is the difference between a Terraform resource and a data source?
+
+DUPLICATE GROUP: 31
+TOOL: Docker | CATEGORY: Basic Interview Questions | NUMBER: 21
+QUESTION: What is the difference between a volume and a bind mount?
+TOOL: Docker | CATEGORY: Intermediate Interview Questions | NUMBER: 19
+QUESTION: What is the difference between a volume and a bind mount?
+
+DUPLICATE GROUP: 32
+TOOL: AWS | CATEGORY: Basic Interview Questions | NUMBER: 14
+QUESTION: What is the difference between an IAM user and an IAM role?
+TOOL: AWS | CATEGORY: Intermediate Interview Questions | NUMBER: 1
+QUESTION: What is the difference between an IAM user and an IAM role?
+
+DUPLICATE GROUP: 33
+TOOL: Jenkins | CATEGORY: Basic Interview Questions | NUMBER: 15
+QUESTION: What is the difference between Declarative and Scripted Pipeline?
+TOOL: Jenkins | CATEGORY: Intermediate Interview Questions | NUMBER: 2
+QUESTION: What is the difference between Declarative and Scripted Pipeline?
+
+DUPLICATE GROUP: 34
+TOOL: Docker | CATEGORY: Basic Interview Questions | NUMBER: 12
+QUESTION: What is the difference between docker run and docker start?
+TOOL: Docker | CATEGORY: Intermediate Interview Questions | NUMBER: 10
+QUESTION: What is the difference between docker run and docker start?
+
+DUPLICATE GROUP: 35
+TOOL: Git | CATEGORY: Basic Interview Questions | NUMBER: 24
+QUESTION: What is the difference between git fetch and git pull?
+TOOL: Git | CATEGORY: Intermediate Interview Questions | NUMBER: 1
+QUESTION: What is the difference between git fetch and git pull?
+
+DUPLICATE GROUP: 36
+TOOL: Git | CATEGORY: Basic Interview Questions | NUMBER: 34
+QUESTION: What is the difference between git reset and git revert?
+TOOL: Git | CATEGORY: Intermediate Interview Questions | NUMBER: 9
+QUESTION: What is the difference between git reset and git revert?
+
+DUPLICATE GROUP: 37
+TOOL: Git | CATEGORY: Basic Interview Questions | NUMBER: 18
+QUESTION: What is the difference between git switch and git checkout?
+TOOL: Git | CATEGORY: Intermediate Interview Questions | NUMBER: 38
+QUESTION: What is the difference between git switch and git checkout?
+
+DUPLICATE GROUP: 38
+TOOL: Terraform | CATEGORY: Basic Interview Questions | NUMBER: 29
+QUESTION: What is the difference between Terraform workspaces and separate environment directories?
+TOOL: Terraform | CATEGORY: Intermediate Interview Questions | NUMBER: 25
+QUESTION: What is the difference between Terraform workspaces and separate environment directories?
+
+DUPLICATE GROUP: 39
+TOOL: Jenkins | CATEGORY: Basic Interview Questions | NUMBER: 23
+QUESTION: What is the Jenkins Workspace?
+TOOL: Jenkins | CATEGORY: Intermediate Interview Questions | NUMBER: 29
+QUESTION: What is the Jenkins workspace?
+
+========== TOTALS ==========
+Total questions: 4180
+Short answers: 37
+Duplicate groups: 39

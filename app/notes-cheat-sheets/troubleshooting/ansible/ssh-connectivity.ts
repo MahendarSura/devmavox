@@ -1280,7 +1280,7 @@ Host production-app01
 [appservers]
 app01 ansible_host=10.10.3.21
 
-[appservers:vars]
+[appservers${":"}vars]
 ansible_user=deploy
 ansible_connection=ssh
 ansible_ssh_private_key_file=~/.ssh/company_production

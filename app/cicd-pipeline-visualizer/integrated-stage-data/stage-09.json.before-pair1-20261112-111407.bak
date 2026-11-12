@@ -1,0 +1,70 @@
+[
+  {
+    "topicTitle": "Amazon ECR Fundamentals",
+    "sections": []
+  },
+  {
+    "topicTitle": "ECR Registry Architecture",
+    "sections": []
+  },
+  {
+    "topicTitle": "Repository Creation",
+    "sections": []
+  },
+  {
+    "topicTitle": "AWS IAM Permissions",
+    "sections": []
+  },
+  {
+    "topicTitle": "Docker Authentication",
+    "sections": []
+  },
+  {
+    "topicTitle": "Image Tagging",
+    "sections": []
+  },
+  {
+    "topicTitle": "Image Push Workflow",
+    "sections": []
+  },
+  {
+    "topicTitle": "Image Pull Workflow",
+    "sections": []
+  },
+  {
+    "topicTitle": "Immutable Image Tags",
+    "sections": []
+  },
+  {
+    "topicTitle": "Image Digests",
+    "sections": []
+  },
+  {
+    "topicTitle": "Lifecycle Policies",
+    "sections": []
+  },
+  {
+    "topicTitle": "Encryption and Access Control",
+    "sections": []
+  },
+  {
+    "topicTitle": "Image Vulnerability Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "Cross-account Access",
+    "sections": []
+  },
+  {
+    "topicTitle": "Registry Replication",
+    "sections": []
+  },
+  {
+    "topicTitle": "Troubleshooting",
+    "sections": []
+  },
+  {
+    "topicTitle": "Production Hands-on Lab",
+    "sections": []
+  }
+]

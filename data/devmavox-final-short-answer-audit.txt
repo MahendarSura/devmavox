@@ -1,0 +1,227 @@
+DEVMAVOX FINAL SHORT ANSWER AUDIT
+Generated: 11/05/2026 20:19:46
+Total questions: 4250
+Answers below 250 characters: 37
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is a panel in Grafana?
+Answer length: 238
+Answer: A panel is an individual visualization or information component inside a dashboard. Each panel normally uses a query against a data source. One panel may display CPU utilization, another memory consumption, and another application errors.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is a Grafana data source?
+Answer length: 223
+Answer: A data source is an external system from which Grafana retrieves information. Examples include Prometheus, Loki, Elasticsearch, InfluxDB, and supported SQL databases. Prometheus can provide metrics while Loki provides logs.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is the difference between Grafana and Prometheus?
+Answer length: 230
+Answer: Prometheus collects, stores, and queries time-series metrics. Grafana connects to data sources and visualizes their information. For example, Prometheus collects Linux CPU usage, while Grafana displays that information as a graph.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is a Grafana organization?
+Answer length: 180
+Answer: An organization is a logical separation used to manage dashboards, data sources, users, and permissions within a Grafana installation. It can help separate teams or business units.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What are folders in Grafana?
+Answer length: 237
+Answer: Folders organize dashboards into logical groups. Teams can group dashboards by application, environment, infrastructure component, or business unit. For example, folders can separate Kubernetes, AWS, database, and application dashboards.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is a dashboard time range?
+Answer length: 223
+Answer: The dashboard time range controls the period of data displayed by panels. Users can select periods such as the last 15 minutes or last 24 hours. During an incident, engineers can narrow the time range to the failure window.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is Grafana Explore?
+Answer length: 220
+Answer: Explore is an interface for investigating data sources without first creating or modifying a dashboard. Engineers can write queries and inspect metrics or logs. It is useful for testing a PromQL query during an incident.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is a contact point in Grafana?
+Answer length: 226
+Answer: A contact point defines where Grafana sends alert notifications. It can contain an integration such as email or a supported messaging service. Critical production alerts can be routed to an operations notification destination.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is alert grouping in Grafana?
+Answer length: 238
+Answer: Alert grouping combines related alert instances into a single notification instead of sending separate notifications for every alert. It reduces notification noise during large incidents, such as multiple Kubernetes pods failing together.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is a Grafana annotation?
+Answer length: 222
+Answer: An annotation marks an event on a dashboard timeline. It helps engineers correlate metric changes with deployments, configuration changes, incidents, or maintenance. A deployment event can be marked on an error-rate graph.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is dashboard provisioning in Grafana?
+Answer length: 235
+Answer: Dashboard provisioning allows dashboards to be managed through configuration files or supported provisioning mechanisms. Teams can store dashboard definitions in version control and deploy them consistently across Grafana environments.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is a Grafana plugin?
+Answer length: 244
+Answer: A plugin extends Grafana with additional functionality. Plugins can provide data-source integrations, visualization panels, or application features. Organizations should review compatibility and security before installing plugins in production.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is Grafana authentication?
+Answer length: 225
+Answer: Authentication verifies a user's identity before allowing access to Grafana. Depending on configuration, Grafana can use local accounts or supported external identity providers such as an organization's single sign-on system.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is the difference between authentication and authorization in Grafana?
+Answer length: 240
+Answer: Authentication verifies who a user is, while authorization determines what that user is allowed to do. Grafana uses authentication to establish identity and roles or permissions to control access to dashboards and administrative operations.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What are Grafana roles?
+Answer length: 237
+Answer: Grafana roles define levels of access for users. Common built-in roles include Viewer, Editor, and Admin. A Viewer generally reads dashboards, an Editor can modify permitted resources, and an Admin has broader administrative permissions.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is a Grafana snapshot?
+Answer length: 229
+Answer: A snapshot captures a point-in-time view of dashboard data and visualizations. It can be useful when sharing a temporary monitoring view. Teams should review sharing settings because snapshots may contain operational information.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is a Stat panel in Grafana?
+Answer length: 208
+Answer: A Stat panel displays a summarized numeric value, often representing the latest value or a calculated query result. A dashboard can show the current number of healthy application instances or failed requests.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is a Gauge panel in Grafana?
+Answer length: 207
+Answer: A Gauge panel displays a numeric value using a visual gauge. It is useful when a measurement has meaningful thresholds. For example, a dashboard can display disk utilization and highlight high storage usage.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is a Time series panel in Grafana?
+Answer length: 196
+Answer: A Time series panel displays values over time. It is commonly used for CPU utilization, memory usage, request rates, latency, and network traffic. Engineers can identify when a metric spike began.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is a data-source query in Grafana?
+Answer length: 220
+Answer: A data-source query requests information from a configured source. The query language depends on the source, such as PromQL for Prometheus or LogQL for Loki. A panel can query CPU metrics and display the returned values.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is Loki in Grafana?
+Answer length: 184
+Answer: Loki is a log aggregation system commonly used with Grafana to collect and query logs. It indexes log labels and allows engineers to explore application and infrastructure log streams.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is LogQL?
+Answer length: 228
+Answer: LogQL is the query language used to query logs and metric expressions in Grafana Loki. It supports selecting log streams using labels and filtering or parsing log content. Engineers can filter production logs for error messages.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is Grafana alert evaluation?
+Answer length: 213
+Answer: Alert evaluation periodically runs the queries and conditions defined in an alert rule. Grafana uses the results to determine whether an alert instance is normal, pending, or firing according to its configuration.
+
+Tool: Grafana
+Category: Basic Interview Questions
+Question: What is a dashboard refresh interval?
+Answer length: 248
+Answer: The refresh interval determines how often Grafana refreshes panel data. A shorter interval provides more frequent updates but can increase query load on data sources. A live operations dashboard may refresh more frequently than a historical report.
+
+Tool: Maven
+Category: Basic Interview Questions
+Question: What is artifactId in Maven?
+Answer length: 221
+Answer: artifactId identifies a specific project or module within a Maven group. For example, payment-service can be the artifactId of a payment application. It is used with groupId and version to identify the resulting artifact.
+
+Tool: Maven
+Category: Basic Interview Questions
+Question: What is version in Maven?
+Answer length: 226
+Answer: The version field identifies a particular release or development version of a Maven artifact. Examples include 1.0.0 and 2.1.0-SNAPSHOT. Versioning helps teams manage releases, dependency compatibility, and artifact retrieval.
+
+Tool: Maven
+Category: Basic Interview Questions
+Question: What is a Maven dependency?
+Answer length: 245
+Answer: A dependency is an external library or module required by a Maven project. Dependencies are declared in pom.xml using coordinates and optional scope information. Maven resolves the required artifacts from local or configured remote repositories.
+
+Tool: Maven
+Category: Basic Interview Questions
+Question: What is the Maven build lifecycle?
+Answer length: 222
+Answer: A Maven build lifecycle is an ordered sequence of phases used to perform project tasks. The main built-in lifecycles are default, clean, and site. Invoking a lifecycle phase executes the preceding phases in that lifecycle.
+
+Tool: Maven
+Category: Basic Interview Questions
+Question: What are the main phases of the Maven default lifecycle?
+Answer length: 247
+Answer: Important phases include validate, compile, test, package, verify, install, and deploy. They represent progressively later stages of a build. For example, package creates the project artifact, while install places it in the local Maven repository.
+
+Tool: Maven
+Category: Basic Interview Questions
+Question: What does mvn clean do?
+Answer length: 231
+Answer: The clean lifecycle removes files generated by previous builds, normally from the project's target directory. It helps avoid accidentally using stale compiled classes or packaged outputs. It is commonly run before a fresh CI build.
+
+Tool: Maven
+Category: Basic Interview Questions
+Question: What does mvn test do?
+Answer length: 224
+Answer: The test phase runs unit tests using the configured testing framework and Maven test plugins, commonly Surefire. It executes earlier required lifecycle phases first. A failed test normally causes the build to report failure.
+
+Tool: Maven
+Category: Basic Interview Questions
+Question: What does mvn package do?
+Answer length: 247
+Answer: The package phase creates the distributable artifact, such as a JAR or WAR, according to the project's packaging configuration. Earlier required lifecycle phases are executed first. The generated artifact is commonly found in the target directory.
+
+Tool: Maven
+Category: Basic Interview Questions
+Question: What is a Maven goal?
+Answer length: 218
+Answer: A goal is an individual task provided by a Maven plugin. For example, the compiler plugin provides a compile goal, while the Surefire plugin provides a test goal. A lifecycle phase can trigger one or more plugin goals.
+
+Tool: Maven
+Category: Basic Interview Questions
+Question: What is a parent POM?
+Answer length: 225
+Answer: A parent POM is a Maven project model inherited by child projects. It can centralize dependency versions, plugin configuration, properties, and shared build rules. This reduces duplicated configuration across related modules.
+
+Tool: Maven
+Category: Basic Interview Questions
+Question: What is the Maven Surefire plugin?
+Answer length: 229
+Answer: The Surefire plugin runs unit tests during the Maven test phase. It integrates with common Java testing frameworks and reports test results. Engineers inspect Surefire reports when unit tests fail in local builds or CI pipelines.
+
+Tool: Nexus
+Category: Basic Interview Questions
+Question: What is an artifact in Nexus?
+Answer length: 245
+Answer: An artifact is a packaged software component stored in a repository. Examples include JAR files, WAR files, npm packages, and container images. Build systems publish artifacts to Nexus so other projects or deployment pipelines can retrieve them.
+
+Tool: Nexus
+Category: Basic Interview Questions
+Question: What is a component in Nexus?
+Answer length: 236
+Answer: A component represents a packaged software item stored in a repository. It may contain multiple assets, such as a JAR and its POM file. Nexus provides component information that helps users identify, inspect, and manage stored packages.
+

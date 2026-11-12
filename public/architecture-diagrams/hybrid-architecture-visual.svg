@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="440" viewBox="0 0 1200 440">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17243b"/>
+      <stop offset="1" stop-color="#07111f"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0 0 L0 6 L9 3z" fill="#93c5fd"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="440" rx="24" fill="url(#bg)"/>
+  <text x="600" y="42" fill="#e0f2fe" font-size="25" font-family="Arial" font-weight="bold" text-anchor="middle">HYBRID CLOUD REFERENCE ARCHITECTURE</text>
+  <g font-family="Arial" text-anchor="middle">
+    <rect x="450" y="75" width="300" height="65" rx="12" fill="#082f49" stroke="#38bdf8" stroke-width="2"/>
+    <text x="600" y="103" fill="#bae6fd" font-size="18">Enterprise Users</text>
+    <text x="600" y="124" fill="#cbd5e1" font-size="12">DNS · Identity Federation</text>
+    <rect x="440" y="185" width="320" height="65" rx="12" fill="#881337" stroke="#fb7185" stroke-width="2"/>
+    <text x="600" y="213" fill="#fecdd3" font-size="18">Security + Connectivity Hub</text>
+    <text x="600" y="234" fill="#fce7f3" font-size="12">VPN · Dedicated Link · Firewall · Routing</text>
+    <path d="M600 140 V185" stroke="#93c5fd" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="65" y="300" width="450" height="95" rx="15" fill="#0f2740" stroke="#38bdf8" stroke-width="2"/>
+    <text x="290" y="335" fill="#bae6fd" font-size="21">On-Premises Datacenter</text>
+    <text x="290" y="365" fill="#cbd5e1" font-size="15">Legacy Apps · Private DB · Shared Services</text>
+    <rect x="685" y="300" width="450" height="95" rx="15" fill="#064e3b" stroke="#34d399" stroke-width="2"/>
+    <text x="910" y="335" fill="#a7f3d0" font-size="21">Public Cloud</text>
+    <text x="910" y="365" fill="#d1fae5" font-size="15">Private Apps · Managed Data · Object Storage</text>
+    <path d="M520 250 L290 300 M680 250 L910 300" stroke="#93c5fd" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+    <text x="600" y="425" fill="#94a3b8" font-size="14">Unified Monitoring · Security Logs · Backup · Incident Response</text>
+  </g>
+</svg>

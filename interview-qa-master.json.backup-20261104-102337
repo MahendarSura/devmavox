@@ -1,0 +1,716 @@
+[
+  {
+    "tool": "AWS",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "AWS",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "AWS",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "AWS",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "AWS",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "AWS",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "AWS",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Docker",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Docker",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Docker",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Docker",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Docker",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Docker",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Docker",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Kubernetes",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jenkins",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Git",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Git",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Git",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Git",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Git",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Git",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Git",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Terraform",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Terraform",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Terraform",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Terraform",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Terraform",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Terraform",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Terraform",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Ansible",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Ansible",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Ansible",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Ansible",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Ansible",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Ansible",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Ansible",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Linux",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Linux",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Linux",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Linux",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Linux",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Linux",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Linux",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "ArgoCD",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Helm",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Prometheus",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Grafana",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "EKS",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Maven",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Nexus",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Jira",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Basic Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Intermediate Interview Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Advanced Interview Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Real-Time Production Scenario Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Troubleshooting-Based Questions",
+    "requiredQuestions": 40,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Scenario-Based Practical Questions",
+    "requiredQuestions": 35,
+    "interviewQuestions": []
+  },
+  {
+    "tool": "Tomcat",
+    "category": "Frequently Asked Interview Questions",
+    "requiredQuestions": 25,
+    "interviewQuestions": []
+  }
+]

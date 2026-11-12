@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="360" viewBox="0 0 1600 360">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#12395b"/>
+      <stop offset="100%" stop-color="#07111f"/>
+    </linearGradient>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="360" fill="url(#bg)"/>
+  <g fill="none" stroke="url(#line)" stroke-width="4" opacity=".8">
+    <path d="M170 180 H430 M570 180 H760 M900 180 H1090 M1230 180 H1430"/>
+    <path d="M430 180 L410 165 M430 180 L410 195 M760 180 L740 165 M760 180 L740 195 M1090 180 L1070 165 M1090 180 L1070 195"/>
+  </g>
+  <g font-family="Arial,sans-serif" text-anchor="middle">
+    <g transform="translate(170 180)">
+      <circle r="65" fill="#0c3b5d" stroke="#60a5fa" stroke-width="4"/>
+      <text y="-5" fill="#dbeafe" font-size="23" font-weight="bold">USERS</text>
+      <text y="25" fill="#93c5fd" font-size="16">HTTPS</text>
+    </g>
+    <g transform="translate(500 180)">
+      <circle r="65" fill="#1e3a8a" stroke="#60a5fa" stroke-width="4"/>
+      <text y="-5" fill="#dbeafe" font-size="21" font-weight="bold">FRONT DOOR</text>
+      <text y="25" fill="#93c5fd" font-size="16">WAF / DNS</text>
+    </g>
+    <g transform="translate(830 180)">
+      <circle r="65" fill="#164e63" stroke="#22d3ee" stroke-width="4"/>
+      <text y="-5" fill="#cffafe" font-size="22" font-weight="bold">VNET</text>
+      <text y="25" fill="#67e8f9" font-size="16">NETWORK</text>
+    </g>
+    <g transform="translate(1160 180)">
+      <circle r="65" fill="#064e3b" stroke="#34d399" stroke-width="4"/>
+      <text y="-5" fill="#d1fae5" font-size="22" font-weight="bold">COMPUTE</text>
+      <text y="25" fill="#6ee7b7" font-size="16">AKS / VMSS</text>
+    </g>
+    <g transform="translate(1460 180)">
+      <circle r="65" fill="#78350f" stroke="#fbbf24" stroke-width="4"/>
+      <text y="-5" fill="#fef3c7" font-size="22" font-weight="bold">DATA</text>
+      <text y="25" fill="#fcd34d" font-size="16">AZURE SQL</text>
+    </g>
+    <text x="800" y="48" fill="#f8fafc" font-size="27" font-weight="bold" letter-spacing="4">MICROSOFT AZURE ARCHITECTURE</text>
+    <text x="800" y="325" fill="#94a3b8" font-size="17">A visual journey from global entry to virtual network and managed data services</text>
+  </g>
+</svg>

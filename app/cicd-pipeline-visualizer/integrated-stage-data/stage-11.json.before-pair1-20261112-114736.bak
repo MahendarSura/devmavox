@@ -1,0 +1,86 @@
+[
+  {
+    "topicTitle": "Helm Fundamentals",
+    "sections": []
+  },
+  {
+    "topicTitle": "Helm Architecture",
+    "sections": []
+  },
+  {
+    "topicTitle": "Chart Structure",
+    "sections": []
+  },
+  {
+    "topicTitle": "Chart.yaml and values.yaml",
+    "sections": []
+  },
+  {
+    "topicTitle": "Template Functions",
+    "sections": []
+  },
+  {
+    "topicTitle": "Template Helpers",
+    "sections": []
+  },
+  {
+    "topicTitle": "Chart Dependencies",
+    "sections": []
+  },
+  {
+    "topicTitle": "Helm Repositories",
+    "sections": []
+  },
+  {
+    "topicTitle": "Release Installation",
+    "sections": []
+  },
+  {
+    "topicTitle": "Upgrade and Rollback",
+    "sections": []
+  },
+  {
+    "topicTitle": "Environment-specific Values",
+    "sections": []
+  },
+  {
+    "topicTitle": "Argo CD Fundamentals",
+    "sections": []
+  },
+  {
+    "topicTitle": "Argo CD Architecture",
+    "sections": []
+  },
+  {
+    "topicTitle": "Application Resources",
+    "sections": []
+  },
+  {
+    "topicTitle": "GitOps Workflow",
+    "sections": []
+  },
+  {
+    "topicTitle": "Automated Sync and Self-healing",
+    "sections": []
+  },
+  {
+    "topicTitle": "Health and Sync Status",
+    "sections": []
+  },
+  {
+    "topicTitle": "Drift Detection",
+    "sections": []
+  },
+  {
+    "topicTitle": "RBAC and Repository Credentials",
+    "sections": []
+  },
+  {
+    "topicTitle": "Troubleshooting",
+    "sections": []
+  },
+  {
+    "topicTitle": "Production Hands-on Lab",
+    "sections": []
+  }
+]

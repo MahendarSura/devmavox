@@ -1,0 +1,192 @@
+[
+  {
+    "topicTitle": "SonarQube Fundamentals",
+    "sections": [
+      {
+        "id": "stage-6-topic-1-section-1",
+        "title": "What SonarQube Is and Why Static Code Analysis Matters",
+        "content": "SonarQube is a continuous code-quality and code-security platform that examines source code without executing the application. It identifies maintainability problems, reliability defects, security weaknesses, duplicated code, and other risks before those problems become expensive production incidents. Static analysis complements compilation, unit testing, integration testing, and runtime monitoring; it does not replace them. Teams use it during development and CI pipelines to make code quality visible and consistently enforceable. Its value comes from repeatable analysis, actionable findings, and quality policies that developers can apply before merging changes.\n\nIn a practical delivery workflow, a developer pushes a change, a scanner analyzes the relevant project sources, and the resulting findings are reviewed alongside build and test results. Teams should treat the findings as engineering feedback, not as a substitute for design review or testing. Establish ownership for fixing issues, document accepted exceptions, and monitor whether quality improves across releases."
+      },
+      {
+        "id": "stage-6-topic-1-section-2",
+        "title": "Static Analysis Lifecycle and Source-Code Inspection",
+        "content": "Static analysis inspects source code, syntax structures, control flow, data flow, and language-specific patterns without running the application. A SonarQube analysis normally involves a scanner collecting project information and analyzing supported source files with language analyzers and configured rules. The scanner then submits analysis data to the SonarQube server, where background processing calculates and stores the resulting measures and issues. The analysis depends on accurate source directories, language configuration, build information, and appropriate exclusions. Missing or incorrect project inputs can produce incomplete results even when the scanner exits successfully.\n\nFor example, a Java project should provide its source and compiled-binary locations when required by the analyzer. A repository containing generated files, vendored dependencies, or multiple modules needs deliberate scope configuration. Compare the analysis scope with the repository structure and inspect scanner logs whenever expected files or languages are missing."
+      },
+      {
+        "id": "stage-6-topic-1-section-3",
+        "title": "Projects, Project Keys, Branches, and Pull Requests",
+        "content": "A SonarQube project represents the codebase or independently analyzed application component whose quality information is tracked over time. Its project key is a stable identifier used by scanners, APIs, CI configuration, and administration. Project names are human-readable labels and should not be confused with the key used to associate analysis results. Branch and pull-request analysis provide context for evaluating changes without treating every code revision as an unrelated project. The exact branch-analysis capabilities depend on the SonarQube edition and version, so teams must verify licensing and feature availability before designing workflows around them.\n\nChoose project keys that remain stable when repository display names or folder locations change. For monorepositories, decide whether independently deployable components need separate projects or whether a single project with module boundaries is more appropriate. Keep branch naming, pull-request decoration, and CI variables consistent so analysis results attach to the intended code context."
+      },
+      {
+        "id": "stage-6-topic-1-section-4",
+        "title": "Quality Profiles and Language-Specific Rule Configuration",
+        "content": "A quality profile is a named collection of rules applied when analyzing a particular programming language. Profiles determine which supported checks are active and how teams evaluate code patterns for that language. A project can use different profiles for different languages in a multilingual repository. The built-in recommended profile is often a useful starting point, but organizations may create controlled custom profiles to reflect coding standards, framework conventions, and risk requirements. Changing a profile can change the findings produced by later analyses, so profile changes should be reviewed and governed rather than made casually.\n\nA useful rollout begins with a baseline profile, followed by a review of high-value rules and false-positive patterns. Teams should document why custom rules are enabled or disabled, test profile changes against representative repositories, and communicate changes before enforcing them across many projects. Avoid creating so many exceptions that the profile stops representing a meaningful engineering standard."
+      },
+      {
+        "id": "stage-6-topic-1-section-5",
+        "title": "Rules, Issues, and the Meaning of a Code Finding",
+        "content": "A SonarQube rule describes a detectable coding pattern or condition that may indicate a defect, security concern, or maintainability problem. When source code violates an enabled rule, analysis can produce an issue associated with a location in the code. The finding includes information such as the rule, affected component, message, and relevant classification. Developers should read the rule explanation and remediation guidance before changing code because a finding describes a pattern, not always the complete business context. One source change may resolve multiple findings, while a single finding may require broader design correction.\n\nDuring triage, reproduce the reported context in the source, understand the rule's intent, and determine whether the finding is valid. Fix the underlying cause rather than merely suppressing the message. If the rule does not apply to a genuine exceptional case, use the approved project governance process to document the reason and scope of the exception."
+      },
+      {
+        "id": "stage-6-topic-1-section-6",
+        "title": "Issue Types, Severity, and Remediation Prioritization",
+        "content": "SonarQube findings communicate different kinds of engineering risk, and teams should distinguish the issue classification from the urgency of remediation. Reliability-related findings can indicate behavior that may fail, security findings can expose exploitable weaknesses, and maintainability findings can increase future change cost. Severity and software-quality classifications help organize work, but they do not automatically understand every business consequence. A low-frequency defect in a payment or identity component may deserve more attention than a larger number of minor findings in low-risk code. Teams need contextual prioritization rather than blindly sorting by issue count.\n\nA practical triage process considers the affected service, exposure, reachable execution path, data sensitivity, exploitability, and operational impact. Assign ownership and target remediation dates according to risk. Track accepted risks separately from fixed issues, and periodically revisit exceptions because the architecture, threat model, and business criticality of a component can change."
+      },
+      {
+        "id": "stage-6-topic-1-section-7",
+        "title": "Bugs, Vulnerabilities, and Security Hotspots",
+        "content": "Reliability defects and security vulnerabilities represent different concerns from security hotspots. A bug finding points to code that may behave incorrectly, while a vulnerability indicates a security weakness that should be investigated and corrected. A security hotspot identifies code requiring human security review because the pattern may be safe or unsafe depending on how it is used. A hotspot is not automatically a confirmed vulnerability. Reviewers must inspect surrounding code, input trust boundaries, configuration, and runtime context before deciding whether the implementation is secure.\n\nFor example, a potentially sensitive API call may be safe when its inputs are validated and dangerous when untrusted data reaches it without controls. Review the hotspot guidance, trace data sources and sinks, record the security reasoning, and mark the review outcome according to the actual evidence. Escalate uncertain or high-impact cases to the application's security owner."
+      },
+      {
+        "id": "stage-6-topic-1-section-8",
+        "title": "Maintainability, Technical Debt, and Code Duplication",
+        "content": "Maintainability measures help teams understand how difficult code may become to change, while technical-debt estimates provide an indication of remediation effort associated with maintainability findings. Code duplication identifies repeated blocks or patterns that may create inconsistent behavior when changes are made in multiple places. These measures are indicators, not complete descriptions of software design quality. A high duplication percentage may be acceptable in generated code or unavoidable adapters, while a smaller amount of duplication in critical business logic may still create meaningful risk.\n\nUse these measures to identify trends and investigate costly areas rather than treating a single metric as the team's entire quality score. Review whether duplicated code has the same business meaning before extracting shared abstractions. Refactor where reuse improves consistency and clarity, and avoid creating overly generic components merely to reduce a dashboard number."
+      },
+      {
+        "id": "stage-6-topic-1-section-9",
+        "title": "Coverage, Test Execution Data, and Analysis Boundaries",
+        "content": "SonarQube can display test coverage and test execution information when supported report files are generated by the project's testing tools and imported during analysis. The scanner does not itself execute unit tests or automatically prove that code is correct. A build pipeline normally runs tests, produces compatible reports, and provides the report paths to the analysis configuration. Coverage indicates which executable lines or conditions were exercised according to the report; it does not measure the quality of assertions or guarantee that important behavior was tested.\n\nKeep test execution and coverage generation as explicit build steps. Confirm that report files exist before the scanner runs and that their paths match the repository layout. When coverage suddenly drops, investigate missing report generation, changed source mappings, excluded files, and test failures before concluding that developers removed tests."
+      },
+      {
+        "id": "stage-6-topic-1-section-10",
+        "title": "Quality Gates, New-Code Conditions, and Pass or Fail Decisions",
+        "content": "A quality gate is a set of conditions used to evaluate whether analyzed code meets an agreed quality standard. Conditions can evaluate measures such as issues, coverage, duplication, and security-related results, depending on the configured gate and available metrics. New-code conditions focus attention on recently introduced or changed code so teams can improve quality without requiring every legacy defect to be fixed before delivery. A gate result is a policy decision based on analysis data; it is not a guarantee that software is defect-free or secure.\n\nOrganizations should define thresholds that are achievable, measurable, and aligned with engineering risk. Configure the intended gate for each project, understand how the new-code period is calculated, and make CI wait for the server-side quality-gate result when delivery must be blocked. Document exceptional release procedures rather than silently bypassing failed gates."
+      },
+      {
+        "id": "stage-6-topic-1-section-11",
+        "title": "Developer Workflow, CI Integration, and Continuous Improvement",
+        "content": "SonarQube becomes most useful when analysis is integrated into the normal developer workflow. A typical pipeline checks out source code, restores dependencies, compiles or prepares the project, runs tests, generates reports, invokes the scanner, and waits for the quality-gate result when required. Pull-request analysis can provide early feedback before code is merged, while branch and main-branch analysis help teams monitor code quality over time. Developers should be able to locate findings, understand the relevant rules, and reproduce the analysis locally or in CI.\n\nStart with a small representative repository, validate scanner configuration and permissions, and confirm that analysis is associated with the expected project and branch. Once stable, standardize reusable pipeline steps and monitor scanner failures, analysis duration, gate outcomes, and report availability. Review trends with engineering teams and improve rules and thresholds as the codebase matures."
+      }
+    ]
+  },
+  {
+    "topicTitle": "SonarQube Architecture",
+    "sections": [
+      {
+        "id": "stage-6-topic-2-section-1",
+        "title": "Architecture Overview and Main Processing Components",
+        "content": "SonarQube architecture separates source analysis performed by scanners from centralized project management and result processing on the server. The main architectural elements include the scanner, the SonarQube server application, background processing through the Compute Engine, persistent database storage, and internal search and indexing capabilities. The scanner gathers source and analysis information and submits a report. The server accepts the report and schedules processing, while the Compute Engine processes the task and updates project information. Understanding these boundaries helps engineers diagnose whether a failure belongs to the build agent, network, server, background worker, or storage layer.\n\nWhen an analysis appears stuck, do not immediately assume that the scanner is still analyzing source. Determine whether the scanner submitted its report, whether the server accepted the submission, and whether the corresponding background task completed. Each boundary has different logs, permissions, resource limits, and failure conditions."
+      },
+      {
+        "id": "stage-6-topic-2-section-2",
+        "title": "Scanner Responsibilities and Build-Agent Execution",
+        "content": "The scanner is the client-side component that runs in the development environment or CI build agent. It reads project configuration, identifies source files, applies available language analysis, collects relevant build and test information, and prepares an analysis report for the server. Depending on the language and build system, analysis may be integrated with Maven, Gradle, .NET tooling, or a standalone scanner. The scanner needs the correct server URL, project identity, authentication credentials, source scope, and network access. It should be executed in a controlled build environment with compatible tooling.\n\nA scanner error on one agent but not another can indicate differences in Java runtime, build environment, proxy settings, filesystem permissions, or cached dependencies. Compare the effective configuration and scanner logs before changing server settings. Keep credentials in the CI secret store and avoid printing tokens in diagnostic output."
+      },
+      {
+        "id": "stage-6-topic-2-section-3",
+        "title": "SonarQube Server Web Application and API Layer",
+        "content": "The SonarQube server provides the web interface and APIs used by developers, administrators, scanners, and automation. It exposes project dashboards, issue views, quality profiles, quality gates, administration features, and endpoints used during analysis submission and result retrieval. Authentication and authorization determine which users and automation identities can access projects or perform administrative operations. The web application also coordinates server-side operations and communicates with background processing components. A reachable login page does not by itself prove that analysis processing, database connectivity, or all server functions are healthy.\n\nOperational checks should cover web responsiveness, API behavior, authentication, project permissions, and server logs. If the UI works but analysis tasks remain pending, investigate the background processing path. If users see authorization errors, verify the identity used by the scanner and its project-level permissions rather than granting broad administrator access."
+      },
+      {
+        "id": "stage-6-topic-2-section-4",
+        "title": "Compute Engine and Background Task Processing",
+        "content": "The Compute Engine processes analysis reports after they have been submitted to the SonarQube server. It performs server-side work required to turn the submitted report into updated project analysis information, including issue and measure processing. This asynchronous design separates scanner execution from the time required to complete server-side analysis. A scanner can report that a report was successfully uploaded while the corresponding server task is still pending or processing. The final task status therefore matters when a pipeline must make a decision based on completed analysis.\n\nAdministrators should monitor task queues, processing duration, failures, and Compute Engine logs. A growing backlog can result from insufficient resources, unusually large analyses, database latency, or repeated task failures. Investigate the failing task details and resource trends before increasing worker capacity or restarting services."
+      },
+      {
+        "id": "stage-6-topic-2-section-5",
+        "title": "Database Responsibilities and Persistent Application State",
+        "content": "The database stores persistent SonarQube application information such as project metadata, configuration, users, permissions, and analysis-related records. It is a critical stateful dependency and must be operated using a database engine and version supported by the deployed SonarQube release. The database is not intended to be modified directly as a way to repair issues or retrieve application information. Supported APIs and administrative interfaces should be used for normal operations. Database capacity, connection health, latency, backups, and upgrade compatibility influence the reliability of the entire platform.\n\nA production deployment needs a supported database configuration, protected credentials, monitored storage, and tested backup restoration. Avoid manual SQL changes to application tables because they can violate internal consistency and complicate upgrades. Coordinate database maintenance with SonarQube maintenance windows and verify compatibility before upgrading either component."
+      },
+      {
+        "id": "stage-6-topic-2-section-6",
+        "title": "Search Indexing and Internal Search Services",
+        "content": "SonarQube uses internal search and indexing capabilities to support responsive retrieval of information such as issues and project data. The search subsystem is an internal architectural dependency and should not be treated as a replacement for the primary persistent database. Search-related failures can affect the availability or responsiveness of features that depend on indexed data even when the database itself is reachable. The exact implementation and operational requirements can vary by SonarQube version and deployment edition, so administrators should follow the documentation for their installed release.\n\nWhen search-related errors occur, inspect the relevant server logs, memory pressure, disk availability, file permissions, and supported operating-system settings. Do not delete internal index directories as a routine troubleshooting shortcut. Follow documented recovery procedures and ensure the database and required application state are backed up before attempting index recovery."
+      },
+      {
+        "id": "stage-6-topic-2-section-7",
+        "title": "Analysis Report Submission and Server Task Lifecycle",
+        "content": "An analysis normally progresses through several distinct stages: scanner preparation, local analysis, report generation, report upload, server-side task creation, Compute Engine processing, and publication of updated project results. Each stage has a different success signal. A successful scanner process may confirm upload but does not necessarily mean that the quality gate has finished evaluating the report. CI systems can use the task information and supported quality-gate integration to wait for final processing. Understanding this lifecycle prevents teams from treating incomplete analysis as a passing result.\n\nFor troubleshooting, correlate the scanner log with the server-side background task identifier and its final status. If no task appears, investigate report submission and connectivity. If the task fails after submission, inspect Compute Engine logs and task details. If processing succeeds but the expected results are missing, verify project identity, branch context, analysis scope, and report inputs."
+      },
+      {
+        "id": "stage-6-topic-2-section-8",
+        "title": "Network Communication, Reverse Proxies, and TLS",
+        "content": "Scanner-to-server communication depends on reliable network access to the configured SonarQube endpoint. Production installations may place the server behind a reverse proxy or load balancer, which introduces routing, request-size, timeout, and TLS configuration considerations. The proxy must forward the required requests correctly and preserve the expected host and protocol information. TLS certificates must be trusted by the scanner runtime, and proxy authentication or outbound restrictions must be configured consistently on build agents. Network reachability alone is insufficient if intermediate infrastructure rejects large uploads or terminates long-running requests.\n\nTest the server URL from the actual build agent, inspect certificate trust, and compare proxy behavior with direct access where permitted. Review HTTP status codes, proxy logs, request limits, and timeout settings. Do not disable TLS verification as a permanent workaround; install the appropriate trusted certificate chain and use secure connection settings."
+      },
+      {
+        "id": "stage-6-topic-2-section-9",
+        "title": "Authentication, Authorization, and Service Identities",
+        "content": "SonarQube uses authenticated identities and permissions to control access to projects, analysis operations, and administration. CI scanners commonly use tokens associated with an appropriately authorized account or service identity. Authentication proves which identity is making the request, while authorization determines what that identity may do. A valid token can still fail if it lacks permission for the target project or if the project key is incorrect. Tokens should be scoped to the required workflow, stored securely, rotated according to policy, and revoked when no longer needed.\n\nCreate dedicated automation identities where practical and grant only the permissions required for analysis and related operations. Keep secrets outside source control, mask them in pipeline logs, and avoid sharing personal administrator tokens across projects. When access fails, verify token validity, project association, permissions, and the exact server endpoint."
+      },
+      {
+        "id": "stage-6-topic-2-section-10",
+        "title": "Single-Node Deployment and Resource Dependencies",
+        "content": "A single-node SonarQube deployment runs the application services on one server instance while relying on its configured database and supported runtime environment. This model can be suitable for development, evaluation, or smaller installations whose availability requirements are limited. Its simplicity does not remove the need to monitor CPU, memory, disk capacity, database connectivity, and background task processing. A single application host can become a single point of failure, and resource contention between web requests, search operations, and background processing can affect responsiveness.\n\nSize the host according to project count, analysis frequency, repository size, and concurrent usage rather than choosing resources solely from a small test installation. Monitor memory and disk growth, retain tested backups, and document restart and recovery procedures. For production systems with strict uptime requirements, evaluate whether a supported high-availability deployment is necessary."
+      },
+      {
+        "id": "stage-6-topic-2-section-11",
+        "title": "High Availability and Data Center Deployment Concepts",
+        "content": "For environments with stronger availability and scale requirements, SonarQube provides deployment options beyond a basic single-node installation, including Data Center Edition capabilities subject to the product version and licensing. A distributed deployment can separate or replicate supported application responsibilities across nodes while using shared external dependencies such as the database. High availability is not achieved simply by starting multiple arbitrary server processes; node roles, supported topology, shared storage requirements, load balancing, and version compatibility must follow the vendor's documented architecture.\n\nBefore designing a clustered environment, identify the exact edition and release, review supported node topology, define load-balancer behavior, and understand which components are shared or replicated. Test node failure, maintenance, and recovery procedures in a non-production environment. Never assume that a community or single-node deployment supports every clustering feature."
+      },
+      {
+        "id": "stage-6-topic-2-section-12",
+        "title": "Storage, Backups, Restoration, and Disaster Recovery",
+        "content": "A reliable SonarQube deployment needs a recovery strategy for persistent database state and any other data or configuration required by the installed architecture. Backups should be consistent, protected from unauthorized access, retained according to business requirements, and tested through restoration exercises. Copying application directories alone does not necessarily create a valid recoverable backup. The backup procedure must account for database consistency, version-specific requirements, configuration files, secrets, certificates, and any supported external dependencies.\n\nDocument recovery objectives, backup frequency, retention, encryption, and restoration ownership. Test restoration into an isolated environment and verify that users, projects, settings, and analysis information are available. Keep upgrade and disaster-recovery procedures aligned so that a restored database is paired with a compatible application version."
+      },
+      {
+        "id": "stage-6-topic-2-section-13",
+        "title": "Version Compatibility, Upgrade Planning, and Maintenance",
+        "content": "SonarQube upgrades can involve application changes, database schema migrations, supported runtime changes, scanner compatibility considerations, and changes to language analyzers or product features. An upgrade should be planned against the official requirements for the target release rather than performed by replacing binaries without preparation. Administrators need to verify supported upgrade paths, database versions, operating-system requirements, Java or other runtime requirements where applicable, and plugin compatibility. Existing integrations and CI pipelines should be tested before production rollout.\n\nCreate a verified backup, review release notes and upgrade notes, test the upgrade in a representative environment, and schedule a maintenance window. Record the current version and configuration, validate project analysis after migration, and define a rollback or restore approach. Do not assume that every plugin or scanner configuration remains compatible after a major release."
+      }
+    ]
+  },
+  {
+    "topicTitle": "Installation and Setup",
+    "sections": []
+  },
+  {
+    "topicTitle": "Project Configuration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Scanner Configuration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Quality Profiles",
+    "sections": []
+  },
+  {
+    "topicTitle": "Quality Gates",
+    "sections": []
+  },
+  {
+    "topicTitle": "Bug Detection",
+    "sections": []
+  },
+  {
+    "topicTitle": "Vulnerability Analysis",
+    "sections": []
+  },
+  {
+    "topicTitle": "Code Smells and Maintainability",
+    "sections": []
+  },
+  {
+    "topicTitle": "Code Duplication",
+    "sections": []
+  },
+  {
+    "topicTitle": "Coverage Integration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Exclusions and Inclusions",
+    "sections": []
+  },
+  {
+    "topicTitle": "Pull Request Decoration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Jenkins Integration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Troubleshooting",
+    "sections": []
+  },
+  {
+    "topicTitle": "Production Hands-on Lab",
+    "sections": []
+  }
+]

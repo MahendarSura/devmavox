@@ -1,0 +1,121 @@
+  140:     ],
+  141:     "example": "Consider a Java Spring Boot application stored in GitHub and delivered through Jenkins. The team reaches the Developer Code stage and needs to apply Object-Oriented Programming. The engineer first checks the repository and environment, verifies dependencies and permissions, applies the relevant configuration, and runs the operation. The engineer then examines logs and generated artifacts, confirms the expected state, and verifies that the next CI/CD stage receives the correct output. If the operation fails, the engineer records the exact error and investigates the responsible component instead of blindly rerunning the pipeline.",
+  142:     "commands": [
+  143:       "git status --short  # Inspect repository changes before modifying configuration.",
+  144:       "git diff --check  # Detect whitespace errors in changed files.",
+  145:       "git log -5 --oneline  # Review recent project changes and context.",
+  146:       "git diff  # Inspect the exact configuration or source changes.",
+  147:       "git status  # Confirm the final repository working-tree state."
+  148:     ],
+  149:     "configuration": "Keep the configuration for Object-Oriented Programming explicit, version controlled, and environment aware. Separate development, staging, and production values where the technology supports environment-specific configuration. Do not place passwords, tokens, private keys, or other secrets directly in source files. Validate all referenced resource names, paths, versions, permissions, and dependency settings before deployment. Document required inputs and expected outputs so another engineer can reproduce the workflow.",
+  150:     "failures": [
+  151:       "Required configuration is missing, malformed, or inconsistent with the target environment.",
+  152:       "A dependency or external service is unavailable when the pipeline executes.",
+  153:       "The execution identity does not have the permissions required for the operation.",
+  154:       "A version mismatch causes incompatible behavior between pipeline components.",
+  155:       "The operation succeeds partially but leaves the application or infrastructure in an unexpected state."
+  156:     ],
+  157:     "recovery": [
+  158:       "Stop repeated execution if it could create duplicate resources or damage production state.",
+  159:       "Capture the complete error message, timestamps, pipeline logs, and affected resource identifiers.",
+  160:       "Verify configuration, versions, dependencies, network connectivity, and permissions.",
+  161:       "Compare the failing environment with the last known working configuration.",
+  162:       "Apply the smallest safe correction, rerun the relevant validation, and confirm the resulting state."
+  163:     ],
+  164:     "bestPractices": [
+  165:       "Keep all maintainable configuration in version control.",
+  166:       "Use separate and least-privilege identities for automation.",
+  167:       "Store sensitive values in an approved secrets manager.",
+  168:       "Pin important tool and dependency versions.",
+  169:       "Validate changes before allowing production execution.",
+  170:       "Record useful logs and preserve evidence for troubleshooting.",
+  171:       "Test recovery and rollback procedures in a non-production environment.",
+  172:       "Document ownership, dependencies, expected results, and operational risks."
+  173:     ],
+  174:     "exercise": "Create a small practice workflow for Object-Oriented Programming in a non-production project. Identify the required inputs, configuration, permissions, dependencies, and expected outputs. Execute the relevant validation steps, record the results, and deliberately investigate one safe failure condition. Complete the exercise by documenting the root cause, corrective action, and verification evidence. The expected result is a repeatable workflow that another engineer can understand and validate."
+  175:   },
+  176:   "1|Collections and Generics": {
+  177:     "overview": "This lesson covers Collections and Generics in the Developer Code stage of a real CI/CD pipeline. It explains the technical concepts, the components involved, how the feature behaves during normal pipeline execution, and how DevOps engineers use it to deliver application changes safely. The topic is connected to a Java application delivery workflow so that beginners can understand where it fits in an actual project.",
+  178:     "purpose": "The purpose of Collections and Generics is to make the Developer Code stage reliable, repeatable, and understandable. In a production DevOps workflow, engineers use this capability to reduce manual work, improve delivery consistency, detect problems early, and protect application availability. A team should understand when this capability is required, which systems depend on it, what evidence proves that it is working, and what risks can occur when it is configured incorrectly.",
+  179:     "architecture": "In the Developer Code stage, Collections and Generics works as part of a larger delivery system. Source code, build tools, automation services, configuration, infrastructure, and runtime components exchange information through defined inputs and outputs. Engineers should identify the component that initiates the operation, the component that processes the request, the credentials and permissions required, the resulting artifacts or state changes, and the monitoring signals that confirm completion. The exact architecture depends on the technology used for this topic.",
+  180:     "workflow": [
+  181:       "Identify the application and pipeline stage where Collections and Generics is required.",
+  182:       "Inspect the existing repository, project configuration, and environment before changing anything.",
+  183:       "Identify the tools, services, permissions, and dependencies required by this topic.",
+  184:       "Prepare the required configuration in a version-controlled and reviewable location.",
+  185:       "Validate configuration syntax and verify that referenced resources exist.",
+  186:       "Execute the relevant operation in a controlled development environment.",
+  187:       "Inspect logs, command output, artifacts, and resulting application state.",
+  188:       "Test the expected success path and verify that downstream pipeline stages can continue."
+  189:     ],
+  190:     "example": "Consider a Java Spring Boot application stored in GitHub and delivered through Jenkins. The team reaches the Developer Code stage and needs to apply Collections and Generics. The engineer first checks the repository and environment, verifies dependencies and permissions, applies the relevant configuration, and runs the operation. The engineer then examines logs and generated artifacts, confirms the expected state, and verifies that the next CI/CD stage receives the correct output. If the operation fails, the engineer records the exact error and investigates the responsible component instead of blindly rerunning the pipeline.",
+  191:     "commands": [
+  192:       "git status --short  # Inspect repository changes before modifying configuration.",
+  193:       "git diff --check  # Detect whitespace errors in changed files.",
+  194:       "git log -5 --oneline  # Review recent project changes and context.",
+  195:       "git diff  # Inspect the exact configuration or source changes.",
+  196:       "git status  # Confirm the final repository working-tree state."
+  197:     ],
+  198:     "configuration": "Keep the configuration for Collections and Generics explicit, version controlled, and environment aware. Separate development, staging, and production values where the technology supports environment-specific configuration. Do not place passwords, tokens, private keys, or other secrets directly in source files. Validate all referenced resource names, paths, versions, permissions, and dependency settings before deployment. Document required inputs and expected outputs so another engineer can reproduce the workflow.",
+  199:     "failures": [
+  200:       "Required configuration is missing, malformed, or inconsistent with the target environment.",
+  201:       "A dependency or external service is unavailable when the pipeline executes.",
+  202:       "The execution identity does not have the permissions required for the operation.",
+  203:       "A version mismatch causes incompatible behavior between pipeline components.",
+  204:       "The operation succeeds partially but leaves the application or infrastructure in an unexpected state."
+  205:     ],
+  206:     "recovery": [
+  207:       "Stop repeated execution if it could create duplicate resources or damage production state.",
+  208:       "Capture the complete error message, timestamps, pipeline logs, and affected resource identifiers.",
+  209:       "Verify configuration, versions, dependencies, network connectivity, and permissions.",
+  210:       "Compare the failing environment with the last known working configuration.",
+  211:       "Apply the smallest safe correction, rerun the relevant validation, and confirm the resulting state."
+  212:     ],
+  213:     "bestPractices": [
+  214:       "Keep all maintainable configuration in version control.",
+  215:       "Use separate and least-privilege identities for automation.",
+  216:       "Store sensitive values in an approved secrets manager.",
+  217:       "Pin important tool and dependency versions.",
+  218:       "Validate changes before allowing production execution.",
+  219:       "Record useful logs and preserve evidence for troubleshooting.",
+  220:       "Test recovery and rollback procedures in a non-production environment.",
+  221:       "Document ownership, dependencies, expected results, and operational risks."
+  222:     ],
+  223:     "exercise": "Create a small practice workflow for Collections and Generics in a non-production project. Identify the required inputs, configuration, permissions, dependencies, and expected outputs. Execute the relevant validation steps, record the results, and deliberately investigate one safe failure condition. Complete the exercise by documenting the root cause, corrective action, and verification evidence. The expected result is a repeatable workflow that another engineer can understand and validate."
+  224:   },
+  225:   "1|Exception Handling": {
+  226:     "overview": "This lesson covers Exception Handling in the Developer Code stage of a real CI/CD pipeline. It explains the technical concepts, the components involved, how the feature behaves during normal pipeline execution, and how DevOps engineers use it to deliver application changes safely. The topic is connected to a Java application delivery workflow so that beginners can understand where it fits in an actual project.",
+  227:     "purpose": "The purpose of Exception Handling is to make the Developer Code stage reliable, repeatable, and understandable. In a production DevOps workflow, engineers use this capability to reduce manual work, improve delivery consistency, detect problems early, and protect application availability. A team should understand when this capability is required, which systems depend on it, what evidence proves that it is working, and what risks can occur when it is configured incorrectly.",
+  228:     "architecture": "In the Developer Code stage, Exception Handling works as part of a larger delivery system. Source code, build tools, automation services, configuration, infrastructure, and runtime components exchange information through defined inputs and outputs. Engineers should identify the component that initiates the operation, the component that processes the request, the credentials and permissions required, the resulting artifacts or state changes, and the monitoring signals that confirm completion. The exact architecture depends on the technology used for this topic.",
+  229:     "workflow": [
+  230:       "Identify the application and pipeline stage where Exception Handling is required.",
+  231:       "Inspect the existing repository, project configuration, and environment before changing anything.",
+  232:       "Identify the tools, services, permissions, and dependencies required by this topic.",
+  233:       "Prepare the required configuration in a version-controlled and reviewable location.",
+  234:       "Validate configuration syntax and verify that referenced resources exist.",
+  235:       "Execute the relevant operation in a controlled development environment.",
+  236:       "Inspect logs, command output, artifacts, and resulting application state.",
+  237:       "Test the expected success path and verify that downstream pipeline stages can continue."
+  238:     ],
+  239:     "example": "Consider a Java Spring Boot application stored in GitHub and delivered through Jenkins. The team reaches the Developer Code stage and needs to apply Exception Handling. The engineer first checks the repository and environment, verifies dependencies and permissions, applies the relevant configuration, and runs the operation. The engineer then examines logs and generated artifacts, confirms the expected state, and verifies that the next CI/CD stage receives the correct output. If the operation fails, the engineer records the exact error and investigates the responsible component instead of blindly rerunning the pipeline.",
+  240:     "commands": [
+  241:       "git status --short  # Inspect repository changes before modifying configuration.",
+  242:       "git diff --check  # Detect whitespace errors in changed files.",
+  243:       "git log -5 --oneline  # Review recent project changes and context.",
+  244:       "git diff  # Inspect the exact configuration or source changes.",
+  245:       "git status  # Confirm the final repository working-tree state."
+  246:     ],
+  247:     "configuration": "Keep the configuration for Exception Handling explicit, version controlled, and environment aware. Separate development, staging, and production values where the technology supports environment-specific configuration. Do not place passwords, tokens, private keys, or other secrets directly in source files. Validate all referenced resource names, paths, versions, permissions, and dependency settings before deployment. Document required inputs and expected outputs so another engineer can reproduce the workflow.",
+  248:     "failures": [
+  249:       "Required configuration is missing, malformed, or inconsistent with the target environment.",
+  250:       "A dependency or external service is unavailable when the pipeline executes.",
+  251:       "The execution identity does not have the permissions required for the operation.",
+  252:       "A version mismatch causes incompatible behavior between pipeline components.",
+  253:       "The operation succeeds partially but leaves the application or infrastructure in an unexpected state."
+  254:     ],
+  255:     "recovery": [
+  256:       "Stop repeated execution if it could create duplicate resources or damage production state.",
+  257:       "Capture the complete error message, timestamps, pipeline logs, and affected resource identifiers.",
+  258:       "Verify configuration, versions, dependencies, network connectivity, and permissions.",
+  259:       "Compare the failing environment with the last known working configuration.",
+  260:       "Apply the smallest safe correction, rerun the relevant validation, and confirm the resulting state."

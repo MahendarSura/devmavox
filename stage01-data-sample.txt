@@ -1,0 +1,100 @@
+    1: import type { CicdTopicLesson } from "./cicd-topic-lessons";
+    2: 
+    3: export const stageOneLessonOverrides: Partial<Record<string, CicdTopicLesson>> = {
+    4:   "1|Java Fundamentals": {
+    5:     overview: "Java is a strongly typed, object-oriented programming language used to build backend services, APIs, enterprise systems, and cloud applications. Java source code is compiled into bytecode, which runs on a Java Virtual Machine. A Spring Boot payment service uses Java classes, methods, objects, interfaces, and exception handling to implement payment rules and communicate with databases and external services.",
+    6:     purpose: "Java provides the application logic that performs business operations. In a CI/CD pipeline, developers write Java code, compile it, run automated tests, package it as a JAR, and deploy it into a container. Understanding the language fundamentals helps developers and DevOps engineers diagnose compilation failures, runtime errors, dependency problems, and application startup issues.",
+    7:     architecture: "A Java application contains source files, packages, classes, methods, and dependencies. The JDK provides development tools such as javac. Compilation produces bytecode files. The JVM loads and executes bytecode. A Spring Boot application adds a framework layer for dependency injection, web requests, configuration, and application lifecycle management.",
+    8:     workflow: [
+    9:       "Install a supported JDK and verify the Java version.",
+   10:       "Create a project with a package and a main application class.",
+   11:       "Write classes and methods that implement the required business logic.",
+   12:       "Compile source code using javac or the Maven compiler plugin.",
+   13:       "Run unit tests to validate expected behavior.",
+   14:       "Package the application and execute it using the Java runtime.",
+   15:       "Commit the source code so the CI pipeline can repeat the build and test process."
+   16:     ],
+   17:     example: "A payment service can define a Payment class with paymentId, amount, currency, and status fields. A PaymentService class validates the amount and calculates the next payment state. A controller receives an HTTP request and calls the service. The application should reject an invalid amount before attempting to contact a payment gateway.",
+   18:     commands: [
+   19:       "java -version — verify the installed Java runtime.",
+   20:       "javac -version — verify the Java compiler.",
+   21:       "javac HelloWorld.java — compile a standalone Java source file.",
+   22:       "java HelloWorld — execute the compiled class.",
+   23:       "jar --version — verify the JAR tool version."
+   24:     ],
+   25:     configuration: "Install a supported JDK and configure JAVA_HOME to point to its installation directory. Add the JDK bin directory to PATH. In a Maven project, define the Java release version in pom.xml so local and CI builds compile against the same language level. Do not depend on whichever JDK happens to be installed on a developer or Jenkins agent.",
+   26:     failures: [
+   27:       "javac is not recognized because the JDK bin directory is missing from PATH.",
+   28:       "UnsupportedClassVersionError occurs when the runtime is older than the bytecode target.",
+   29:       "A package declaration does not match the source directory structure.",
+   30:       "A class or method cannot be found because of an incorrect name, import, or dependency.",
+   31:       "A NullPointerException occurs when code uses a null reference unexpectedly."
+   32:     ],
+   33:     recovery: [
+   34:       "Run java -version and javac -version to identify the installed tools.",
+   35:       "Check JAVA_HOME and PATH when Java commands cannot be found.",
+   36:       "Compare the compiler release and runtime versions.",
+   37:       "Read the first compilation error and correct the source or import.",
+   38:       "Use the stack trace to identify the failing class and line.",
+   39:       "Run the relevant unit tests again before committing the correction."
+   40:     ],
+   41:     bestPractices: [
+   42:       "Use a supported and consistent JDK version across local, CI, and production environments.",
+   43:       "Use meaningful package, class, method, and variable names.",
+   44:       "Keep business logic separate from HTTP controller code.",
+   45:       "Validate external input before processing it.",
+   46:       "Write unit tests for business rules and edge cases.",
+   47:       "Avoid hard-coded credentials, environment-specific URLs, and secrets.",
+   48:       "Use code review and automated quality checks before merging changes."
+   49:     ],
+   50:     exercise: "Create a small Java payment model with paymentId, amount, and status. Implement a service method that accepts a payment only when the amount is greater than zero. Compile the project, write tests for valid and invalid amounts, execute the tests, and commit the code. Record the JDK version used so the CI environment can use a compatible version."
+   51:   },
+   52: 
+   53:   "1|Java Project Structure": {
+   54:     overview: "A Java project structure organizes source code, resources, tests, build files, and generated artifacts into predictable locations. Maven projects normally use src/main/java for application code, src/main/resources for runtime resources, src/test/java for tests, and src/test/resources for test data. The pom.xml file describes dependencies, plugins, project coordinates, and build behavior.",
+   55:     purpose: "A standard structure allows developers, IDEs, Maven, and CI servers to locate files consistently. In a payment-service repository, controllers, services, repositories, configuration, and tests should be separated so the project remains maintainable as the application grows. Jenkins can build the repository without needing custom file-discovery logic.",
+   56:     architecture: "The project root contains pom.xml and supporting files. Java packages under src/main/java contain the application layers. Resource files under src/main/resources contain application configuration and templates. Test classes under src/test/java validate production code. Maven writes compiled classes and packaged artifacts under target, which is generated output and should not normally be committed.",
+   57:     workflow: [
+   58:       "Create the project root and add pom.xml.",
+   59:       "Create src/main/java and a package matching the application namespace.",
+   60:       "Separate controller, service, repository, model, and configuration packages where appropriate.",
+   61:       "Place application.yml and other runtime resources under src/main/resources.",
+   62:       "Create matching test packages under src/test/java.",
+   63:       "Run Maven tests and inspect the generated target directory.",
+   64:       "Commit source files and build configuration, not generated output."
+   65:     ],
+   66:     example: "A payment-service project can use com.devmavox.payment as its root package. Its controller package handles HTTP requests, service package contains payment rules, repository package handles persistence, and model package contains request and response types. PaymentServiceTest belongs under the corresponding test package so Maven discovers and executes it.",
+   67:     commands: [
+   68:       "tree /F — inspect the project directory structure on Windows.",
+   69:       "mvn validate — validate the Maven project model.",
+   70:       "mvn test — compile and execute tests using the standard Maven layout.",
+   71:       "mvn clean — remove generated build output under target.",
+   72:       "mvn package — package the application."
+   73:     ],
+   74:     configuration: "Keep pom.xml at the project root. Define groupId, artifactId, version, Java release, dependencies, and build plugins. Keep environment-specific configuration in application.yml or application.properties. Use .gitignore to exclude target, IDE metadata, local logs, and other generated files. Do not place production passwords or API tokens in committed configuration files.",
+   75:     failures: [
+   76:       "Maven reports that no POM exists because the command was run from the wrong directory.",
+   77:       "Tests are not discovered because test classes do not follow naming or directory conventions.",
+   78:       "Resources are missing from the packaged JAR because they are outside the configured resource directory.",
+   79:       "Multiple classes with unclear responsibilities make changes difficult to maintain.",
+   80:       "Generated target files are accidentally committed to Git."
+   81:     ],
+   82:     recovery: [
+   83:       "Run pwd or Get-Location and confirm the project root contains pom.xml.",
+   84:       "Inspect the directory tree and move source files into the standard Maven locations.",
+   85:       "Check test class names and package declarations.",
+   86:       "Inspect the packaged JAR to confirm required resources are included.",
+   87:       "Correct .gitignore and remove generated files from version control when appropriate.",
+   88:       "Run mvn clean verify to validate the corrected structure."
+   89:     ],
+   90:     bestPractices: [
+   91:       "Follow the standard Maven directory layout.",
+   92:       "Use a consistent package namespace based on the organization and application.",
+   93:       "Keep controllers, business services, repositories, and configuration responsibilities separate.",
+   94:       "Keep automated tests alongside the application package structure.",
+   95:       "Commit the POM and source code while excluding generated build output.",
+   96:       "Document the project build command in the repository README.",
+   97:       "Keep secrets outside the repository."
+   98:     ],
+   99:     exercise: "Create a Maven project named payment-service. Add controller, service, repository, model, and configuration packages. Add one application.yml file and one service test. Run mvn clean verify, inspect the target directory, and confirm that the generated JAR contains the expected classes and resources."
+  100:   },

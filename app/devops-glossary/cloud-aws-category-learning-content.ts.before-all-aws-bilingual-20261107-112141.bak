@@ -1,0 +1,257 @@
+import type { GlossaryLearningSection } from "./glossary-data";
+
+const r = (text: string) => text;
+
+const awsTeluguExplanations: Record<string, string[]> = {
+  "Cloud Computing": [
+    "Cloud computing ante servers, storage, databases, networking mariyu software lanti computing resources ni internet dwara use cheyyadam. Own physical servers koni maintain cheyyakunda cloud provider resources ni avasaram batti use cheyyachu.",
+    "Cloud computing valla teams infrastructure ni fast ga create cheyyagalavu, application demand perigina appudu scale cheyyagalavu. DevOps teams development, testing, staging mariyu production environments ni repeatable ga prepare cheyyadaniki use chestaru.",
+    "User required cloud service select chesi capacity mariyu access configure chestadu. Console, CLI leda Infrastructure as Code dwara resource provision chestadu. Data centers ni provider manage chestadu; customer tana workload configuration mariyu security responsibility maintain cheyyali.",
+    "IaaS ante virtual servers lanti infrastructure ni rent chesukovadam. PaaS ante application deploy cheyyadaniki managed platform. SaaS ante ready-made software ni service laga use cheyyadam. Public, private mariyu hybrid anevi cloud deployment models.",
+    "Cloud architecture lo Regions, Availability Zones, virtual networks, compute instances, storage, IAM policies mariyu monitoring components untayi. Application ni multiple zones lo deploy chesi controlled network paths dwara connect cheyyachu.",
+    "Oka company web application ni EC2 instances meeda run chestundi, uploaded files ni S3 lo store chestundi, managed database use chestundi. Load balancer traffic distribute chestundi. Terraform infrastructure create chestundi; CI/CD pipeline application deploy chestundi.",
+    "Munduga infrastructure requirements define cheyyali. Tarvatha suitable cloud services select chesi networking, IAM, compute mariyu storage configure cheyyali. Application deploy chesi monitoring setup cheyyali. Security mariyu cost ni continuous ga review cheyyali.",
+    "aws sts get-caller-identity command current AWS identity verify cheyyadaniki use avutundi. AWS CLI, CloudFormation leda Terraform dwara infrastructure create cheyyachu. Commands run chese mundu correct account mariyu target resources verify cheyyali.",
+    "IAM lo least-privilege permissions apply cheyyali. Data ni transit lo mariyu storage lo encrypt cheyyali. Credentials protect chesi unnecessary public network access restrict cheyyali. Shared responsibility model prakaram provider cloud infrastructure secure chestadu; customer tana workload mariyu configuration secure cheyyali.",
+    "Application ni multiple Availability Zones lo deploy cheyyadam, health checks, automated scaling, backups mariyu tested recovery procedures use cheyyadam valla reliability improve avutundi. Critical application oka instance meeda depend avvakudadhu.",
+    "CPU utilization, application latency, errors, service quotas mariyu cloud costs monitor cheyyali. CloudWatch metrics and logs, service health information mariyu audit events use chesi performance or availability problems investigate cheyyachu.",
+    "Services ni public ga expose cheyyadam, unnecessary administrator permissions ivvadam, unused resources stop cheyyakunda vadileyadam, backups ignore cheyyadam common mistakes. Ivanni security, availability mariyu cost risks increase chestayi.",
+    "Operational effort tagginche managed services select cheyyali. Infrastructure ni version-controlled code tho automate cheyyali. Consistent tagging, regular cost reviews, disaster recovery testing mariyu clear operational documentation maintain cheyyali.",
+  ],
+  "AWS Region": [
+    "AWS Region ante AWS cloud infrastructure operate chese separate geographic area. Prathi Region lo multiple isolated Availability Zones untayi. Supported AWS services mariyu resources ni required Region lo deploy cheyyachu.",
+    "Region selection application latency, regulatory requirements, service availability, disaster recovery mariyu cost meeda impact chupistundi. Architecture design start chesetappude correct Region select cheyyadam important.",
+    "Regional resource create chesetappudu AWS Console, CLI configuration leda SDK request lo Region select chestam. Regional services aa Region scope lo operate avutayi. Konni AWS services global scope lo work chestayi.",
+    "Oka Region lo multiple Availability Zones untayi. Prathi zone independent infrastructure tho operate avutundi. Anni AWS services prathi Region lo available undavu; deployment mundu service availability verify cheyyali.",
+    "Multi-region architecture lo primary Region production traffic handle chestundi; secondary Region disaster recovery kosam ready ga untundi. Data replication, DNS routing, IAM permissions mariyu deployment automation rendu environments ni coordinate chestayi.",
+    "India customers ki serve chese application latency mariyu compliance requirements batti oka AWS Region lo host cheyyachu. Disaster recovery kosam second Region prepare chesi data replicate cheyyali; failover procedure ni regularly test cheyyali.",
+    "Munduga Region select chesi required services mariyu instance types available unnayo check cheyyali. Networking, security foundations create chesi resources deploy cheyyali. Multi-region setup lo replication mariyu recovery ni practical ga test cheyyali.",
+    "aws configure get region command configured default Region ni check chestundi. aws ec2 describe-regions account ki available Regions list chestundi. Command target clear ga undalante --region option specify cheyyachu.",
+    "Data residency, regulatory requirements, encryption, access controls mariyu cross-region data transfer consider cheyyali. Replication sensitive data ni vere geographic location ki copy cheyyachu kabatti data governance rules follow avvali.",
+    "Secondary Region disaster recovery ki help chestundi. Kani akkada sufficient capacity, network connectivity, permissions mariyu tested deployment procedures undali. RTO downtime entha acceptable ani, RPO data loss entha acceptable ani define chestayi.",
+    "Regional service health, resource quotas, replication status mariyu application latency monitor cheyyali. Incident vachinappudu AWS Health Dashboard check chesi problem entire Region lo unda leka particular service lo unda identify cheyyali.",
+    "Prathi AWS service anni Regions lo available untundi ani assume cheyyadam common mistake. Data transfer costs ignore cheyyadam, recovery resources test cheyyakapovadam mariyu CLI lo wrong Region select cheyyadam kuda problems create chestayi.",
+    "Region selection reason document cheyyali. Terraform lanti reusable infrastructure definitions maintain cheyyali. Service availability validate chesi data residency review cheyyali. Cross-region disaster recovery ni regular ga test cheyyali.",
+  ],
+};
+
+const makeSections = (rows: string[], concept?: string): GlossaryLearningSection[] => {
+  const titles = [
+    "Definition",
+    "Purpose and Importance",
+    "How It Works",
+    "Core Components",
+    "Architecture",
+    "Real-Time Project Example",
+    "Practical Workflow",
+    "Commands and Configuration",
+    "Security Considerations",
+    "High Availability and Reliability",
+    "Monitoring and Troubleshooting",
+    "Common Mistakes",
+    "Best Practices",
+  ];
+
+  if (rows.length !== titles.length) {
+    throw new Error(`Expected ${titles.length} AWS learning sections, received ${rows.length}`);
+  }
+
+  const teluguRows = concept ? awsTeluguExplanations[concept] : undefined;
+
+  if (teluguRows && teluguRows.length !== rows.length) {
+    throw new Error(`${concept}: English/Telugu section count mismatch`);
+  }
+
+  return rows.map((explanation, index) => ({
+    title: titles[index],
+    items: [{
+      title: titles[index],
+      explanation,
+      ...(teluguRows ? { teluguExplanation: teluguRows[index] } : {}),
+    }],
+  }));
+};
+
+export const cloudAwsCategoryLearningContent: Record<string, GlossaryLearningSection[]> = {
+  "Cloud Computing": makeSections([
+    r("Cloud computing is the delivery of computing resources such as servers, storage, databases, networking and software over a network. Instead of purchasing and maintaining physical hardware, an organization consumes resources from a cloud provider and pays according to the selected pricing model."),
+    r("Cloud computing helps teams provision infrastructure quickly, scale applications based on demand, reduce hardware maintenance and improve delivery speed. DevOps teams use it to create repeatable development, testing, staging and production environments."),
+    r("A user selects a cloud service, configures its capacity and access, and provisions it through a console, CLI or Infrastructure as Code. The provider operates the underlying data centers while the customer remains responsible for configuring and securing the services they use."),
+    r("Common service models include Infrastructure as a Service, Platform as a Service and Software as a Service. Deployment models include public, private and hybrid cloud. AWS provides services for compute, storage, networking, databases, security and monitoring."),
+    r("A cloud architecture combines regions, availability zones, virtual networks, compute instances, storage, identity policies and monitoring. Applications can be distributed across multiple zones and connected through controlled network paths."),
+    r("A company hosts a web application on Amazon EC2, stores uploaded files in Amazon S3, uses a managed database and places a load balancer in front of application instances. Infrastructure is provisioned using Terraform and deployments run through a CI/CD pipeline."),
+    r("A typical workflow is to define infrastructure requirements, select suitable cloud services, create network and identity foundations, provision compute and storage, deploy the application, configure monitoring and continuously review security and cost."),
+    r("AWS CLI commands such as aws sts get-caller-identity help verify the active identity. Infrastructure can be provisioned through AWS CLI, CloudFormation or Terraform. Always review command targets and account context before applying changes."),
+    r("Apply least-privilege IAM policies, encrypt data in transit and at rest, protect credentials, restrict network exposure and enable audit logging. Shared responsibility means the provider secures the cloud infrastructure while customers secure their workloads and configurations."),
+    r("Reliability can be improved by distributing workloads across availability zones, using health checks, automated scaling, backups and tested recovery procedures. Critical systems should avoid depending on a single instance or a single failure point."),
+    r("Monitor utilization, application latency, errors, service quotas and cloud costs. Use CloudWatch metrics and logs, service health information and audit events to investigate performance, availability and configuration problems."),
+    r("Common mistakes include exposing services publicly, granting administrator access unnecessarily, leaving unused resources running, ignoring backups and deploying everything into one failure domain. These mistakes increase security, availability and cost risks."),
+    r("Choose managed services when they reduce operational effort, automate infrastructure with version-controlled code, apply consistent tagging, review costs regularly, test disaster recovery and document ownership and operational procedures.")
+  ], "Cloud Computing"),
+  "AWS Region": makeSections([
+    r("An AWS Region is a separate geographic area in which AWS operates cloud infrastructure. Each Region contains multiple isolated Availability Zones and provides a location in which supported AWS services and resources can be deployed."),
+    r("Regions help organizations choose where workloads run based on latency, regulatory requirements, service availability, disaster recovery and cost. Selecting an appropriate Region is an important early architecture decision."),
+    r("When creating a regional resource, the user selects a Region in the AWS console, CLI configuration or SDK request. Regional services operate within that Region, while some global services have different scope and behavior."),
+    r("A Region contains multiple Availability Zones. Each zone consists of one or more data centers with independent infrastructure. Not every AWS service or feature is available in every Region, so service availability must be checked."),
+    r("A multi-region design may include a primary Region serving production traffic and a secondary Region prepared for recovery. Data replication, DNS routing, identity permissions and deployment automation connect the environments."),
+    r("An application serving customers in India may run in an AWS Region selected for latency and compliance needs. A second Region can be prepared for disaster recovery, with replicated data and documented failover procedures."),
+    r("Choose the Region, verify required services and instance types, create networking and security foundations, deploy resources and configure monitoring. For multi-region systems, test replication and recovery rather than assuming they work."),
+    r("Use aws configure get region to inspect the configured default Region. Use aws ec2 describe-regions to list Regions available to the account. Specify --region in commands when the target must be unambiguous."),
+    r("Evaluate data residency, regulatory requirements, encryption, access controls and cross-region data transfer. Replication can copy sensitive information to another geographic location, so data governance must be considered."),
+    r("A secondary Region can improve disaster recovery, but it must have adequate capacity, network connectivity, permissions and tested deployment procedures. Recovery objectives determine how much data loss and downtime are acceptable."),
+    r("Monitor regional service health, resource quotas, replication status and application latency. During an incident, check the AWS Health Dashboard and confirm whether the problem affects one Region or a specific service."),
+    r("A common mistake is assuming that every service is available in every Region. Other mistakes include overlooking data transfer costs, deploying recovery resources without testing them and using the wrong Region in CLI commands."),
+    r("Document the reason for Region selection, keep infrastructure definitions reusable across Regions, validate service availability, review data residency and regularly test cross-region recovery.")
+  ], "AWS Region"),
+  "Availability Zone": makeSections([
+    r("An Availability Zone is an isolated location within an AWS Region. It contains one or more data centers with independent power, networking and connectivity infrastructure, designed to reduce the impact of failures in another zone."),
+    r("Availability Zones help applications remain available when a data center or zone experiences a problem. Deploying redundant application components across zones reduces dependence on one physical failure domain."),
+    r("A workload is deployed into subnets associated with different Availability Zones. A load balancer distributes requests across healthy targets, while application instances and supporting services operate in more than one zone."),
+    r("An Availability Zone is identified by a Region-specific name such as an example zone name. Account-specific AZ identifiers can map consistently to physical zones for that account, so architecture should use the appropriate identifiers when required."),
+    r("A highly available architecture commonly uses public and private subnets in multiple zones, a load balancer, application instances and resilient data services. Each zone should have the network routes and dependencies required for operation."),
+    r("A production web application runs EC2 instances in two Availability Zones behind an Application Load Balancer. If instances in one zone become unhealthy, the load balancer can send traffic to healthy targets in the other zone."),
+    r("Create subnets in separate zones, deploy redundant application capacity, register targets with a load balancer, configure health checks and verify that the application continues operating when one zone is unavailable."),
+    r("Use aws ec2 describe-availability-zones to list zones available to the account. Use aws ec2 describe-subnets to inspect subnet-to-zone placement before deploying resources."),
+    r("Keep security groups restrictive, protect data replicas and ensure that cross-zone communication uses approved network paths. Zone redundancy does not replace encryption, identity controls or backup policies."),
+    r("Distribute application capacity across zones and avoid a single-zone dependency for critical components. Confirm that databases, storage, load balancing and external dependencies also support the required availability design."),
+    r("Monitor target health, instance status, application errors and zone-level service events. Test failover by safely removing or isolating a test target and observing whether traffic continues through healthy capacity."),
+    r("Deploying multiple instances in the same zone does not provide zone-level resilience. Other mistakes include uneven capacity, missing subnet routes and assuming that a load balancer can compensate for an unavailable database."),
+    r("Use multiple Availability Zones for production workloads where supported, automate deployment consistently, test zone failure scenarios and document dependencies that remain outside the redundant design.")
+  ]),
+  "Amazon EC2": makeSections([
+    r("Amazon Elastic Compute Cloud, commonly called EC2, provides resizable virtual servers in AWS. An EC2 instance supplies compute capacity for applications, services, automation jobs and other workloads without requiring the organization to operate physical servers."),
+    r("EC2 is used when teams need control over the operating system, installed software, instance configuration and application runtime. It supports development environments, web servers, build agents, application servers and custom workloads."),
+    r("A user selects an Amazon Machine Image, instance type, network placement, storage and security settings. AWS launches the virtual machine, assigns networking interfaces and starts the operating system, after which administrators configure and operate the workload."),
+    r("Important components include an AMI, instance type, key pair or alternative access method, security group, subnet, EBS volumes, IAM instance profile and instance metadata. Each component affects security, performance or administration."),
+    r("An EC2 architecture may place instances in private subnets behind a load balancer. Instances receive application traffic through controlled rules, access storage and services using IAM roles, and send logs and metrics to monitoring services."),
+    r("A DevOps team runs a Java application on EC2 instances behind an Application Load Balancer. Jenkins builds the application, publishes the artifact and deploys it through an automated pipeline while CloudWatch monitors instance and application health."),
+    r("Launch an instance from an approved AMI, select an appropriate instance type, attach the required storage, configure a security group and IAM role, connect using an approved method, install the application and configure monitoring and patching."),
+    r("Use aws ec2 describe-instances to inspect instances. Use aws ec2 start-instances, stop-instances or reboot-instances only after confirming the target instance IDs and operational impact."),
+    r("Avoid unrestricted SSH or RDP access, use IAM roles instead of long-lived access keys, patch operating systems, encrypt EBS volumes and protect instance metadata access. Store secrets in a managed secret service rather than in user data or source code."),
+    r("Use Auto Scaling groups across multiple zones and load balancer health checks to replace unhealthy capacity. Back up important data, maintain tested AMIs and ensure instance replacement does not destroy required persistent data."),
+    r("Monitor CPU, network, disk and status-check metrics. Investigate failed status checks, boot issues, full filesystems, application errors and security group rules. Use system logs and application logs to identify the failure layer."),
+    r("Common mistakes include choosing an unsuitable instance type, exposing management ports, storing application data only on ephemeral storage, forgetting to attach an IAM role and leaving unused instances running."),
+    r("Select instance families based on workload needs, automate provisioning, use launch templates and Auto Scaling, apply patch management, enforce least privilege, encrypt storage and review utilization and cost.")
+  ]),
+  "Amazon S3": makeSections([
+    r("Amazon Simple Storage Service, or S3, is an object storage service used to store and retrieve data such as files, backups, logs, static assets and application artifacts. Data is stored as objects inside buckets."),
+    r("S3 provides durable and scalable storage without requiring teams to manage storage servers. DevOps teams use it for build artifacts, backup repositories, application uploads, static website assets and log archives."),
+    r("A bucket is created in a selected Region and objects are uploaded using the console, SDK, API or CLI. Each object has a key and data, with optional metadata, versioning, encryption and lifecycle configuration."),
+    r("Core concepts include buckets, objects, keys, prefixes, storage classes, versioning, bucket policies, access points, lifecycle rules and server-side encryption. S3 is object storage, not a traditional mounted filesystem."),
+    r("An application can upload files to a private S3 bucket through an IAM role. CloudFront can distribute selected content, lifecycle rules can transition older objects and versioning can help recover previous object versions."),
+    r("A CI/CD pipeline uploads versioned build artifacts to S3. A deployment process retrieves the approved artifact, while access policies restrict which pipeline identities can upload or download objects."),
+    r("Create a bucket with the correct Region and security settings, enable required encryption and versioning, configure access policies, upload objects, test retrieval and define lifecycle and retention rules."),
+    r("Use aws s3 ls to list buckets or objects, aws s3 cp to copy files and aws s3 sync to synchronize directories. Example: aws s3 cp file.txt s3://example-bucket/ after replacing the bucket name with your own."),
+    r("Block public access unless public delivery is explicitly required, use least-privilege bucket policies, enable encryption, protect credentials and consider access logging and audit trails. Never place sensitive data in a publicly accessible bucket."),
+    r("Use versioning and replication where recovery requirements justify them. Define lifecycle policies for older objects and ensure backups are protected against accidental deletion and unauthorized changes."),
+    r("Monitor request errors, storage growth, access patterns and replication status. Investigate AccessDenied responses by checking IAM identity policies, bucket policies, encryption permissions and organization-level restrictions."),
+    r("Common mistakes include public bucket exposure, overly broad policies, missing lifecycle rules, incorrect Region assumptions and deleting objects without understanding versioning or retention behavior."),
+    r("Keep buckets private by default, separate environments, enable appropriate encryption and versioning, use lifecycle policies, test recovery and review access permissions regularly.")
+  ]),
+  "Amazon VPC": makeSections([
+    r("Amazon Virtual Private Cloud, or VPC, provides a logically isolated virtual network in AWS. It allows an organization to define IP address ranges, subnets, routing and network security for its cloud resources."),
+    r("A VPC provides network isolation and control over how workloads communicate with each other, the internet and external networks. It is the foundation for securely hosting EC2 instances and many other AWS resources."),
+    r("A VPC is created with an IPv4 CIDR range and optional IPv6 configuration. Subnets are added, route tables determine traffic paths, and gateways or endpoints provide connectivity to required destinations."),
+    r("Important components include CIDR blocks, subnets, route tables, internet gateways, NAT gateways, security groups, network ACLs, VPC endpoints and peering or transit connectivity."),
+    r("A common architecture uses public subnets for internet-facing load balancers and private subnets for application servers. Private workloads reach approved external destinations through NAT or use VPC endpoints for supported AWS services."),
+    r("A company hosts an application in private EC2 subnets and exposes it through a public load balancer. Database systems remain in isolated subnets, and application access is controlled through security groups."),
+    r("Plan non-overlapping IP ranges, create the VPC, add subnets across zones, configure route tables and gateways, define security controls and deploy workloads. Validate routes and connectivity at each network layer."),
+    r("Use aws ec2 describe-vpcs, describe-subnets and describe-route-tables to inspect network configuration. Use aws ec2 describe-internet-gateways to verify internet gateway attachment."),
+    r("Restrict inbound and outbound paths, avoid unnecessary public IP addresses, control administrative access and review security group and network ACL rules. Use private connectivity for sensitive internal services where possible."),
+    r("Design subnets across multiple zones, avoid overlapping CIDR ranges and ensure critical routing components have appropriate resilience. Plan capacity for future growth and connectivity to other networks."),
+    r("Troubleshoot DNS, routes, security groups, network ACLs, gateways and return paths. Reachability Analyzer and VPC Flow Logs can help identify where traffic is blocked or rejected."),
+    r("Common mistakes include overlapping CIDR ranges, missing routes, placing workloads in the wrong subnet and assuming that a subnet is public simply because of its name. A public route requires an appropriate internet gateway path."),
+    r("Document CIDR allocations, use consistent subnet naming and tagging, automate network provisioning, keep private workloads private and validate connectivity and security rules after changes.")
+  ]),
+  "Subnet": makeSections([
+    r("A subnet is a range of IP addresses within a VPC. AWS associates each subnet with a single Availability Zone, allowing resources to be grouped by network role and zone placement."),
+    r("Subnets separate workloads such as public load balancers, private application servers and isolated databases. They help organize IP allocation, routing and security boundaries within a VPC."),
+    r("A subnet is created using a CIDR range contained within the VPC CIDR. Its associated route table determines where traffic is sent, while network ACLs provide an additional subnet-level traffic control layer."),
+    r("Subnets have a CIDR block, Availability Zone, route table association and network ACL association. Public IP assignment settings and routes influence how resources communicate externally."),
+    r("A typical design creates public and private subnets in at least two Availability Zones. Public subnets route internet traffic through an internet gateway, while private subnets use controlled egress or private service endpoints."),
+    r("An application load balancer uses public subnets in two zones. EC2 application instances use private subnets in those zones, and database resources are placed in more restricted subnets."),
+    r("Calculate IP capacity, create subnets in the intended zones, associate route tables, review network ACLs and deploy resources. Check available IP addresses before large deployments or scaling events."),
+    r("Use aws ec2 describe-subnets to inspect subnet CIDRs, zones and available IP addresses. Use aws ec2 describe-route-tables to verify the routes associated with each subnet."),
+    r("Do not expose private workloads through public IP assignment or permissive routes unintentionally. Restrict network ACLs and security groups according to application communication requirements."),
+    r("Distribute critical subnets across zones and reserve enough IP capacity for scaling, load balancers and managed services. Avoid designs that exhaust a subnet during a traffic increase."),
+    r("When connectivity fails, inspect subnet route table associations, available IP addresses, network ACL rules and security groups. Confirm that the resource is deployed in the expected subnet and zone."),
+    r("A subnet named public is not automatically public. Missing internet gateway routes, incorrect route associations and insufficient IP capacity are frequent causes of deployment and connectivity failures."),
+    r("Use clear subnet naming, maintain an IP address plan, automate subnet creation and validate route associations and capacity as part of infrastructure reviews.")
+  ]),
+  "AWS IAM": makeSections([
+    r("AWS Identity and Access Management, or IAM, controls authentication and authorization for access to AWS resources. It defines identities and permissions so users and workloads can perform only approved actions."),
+    r("IAM helps secure AWS accounts by limiting who can access services and what actions they can perform. It supports separation of duties, automation identities and least-privilege access."),
+    r("An IAM principal makes a request to an AWS service. AWS evaluates applicable identity policies, resource policies, permission boundaries, session policies and organization controls before allowing or denying the action."),
+    r("Important IAM components include users, groups, roles, policies, trust policies, temporary credentials, permission boundaries and multi-factor authentication. Roles are commonly used by applications and federated identities."),
+    r("A CI/CD system can assume an IAM role to deploy infrastructure. The role trust policy controls who can assume it, while its permissions policy limits the AWS actions allowed during deployment."),
+    r("A Jenkins deployment agent assumes a deployment role that can update a specific application environment but cannot modify unrelated accounts or security settings. This limits the impact of compromised pipeline credentials."),
+    r("Create an appropriate role or identity, define its trust relationship, attach narrowly scoped permissions, configure the caller and test allowed and denied actions. Review permissions whenever responsibilities change."),
+    r("Use aws sts get-caller-identity to identify the active principal. Use aws iam get-role and aws iam list-attached-role-policies to inspect role configuration and attached managed policies."),
+    r("Enable MFA for human access, avoid long-lived access keys, rotate credentials when required and use roles with temporary credentials for workloads. Never commit AWS credentials to source control."),
+    r("Separate production and non-production roles, use cross-account roles where appropriate and maintain emergency access procedures. Review trust policies and permission boundaries as part of security governance."),
+    r("Investigate AccessDenied errors by identifying the caller, requested action and resource. Check explicit denies, trust policies, permission boundaries and organization policies rather than simply granting administrator access."),
+    r("Common mistakes include wildcard permissions, overly broad trust relationships, hard-coded access keys and using one shared identity for unrelated workloads."),
+    r("Apply least privilege, use role-based access for automation, enable audit logging, review unused permissions and test policy changes before production rollout.")
+  ]),
+  "Security Group": makeSections([
+    r("An AWS Security Group is a stateful virtual firewall associated with supported network interfaces and resources such as EC2 instances. It controls inbound and outbound traffic using rules based on protocols, ports and source or destination ranges."),
+    r("Security groups reduce unwanted network access by allowing only required communication. They are commonly used to restrict SSH, application ports, database access and communication between application tiers."),
+    r("When traffic reaches a resource, AWS evaluates the security group rules associated with its network interface. Security groups allow matching traffic; they do not use explicit deny rules, and response traffic is automatically permitted by stateful behavior."),
+    r("A security group contains inbound and outbound rules. Rules can reference CIDR ranges, prefix lists or other security groups. Multiple security groups can be associated with supported network interfaces."),
+    r("A web tier may allow HTTPS from approved client ranges, an application tier may allow traffic only from the web tier security group, and a database tier may accept its database port only from the application tier."),
+    r("An EC2 application server receives HTTP traffic from an internal load balancer security group. Its database connection is permitted only to the database security group on the required database port."),
+    r("Create security groups, define minimum required inbound and outbound rules, attach them to resources and test application connectivity. Review rules whenever application ports or network dependencies change."),
+    r("Use aws ec2 describe-security-groups to inspect rules and aws ec2 authorize-security-group-ingress only after confirming the intended source, protocol and port."),
+    r("Avoid unrestricted administrative ports such as SSH from 0.0.0.0/0. Use trusted source ranges, security group references and controlled access methods. Review outbound access as carefully as inbound access."),
+    r("Use separate security groups for different application roles and maintain consistent rules across zones. Document dependencies so a security change does not unexpectedly block health checks or service communication."),
+    r("Troubleshoot connection failures by checking the source and destination security groups, network ACLs, routes, listening ports and application logs. Confirm that the rule references the correct source identity or CIDR."),
+    r("Common mistakes include opening all ports, using the wrong source CIDR, forgetting outbound dependencies and confusing security groups with stateless network ACLs."),
+    r("Use least-privilege rules, avoid broad CIDR ranges, manage rules through Infrastructure as Code and periodically remove unused permissions.")
+  ]),
+  "Elastic Load Balancing": makeSections([
+    r("Elastic Load Balancing is an AWS service that distributes incoming application traffic across multiple registered targets, such as EC2 instances, containers or IP addresses. It helps applications handle traffic and avoid depending on one server."),
+    r("Load balancing improves availability, scalability and traffic distribution. It allows teams to add or replace application capacity while clients use a stable entry point."),
+    r("A client sends a request to a load balancer listener. Listener rules select a target group, and the load balancer routes traffic to healthy registered targets according to the configured algorithm and routing behavior."),
+    r("AWS provides Application Load Balancers for HTTP and HTTPS application traffic, Network Load Balancers for high-performance network traffic and Gateway Load Balancers for virtual appliances. Target groups and health checks are central configuration components."),
+    r("A typical web architecture places an Application Load Balancer in public subnets and application targets in private subnets across multiple Availability Zones. TLS termination and path-based routing can be configured at the listener."),
+    r("A production application uses an Application Load Balancer to route requests to EC2 instances in two zones. If a target fails health checks, the load balancer stops routing new requests to that unhealthy target."),
+    r("Create the load balancer, select appropriate subnets, configure listeners and certificates, create target groups, register targets, configure health checks and verify routing before production traffic is enabled."),
+    r("Use aws elbv2 describe-load-balancers, describe-listeners and describe-target-health to inspect load balancer configuration and target health."),
+    r("Use TLS certificates, restrict listener access, protect backend targets and ensure that forwarded client information is handled safely. Avoid exposing internal targets directly when traffic should pass through the load balancer."),
+    r("Deploy targets across multiple zones and ensure sufficient healthy capacity remains during maintenance or failure. Configure health checks to reflect meaningful application readiness rather than only process existence."),
+    r("Monitor request count, latency, HTTP errors, rejected connections and unhealthy target counts. Investigate health check paths, target ports, security groups and application startup failures."),
+    r("Common mistakes include incorrect health check paths, mismatched listener and target ports, missing security group rules and registering targets that are not ready to serve traffic."),
+    r("Use multiple zones, meaningful health checks, TLS, controlled listeners and automated target registration. Test failure handling and capacity before routing production traffic.")
+  ]),
+  "Auto Scaling": makeSections([
+    r("AWS Auto Scaling automatically adjusts the number or capacity of resources according to configured policies and demand. EC2 Auto Scaling groups maintain a desired number of instances and can replace unhealthy instances."),
+    r("Auto Scaling helps applications respond to changing workloads, maintain availability and avoid paying for unnecessary fixed capacity. It is commonly used for stateless application tiers and worker fleets."),
+    r("An Auto Scaling group uses a launch template and minimum, maximum and desired capacity settings. Scaling policies change desired capacity based on metrics, schedules or predictive recommendations, and health checks help replace unhealthy instances."),
+    r("Important components include launch templates, Auto Scaling groups, scaling policies, health checks, cooldown or warm-up behavior, lifecycle hooks and CloudWatch metrics."),
+    r("An application architecture places an Auto Scaling group across multiple Availability Zones behind a load balancer. Instances are created from a consistent launch template and registered with a target group."),
+    r("During a traffic spike, a target tracking policy increases EC2 capacity based on average CPU utilization. When demand falls, the group scales in while maintaining the configured minimum capacity."),
+    r("Create a launch template, define an Auto Scaling group across suitable subnets, configure minimum and maximum capacity, attach a load balancer if required and select a scaling policy. Test scale-out and scale-in behavior."),
+    r("Use aws autoscaling describe-auto-scaling-groups to inspect group capacity and aws autoscaling describe-scaling-activities to review scaling history."),
+    r("Use secure AMIs, instance profiles and restricted security groups. Ensure that scale-in does not remove irreplaceable local data and that termination policies respect application requirements."),
+    r("Set capacity limits that support expected traffic and failure scenarios. Use multiple zones and maintain enough spare capacity to handle instance replacement or a temporary zone disruption."),
+    r("Monitor desired, minimum and maximum capacity, scaling activities, instance health, CPU and application request metrics. Investigate failed launches, quota limits and policies that repeatedly scale in and out."),
+    r("Common mistakes include incorrect metric selection, maximum capacity set too low, slow instance startup, missing load balancer health checks and storing persistent application state only on replaceable instances."),
+    r("Use immutable launch templates, test scaling policies under load, define sensible capacity limits, externalize persistent state and review scaling behavior and cost regularly.")
+  ]),
+  "Amazon Route 53": makeSections([
+    r("Amazon Route 53 is an AWS Domain Name System service that routes domain queries to resources such as load balancers, servers and other endpoints. It also supports domain registration and health-check-based routing features."),
+    r("Route 53 helps users reach applications through readable domain names instead of remembering IP addresses. It supports routing policies for availability, geographic distribution and application traffic management."),
+    r("A DNS resolver queries a hosted zone for a record. Route 53 returns the configured response, which may be an IP address, alias target or another DNS name, and the client then connects to the resolved destination."),
+    r("Important concepts include hosted zones, record sets, A and AAAA records, CNAME records, alias records, TTL, routing policies, health checks and domain registration."),
+    r("A common architecture points an application domain to an Application Load Balancer using an alias record. Health checks and routing policies can direct clients toward healthy or selected endpoints."),
+    r("A DevOps team deploys an application behind a load balancer and creates a Route 53 alias record for app.example.com. During a controlled migration, DNS records are updated and traffic is monitored for resolution and application errors."),
+    r("Create or select a hosted zone, add the required DNS records, configure routing behavior and TTL, update domain name server delegation if needed and verify resolution from relevant networks."),
+    r("Use aws route53 list-hosted-zones and aws route53 list-resource-record-sets to inspect hosted zones and records. Use approved change batches when modifying DNS configuration."),
+    r("Protect hosted zone changes with IAM permissions, review DNS records for unintended exposure and use TLS at the application endpoint. DNS does not replace application authentication or network security."),
+    r("Use health checks and suitable routing policies for resilient designs. Understand DNS caching and TTL behavior because clients and resolvers may continue using previously cached answers after a change."),
+    r("Troubleshoot incorrect records, delegation, TTL, health checks and resolver caches. Use tools such as nslookup or dig to inspect DNS responses and compare results from different resolvers."),
+    r("Common mistakes include incorrect hosted zone delegation, conflicting records, expecting DNS changes to propagate instantly and using a routing policy without understanding its health-check behavior."),
+    r("Manage DNS changes through reviewed automation, keep records documented, use appropriate TTL values, test migrations and monitor endpoint health and domain resolution.")
+  ])
+};
+

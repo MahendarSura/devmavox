@@ -1,0 +1,79 @@
+
+> app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10321:function convertLatestLesson(rawLesson: unknown): CicdTopicLesson {
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10322:  const item = rawLesson as Record<string, unknown>;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10323:
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10324:  if (!Array.isArray(item.sections)) {
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10325:    return rawLesson as CicdTopicLesson;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10326:  }
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10327:
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10328:  const sections = item.sections as Array<{
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10329:    title: string;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10330:    content: string;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10331:    code?: string;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10332:    practicalNotes?: string[];
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10333:  }>;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10334:
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10335:  const textFor = (pattern: RegExp): string =>
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10336:    sections
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10337:      .filter((section) => pattern.test(section.title))
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10338:      .map((section) => `${section.title}\n${section.content}`)
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10339:      .join("\n\n");
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10340:
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10341:  const allContent = sections
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10342:    .map((section) => `${section.title}\n${section.content}`)
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10343:    .join("\n\n");
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10344:
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10345:  const codeContent = sections
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10346:    .filter((section) => section.code)
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10347:    .map((section) => `${section.title}\n${section.code}`)
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10348:    .join("\n\n");
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10349:
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10350:  const practicalNotes = sections.flatMap(
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10351:    (section) => section.practicalNotes ?? []
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10352:  );
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10353:
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10354:  const description =
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10355:    typeof item.description === "string" ? item.description : "";
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10356:
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10357:  const exercise =
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10358:    typeof item.exercise === "string" ? item.exercise : "";
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10359:
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10360:  return {
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10361:    overview: description || sections[0]?.content || allContent,
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10362:    purpose: textFor(/purpose|why|business value/i) || allContent,
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10363:    architecture: textFor(/architecture|component|design|structure/i) || allContent,
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10364:    workflow: sections.map(
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10365:      (section) => `${section.title}: ${section.content}`
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10366:    ),
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10367:    example: allContent,
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10368:    commands: sections
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10369:      .filter((section) => section.code)
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10370:      .flatMap((section) => (section.code ?? "").split("\n"))
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10371:      .map((line) => line.trim())
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10372:      .filter(Boolean),
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10373:    configuration: codeContent || allContent,
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10374:    failures: [
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10375:      textFor(/failure|error|troubleshoot|problem|risk/i) || allContent
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10376:    ],
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10377:    recovery: [
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10378:      textFor(/recovery|remediation|resolution|rollback/i) || allContent
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10379:    ],
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10380:    bestPractices: [
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10381:      textFor(/best practice|production|security|operational|monitoring/i) || allContent,
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10382:      ...practicalNotes
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10383:    ],
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10384:    exercise: exercise || "Review the lesson sections and complete the practical implementation steps."
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10385:  };
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10386:}
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10387:
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10388:function mergeStageOverrides(
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10389:  stageId: number,
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10390:  overrides: Record<string, unknown>
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10391:): number {
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10392:  let merged = 0;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10393:
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10394:  for (const [rawKey, rawLesson] of Object.entries(overrides)) {
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10395:    if (!rawLesson || typeof rawLesson !== "object") continue;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:10396:
+
+

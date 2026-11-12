@@ -1,0 +1,6 @@
+Total sections scanned: 2461
+Sections with title field: 2461
+Sections missing title: 0
+Sections with explanation: 2461
+Sections missing explanation: 0
+Report: C:\Users\mahen\OneDrive\devmavox\app\cicd-pipeline-visualizer\integrated-stage-data\numbered-heading-audit\all-section-headings.csv

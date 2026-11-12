@@ -1,0 +1,153 @@
+[
+  {
+    "topicTitle": "Trivy Fundamentals",
+    "sections": [
+      {
+        "id": "stage-7-topic-1-section-1",
+        "title": "Understanding Trivy and Its Role in Application Security",
+        "content": "Trivy is an open-source security scanner used to identify vulnerabilities and other security risks in software development environments. It can inspect container images, filesystems, source repositories, dependency packages, Infrastructure as Code files, Kubernetes configuration, and secrets. Its purpose is to help development and operations teams discover security problems before applications reach production. Trivy identifies known vulnerabilities by examining installed operating system packages and application dependencies, then comparing package information with vulnerability intelligence sources. It also detects insecure configuration patterns and accidentally exposed credentials when the corresponding scanners are enabled. In a DevOps workflow, Trivy can run locally during development, inside a CI pipeline after a build, or as part of a scheduled security assessment. For example, a team building a Java application can scan its source dependencies and final Docker image before publishing the image to a registry. Trivy provides findings that engineers can investigate, prioritize, remediate, and verify through another scan. It supports shift-left security by moving security checks closer to the developers who introduce changes."
+      },
+      {
+        "id": "stage-7-topic-1-section-2",
+        "title": "Security Scanning Capabilities and Supported Target Types",
+        "content": "Trivy provides several scanning capabilities that address different parts of the software supply chain. Vulnerability scanning identifies known security weaknesses in operating system packages and application dependencies. Misconfiguration scanning evaluates supported configuration files against security rules, such as unsafe container settings or overly permissive cloud infrastructure definitions. Secret scanning searches files for patterns that may represent passwords, tokens, private keys, or other credentials. License scanning can identify software license information and help organizations understand dependency compliance. Trivy can scan container images from local runtimes, archives, and supported registries, as well as source directories and repositories. It can inspect Kubernetes manifests and related configuration files without requiring those resources to be deployed. It can also generate Software Bill of Materials documents describing software components. Each target type has different evidence and scanning behavior, so engineers must select the correct target and scanner options. For example, scanning a Docker image detects packages inside the image, while scanning the source repository can identify dependency declarations and configuration files that may not be present in the final image."
+      },
+      {
+        "id": "stage-7-topic-1-section-3",
+        "title": "How Trivy Discovers Packages and Matches Vulnerabilities",
+        "content": "Trivy begins by examining the selected target and identifying files, package databases, dependency manifests, or configuration structures that it understands. When scanning a container image, it can inspect operating system package metadata and application dependency files to discover installed components. A package record usually contains information such as its name, version, ecosystem, and sometimes its distribution or package source. Trivy uses this information to determine which vulnerability records may apply. Vulnerability matching is not simply a comparison of version numbers because security advisories can contain distribution-specific package information, affected version ranges, fixed versions, and backported patches. The scanner uses vulnerability database information and package metadata to evaluate applicable findings. Engineers should understand that an identified vulnerable package does not automatically prove that an application endpoint is exploitable. It indicates that the package matches known vulnerability information and requires investigation. A useful workflow is to review the vulnerability identifier, affected package, installed version, fixed version, severity, and dependency path before deciding how to remediate the finding."
+      },
+      {
+        "id": "stage-7-topic-1-section-4",
+        "title": "Understanding Vulnerability Identifiers and Security Advisories",
+        "content": "Trivy reports vulnerability identifiers that help engineers trace findings to published security information. CVE identifiers are widely used references for publicly disclosed vulnerabilities, while other ecosystems may provide identifiers from operating system vendors, language package communities, or security advisory databases. A finding can contain a vulnerability identifier, package name, installed version, severity, title, description, references, and a fixed version when one is known. The same underlying security issue may appear in multiple advisory sources, so engineers should avoid treating every identifier as a separate independent defect without checking the advisory relationship. A fixed version is especially useful because it gives the team a concrete upgrade target, although compatibility and vendor patching policies must also be considered. During incident response, record the scanner version, scan date, target digest or commit, database freshness, and relevant finding details. This evidence makes results reproducible and helps security teams distinguish newly introduced vulnerabilities from findings that were already present in an earlier release."
+      },
+      {
+        "id": "stage-7-topic-1-section-5",
+        "title": "Trivy Scanner Components, Databases, and Execution Flow",
+        "content": "A Trivy scan depends on several cooperating elements: the Trivy executable, the selected target, enabled scanners, detection logic, and vulnerability or rule databases where required. The command-line interface accepts the target type, scanner selection, output format, severity filters, and other operational options. Trivy then analyzes the target, extracts relevant package or configuration information, and evaluates that information using its detection capabilities. Vulnerability results depend on vulnerability database content, while misconfiguration checks depend on applicable security rules. The database should be sufficiently current for the assessment to provide useful information about recently disclosed vulnerabilities. In restricted environments, database updates may need to be downloaded through an approved process and distributed to isolated build agents. Teams should monitor database update failures rather than silently accepting stale scan intelligence. A production pipeline should record the Trivy version and database metadata alongside scan results. This helps investigators understand whether two scans differ because the application changed, the scanner changed, or the underlying vulnerability intelligence was updated."
+      },
+      {
+        "id": "stage-7-topic-1-section-6",
+        "title": "Using Trivy Through the Command Line",
+        "content": "The Trivy command-line interface provides a consistent way to execute security scans in developer workstations, build agents, and automation environments. A common starting point is a filesystem scan using a command such as trivy fs . from the root of a source repository. A container image can be inspected with trivy image followed by an image name and tag or digest. Scanner selection can be controlled so that a team runs vulnerability, misconfiguration, secret, or license checks according to its requirements and installed Trivy version. Severity filters can help create focused reports, but they should not be confused with a remediation policy. Output formats such as table and JSON support different consumers: engineers can read terminal output, while automation can parse structured results. Teams should test commands against representative targets and confirm that the expected scanner types are active. A successful process exit alone does not prove that every required security check ran; pipeline logic must also verify the produced report and interpret findings according to the organization policy."
+      },
+      {
+        "id": "stage-7-topic-1-section-7",
+        "title": "Interpreting Scan Results and Prioritizing Findings",
+        "content": "Trivy results should be interpreted as security evidence rather than as an instruction to upgrade every package immediately. Start by identifying the target, scan timestamp, scanner version, and enabled scanner types. Then examine each finding for its vulnerability identifier, package, installed version, severity, fixed version, and available references. Severity is an important signal, but it is not a complete risk assessment. A critical vulnerability in a package exposed to untrusted network traffic may require urgent action, while another finding may affect a component that is not reachable in the deployed application. Teams should also consider exploit availability, application exposure, business impact, compensating controls, and vendor guidance. Findings without a known fixed version may require a vendor update, a package replacement, or a documented risk decision. Store reports as build artifacts and compare them across releases to understand whether risk is increasing or decreasing. A useful remediation record includes the owner, affected service, chosen action, due date, verification scan, and any approved exception."
+      },
+      {
+        "id": "stage-7-topic-1-section-8",
+        "title": "Integrating Trivy into the DevSecOps Lifecycle",
+        "content": "Trivy becomes more effective when security scanning is integrated into the complete software delivery lifecycle instead of being run only before a production release. Developers can scan source files and dependencies locally before creating a pull request. CI pipelines can scan changed repositories, built container images, and deployment configuration after automated tests complete. A registry publishing stage can require a successful image assessment before an image is promoted. Kubernetes deployment workflows can inspect manifests before applying them to a cluster. Scheduled scans can also reassess previously published images because new vulnerabilities may be disclosed after an image was originally built. Each stage should have a clear purpose, target, policy, and responsible owner. For example, a pull request check may provide fast feedback on new issues, while a release gate may evaluate the complete image against stricter production rules. Reports should be retained with commit identifiers and image digests. This approach creates traceability between source changes, build artifacts, security decisions, and deployed workloads."
+      },
+      {
+        "id": "stage-7-topic-1-section-9",
+        "title": "Trivy Limitations, False Positives, and Operational Considerations",
+        "content": "Trivy is a valuable security scanning tool, but its output must be understood within its technical limitations. A scanner can identify known vulnerabilities only when relevant vulnerability information exists and the target package can be recognized. Newly disclosed vulnerabilities may not appear until database information becomes available. Custom-built packages, unusual dependency layouts, unsupported formats, and incomplete metadata can affect detection accuracy. A finding may also require context to determine whether the vulnerable code is reachable or whether a vendor has backported a security fix. Misconfiguration rules cannot replace architecture reviews, penetration testing, or runtime security controls. Secret scanning can identify likely credentials, but teams must still revoke exposed credentials and investigate possible misuse. Large images and repositories may increase scan time and resource consumption. Organizations should standardize scanner versions, database update procedures, output retention, exception approval, and remediation ownership. Trivy should complement secure coding, dependency management, access control, patch management, and runtime monitoring rather than being treated as a complete security program by itself."
+      }
+    ]
+  },
+  {
+    "topicTitle": "Trivy Installation",
+    "sections": [
+      {
+        "id": "stage-7-topic-2-section-1",
+        "title": "Choosing an Installation Method for the Operating Environment",
+        "content": "Trivy can be installed in several ways, and the correct method depends on the operating system, administrative permissions, network access, and intended usage. Linux teams may use supported distribution packages or official installation instructions. macOS developers can use a supported package manager or an official release binary. Windows users can use a supported package manager or obtain an appropriate release executable from the official project distribution. Containerized execution is another option when teams want to avoid installing the executable directly on a workstation or build agent. Before choosing a method, check the official Trivy documentation for currently supported installation instructions and package names because distribution details can change between releases. Prefer trusted official sources and verify downloaded artifacts according to the project guidance. In enterprise environments, administrators may publish approved packages through an internal repository. Standardizing the installation method makes it easier to control versions, update agents, reproduce pipeline behavior, and investigate differences between developer and CI scan results."
+      },
+      {
+        "id": "stage-7-topic-2-section-2",
+        "title": "Installing Trivy on Linux Systems",
+        "content": "On Linux, Trivy can be installed using an official package repository, a supported package artifact, or a release binary according to the current project documentation. Administrators should first identify the distribution and architecture using commands such as cat /etc/os-release and uname -m. This avoids installing a package intended for a different operating system or processor architecture. After configuring a trusted source, install the package using the distribution package manager and inspect the package installation result. The executable should then be available through the system PATH. On production build agents, installation should be managed through configuration management, a hardened machine image, or a controlled agent provisioning process instead of an undocumented manual change. Restrict write access to the executable and its installation directory so untrusted pipeline jobs cannot replace the scanner. Record the installed version and package source as part of the agent inventory. If a package repository is unavailable, use an approved offline installation process and verify the artifact before execution."
+      },
+      {
+        "id": "stage-7-topic-2-section-3",
+        "title": "Installing Trivy on Windows Workstations and Build Agents",
+        "content": "Windows users can install Trivy through a supported package manager or by obtaining the appropriate official Windows release executable. Before installation, confirm whether the machine uses a 64-bit or another supported architecture and ensure that the downloaded artifact matches it. Use an approved source and follow the official project guidance for validating release files. If the executable is installed in a dedicated directory, add that directory to the system or user PATH so PowerShell and other command environments can locate it. Open a new terminal after changing PATH because an existing terminal may retain its previous environment. Run trivy --version to confirm that the executable starts and to identify the installed release. On shared Windows build agents, install the binary in a controlled location and restrict modification permissions. Avoid placing a security scanner in a temporary workspace that is deleted between builds unless the pipeline deliberately provisions it each time. Document the installation method so future upgrades and incident investigations can reproduce the environment."
+      },
+      {
+        "id": "stage-7-topic-2-section-4",
+        "title": "Running Trivy with Docker Instead of a Host Installation",
+        "content": "Trivy can also be executed from a container image, which is useful when a workstation or CI agent should not maintain a separate host installation. The container runtime must be available and the runner must be allowed to pull the approved Trivy image. When scanning a local directory, the directory must be mounted into the scanner container and the command must reference the mounted path rather than an unrelated container path. When scanning a container image, the runtime or registry access method must be configured so Trivy can retrieve the target image. Use an approved, pinned Trivy image version instead of relying on an unchanging latest tag in a reproducible production pipeline. Pay attention to filesystem permissions because files created by a container may have ownership that differs from the host user. Also consider proxy settings, certificate trust, registry credentials, and access to the vulnerability database. Containerized execution improves environment consistency, but it does not automatically solve permission, networking, or supply-chain trust problems."
+      },
+      {
+        "id": "stage-7-topic-2-section-5",
+        "title": "Verifying Installation, Version, and Executable Availability",
+        "content": "After installing Trivy, verify that the executable is available and that the expected version runs successfully. Execute trivy --version from a new terminal session and review the displayed version information. If the shell reports that the command is not recognized or cannot be found, inspect the PATH configuration and confirm that the executable exists in the intended directory. On Linux, commands such as command -v trivy and ls -l can help locate the binary and inspect its permissions. On Windows PowerShell, Get-Command trivy and Get-Item can help identify the command and file location. Check that the installed architecture is compatible with the operating system and that the executable has permission to run. Next, perform a small test scan against a controlled sample target and confirm that Trivy can initialize its required databases. Record the version used by local developers and CI agents. Version verification prevents confusing differences caused by one machine running an older scanner with another machine using a newer release."
+      },
+      {
+        "id": "stage-7-topic-2-section-6",
+        "title": "Configuring Network Access, Proxies, and Database Downloads",
+        "content": "Trivy may need network access to retrieve vulnerability database information and, depending on the target, download image layers or access remote registries. In corporate environments, outbound connections may pass through an HTTP or HTTPS proxy. Configure proxy environment variables according to the operating system and the organization network policy, and confirm that the scanner can reach the required approved endpoints. TLS inspection appliances may require an approved certificate authority to be trusted by the environment; do not disable certificate verification as a routine workaround. If the build environment has no direct internet access, prepare an approved database update and distribution workflow or use the supported offline operation mode documented for the installed version. Monitor database update timestamps so a successful scan is not mistakenly treated as current when its vulnerability data is stale. Registry authentication should use short-lived or narrowly scoped credentials where possible. Avoid printing proxy passwords, access tokens, or registry secrets in pipeline logs. Network readiness is an important installation validation step, not an optional detail."
+      },
+      {
+        "id": "stage-7-topic-2-section-7",
+        "title": "Managing Trivy Versions and Controlled Upgrades",
+        "content": "A production DevSecOps environment should manage Trivy versions deliberately. An uncontrolled upgrade can change detection behavior, output fields, database compatibility, or the set of available scanning features. Pin a tested version in CI images, build-agent provisioning scripts, or package management configuration so repeated builds use a predictable scanner. Before upgrading, review release notes, supported database behavior, command-line changes, and any changes that affect report consumers. Test the candidate version against representative repositories and container images, then compare the resulting findings with the existing version. Differences should be investigated rather than automatically interpreted as newly introduced application defects. Maintain an upgrade schedule that includes security updates and a process for urgent fixes. Record the scanner version in the build logs and retain it with the scan report. If an upgrade causes a pipeline failure, use the documented rollback process to restore the previously approved version while investigating the incompatibility. Version control makes security results more reproducible and easier to audit."
+      },
+      {
+        "id": "stage-7-topic-2-section-8",
+        "title": "Preparing a Secure and Repeatable Installation for CI Agents",
+        "content": "A CI installation should be repeatable, least-privileged, and independent of manual workstation changes. Install Trivy as part of a controlled build-agent image, provisioning script, or pipeline tool setup step. Pin the scanner version and obtain installation artifacts from an approved source. Verify the executable before allowing application jobs to use it. Configure database access, proxy settings, registry permissions, and certificate trust through the CI platform secret and configuration mechanisms rather than embedding credentials in source code. Separate the permission to run scans from the permission to publish or deploy artifacts wherever practical. Restrict write access to the scanner binary and shared database cache. For ephemeral agents, decide whether the database cache should be downloaded for each job or provided through a controlled cache mechanism. Add a smoke test that checks the scanner version and runs a small known scan. Finally, document ownership, update frequency, approved versions, and recovery steps so every team uses a consistent and supportable Trivy installation."
+      }
+    ]
+  },
+  {
+    "topicTitle": "Filesystem Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "Dependency Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "Container Image Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "CVE Database",
+    "sections": []
+  },
+  {
+    "topicTitle": "Severity Classification",
+    "sections": []
+  },
+  {
+    "topicTitle": "Misconfiguration Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "Kubernetes Configuration Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "Secret Scanning",
+    "sections": []
+  },
+  {
+    "topicTitle": "SBOM Generation",
+    "sections": []
+  },
+  {
+    "topicTitle": "Ignore Policies",
+    "sections": []
+  },
+  {
+    "topicTitle": "CI Pipeline Integration",
+    "sections": []
+  },
+  {
+    "topicTitle": "Vulnerability Remediation",
+    "sections": []
+  },
+  {
+    "topicTitle": "Troubleshooting",
+    "sections": []
+  },
+  {
+    "topicTitle": "Production Hands-on Lab",
+    "sections": []
+  }
+]

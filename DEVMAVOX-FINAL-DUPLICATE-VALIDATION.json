@@ -1,0 +1,72 @@
+{
+  "TotalStages": 12,
+  "TotalNavigations": 210,
+  "TotalSections": 3357,
+  "DuplicateTitleGroups": 0,
+  "ExactDuplicateContentGroups": 0,
+  "NormalizedDuplicateContentGroups": 96,
+  "GenericTemplateMatches": 431,
+  "MissingFields": 0,
+  "StageSummary": [
+    {
+      "Stage": "stage-01.json",
+      "Navigations": 16,
+      "Sections": 233
+    },
+    {
+      "Stage": "stage-02.json",
+      "Navigations": 16,
+      "Sections": 228
+    },
+    {
+      "Stage": "stage-03.json",
+      "Navigations": 17,
+      "Sections": 275
+    },
+    {
+      "Stage": "stage-04.json",
+      "Navigations": 16,
+      "Sections": 227
+    },
+    {
+      "Stage": "stage-05.json",
+      "Navigations": 16,
+      "Sections": 234
+    },
+    {
+      "Stage": "stage-06.json",
+      "Navigations": 17,
+      "Sections": 258
+    },
+    {
+      "Stage": "stage-07.json",
+      "Navigations": 16,
+      "Sections": 251
+    },
+    {
+      "Stage": "stage-08.json",
+      "Navigations": 16,
+      "Sections": 268
+    },
+    {
+      "Stage": "stage-09.json",
+      "Navigations": 17,
+      "Sections": 262
+    },
+    {
+      "Stage": "stage-10.json",
+      "Navigations": 22,
+      "Sections": 418
+    },
+    {
+      "Stage": "stage-11.json",
+      "Navigations": 21,
+      "Sections": 354
+    },
+    {
+      "Stage": "stage-12.json",
+      "Navigations": 20,
+      "Sections": 349
+    }
+  ]
+}

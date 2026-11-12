@@ -1,0 +1,974 @@
+"Tool","Category","Number","Question","Marker","Position","Answer"
+"Ansible","Intermediate Interview Questions","1","What is an Ansible inventory, and how do you manage inventories in a multi-environment DevOps project?","Example:","683","An Ansible inventory defines the managed infrastructure that Ansible can connect to and configure. It contains hostnames, IP addresses, groups, connection details, and host-specific variables. In a real DevOps project, teams commonly maintain separate development, staging, and production inventories so that the same playbook can deploy to different environments without changing its automation logic. For example, a production inventory can contain web servers, application servers, and database servers grouped by responsibility. A static inventory can be written in INI or YAML format, while a dynamic inventory can discover instances from AWS or another infrastructure provider. Example: `[web] web01 ansible_host=10.0.1.10` and `[app] app01 ansible_host=10.0.2.10`. Execute `ansible-inventory -i inventory/production.ini --graph` to inspect the inventory group structure and `ansible-inventory -i inventory/production.ini --list` to inspect its host data. Before running a production playbook, verify that the selected inventory contains only the intended environment and hosts."
+"Linux","Intermediate Interview Questions","1","How do you troubleshoot a Linux service that fails to start in production?","Step 1:","190","In production, troubleshooting a failed Linux service requires checking the service manager, application configuration, dependencies, permissions, ports, and logs before restarting anything.
+
+Step 1: Check the service state:
+systemctl status nginx
+systemctl is-enabled nginx
+
+Example output:
+Active: failed (Result: exit-code)
+
+This confirms that systemd attempted to start the service but the process exited unsuccessfully. It does not identify the complete root cause.
+
+Step 2: Inspect detailed logs:
+journalctl -u nginx -n 100 --no-pager
+journalctl -u nginx -xe
+
+Step 3: Validate application configuration:
+nginx -t
+
+If the output reports that a configuration file contains an invalid directive, correct that file rather than repeatedly restarting the service.
+
+Step 4: Check port conflicts:
+ss -lntp
+ss -lntp | grep ':80'
+
+Step 5: Check permissions, dependencies, disk space, and environment variables:
+systemctl cat nginx
+df -h
+namei -l /var/log/nginx
+systemctl list-dependencies nginx
+
+Production example:
+An EC2 application server receives a deployment, but Nginx fails to start because the new configuration references an invalid upstream hostname. The service enters a failed state and users receive connection errors. The engineer checks systemctl status, finds the configuration test failure using nginx -t, compares the latest deployment with the previous version, restores the valid upstream configuration, and tests again.
+
+Recovery:
+nginx -t
+systemctl restart nginx
+systemctl is-active nginx
+curl -I http://localhost
+
+Finally verify the external load balancer health check, application response, and service logs. Restarting without correcting the root cause only repeats the failure."
+"Linux","Intermediate Interview Questions","1","How do you troubleshoot a Linux service that fails to start in production?","Step 2:","470","In production, troubleshooting a failed Linux service requires checking the service manager, application configuration, dependencies, permissions, ports, and logs before restarting anything.
+
+Step 1: Check the service state:
+systemctl status nginx
+systemctl is-enabled nginx
+
+Example output:
+Active: failed (Result: exit-code)
+
+This confirms that systemd attempted to start the service but the process exited unsuccessfully. It does not identify the complete root cause.
+
+Step 2: Inspect detailed logs:
+journalctl -u nginx -n 100 --no-pager
+journalctl -u nginx -xe
+
+Step 3: Validate application configuration:
+nginx -t
+
+If the output reports that a configuration file contains an invalid directive, correct that file rather than repeatedly restarting the service.
+
+Step 4: Check port conflicts:
+ss -lntp
+ss -lntp | grep ':80'
+
+Step 5: Check permissions, dependencies, disk space, and environment variables:
+systemctl cat nginx
+df -h
+namei -l /var/log/nginx
+systemctl list-dependencies nginx
+
+Production example:
+An EC2 application server receives a deployment, but Nginx fails to start because the new configuration references an invalid upstream hostname. The service enters a failed state and users receive connection errors. The engineer checks systemctl status, finds the configuration test failure using nginx -t, compares the latest deployment with the previous version, restores the valid upstream configuration, and tests again.
+
+Recovery:
+nginx -t
+systemctl restart nginx
+systemctl is-active nginx
+curl -I http://localhost
+
+Finally verify the external load balancer health check, application response, and service logs. Restarting without correcting the root cause only repeats the failure."
+"Linux","Intermediate Interview Questions","1","How do you troubleshoot a Linux service that fails to start in production?","Step 3:","564","In production, troubleshooting a failed Linux service requires checking the service manager, application configuration, dependencies, permissions, ports, and logs before restarting anything.
+
+Step 1: Check the service state:
+systemctl status nginx
+systemctl is-enabled nginx
+
+Example output:
+Active: failed (Result: exit-code)
+
+This confirms that systemd attempted to start the service but the process exited unsuccessfully. It does not identify the complete root cause.
+
+Step 2: Inspect detailed logs:
+journalctl -u nginx -n 100 --no-pager
+journalctl -u nginx -xe
+
+Step 3: Validate application configuration:
+nginx -t
+
+If the output reports that a configuration file contains an invalid directive, correct that file rather than repeatedly restarting the service.
+
+Step 4: Check port conflicts:
+ss -lntp
+ss -lntp | grep ':80'
+
+Step 5: Check permissions, dependencies, disk space, and environment variables:
+systemctl cat nginx
+df -h
+namei -l /var/log/nginx
+systemctl list-dependencies nginx
+
+Production example:
+An EC2 application server receives a deployment, but Nginx fails to start because the new configuration references an invalid upstream hostname. The service enters a failed state and users receive connection errors. The engineer checks systemctl status, finds the configuration test failure using nginx -t, compares the latest deployment with the previous version, restores the valid upstream configuration, and tests again.
+
+Recovery:
+nginx -t
+systemctl restart nginx
+systemctl is-active nginx
+curl -I http://localhost
+
+Finally verify the external load balancer health check, application response, and service logs. Restarting without correcting the root cause only repeats the failure."
+"Linux","Intermediate Interview Questions","1","How do you troubleshoot a Linux service that fails to start in production?","Step 4:","763","In production, troubleshooting a failed Linux service requires checking the service manager, application configuration, dependencies, permissions, ports, and logs before restarting anything.
+
+Step 1: Check the service state:
+systemctl status nginx
+systemctl is-enabled nginx
+
+Example output:
+Active: failed (Result: exit-code)
+
+This confirms that systemd attempted to start the service but the process exited unsuccessfully. It does not identify the complete root cause.
+
+Step 2: Inspect detailed logs:
+journalctl -u nginx -n 100 --no-pager
+journalctl -u nginx -xe
+
+Step 3: Validate application configuration:
+nginx -t
+
+If the output reports that a configuration file contains an invalid directive, correct that file rather than repeatedly restarting the service.
+
+Step 4: Check port conflicts:
+ss -lntp
+ss -lntp | grep ':80'
+
+Step 5: Check permissions, dependencies, disk space, and environment variables:
+systemctl cat nginx
+df -h
+namei -l /var/log/nginx
+systemctl list-dependencies nginx
+
+Production example:
+An EC2 application server receives a deployment, but Nginx fails to start because the new configuration references an invalid upstream hostname. The service enters a failed state and users receive connection errors. The engineer checks systemctl status, finds the configuration test failure using nginx -t, compares the latest deployment with the previous version, restores the valid upstream configuration, and tests again.
+
+Recovery:
+nginx -t
+systemctl restart nginx
+systemctl is-active nginx
+curl -I http://localhost
+
+Finally verify the external load balancer health check, application response, and service logs. Restarting without correcting the root cause only repeats the failure."
+"Linux","Intermediate Interview Questions","1","How do you troubleshoot a Linux service that fails to start in production?","Step 5:","825","In production, troubleshooting a failed Linux service requires checking the service manager, application configuration, dependencies, permissions, ports, and logs before restarting anything.
+
+Step 1: Check the service state:
+systemctl status nginx
+systemctl is-enabled nginx
+
+Example output:
+Active: failed (Result: exit-code)
+
+This confirms that systemd attempted to start the service but the process exited unsuccessfully. It does not identify the complete root cause.
+
+Step 2: Inspect detailed logs:
+journalctl -u nginx -n 100 --no-pager
+journalctl -u nginx -xe
+
+Step 3: Validate application configuration:
+nginx -t
+
+If the output reports that a configuration file contains an invalid directive, correct that file rather than repeatedly restarting the service.
+
+Step 4: Check port conflicts:
+ss -lntp
+ss -lntp | grep ':80'
+
+Step 5: Check permissions, dependencies, disk space, and environment variables:
+systemctl cat nginx
+df -h
+namei -l /var/log/nginx
+systemctl list-dependencies nginx
+
+Production example:
+An EC2 application server receives a deployment, but Nginx fails to start because the new configuration references an invalid upstream hostname. The service enters a failed state and users receive connection errors. The engineer checks systemctl status, finds the configuration test failure using nginx -t, compares the latest deployment with the previous version, restores the valid upstream configuration, and tests again.
+
+Recovery:
+nginx -t
+systemctl restart nginx
+systemctl is-active nginx
+curl -I http://localhost
+
+Finally verify the external load balancer health check, application response, and service logs. Restarting without correcting the root cause only repeats the failure."
+"Linux","Intermediate Interview Questions","2","How do you investigate high CPU utilization on a Linux production server?","Step 1:","211","High CPU utilization means one or more processes are consuming a large percentage of available processor time. It can cause slow application responses, request timeouts, deployment delays, and increased latency.
+
+Step 1: Check system load and uptime:
+uptime
+top
+nproc
+
+Example:
+load average: 12.50, 10.20, 8.90
+CPU cores: 4
+
+This indicates that runnable or uninterruptible tasks are competing for available CPU resources. Load average is not the same as CPU percentage and must be interpreted against core count.
+
+Step 2: Identify CPU-consuming processes:
+ps -eo pid,ppid,user,cmd,%cpu,%mem --sort=-%cpu | head -15
+
+Step 3: Monitor process behavior:
+pidstat -u 1
+top -H -p <PID>
+
+Step 4: Inspect threads, application logs, and deployment timestamps:
+ps -Lp <PID>
+journalctl --since ""15 minutes ago""
+
+Production example:
+A Java application on an EC2 instance experiences 95% CPU utilization after a new release. The engineer identifies the Java process using top, inspects its threads, correlates the spike with the release timestamp, and checks application logs. A newly introduced retry loop is generating thousands of requests against a downstream service.
+
+Root-cause isolation:
+Check whether CPU is consumed by application code, compression, garbage collection, batch jobs, kernel activity, or excessive context switching. Use application profiling when available.
+
+Safe remediation:
+Follow the application's rollback or hotfix procedure. Do not immediately kill the Java process because that may terminate active transactions. If capacity is genuinely insufficient, evaluate vertical or horizontal scaling.
+
+Validation:
+pidstat -u 1
+uptime
+curl -f http://localhost:8080/health
+
+Confirm CPU returns to the expected baseline and application latency and error rates recover."
+"Linux","Intermediate Interview Questions","2","How do you investigate high CPU utilization on a Linux production server?","Example:","267","High CPU utilization means one or more processes are consuming a large percentage of available processor time. It can cause slow application responses, request timeouts, deployment delays, and increased latency.
+
+Step 1: Check system load and uptime:
+uptime
+top
+nproc
+
+Example:
+load average: 12.50, 10.20, 8.90
+CPU cores: 4
+
+This indicates that runnable or uninterruptible tasks are competing for available CPU resources. Load average is not the same as CPU percentage and must be interpreted against core count.
+
+Step 2: Identify CPU-consuming processes:
+ps -eo pid,ppid,user,cmd,%cpu,%mem --sort=-%cpu | head -15
+
+Step 3: Monitor process behavior:
+pidstat -u 1
+top -H -p <PID>
+
+Step 4: Inspect threads, application logs, and deployment timestamps:
+ps -Lp <PID>
+journalctl --since ""15 minutes ago""
+
+Production example:
+A Java application on an EC2 instance experiences 95% CPU utilization after a new release. The engineer identifies the Java process using top, inspects its threads, correlates the spike with the release timestamp, and checks application logs. A newly introduced retry loop is generating thousands of requests against a downstream service.
+
+Root-cause isolation:
+Check whether CPU is consumed by application code, compression, garbage collection, batch jobs, kernel activity, or excessive context switching. Use application profiling when available.
+
+Safe remediation:
+Follow the application's rollback or hotfix procedure. Do not immediately kill the Java process because that may terminate active transactions. If capacity is genuinely insufficient, evaluate vertical or horizontal scaling.
+
+Validation:
+pidstat -u 1
+uptime
+curl -f http://localhost:8080/health
+
+Confirm CPU returns to the expected baseline and application latency and error rates recover."
+"Linux","Intermediate Interview Questions","2","How do you investigate high CPU utilization on a Linux production server?","Step 2:","512","High CPU utilization means one or more processes are consuming a large percentage of available processor time. It can cause slow application responses, request timeouts, deployment delays, and increased latency.
+
+Step 1: Check system load and uptime:
+uptime
+top
+nproc
+
+Example:
+load average: 12.50, 10.20, 8.90
+CPU cores: 4
+
+This indicates that runnable or uninterruptible tasks are competing for available CPU resources. Load average is not the same as CPU percentage and must be interpreted against core count.
+
+Step 2: Identify CPU-consuming processes:
+ps -eo pid,ppid,user,cmd,%cpu,%mem --sort=-%cpu | head -15
+
+Step 3: Monitor process behavior:
+pidstat -u 1
+top -H -p <PID>
+
+Step 4: Inspect threads, application logs, and deployment timestamps:
+ps -Lp <PID>
+journalctl --since ""15 minutes ago""
+
+Production example:
+A Java application on an EC2 instance experiences 95% CPU utilization after a new release. The engineer identifies the Java process using top, inspects its threads, correlates the spike with the release timestamp, and checks application logs. A newly introduced retry loop is generating thousands of requests against a downstream service.
+
+Root-cause isolation:
+Check whether CPU is consumed by application code, compression, garbage collection, batch jobs, kernel activity, or excessive context switching. Use application profiling when available.
+
+Safe remediation:
+Follow the application's rollback or hotfix procedure. Do not immediately kill the Java process because that may terminate active transactions. If capacity is genuinely insufficient, evaluate vertical or horizontal scaling.
+
+Validation:
+pidstat -u 1
+uptime
+curl -f http://localhost:8080/health
+
+Confirm CPU returns to the expected baseline and application latency and error rates recover."
+"Linux","Intermediate Interview Questions","2","How do you investigate high CPU utilization on a Linux production server?","Step 3:","614","High CPU utilization means one or more processes are consuming a large percentage of available processor time. It can cause slow application responses, request timeouts, deployment delays, and increased latency.
+
+Step 1: Check system load and uptime:
+uptime
+top
+nproc
+
+Example:
+load average: 12.50, 10.20, 8.90
+CPU cores: 4
+
+This indicates that runnable or uninterruptible tasks are competing for available CPU resources. Load average is not the same as CPU percentage and must be interpreted against core count.
+
+Step 2: Identify CPU-consuming processes:
+ps -eo pid,ppid,user,cmd,%cpu,%mem --sort=-%cpu | head -15
+
+Step 3: Monitor process behavior:
+pidstat -u 1
+top -H -p <PID>
+
+Step 4: Inspect threads, application logs, and deployment timestamps:
+ps -Lp <PID>
+journalctl --since ""15 minutes ago""
+
+Production example:
+A Java application on an EC2 instance experiences 95% CPU utilization after a new release. The engineer identifies the Java process using top, inspects its threads, correlates the spike with the release timestamp, and checks application logs. A newly introduced retry loop is generating thousands of requests against a downstream service.
+
+Root-cause isolation:
+Check whether CPU is consumed by application code, compression, garbage collection, batch jobs, kernel activity, or excessive context switching. Use application profiling when available.
+
+Safe remediation:
+Follow the application's rollback or hotfix procedure. Do not immediately kill the Java process because that may terminate active transactions. If capacity is genuinely insufficient, evaluate vertical or horizontal scaling.
+
+Validation:
+pidstat -u 1
+uptime
+curl -f http://localhost:8080/health
+
+Confirm CPU returns to the expected baseline and application latency and error rates recover."
+"Linux","Intermediate Interview Questions","2","How do you investigate high CPU utilization on a Linux production server?","Step 4:","678","High CPU utilization means one or more processes are consuming a large percentage of available processor time. It can cause slow application responses, request timeouts, deployment delays, and increased latency.
+
+Step 1: Check system load and uptime:
+uptime
+top
+nproc
+
+Example:
+load average: 12.50, 10.20, 8.90
+CPU cores: 4
+
+This indicates that runnable or uninterruptible tasks are competing for available CPU resources. Load average is not the same as CPU percentage and must be interpreted against core count.
+
+Step 2: Identify CPU-consuming processes:
+ps -eo pid,ppid,user,cmd,%cpu,%mem --sort=-%cpu | head -15
+
+Step 3: Monitor process behavior:
+pidstat -u 1
+top -H -p <PID>
+
+Step 4: Inspect threads, application logs, and deployment timestamps:
+ps -Lp <PID>
+journalctl --since ""15 minutes ago""
+
+Production example:
+A Java application on an EC2 instance experiences 95% CPU utilization after a new release. The engineer identifies the Java process using top, inspects its threads, correlates the spike with the release timestamp, and checks application logs. A newly introduced retry loop is generating thousands of requests against a downstream service.
+
+Root-cause isolation:
+Check whether CPU is consumed by application code, compression, garbage collection, batch jobs, kernel activity, or excessive context switching. Use application profiling when available.
+
+Safe remediation:
+Follow the application's rollback or hotfix procedure. Do not immediately kill the Java process because that may terminate active transactions. If capacity is genuinely insufficient, evaluate vertical or horizontal scaling.
+
+Validation:
+pidstat -u 1
+uptime
+curl -f http://localhost:8080/health
+
+Confirm CPU returns to the expected baseline and application latency and error rates recover."
+"Linux","Intermediate Interview Questions","3","How do you troubleshoot high memory usage and Out Of Memory kills in Linux?","Step 1:","140","Linux memory troubleshooting requires distinguishing application memory consumption, filesystem cache, swap activity, and kernel OOM events.
+
+Step 1: Inspect memory:
+free -h
+cat /proc/meminfo
+vmstat 1
+
+Example:
+Mem: 16Gi total, 15Gi used, 300Mi available
+Swap: 2Gi total, 1.8Gi used
+
+Low available memory combined with sustained swap activity can indicate memory pressure. Linux uses available RAM for cache, so the used column alone does not prove a memory leak.
+
+Step 2: Identify large processes:
+ps aux --sort=-%mem | head -15
+top
+
+Step 3: Check OOM events:
+dmesg -T | grep -i -E 'oom|out of memory|killed process'
+journalctl -k --since today
+
+Step 4: Inspect a specific process:
+cat /proc/<PID>/status
+pmap -x <PID>
+
+Production example:
+A Java service runs on an EC2 instance with 16 GB RAM. After traffic increases, the kernel kills the application process. The engineer finds an OOM-killer event in kernel logs and identifies the Java process as the victim. Application heap configuration and traffic metrics show that memory usage increased after a release.
+
+Important distinction:
+The OOM killer may terminate a process because the host or its memory cgroup has exhausted its limit. On container hosts, inspect container memory limits and Kubernetes pod events as well.
+
+Safe remediation:
+Capture logs and process evidence, identify whether the cause is a memory leak, oversized heap, traffic increase, or insufficient capacity. Apply a tested application fix, adjust memory limits or capacity through change control, and restart only according to the recovery procedure.
+
+Validation:
+free -h
+vmstat 1
+journalctl -k --since ""10 minutes ago""
+
+Monitor memory trends over time. A temporary drop after restart is not proof that the underlying memory leak is fixed."
+"Linux","Intermediate Interview Questions","3","How do you troubleshoot high memory usage and Out Of Memory kills in Linux?","Example:","200","Linux memory troubleshooting requires distinguishing application memory consumption, filesystem cache, swap activity, and kernel OOM events.
+
+Step 1: Inspect memory:
+free -h
+cat /proc/meminfo
+vmstat 1
+
+Example:
+Mem: 16Gi total, 15Gi used, 300Mi available
+Swap: 2Gi total, 1.8Gi used
+
+Low available memory combined with sustained swap activity can indicate memory pressure. Linux uses available RAM for cache, so the used column alone does not prove a memory leak.
+
+Step 2: Identify large processes:
+ps aux --sort=-%mem | head -15
+top
+
+Step 3: Check OOM events:
+dmesg -T | grep -i -E 'oom|out of memory|killed process'
+journalctl -k --since today
+
+Step 4: Inspect a specific process:
+cat /proc/<PID>/status
+pmap -x <PID>
+
+Production example:
+A Java service runs on an EC2 instance with 16 GB RAM. After traffic increases, the kernel kills the application process. The engineer finds an OOM-killer event in kernel logs and identifies the Java process as the victim. Application heap configuration and traffic metrics show that memory usage increased after a release.
+
+Important distinction:
+The OOM killer may terminate a process because the host or its memory cgroup has exhausted its limit. On container hosts, inspect container memory limits and Kubernetes pod events as well.
+
+Safe remediation:
+Capture logs and process evidence, identify whether the cause is a memory leak, oversized heap, traffic increase, or insufficient capacity. Apply a tested application fix, adjust memory limits or capacity through change control, and restart only according to the recovery procedure.
+
+Validation:
+free -h
+vmstat 1
+journalctl -k --since ""10 minutes ago""
+
+Monitor memory trends over time. A temporary drop after restart is not proof that the underlying memory leak is fixed."
+"Linux","Intermediate Interview Questions","3","How do you troubleshoot high memory usage and Out Of Memory kills in Linux?","Step 2:","463","Linux memory troubleshooting requires distinguishing application memory consumption, filesystem cache, swap activity, and kernel OOM events.
+
+Step 1: Inspect memory:
+free -h
+cat /proc/meminfo
+vmstat 1
+
+Example:
+Mem: 16Gi total, 15Gi used, 300Mi available
+Swap: 2Gi total, 1.8Gi used
+
+Low available memory combined with sustained swap activity can indicate memory pressure. Linux uses available RAM for cache, so the used column alone does not prove a memory leak.
+
+Step 2: Identify large processes:
+ps aux --sort=-%mem | head -15
+top
+
+Step 3: Check OOM events:
+dmesg -T | grep -i -E 'oom|out of memory|killed process'
+journalctl -k --since today
+
+Step 4: Inspect a specific process:
+cat /proc/<PID>/status
+pmap -x <PID>
+
+Production example:
+A Java service runs on an EC2 instance with 16 GB RAM. After traffic increases, the kernel kills the application process. The engineer finds an OOM-killer event in kernel logs and identifies the Java process as the victim. Application heap configuration and traffic metrics show that memory usage increased after a release.
+
+Important distinction:
+The OOM killer may terminate a process because the host or its memory cgroup has exhausted its limit. On container hosts, inspect container memory limits and Kubernetes pod events as well.
+
+Safe remediation:
+Capture logs and process evidence, identify whether the cause is a memory leak, oversized heap, traffic increase, or insufficient capacity. Apply a tested application fix, adjust memory limits or capacity through change control, and restart only according to the recovery procedure.
+
+Validation:
+free -h
+vmstat 1
+journalctl -k --since ""10 minutes ago""
+
+Monitor memory trends over time. A temporary drop after restart is not proof that the underlying memory leak is fixed."
+"Linux","Intermediate Interview Questions","3","How do you troubleshoot high memory usage and Out Of Memory kills in Linux?","Step 3:","533","Linux memory troubleshooting requires distinguishing application memory consumption, filesystem cache, swap activity, and kernel OOM events.
+
+Step 1: Inspect memory:
+free -h
+cat /proc/meminfo
+vmstat 1
+
+Example:
+Mem: 16Gi total, 15Gi used, 300Mi available
+Swap: 2Gi total, 1.8Gi used
+
+Low available memory combined with sustained swap activity can indicate memory pressure. Linux uses available RAM for cache, so the used column alone does not prove a memory leak.
+
+Step 2: Identify large processes:
+ps aux --sort=-%mem | head -15
+top
+
+Step 3: Check OOM events:
+dmesg -T | grep -i -E 'oom|out of memory|killed process'
+journalctl -k --since today
+
+Step 4: Inspect a specific process:
+cat /proc/<PID>/status
+pmap -x <PID>
+
+Production example:
+A Java service runs on an EC2 instance with 16 GB RAM. After traffic increases, the kernel kills the application process. The engineer finds an OOM-killer event in kernel logs and identifies the Java process as the victim. Application heap configuration and traffic metrics show that memory usage increased after a release.
+
+Important distinction:
+The OOM killer may terminate a process because the host or its memory cgroup has exhausted its limit. On container hosts, inspect container memory limits and Kubernetes pod events as well.
+
+Safe remediation:
+Capture logs and process evidence, identify whether the cause is a memory leak, oversized heap, traffic increase, or insufficient capacity. Apply a tested application fix, adjust memory limits or capacity through change control, and restart only according to the recovery procedure.
+
+Validation:
+free -h
+vmstat 1
+journalctl -k --since ""10 minutes ago""
+
+Monitor memory trends over time. A temporary drop after restart is not proof that the underlying memory leak is fixed."
+"Linux","Intermediate Interview Questions","3","How do you troubleshoot high memory usage and Out Of Memory kills in Linux?","Step 4:","645","Linux memory troubleshooting requires distinguishing application memory consumption, filesystem cache, swap activity, and kernel OOM events.
+
+Step 1: Inspect memory:
+free -h
+cat /proc/meminfo
+vmstat 1
+
+Example:
+Mem: 16Gi total, 15Gi used, 300Mi available
+Swap: 2Gi total, 1.8Gi used
+
+Low available memory combined with sustained swap activity can indicate memory pressure. Linux uses available RAM for cache, so the used column alone does not prove a memory leak.
+
+Step 2: Identify large processes:
+ps aux --sort=-%mem | head -15
+top
+
+Step 3: Check OOM events:
+dmesg -T | grep -i -E 'oom|out of memory|killed process'
+journalctl -k --since today
+
+Step 4: Inspect a specific process:
+cat /proc/<PID>/status
+pmap -x <PID>
+
+Production example:
+A Java service runs on an EC2 instance with 16 GB RAM. After traffic increases, the kernel kills the application process. The engineer finds an OOM-killer event in kernel logs and identifies the Java process as the victim. Application heap configuration and traffic metrics show that memory usage increased after a release.
+
+Important distinction:
+The OOM killer may terminate a process because the host or its memory cgroup has exhausted its limit. On container hosts, inspect container memory limits and Kubernetes pod events as well.
+
+Safe remediation:
+Capture logs and process evidence, identify whether the cause is a memory leak, oversized heap, traffic increase, or insufficient capacity. Apply a tested application fix, adjust memory limits or capacity through change control, and restart only according to the recovery procedure.
+
+Validation:
+free -h
+vmstat 1
+journalctl -k --since ""10 minutes ago""
+
+Monitor memory trends over time. A temporary drop after restart is not proof that the underlying memory leak is fixed."
+"Linux","Intermediate Interview Questions","4","What is Linux load average and how do you interpret it during an incident?","Example:","189","Load average represents the average number of tasks that are runnable or waiting in uninterruptible sleep over the last 1, 5, and 15 minutes.
+
+Check it using:
+uptime
+cat /proc/loadavg
+nproc
+
+Example:
+load average: 8.00, 6.50, 4.00
+CPU cores: 4
+
+A load average of 8 on a four-core server indicates significant task contention, but it does not automatically mean CPU utilization is 200%. Tasks waiting for disk I/O can also contribute to load average.
+
+Investigate CPU:
+top
+mpstat -P ALL 1
+pidstat -u 1
+
+Investigate I/O wait:
+iostat -xz 1
+vmstat 1
+
+Production example:
+An EC2 database server shows a load average of 15, but CPU utilization is only 25%. The engineer checks iostat and discovers high disk latency. A backup process is generating heavy I/O and causing application queries to wait.
+
+Root cause:
+The problem is storage contention rather than insufficient CPU capacity.
+
+Remediation:
+Coordinate with the database and backup owners, move or reschedule the heavy workload according to the approved plan, and investigate storage performance.
+
+Validation:
+Compare load average, CPU idle percentage, I/O wait, disk latency, and application response times before and after the change.
+
+Always compare load average with CPU core count and task state. Never scale CPU based only on load average."
+"Linux","Intermediate Interview Questions","5","How do you investigate a Linux disk space alert when df and du show different values?","Step 1:","235","The df command reports filesystem allocation, while du calculates space used by files it can traverse. Their results can differ because of deleted-but-open files, filesystem metadata, reserved blocks, mount boundaries, and permissions.
+
+Step 1: Identify the full filesystem:
+df -hT
+
+Step 2: Identify large directories:
+du -xhd1 /var 2>/dev/null | sort -h
+
+Step 3: Check deleted files still held open:
+lsof +L1
+
+Example:
+df -h shows /var at 98%, but du shows significantly less usage. lsof +L1 reveals that a logging process still has a deleted 8 GB log file open.
+
+Production example:
+An EC2 application server triggers a disk alert. The engineer sees that /var is almost full. The application team had deleted an old log file, but the running process had not reopened its log descriptor. Linux therefore continues to reserve the disk blocks.
+
+Remediation:
+Identify the process and log-management method. Use the approved log reopen mechanism or a controlled service restart. Do not kill an unknown process or delete random files to free space.
+
+Also inspect:
+df -i
+findmnt
+du -xhd1 /var/log
+
+Validation:
+df -hT
+lsof +L1
+
+Confirm the filesystem has recovered and log rotation is correctly configured. Establish retention limits and monitoring to prevent recurrence."
+"Linux","Intermediate Interview Questions","5","How do you investigate a Linux disk space alert when df and du show different values?","Step 2:","281","The df command reports filesystem allocation, while du calculates space used by files it can traverse. Their results can differ because of deleted-but-open files, filesystem metadata, reserved blocks, mount boundaries, and permissions.
+
+Step 1: Identify the full filesystem:
+df -hT
+
+Step 2: Identify large directories:
+du -xhd1 /var 2>/dev/null | sort -h
+
+Step 3: Check deleted files still held open:
+lsof +L1
+
+Example:
+df -h shows /var at 98%, but du shows significantly less usage. lsof +L1 reveals that a logging process still has a deleted 8 GB log file open.
+
+Production example:
+An EC2 application server triggers a disk alert. The engineer sees that /var is almost full. The application team had deleted an old log file, but the running process had not reopened its log descriptor. Linux therefore continues to reserve the disk blocks.
+
+Remediation:
+Identify the process and log-management method. Use the approved log reopen mechanism or a controlled service restart. Do not kill an unknown process or delete random files to free space.
+
+Also inspect:
+df -i
+findmnt
+du -xhd1 /var/log
+
+Validation:
+df -hT
+lsof +L1
+
+Confirm the filesystem has recovered and log rotation is correctly configured. Establish retention limits and monitoring to prevent recurrence."
+"Linux","Intermediate Interview Questions","5","How do you investigate a Linux disk space alert when df and du show different values?","Step 3:","354","The df command reports filesystem allocation, while du calculates space used by files it can traverse. Their results can differ because of deleted-but-open files, filesystem metadata, reserved blocks, mount boundaries, and permissions.
+
+Step 1: Identify the full filesystem:
+df -hT
+
+Step 2: Identify large directories:
+du -xhd1 /var 2>/dev/null | sort -h
+
+Step 3: Check deleted files still held open:
+lsof +L1
+
+Example:
+df -h shows /var at 98%, but du shows significantly less usage. lsof +L1 reveals that a logging process still has a deleted 8 GB log file open.
+
+Production example:
+An EC2 application server triggers a disk alert. The engineer sees that /var is almost full. The application team had deleted an old log file, but the running process had not reopened its log descriptor. Linux therefore continues to reserve the disk blocks.
+
+Remediation:
+Identify the process and log-management method. Use the approved log reopen mechanism or a controlled service restart. Do not kill an unknown process or delete random files to free space.
+
+Also inspect:
+df -i
+findmnt
+du -xhd1 /var/log
+
+Validation:
+df -hT
+lsof +L1
+
+Confirm the filesystem has recovered and log rotation is correctly configured. Establish retention limits and monitoring to prevent recurrence."
+"Linux","Intermediate Interview Questions","5","How do you investigate a Linux disk space alert when df and du show different values?","Example:","409","The df command reports filesystem allocation, while du calculates space used by files it can traverse. Their results can differ because of deleted-but-open files, filesystem metadata, reserved blocks, mount boundaries, and permissions.
+
+Step 1: Identify the full filesystem:
+df -hT
+
+Step 2: Identify large directories:
+du -xhd1 /var 2>/dev/null | sort -h
+
+Step 3: Check deleted files still held open:
+lsof +L1
+
+Example:
+df -h shows /var at 98%, but du shows significantly less usage. lsof +L1 reveals that a logging process still has a deleted 8 GB log file open.
+
+Production example:
+An EC2 application server triggers a disk alert. The engineer sees that /var is almost full. The application team had deleted an old log file, but the running process had not reopened its log descriptor. Linux therefore continues to reserve the disk blocks.
+
+Remediation:
+Identify the process and log-management method. Use the approved log reopen mechanism or a controlled service restart. Do not kill an unknown process or delete random files to free space.
+
+Also inspect:
+df -i
+findmnt
+du -xhd1 /var/log
+
+Validation:
+df -hT
+lsof +L1
+
+Confirm the filesystem has recovered and log rotation is correctly configured. Establish retention limits and monitoring to prevent recurrence."
+"Linux","Intermediate Interview Questions","6","How do you troubleshoot inode exhaustion on a Linux server?","Example:","297","An inode stores filesystem metadata such as file ownership, permissions, timestamps, and block references. Every file and directory consumes an inode. A filesystem can have free disk capacity but still fail to create new files if all available inodes are consumed.
+
+Check inode availability:
+df -i
+
+Example:
+Filesystem  Inodes  IUsed  IFree  IUse%
+/dev/xvdf   1000000 1000000 0     100%
+
+This indicates inode exhaustion.
+
+Identify directories containing large numbers of files:
+find /var -xdev -type f | wc -l
+
+Inspect likely application directories:
+find /var/cache -xdev -type f | wc -l
+find /tmp -xdev -type f | wc -l
+
+Production example:
+A Linux-based application server cannot create new session files. Disk usage is only 40%, but inode usage is 100%. Investigation identifies millions of small temporary files generated by a faulty application cleanup process.
+
+Root cause:
+The application creates files continuously but does not remove expired sessions.
+
+Safe remediation:
+Identify the application owner and retention policy. Remove only verified expired files using an approved cleanup process. Do not delete active session files or unknown system files.
+
+Permanent prevention:
+Configure application cleanup, scheduled retention jobs, monitoring for inode usage, and alerts before the filesystem reaches critical levels.
+
+Validation:
+df -i
+Confirm the application can create new files and its cleanup mechanism works."
+"Linux","Intermediate Interview Questions","7","How do you troubleshoot a Linux filesystem that has become read-only?","Step 1:","149","A Linux filesystem may become read-only because of filesystem errors, storage I/O failures, kernel protection, or an intentional mount configuration.
+
+Step 1: Identify the mount:
+findmnt
+mount | grep -E 'ro,|/data'
+
+Step 2: Check kernel and system logs:
+dmesg -T | tail -100
+journalctl -k -p err
+
+Step 3: Inspect the underlying device:
+lsblk -f
+blkid
+smartctl -a /dev/<device>
+
+For cloud volumes, also inspect the cloud provider's volume health and attachment status.
+
+Production example:
+An EC2 application server reports that its /data filesystem is read-only. The application cannot write uploaded files. Kernel logs show I/O errors associated with the underlying device.
+
+Do not immediately run:
+mount -o remount,rw /data
+
+A forced remount may hide the real problem and risk additional corruption.
+
+Recovery:
+Capture logs, verify backups or snapshots, identify the storage fault, and follow the filesystem-specific recovery procedure. Filesystem repair tools such as fsck must be used according to the filesystem's requirements, usually with the filesystem unmounted. XFS has its own repair workflow.
+
+Validation:
+findmnt /data
+touch /data/approved-test-file
+Check application writes and storage health.
+
+Use an approved maintenance window for operations that require unmounting or repairing production filesystems."
+"Linux","Intermediate Interview Questions","7","How do you troubleshoot a Linux filesystem that has become read-only?","Step 2:","214","A Linux filesystem may become read-only because of filesystem errors, storage I/O failures, kernel protection, or an intentional mount configuration.
+
+Step 1: Identify the mount:
+findmnt
+mount | grep -E 'ro,|/data'
+
+Step 2: Check kernel and system logs:
+dmesg -T | tail -100
+journalctl -k -p err
+
+Step 3: Inspect the underlying device:
+lsblk -f
+blkid
+smartctl -a /dev/<device>
+
+For cloud volumes, also inspect the cloud provider's volume health and attachment status.
+
+Production example:
+An EC2 application server reports that its /data filesystem is read-only. The application cannot write uploaded files. Kernel logs show I/O errors associated with the underlying device.
+
+Do not immediately run:
+mount -o remount,rw /data
+
+A forced remount may hide the real problem and risk additional corruption.
+
+Recovery:
+Capture logs, verify backups or snapshots, identify the storage fault, and follow the filesystem-specific recovery procedure. Filesystem repair tools such as fsck must be used according to the filesystem's requirements, usually with the filesystem unmounted. XFS has its own repair workflow.
+
+Validation:
+findmnt /data
+touch /data/approved-test-file
+Check application writes and storage health.
+
+Use an approved maintenance window for operations that require unmounting or repairing production filesystems."
+"Linux","Intermediate Interview Questions","7","How do you troubleshoot a Linux filesystem that has become read-only?","Step 3:","295","A Linux filesystem may become read-only because of filesystem errors, storage I/O failures, kernel protection, or an intentional mount configuration.
+
+Step 1: Identify the mount:
+findmnt
+mount | grep -E 'ro,|/data'
+
+Step 2: Check kernel and system logs:
+dmesg -T | tail -100
+journalctl -k -p err
+
+Step 3: Inspect the underlying device:
+lsblk -f
+blkid
+smartctl -a /dev/<device>
+
+For cloud volumes, also inspect the cloud provider's volume health and attachment status.
+
+Production example:
+An EC2 application server reports that its /data filesystem is read-only. The application cannot write uploaded files. Kernel logs show I/O errors associated with the underlying device.
+
+Do not immediately run:
+mount -o remount,rw /data
+
+A forced remount may hide the real problem and risk additional corruption.
+
+Recovery:
+Capture logs, verify backups or snapshots, identify the storage fault, and follow the filesystem-specific recovery procedure. Filesystem repair tools such as fsck must be used according to the filesystem's requirements, usually with the filesystem unmounted. XFS has its own repair workflow.
+
+Validation:
+findmnt /data
+touch /data/approved-test-file
+Check application writes and storage health.
+
+Use an approved maintenance window for operations that require unmounting or repairing production filesystems."
+"Linux","Intermediate Interview Questions","8","How do you extend a Linux logical volume and filesystem using LVM?","Example:","252","LVM provides flexible storage management using physical volumes, volume groups, and logical volumes. It allows administrators to allocate additional storage without rebuilding the entire filesystem.
+
+Inspect the current layout:
+lsblk
+pvs
+vgs
+lvs
+df -hT
+
+Example:
+A production EC2 server has a 20 GB /data logical volume and the application needs another 10 GB.
+
+First confirm that the new disk is attached and correctly identified:
+lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT
+
+For a newly approved empty disk, prepare the physical volume:
+pvcreate /dev/xvdf
+
+Add it to the intended volume group:
+vgextend vgdata /dev/xvdf
+
+Extend the logical volume:
+lvextend -L +10G /dev/vgdata/lvdata
+
+Grow the filesystem according to its type.
+
+For ext4:
+resize2fs /dev/vgdata/lvdata
+
+For XFS:
+xfs_growfs /data
+
+Important:
+Do not copy these device names blindly. Verify the actual device, volume group, logical volume, mount point, filesystem type, and backup status before making changes.
+
+Production validation:
+lvs
+vgs
+df -hT /data
+
+Confirm the application can write data and that the mount remains healthy. Storage expansion should follow change approval and monitoring procedures."
+"Linux","Intermediate Interview Questions","13","How do you identify a process listening on a specific Linux port?","Example:","288","A port conflict occurs when an application tries to bind to a TCP or UDP port already owned by another process, or when the application listens on an unexpected interface.
+
+List listening sockets:
+ss -lntup
+
+Inspect a specific port:
+ss -lntp | grep ':8080'
+lsof -i :8080
+fuser -v 8080/tcp
+
+Example:
+A Java application fails to start because port 8080 is already in use. The engineer identifies the PID using ss and lsof, then checks the process command line:
+ps -fp <PID>
+
+Production example:
+An EC2 instance runs an old application process after a deployment. The new version cannot bind to port 8080. Investigation confirms that the previous process is still listening.
+
+Safe remediation:
+Determine whether the old process serves active traffic. Identify its systemd unit, container, or process supervisor. Stop it through the correct service-management procedure rather than killing an unknown PID.
+
+Validation:
+ss -lntp | grep ':8080'
+systemctl status application
+curl -f http://localhost:8080/health
+
+Also verify the expected bind address. A service listening only on 127.0.0.1 may not accept connections from other hosts."
+"ArgoCD","Intermediate Interview Questions","17","How do Argo CD sync waves work and how do you manage resource deployment order?","Example:","176","Sync waves allow resources to be applied in a defined order during an Argo CD sync operation. Resources can use the argocd.argoproj.io/sync-wave annotation with numeric values.
+
+Example:
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: ""1""
+
+Lower wave values are processed before higher wave values. This is useful when resources depend on other resources being created first.
+
+Production example:
+A platform deployment requires a namespace, a custom resource definition, an operator, and then application custom resources. Sync waves can express the intended order.
+
+Troubleshooting:
+If a custom resource is rejected because its CRD is not available, inspect the sync order, resource health, and controller readiness. Creating the CRD does not necessarily mean the operator is ready to process custom resources.
+
+Remediation:
+Separate dependencies into appropriate waves and ensure health assessment reflects actual readiness. Use hooks only when their lifecycle behavior is understood.
+
+Validation:
+Inspect the sync operation timeline, CRD establishment, operator readiness, and application resource health. Confirm dependent resources are created only after prerequisites are available."

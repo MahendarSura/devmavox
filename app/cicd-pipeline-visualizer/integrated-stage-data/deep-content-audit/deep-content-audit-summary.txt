@@ -1,0 +1,19 @@
+DEVMAVOX DEEP CONTENT AUDIT
+===========================
+
+Stages checked       : 12
+Navigations checked  : 210
+Sections checked     : 2461
+Flagged sections     : 3
+
+ISSUE BREAKDOWN
+---------------
+
+Name                            Count
+----                            -----
+LOW_HEADING_TOPIC_KEYWORD_MATCH     3
+
+
+
+CSV REPORT:
+C:\Users\mahen\OneDrive\devmavox\app\cicd-pipeline-visualizer\integrated-stage-data\deep-content-audit\deep-content-audit.csv

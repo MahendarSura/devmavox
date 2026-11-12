@@ -1,0 +1,50 @@
+
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:11:import { stageTwoLessonOverrides } from "./cicd-stage-02-lessons";
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:12:import { stageOneLessonOverrides } from "./cicd-stage-01-lessons";
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:13:// Generated CI/CD topic lesson data.
+> app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:14:export type CicdTopicLesson = {
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:15:  overview: string;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:16:  purpose: string;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:17:  architecture: string;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:18:  workflow: string[];
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:19:  example: string;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:20:  commands: string[];
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:21:  configuration: string;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:22:  failures: string[];
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:23:  recovery: string[];
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:24:  bestPractices: string[];
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:25:  exercise: string;
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:26:};
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:27:
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:28:const lessons: Record<string, CicdTopicLesson> = {
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:29:  "1|Java Fundamentals": {
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:30:    "overview": "This lesson covers Java Fundamentals in the Developer Code stage of a real CI/CD pipeline. It explains the technical concepts, the components involved, how the 
+feature behaves during normal pipeline execution, and how DevOps engineers use it to deliver application changes safely. The topic is connected to a Java application delivery workflow so that beginners can understand where it fits in an 
+actual project.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:31:    "purpose": "The purpose of Java Fundamentals is to make the Developer Code stage reliable, repeatable, and understandable. In a production DevOps workflow, engineers use this 
+capability to reduce manual work, improve delivery consistency, detect problems early, and protect application availability. A team should understand when this capability is required, which systems depend on it, what evidence proves that 
+it is working, and what risks can occur when it is configured incorrectly.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:32:    "architecture": "In the Developer Code stage, Java Fundamentals works as part of a larger delivery system. Source code, build tools, automation services, configuration, 
+infrastructure, and runtime components exchange information through defined inputs and outputs. Engineers should identify the component that initiates the operation, the component that processes the request, the credentials and permissions 
+required, the resulting artifacts or state changes, and the monitoring signals that confirm completion. The exact architecture depends on the technology used for this topic.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:33:    "workflow": [
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:34:      "Identify the application and pipeline stage where Java Fundamentals is required.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:35:      "Inspect the existing repository, project configuration, and environment before changing anything.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:36:      "Identify the tools, services, permissions, and dependencies required by this topic.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:37:      "Prepare the required configuration in a version-controlled and reviewable location.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:38:      "Validate configuration syntax and verify that referenced resources exist.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:39:      "Execute the relevant operation in a controlled development environment.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:40:      "Inspect logs, command output, artifacts, and resulting application state.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:41:      "Test the expected success path and verify that downstream pipeline stages can continue."
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:42:    ],
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:43:    "example": "Consider a Java Spring Boot application stored in GitHub and delivered through Jenkins. The team reaches the Developer Code stage and needs to apply Java Fundamentals. 
+The engineer first checks the repository and environment, verifies dependencies and permissions, applies the relevant configuration, and runs the operation. The engineer then examines logs and generated artifacts, confirms the expected 
+state, and verifies that the next CI/CD stage receives the correct output. If the operation fails, the engineer records the exact error and investigates the responsible component instead of blindly rerunning the pipeline.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:44:    "commands": [
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:45:      "git status --short  # Inspect repository changes before modifying configuration.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:46:      "git diff --check  # Detect whitespace errors in changed files.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:47:      "git log -5 --oneline  # Review recent project changes and context.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:48:      "git diff  # Inspect the exact configuration or source changes.",
+  app\cicd-pipeline-visualizer\cicd-topic-lessons.ts:49:      "git status  # Confirm the final repository working-tree state."
+
+
