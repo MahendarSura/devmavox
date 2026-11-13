@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { parseDocument } from "yaml";
 
 type Question = {
@@ -347,6 +347,12 @@ export default function YamlAutomationConfigurationsWorkspace({
   const [validation, setValidation] = useState("");
   const [answers, setAnswers] = useState<Record<number, number>>({});
 
+
+  useEffect(() => {
+    setSource(lesson.example);
+    setValidation("");
+    setAnswers({});
+  }, [topic, lesson.example]);
   const correct = lesson.quiz.filter((question, index) => answers[index] === question.answer).length;
 
   function restoreExample() {

@@ -1,5 +1,10 @@
-import FeatureExplorer from "@/components/devmavox-learning/FeatureExplorer";
+import YamlConfigWorkbench from "@/components/devmavox-learning/YamlConfigWorkbench";
+import { featureCatalog } from "@/components/devmavox-learning/feature-catalog";
 
 export default function Page() {
-  return <FeatureExplorer featureId="yaml-config-playground" />;
+  return (
+    <YamlConfigWorkbench
+      feature={featureCatalog["yaml-config-playground"]}
+    />
+  );
 }

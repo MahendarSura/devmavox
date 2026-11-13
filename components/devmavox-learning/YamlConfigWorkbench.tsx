@@ -130,6 +130,290 @@ function ActionButton({
   );
 }
 
+
+type QuickReferenceItem = [string, string];
+
+const topicQuickReferences: Record<string, QuickReferenceItem[]> = {
+  "Syntax and Structure": [
+    ["Document", "Use --- to mark a YAML document start"],
+    ["Mapping", "Represent key-value pairs with a colon"],
+    ["Sequence", "Represent ordered items with a hyphen"],
+    ["Comments", "Use # for human-readable comments"]
+  ],
+  "Data Types": [
+    ["String", "Quote ambiguous values and strings with special characters"],
+    ["Integer", "Use numeric values without unnecessary quotes"],
+    ["Boolean", "Use true or false consistently"],
+    ["Null", "Use null or ~ for an explicit empty value"]
+  ],
+  "Lists": [
+    ["Sequence", "Use a hyphen followed by a space"],
+    ["Nested list", "Indent child items consistently"],
+    ["List of objects", "Place mapping fields under each list item"],
+    ["Validation", "Check indentation and item alignment"]
+  ],
+  "Objects": [
+    ["Mapping", "Use key-value pairs"],
+    ["Nested mapping", "Indent child mappings under their parent"],
+    ["Keys", "Use unique keys within a mapping"],
+    ["Values", "Use appropriate scalar, sequence or mapping types"]
+  ],
+  "Indentation": [
+    ["Spaces", "Use spaces rather than tabs"],
+    ["Consistency", "Keep sibling keys at the same indentation"],
+    ["Nesting", "Indent child structures consistently"],
+    ["Review", "Check list and mapping boundaries"]
+  ],
+  "Pod": [
+    ["API", "apiVersion: v1"],
+    ["Resource", "kind: Pod"],
+    ["Container", "spec.containers"],
+    ["Restart", "spec.restartPolicy"]
+  ],
+  "Deployment": [
+    ["API", "apiVersion: apps/v1"],
+    ["Replicas", "spec.replicas"],
+    ["Selector", "spec.selector.matchLabels"],
+    ["Template", "spec.template.metadata.labels"]
+  ],
+  "StatefulSet": [
+    ["API", "apps/v1"],
+    ["Identity", "spec.serviceName"],
+    ["Storage", "spec.volumeClaimTemplates"],
+    ["Updates", "spec.updateStrategy"]
+  ],
+  "DaemonSet": [
+    ["API", "apps/v1"],
+    ["Selector", "spec.selector"],
+    ["Pods", "spec.template"],
+    ["Updates", "spec.updateStrategy"]
+  ],
+  "Job": [
+    ["API", "batch/v1"],
+    ["Completions", "spec.completions"],
+    ["Parallelism", "spec.parallelism"],
+    ["Retries", "spec.backoffLimit"]
+  ],
+  "CronJob": [
+    ["API", "batch/v1"],
+    ["Schedule", "spec.schedule"],
+    ["Template", "spec.jobTemplate"],
+    ["Concurrency", "spec.concurrencyPolicy"]
+  ],
+  "Service": [
+    ["API", "apiVersion: v1"],
+    ["Selector", "spec.selector"],
+    ["Ports", "spec.ports"],
+    ["Target", "port and targetPort"]
+  ],
+  "Ingress": [
+    ["API", "networking.k8s.io/v1"],
+    ["Class", "spec.ingressClassName"],
+    ["Routing", "spec.rules and HTTP paths"],
+    ["TLS", "spec.tls"]
+  ],
+  "NetworkPolicy": [
+    ["API", "networking.k8s.io/v1"],
+    ["Selector", "spec.podSelector"],
+    ["Direction", "spec.policyTypes"],
+    ["Rules", "spec.ingress and spec.egress"]
+  ],
+  "ConfigMap": [
+    ["API", "apiVersion: v1"],
+    ["Values", "data"],
+    ["Binary", "binaryData"],
+    ["Immutability", "immutable"]
+  ],
+  "Secret": [
+    ["API", "apiVersion: v1"],
+    ["Type", "type"],
+    ["Values", "data or stringData"],
+    ["Security", "Base64 is not encryption; protect Secret access"]
+  ],
+  "RBAC": [
+    ["API", "rbac.authorization.k8s.io/v1"],
+    ["Permissions", "rules, apiGroups, resources and verbs"],
+    ["Binding", "RoleBinding or ClusterRoleBinding"],
+    ["Identity", "subjects"]
+  ],
+  "PersistentVolume": [
+    ["API", "apiVersion: v1"],
+    ["Capacity", "spec.capacity.storage"],
+    ["Access", "spec.accessModes"],
+    ["Reclaim", "spec.persistentVolumeReclaimPolicy"]
+  ],
+  "PersistentVolumeClaim": [
+    ["API", "apiVersion: v1"],
+    ["Request", "spec.resources.requests.storage"],
+    ["Access", "spec.accessModes"],
+    ["Binding", "spec.storageClassName or volumeName"]
+  ],
+  "StorageClass": [
+    ["API", "storage.k8s.io/v1"],
+    ["Provisioner", "provisioner"],
+    ["Policy", "reclaimPolicy"],
+    ["Binding", "volumeBindingMode"]
+  ],
+  "Liveness Probe": [
+    ["Purpose", "Detect an unhealthy container"],
+    ["Methods", "httpGet, tcpSocket or exec"],
+    ["Timing", "periodSeconds and timeoutSeconds"],
+    ["Failure", "failureThreshold"]
+  ],
+  "Readiness Probe": [
+    ["Purpose", "Determine whether a Pod can receive traffic"],
+    ["Methods", "httpGet, tcpSocket or exec"],
+    ["Success", "successThreshold"],
+    ["Failure", "failureThreshold"]
+  ],
+  "Startup Probe": [
+    ["Purpose", "Allow slow-starting applications to initialize"],
+    ["Methods", "httpGet, tcpSocket or exec"],
+    ["Timing", "periodSeconds"],
+    ["Failure", "failureThreshold controls startup allowance"]
+  ],
+  "Resource Requests and Limits": [
+    ["CPU request", "resources.requests.cpu"],
+    ["Memory request", "resources.requests.memory"],
+    ["CPU limit", "resources.limits.cpu"],
+    ["Memory limit", "resources.limits.memory"]
+  ],
+  "HPA": [
+    ["API", "autoscaling/v2"],
+    ["Target", "spec.scaleTargetRef"],
+    ["Bounds", "spec.minReplicas and maxReplicas"],
+    ["Metrics", "spec.metrics"]
+  ],
+  "Jenkinsfile": [
+    ["Pipeline", "pipeline"],
+    ["Agent", "agent"],
+    ["Stages", "stages and stage"],
+    ["Execution", "steps, post and environment"]
+  ],
+  "GitHub Actions Workflow": [
+    ["Triggers", "on"],
+    ["Jobs", "jobs"],
+    ["Runner", "runs-on"],
+    ["Steps", "steps, uses and run"]
+  ],
+  "GitLab CI Pipeline": [
+    ["Stages", "stages"],
+    ["Commands", "script"],
+    ["Dependencies", "needs"],
+    ["Artifacts", "artifacts and paths"]
+  ],
+  "Docker Compose": [
+    ["Services", "services"],
+    ["Ports", "ports"],
+    ["Storage", "volumes"],
+    ["Health", "healthcheck and depends_on conditions"]
+  ],
+  "Dockerfile": [
+    ["Base image", "FROM"],
+    ["Working directory", "WORKDIR"],
+    ["Copy files", "COPY"],
+    ["Runtime", "USER, ENTRYPOINT and CMD"]
+  ],
+  "Argo CD Application": [
+    ["API", "argoproj.io/v1alpha1"],
+    ["Source", "spec.source"],
+    ["Destination", "spec.destination"],
+    ["Sync", "spec.syncPolicy"]
+  ],
+  "Helm Values": [
+    ["Image", "image.repository and image.tag"],
+    ["Replicas", "replicaCount"],
+    ["Resources", "resources.requests and limits"],
+    ["Exposure", "service and ingress"]
+  ],
+  "Ansible Playbook": [
+    ["Target", "hosts"],
+    ["Tasks", "tasks and module arguments"],
+    ["Privilege", "become"],
+    ["Handlers", "notify and handlers"]
+  ],
+  "Ansible Inventory": [
+    ["Groups", "all, children and hosts"],
+    ["Host address", "ansible_host"],
+    ["Connection", "ansible_user and ansible_port"],
+    ["Variables", "group_vars and host_vars"]
+  ]
+};
+
+const categoryQuickReferences: Record<string, QuickReferenceItem[]> = {
+  "YAML Fundamentals": [
+    ["Syntax", "Mappings, sequences, scalars and document markers"],
+    ["Types", "Strings, numbers, booleans and null"],
+    ["Structure", "Nested mappings and sequences"],
+    ["Validation", "Check indentation, duplicate keys and parsing"]
+  ],
+  "Kubernetes Workloads": [
+    ["API", "apps/v1 or batch/v1 depending on resource"],
+    ["Selector", "Match workload selectors with Pod template labels"],
+    ["Template", "spec.template defines Pod configuration"],
+    ["Rollout", "Review replicas, strategy and readiness"]
+  ],
+  "Kubernetes Networking": [
+    ["Service", "Stable virtual endpoint for selected Pods"],
+    ["Ingress", "HTTP and HTTPS routing through an Ingress controller"],
+    ["Policy", "Pod-level network traffic rules"],
+    ["Check", "Selectors, ports, endpoints and controller status"]
+  ],
+  "Kubernetes Configuration": [
+    ["ConfigMap", "Non-sensitive application configuration"],
+    ["Secret", "Sensitive values with access controls"],
+    ["RBAC", "Roles, bindings, subjects and permissions"],
+    ["Security", "Least privilege and safe secret handling"]
+  ],
+  "Kubernetes Storage": [
+    ["PV", "Cluster storage resource"],
+    ["PVC", "Workload storage request"],
+    ["StorageClass", "Dynamic provisioning configuration"],
+    ["Check", "Capacity, access modes and binding status"]
+  ],
+  "Kubernetes Operations": [
+    ["Probes", "Startup, readiness and liveness checks"],
+    ["Resources", "CPU and memory requests and limits"],
+    ["Autoscaling", "HPA target and metrics"],
+    ["Safety", "Avoid probe and resource settings that cause restarts"]
+  ],
+  "CI/CD Configurations": [
+    ["Pipeline", "Stages, jobs, agents and runners"],
+    ["Execution", "Steps, scripts and reusable actions"],
+    ["Security", "Scoped credentials and least-privilege permissions"],
+    ["Delivery", "Artifacts, dependencies and deployment gates"]
+  ],
+  "Container Configurations": [
+    ["Compose", "Services, networks and volumes"],
+    ["Dockerfile", "Build instructions and runtime defaults"],
+    ["Security", "Non-root users and trusted base images"],
+    ["Health", "Health checks and startup dependencies"]
+  ],
+  "GitOps Configurations": [
+    ["Application", "Source repository and destination cluster"],
+    ["Values", "Helm chart configuration"],
+    ["Sync", "Automated or manual reconciliation"],
+    ["Safety", "Review pruning, self-heal and rollback behavior"]
+  ],
+  "Automation Configurations": [
+    ["Playbook", "Plays, hosts, tasks and modules"],
+    ["Inventory", "Hosts, groups and connection variables"],
+    ["Execution", "Syntax check, check mode and limited rollout"],
+    ["Security", "Vault, SSH credentials and least privilege"]
+  ]
+};
+
+function getTopicQuickReference(topic?: string, category?: string): QuickReferenceItem[] {
+  if (topic && topicQuickReferences[topic]) return topicQuickReferences[topic];
+  if (category && categoryQuickReferences[category]) return categoryQuickReferences[category];
+  return [
+    ["YAML", "Use consistent spaces and valid mappings or sequences"],
+    ["Structure", "Keep nested values under their parent keys"],
+    ["Safety", "Protect credentials and review changes before applying"],
+    ["Validation", "Separate YAML syntax checks from tool-specific schema checks"]
+  ];
+}
+
 export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
   const [activeModule, setActiveModule] = useState("Learn YAML");
   const [activeTab, setActiveTab] = useState("Learn");
@@ -615,12 +899,7 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
             <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5">
               <h2 className="text-sm font-bold text-white">Quick Reference</h2>
               <div className="mt-4 space-y-3 text-xs">
-                {[
-                  ["Syntax", "Indentation, mappings and sequences"],
-                  ["Data types", "Strings, numbers, booleans and null"],
-                  ["Kubernetes", "apiVersion, kind, metadata and spec"],
-                  ["Validation", "Syntax checks and schema checks are separate"],
-                ].map(([label, description]) => (
+                {getTopicQuickReference(selectedTopic, selectedCategory?.name).map(([label, description]) => (
                   <div key={label} className="border-b border-slate-800 pb-3 last:border-0">
                     <div className="font-semibold text-cyan-300">{label}</div>
                     <p className="mt-1 leading-5 text-slate-400">{description}</p>
