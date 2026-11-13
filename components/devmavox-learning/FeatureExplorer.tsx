@@ -1,3 +1,4 @@
+import YamlConfigWorkbench from "./YamlConfigWorkbench";
 import Link from "next/link";
 import ArchitectureTopicPage from "./ArchitectureTopicPage";
 import { getArchitectureTopic } from "./architecture-topic-content";
@@ -257,6 +258,10 @@ export default function FeatureExplorer({
 }) {
   const feature = featureCatalog[featureId];
   if (!feature) notFound();
+
+  if (featureId === "yaml-config-playground") {
+    return <YamlConfigWorkbench feature={feature} slug={slug} />;
+  }
 
   const theme = featureTheme(feature.style);
 
