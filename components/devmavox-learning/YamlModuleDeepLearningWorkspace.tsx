@@ -82,7 +82,7 @@ export default function YamlModuleDeepLearningWorkspace({ moduleName }: { module
               className="mt-2 w-full rounded-lg border border-slate-300 bg-white p-3 text-sm dark:border-slate-600 dark:bg-slate-950" />
           </section>
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <span className="text-sm text-slate-500">{completed.filter(item => visibleModules.some(mod => mod.title + "::" && mod.lessons.some(lesson => mod.title + "::" + lesson.title === item))).length} / 20 lessons completed</span>
+            <span className="text-sm text-slate-500">{completed.filter(item => visibleModules.some(mod => mod.lessons.some(lesson => mod.title + "::" + lesson.title === item))).length} / 20 lessons completed</span>
             <button type="button" onClick={() => setCompleted(current => done ? current.filter(x => x !== key) : [...current, key])}
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white">{done ? "Mark Incomplete" : "Mark Complete"}</button>
           </div>
