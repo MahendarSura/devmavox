@@ -76,6 +76,160 @@ spec:
           ports:
             - containerPort: 80`;
 
+const moduleWorkspaceContent: Record<string, {
+  exampleTitle: string;
+  exampleDescription: string;
+  exampleYaml: string;
+  quick: { label: string; description: string }[];
+  path: string[];
+}> = {
+  "Learn YAML": {
+    exampleTitle: "YAML Structure Practice",
+    exampleDescription: "Mappings, sequences, scalar types, nested values and reusable anchors",
+    exampleYaml: `application: &app
+  name: orders-api
+  version: "1.2.0"
+  enabled: true
+  replicas: 3
+  ports:
+    - 8080
+    - 9090
+services:
+  api:
+    <<: *app
+    environment: production
+`,
+    quick: [
+      { label: "Mappings", description: "Key-value pairs and parent-child relationships" },
+      { label: "Sequences", description: "Ordered lists, list items and lists of objects" },
+      { label: "Scalar types", description: "Strings, numbers, booleans and null values" },
+      { label: "Anchors and aliases", description: "Reusable YAML values and merge keys" },
+    ],
+    path: ["Read mappings", "Build sequences", "Nest structures", "Practice anchors", "Validate YAML"],
+  },
+  "YAML Editor": {
+    exampleTitle: "Configuration Editing Workspace",
+    exampleDescription: "Edit a maintainable application configuration and compare environment settings",
+    exampleYaml: `application:
+  name: orders-api
+  image: registry.example.com/orders-api:2.4.1
+  replicas: 2
+  environment:
+    APP_MODE: production
+    LOG_LEVEL: info
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+`,
+    quick: [
+      { label: "Editor controls", description: "Use formatting, copy, download and reset safely" },
+      { label: "Nested editing", description: "Change child properties without breaking parent structure" },
+      { label: "Environment files", description: "Separate development, staging and production values" },
+      { label: "Reusable configuration", description: "Keep templates consistent and review rendered output" },
+    ],
+    path: ["Open a starter file", "Edit one section", "Review related fields", "Format and validate", "Export the YAML"],
+  },
+  "YAML Validator": {
+    exampleTitle: "Validation Test Case",
+    exampleDescription: "Inspect a syntactically valid structure with a duplicate-key issue to diagnose",
+    exampleYaml: `application:
+  name: orders-api
+  replicas: 2
+  replicas: 3
+  enabled: true
+  ports:
+    - 8080
+    - 9090
+`,
+    quick: [
+      { label: "Parser errors", description: "Locate indentation, delimiter and duplicate-key failures" },
+      { label: "Syntax checks", description: "Confirm that the document can be parsed as YAML" },
+      { label: "Schema checks", description: "Verify required fields, allowed fields and expected types" },
+      { label: "Semantic checks", description: "Detect values and relationships that are valid YAML but wrong for the system" },
+    ],
+    path: ["Parse the document", "Read the first error", "Fix the source line", "Run schema checks", "Verify target acceptance"],
+  },
+  "Production Scenarios": {
+    exampleTitle: "Production Change Review",
+    exampleDescription: "Review a production workload configuration for availability, security and controlled rollout",
+    exampleYaml: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-api
+  namespace: production
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: orders-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: orders-api
+    spec:
+      containers:
+        - name: api
+          image: registry.example.com/orders-api:2.4.1
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+`,
+    quick: [
+      { label: "Availability", description: "Replicas, readiness, rollout strategy and disruption planning" },
+      { label: "Capacity and scaling", description: "Resource requests, limits and workload scaling signals" },
+      { label: "Security controls", description: "Least privilege, protected credentials and image governance" },
+      { label: "Incident recovery", description: "Evidence, rollback criteria and post-change verification" },
+    ],
+    path: ["Assess impact", "Collect live evidence", "Review dependencies", "Approve and validate", "Roll out and monitor", "Verify or roll back"],
+  },
+  "Quiz and Assessment": {
+    exampleTitle: "Manifest Review Assessment",
+    exampleDescription: "Review the relationship between Deployment selectors and Pod template labels",
+    exampleYaml: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: catalog
+  template:
+    metadata:
+      labels:
+        app: catalog-api
+    spec:
+      containers:
+        - name: api
+          image: nginx:1.27
+`,
+    quick: [
+      { label: "YAML concepts", description: "Identify mappings, sequences, nesting and scalar types" },
+      { label: "Manifest review", description: "Check API version, metadata, selectors and resource fields" },
+      { label: "Troubleshooting test", description: "Separate parser, schema, admission and runtime failures" },
+      { label: "Production readiness", description: "Assess security, health, capacity and rollback decisions" },
+    ],
+    path: ["Answer from memory", "Inspect the configuration", "Explain each finding", "Review incorrect answers", "Repeat the practical task"],
+  },
+};
+
 const modules = [
   { name: "Learn YAML", detail: "Concepts, syntax and configuration foundations", icon: "01" },
   { name: "YAML Editor", detail: "Write and organize YAML configurations", icon: "02" },
@@ -511,9 +665,33 @@ kubectl get deployments,pods,services`,
     }
   };
 
-  const selectedRightPanelContent = rightPanelSelection
-    ? rightPanelContent[rightPanelSelection]
-    : null;
+  const selectedModuleWorkspace = moduleWorkspaceContent[activeModule];
+  const selectedModulePanel = (() => {
+    if (!rightPanelSelection || !selectedModuleWorkspace) return null;
+    const match = rightPanelSelection.match(/^module-(quick|path):(\\d+)$/);
+    if (!match) return null;
+    const kind = match[1] as "quick" | "path";
+    const index = Number(match[2]);
+    const item = kind === "quick"
+      ? selectedModuleWorkspace.quick[index]
+      : selectedModuleWorkspace.path[index];
+    if (!item) return null;
+    const label = typeof item === "string" ? item : item.label;
+    const description = typeof item === "string" ? item : item.description;
+    return {
+      title: label,
+      intro: description,
+      points: [
+        description,
+        `Apply this check specifically to the ${activeModule} module.`,
+        "Record what you changed or observed, then verify the result before moving on.",
+      ],
+      example: selectedModuleWorkspace.exampleYaml,
+      takeaway: `This activity is part of the ${activeModule} learning workflow.`,
+    };
+  })();
+  const selectedRightPanelContent = selectedModulePanel
+    ?? (rightPanelSelection ? rightPanelContent[rightPanelSelection] : null);
   return (
     <main className="min-h-screen bg-[#080d18] text-slate-100">
       
@@ -619,11 +797,11 @@ kubectl get deployments,pods,services`,
                   className="mb-6 inline-flex items-center gap-2 rounded-lg border border-cyan-800 bg-cyan-950/40 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:border-cyan-500 hover:bg-cyan-950"
                 >
                   <span aria-hidden="true">←</span>
-                  Back to {rightPanelSelection.startsWith("quick:") ? "Quick Reference" : "Learning Path"}
+                  Back to {rightPanelSelection.startsWith("quick:") || rightPanelSelection.startsWith("module-quick:") ? "Quick Reference" : "Learning Path"}
                 </button>
 
                 <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-cyan-300">
-                  {rightPanelSelection.startsWith("quick:") ? "QUICK REFERENCE" : "LEARNING PATH"}
+                  {rightPanelSelection.startsWith("quick:") || rightPanelSelection.startsWith("module-quick:") ? "QUICK REFERENCE" : "LEARNING PATH"}
                 </div>
 
                 <h2 className="text-2xl font-bold text-white sm:text-3xl">
@@ -850,15 +1028,15 @@ kubectl get deployments,pods,services`,
                   <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
-                        <h2 className="text-lg font-bold text-white">YAML Example Workspace</h2>
-                        <p className="mt-1 text-xs text-slate-400">Illustrative Kubernetes Deployment manifest</p>
+                        <h2 className="text-lg font-bold text-white">{selectedModuleWorkspace?.exampleTitle ?? "YAML Example Workspace"}</h2>
+                        <p className="mt-1 text-xs text-slate-400">{selectedModuleWorkspace?.exampleDescription ?? "Illustrative Kubernetes Deployment manifest"}</p>
                       </div>
                       <span className="rounded-full border border-emerald-900 bg-emerald-950/40 px-3 py-1 text-xs text-emerald-300">
                         Example YAML
                       </span>
                     </div>
                     <pre className="mt-4 overflow-x-auto rounded-xl border border-slate-800 bg-[#070c14] p-4 text-xs leading-6 text-emerald-300">
-                      <code>{sampleYaml}</code>
+                      <code>{selectedModuleWorkspace?.exampleYaml ?? sampleYaml}</code>
                     </pre>
                     <button
                       type="button"
@@ -989,33 +1167,37 @@ kubectl get deployments,pods,services`,
             <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5">
               <h2 className="text-sm font-bold text-white">Quick Reference</h2>
               <div className="mt-4 space-y-3 text-xs">
-                {[
-                  ["Syntax", "Indentation, mappings and sequences"],
-                  ["Data types", "Strings, numbers, booleans and null"],
-                  ["Kubernetes", "apiVersion, kind, metadata and spec"],
-                  ["Validation", "Syntax checks and schema checks are separate"],
-                ].map(([label, description]) => (
+                {(selectedModuleWorkspace?.quick ?? [
+                  { label: "Syntax", description: "Indentation, mappings and sequences" },
+                  { label: "Data types", description: "Strings, numbers, booleans and null" },
+                  { label: "Kubernetes", description: "apiVersion, kind, metadata and spec" },
+                  { label: "Validation", description: "Syntax checks and schema checks are separate" },
+                ]).map((item, index) => {
+                  const label = typeof item === "string" ? item : item.label;
+                  const description = typeof item === "string" ? "" : item.description;
+                  return (
                   <button
                       type="button"
                       key={label}
-                      onClick={() => setRightPanelSelection(`quick:${label}`)}
+                      onClick={() => setRightPanelSelection(selectedModuleWorkspace ? `module-quick:${index}` : `quick:${label}`)}
                       className="w-full border-b border-slate-800 pb-3 text-left last:border-0 rounded-md transition hover:bg-slate-800/50 hover:px-2"
                     >
                       <div className="font-semibold text-cyan-300">{label}</div>
                       <p className="mt-1 leading-5 text-slate-400">{description}</p>
                     </button>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
             <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5">
               <h2 className="text-sm font-bold text-white">Learning Path</h2>
               <div className="mt-4 space-y-3">
-                {["Understand", "Explore", "Write", "Validate", "Troubleshoot", "Apply"].map((step, index) => (
+                {(selectedModuleWorkspace?.path ?? ["Understand", "Explore", "Write", "Validate", "Troubleshoot", "Apply"]).map((step, index) => (
                   <button
                     type="button"
                     key={step}
-                    onClick={() => setRightPanelSelection(`path:${step}`)}
+                    onClick={() => setRightPanelSelection(selectedModuleWorkspace ? `module-path:${index}` : `path:${step}`)}
                     className="flex w-full items-center gap-3 rounded-md text-left transition hover:bg-slate-800/50 hover:px-2"
                     title={`Open ${step} learning section`}
                   >
