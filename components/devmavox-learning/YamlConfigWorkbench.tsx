@@ -1020,20 +1020,22 @@ kubectl get deployments,pods,services`,
                     <CICDGitOpsLab />
                   )
                 ) : (
-                  <YamlModuleLearningGuide
-                    moduleName={activeModule}
-                    onLoadExample={(yaml) => {
-                      setEditorValue(yaml);
-                      setActiveModule("YAML Editor");
-                      setNotice("Learning example loaded into the YAML Editor.");
-                    }}
-                  />
-                  {["Learn YAML", "YAML Editor", "YAML Validator", "Production Scenarios", "Quiz and Assessment"].includes(activeModule) && (
-                    <YamlModuleDeepLearningWorkspace moduleName={activeModule} />
-                  )}
-                  {["Learn YAML", "YAML Editor", "YAML Validator", "Production Scenarios", "Quiz and Assessment"].includes(activeModule) && (
-                    <YamlModuleAssessment moduleName={activeModule} />
-                  )}
+                  <>
+                    <YamlModuleLearningGuide
+                      moduleName={activeModule}
+                      onLoadExample={(yaml) => {
+                        setEditorValue(yaml);
+                        setActiveModule("YAML Editor");
+                        setNotice("Learning example loaded into the YAML Editor.");
+                      }}
+                    />
+                    {["Learn YAML", "YAML Editor", "YAML Validator", "Production Scenarios", "Quiz and Assessment"].includes(activeModule) && (
+                      <YamlModuleDeepLearningWorkspace moduleName={activeModule} />
+                    )}
+                    {["Learn YAML", "YAML Editor", "YAML Validator", "Production Scenarios", "Quiz and Assessment"].includes(activeModule) && (
+                      <YamlModuleAssessment moduleName={activeModule} />
+                    )}
+                  </>
                 )}
                 {!showEditor && !isPracticalLabModule && (
                   <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5">
