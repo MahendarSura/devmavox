@@ -54,8 +54,33 @@ export default function YamlModuleAssessment({ moduleName }: { moduleName: strin
       const saved = localStorage.getItem(storageKey);
       const parsed = saved ? JSON.parse(saved) : null;
       if (parsed && typeof parsed === "object") {
-        setAnswers(parsed.answers && typeof parsed.answers === "object" ? parsed.answers : {});
-        setSubmitted(Boolean(parsed.submitted));
+        const savedAnswers =
+          parsed.answers && typeof parsed.answers === "object" && !Array.isArray(parsed.answers)
+            ? parsed.answers as Record<string, unknown>
+            : {};
+
+        const restoredAnswers: Record<number, number> = {};
+
+        Object.entries(savedAnswers).forEach(([rawIndex, rawChoice]) => {
+          const questionIndex = Number(rawIndex);
+
+          if (
+            Number.isInteger(questionIndex) &&
+            questionIndex >= 0 &&
+            questionIndex < questions.length &&
+            Number.isInteger(rawChoice) &&
+            (rawChoice as number) >= 0 &&
+            (rawChoice as number) < questions[questionIndex].choices.length
+          ) {
+            restoredAnswers[questionIndex] = rawChoice as number;
+          }
+        });
+
+        setAnswers(restoredAnswers);
+        setSubmitted(
+          Boolean(parsed.submitted) &&
+          Object.keys(restoredAnswers).length === questions.length
+        );
       } else {
         setAnswers({});
         setSubmitted(false);
