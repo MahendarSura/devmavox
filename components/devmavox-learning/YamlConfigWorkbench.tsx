@@ -295,7 +295,7 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
   const [activeModule, setActiveModule] = useState("Learn YAML");
   const [moduleWorkspaceOpen, setModuleWorkspaceOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Learn");
-  const [editorValue, setEditorValue] = useState(sampleYaml);
+  const [editorValue, setEditorValue] = useState(moduleWorkspaceContent["Learn YAML"].exampleYaml);
   const [notice, setNotice] = useState("");
   const [rightPanelSelection, setRightPanelSelection] = useState<string | null>(null);
 
@@ -405,8 +405,9 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
   }
 
   function resetYaml() {
-    setEditorValue(sampleYaml);
-    setNotice("Editor restored to the sample Deployment manifest.");
+    const starterYaml = moduleWorkspaceContent[activeModule]?.exampleYaml ?? sampleYaml;
+    setEditorValue(starterYaml);
+    setNotice(`Editor restored to the ${activeModule} starter example.`);
   }
 
   const rightPanelContent: Record<string, {
@@ -668,7 +669,7 @@ kubectl get deployments,pods,services`,
   const selectedModuleWorkspace = moduleWorkspaceContent[activeModule];
   const selectedModulePanel = (() => {
     if (!rightPanelSelection || !selectedModuleWorkspace) return null;
-    const match = rightPanelSelection.match(/^module-(quick|path):(\\d+)$/);
+    const match = rightPanelSelection.match(/^module-(quick|path):(\d+)$/);
     if (!match) return null;
     const kind = match[1] as "quick" | "path";
     const index = Number(match[2]);
@@ -975,6 +976,8 @@ kubectl get deployments,pods,services`,
                         key={module.name}
                         onClick={() => {
                           setActiveModule(module.name);
+                          const starterYaml = moduleWorkspaceContent[module.name]?.exampleYaml;
+                          if (starterYaml) setEditorValue(starterYaml);
                           setModuleWorkspaceOpen(true);
                           setNotice("");
                         }}
@@ -1040,7 +1043,11 @@ kubectl get deployments,pods,services`,
                     </pre>
                     <button
                       type="button"
-                      onClick={() => setActiveModule("YAML Editor")}
+                      onClick={() => {
+                        setEditorValue(selectedModuleWorkspace?.exampleYaml ?? sampleYaml);
+                        setActiveModule("YAML Editor");
+                        setNotice("Module example loaded into the YAML Editor.");
+                      }}
                       className="mt-4 rounded-lg bg-cyan-500 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-cyan-400"
                     >
                       Open in YAML Editor →
