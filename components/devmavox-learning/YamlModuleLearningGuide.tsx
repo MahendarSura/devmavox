@@ -97,6 +97,28 @@ description: |
         mistakes: ["Misaligning list items.", "Putting child properties outside the list item.", "Using anchors unnecessarily.", "Breaking multiline script indentation.", "Forgetting to validate complex documents."],
         exercise: "Add a third service named metrics with an image and a port. Include a multiline description of the application.",
         expected: "You should be able to create lists of objects and multiline text without breaking the YAML hierarchy."
+      },
+      {
+        title: "04. Multiline values, document boundaries and explicit types",
+        objective: "Choose literal and folded block scalars, separate documents and make ambiguous scalar types explicit.",
+        explanation: "YAML block scalars let a configuration store text that spans multiple lines. The pipe character preserves line breaks, which is useful for scripts, certificates and configuration snippets. The greater-than character folds most line breaks into spaces, which is useful for readable paragraphs. Chomping indicators control the final newline: the default clip behavior keeps one, a minus removes it, and a plus preserves trailing blank lines. A document can begin with three hyphens and end with three dots. Quote values such as dates, identifiers, yes/no labels and numbers with leading zeroes when the consuming application expects text. YAML parser versions differ in how some plain scalars are resolved, so test with the same parser used by the target tool.",
+        importance: "Block scalar choices can change the exact string passed to a shell, application or automation tool. Explicit types prevent identifiers and environment values from silently becoming numbers, booleans or dates.",
+        steps: ["Use | when line breaks are meaningful, such as a script.","Use > when a paragraph should be folded into one line.","Compare |, |-, |+ and > with a parser or editor preview.","Use --- when a file intentionally contains multiple YAML documents.","Quote ambiguous strings and verify the parsed type with the target parser."],
+        example: "startup:\n  script: |-\n    echo \"Starting service\"\n    ./health-check.sh\n  description: >-\n    Starts the service and checks readiness\n    before traffic is enabled.\nrelease:\n  build_id: \"00127\"\n  enabled: true\n---\nkind: Deployment\nmetadata:\n  name: orders-api",
+        mistakes: ["Using > for a shell script where line breaks matter.","Assuming | and |- produce identical trailing newlines.","Leaving an identifier such as 00127 unquoted when it must remain text.","Putting two documents together without a --- separator."],
+        exercise: "Create a YAML file containing a two-line startup script, a folded description, a text build identifier with leading zeroes and a second document separated by ---.",
+        expected: "The script remains a multiline string, the description is folded, the build identifier remains text, and the second document parses independently."
+      },
+      {
+        title: "05. YAML anchors, aliases and merge-key trade-offs",
+        objective: "Reuse repeated YAML nodes safely and understand when explicit duplication is clearer.",
+        explanation: "An anchor assigns a reusable name to a YAML node with an ampersand. An alias refers to that node with an asterisk. Some parsers also support the merge key syntax to copy mapping entries into another mapping. This can reduce repetition in environment settings or repeated service definitions, but merge behavior and support should be checked against the exact parser and consuming tool. Anchors do not create variables or perform runtime substitution. An alias reuses a YAML node during parsing; it does not fetch a value from an environment variable or secret manager. Keep anchors close to their uses, give them descriptive names and avoid complicated chains that make a production manifest difficult to review.",
+        importance: "Reusable configuration can reduce drift, but opaque anchor chains can make incidents harder to diagnose. A reviewer must be able to understand the final expanded configuration.",
+        steps: ["Identify an identical mapping repeated in the same document.","Define a descriptive anchor on the original mapping.","Reference it with an alias where the parser supports aliases.","Use merge keys only after confirming parser compatibility.","Inspect the expanded or rendered result before applying it."],
+        example: "defaults: &service_defaults\n  imagePullPolicy: IfNotPresent\n  resources:\n    requests:\n      cpu: 100m\n      memory: 128Mi\n\ncontainers:\n  - name: api\n    <<: *service_defaults\n    image: example/api:2.0\n  - name: worker\n    <<: *service_defaults\n    image: example/worker:2.0",
+        mistakes: ["Expecting anchors to read environment variables.","Using unclear anchor names such as x or temp.","Assuming every YAML consumer supports merge keys identically.","Creating deeply nested aliases that hide the final values."],
+        exercise: "Define shared resource requests and image pull policy once, then reuse them for two containers. Explain how you would confirm the target parser supports the merge syntax.",
+        expected: "Both containers inherit the shared mapping, retain their own image and name, and the final parsed structure is checked with the actual consumer."
       }
     ],
     workflow: ["Understand mappings and sequences.", "Identify YAML data types.", "Create nested configuration.", "Practice lists and multiline values.", "Validate your document."],
@@ -171,6 +193,28 @@ description: |
         mistakes: ["Using uncontrolled image tags.", "Committing credentials.", "Leaving debugging flags enabled.", "Making unexplained production changes."],
         exercise: "Prepare a production configuration with a pinned image version and CPU and memory requests and limits.",
         expected: "The file should be readable, version-specific and free of embedded credentials."
+      },
+      {
+        title: "04. Safe editing, diffs and environment overlays",
+        objective: "Make small, reviewable configuration changes and compare environment-specific values.",
+        explanation: "A safe edit starts by identifying which application or platform consumes the file and which schema or version it expects. Change one logical section at a time, preserve unrelated keys and inspect the diff before saving. Development, staging and production settings should make intentional differences visible rather than relying on undocumented manual edits. Keep secrets out of committed plain-text YAML and use an approved secret manager or protected injection mechanism. If templates or overlays are involved, inspect the rendered output because a valid source template can still generate an incorrect final document. Keep the original file recoverable through version control and use peer review for high-impact production changes.",
+        importance: "A syntactically valid edit can still change traffic, resource limits, access or application behavior. Small diffs and environment comparisons make unintended changes easier to detect.",
+        steps: ["Identify the file consumer, schema version and target environment.","Create a focused change in one logical section.","Compare the change with the previous version and other environments.","Check types, required fields, references and secret handling.","Format, validate, review and save the final rendered configuration."],
+        example: "application:\n  name: orders-api\n  replicas: 3\n  image: registry.example.com/orders-api:2.4.1\nenvironments:\n  staging:\n    logLevel: debug\n  production:\n    logLevel: info\n    replicas: 6",
+        mistakes: ["Replacing an entire configuration file for a small change.","Copying staging-only debug settings into production.","Committing passwords or tokens in plain YAML.","Reviewing only the template and not the rendered output."],
+        exercise: "Increase production replicas while leaving staging unchanged. Describe the diff you expect and list the checks you would complete before saving.",
+        expected: "Only the production replica value changes; staging remains unchanged, no secret is added, and the final diff is small and reviewable."
+      },
+      {
+        title: "05. Formatting, editor diagnostics and export workflow",
+        objective: "Use editor features to format, validate, recover and export a configuration safely.",
+        explanation: "Formatting improves readability but should not be confused with semantic validation. A formatter can normalize indentation and layout while preserving the parsed data, but it cannot determine whether an application-specific field is supported. Before formatting, confirm the document parses; after formatting, review the diff and validate again. Use diagnostics to locate parser errors, then inspect nearby lines because the reported location may be where parsing became impossible rather than where the original mistake began. Copy and download actions should preserve the complete current editor value. Reset should be used only when you intend to discard unsaved edits. Keep a version-controlled copy for important work.",
+        importance: "A predictable edit-format-validate-export routine reduces accidental data loss and catches changes introduced during manual editing.",
+        steps: ["Start from a known-good example or version-controlled file.","Make a small edit and check live parser diagnostics.","Format only after syntax is valid.","Review the formatted diff and validate again.","Copy or download the complete file and verify its destination."],
+        example: "apiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: orders-settings\ndata:\n  LOG_LEVEL: info\n  FEATURE_CHECKOUT: \"true\"",
+        mistakes: ["Assuming formatting proves the schema is valid.","Resetting before copying or saving important edits.","Ignoring parser errors near the reported line.","Downloading a stale example instead of the current editor contents."],
+        exercise: "Edit the ConfigMap value, intentionally introduce an indentation error, use the editor diagnostic to find it, repair it, format the document and export the final YAML.",
+        expected: "The invalid indentation is corrected, the editor reports valid YAML syntax, the formatted content retains the intended values and the exported file matches the editor."
       }
     ],
     workflow: ["Open a working example.", "Edit one logical section.", "Review related fields.", "Format and validate.", "Copy or download the completed YAML."],
@@ -245,6 +289,28 @@ spec:
         mistakes: ["Calling parser success a successful deployment.", "Ignoring API compatibility.", "Assuming every field is supported.", "Skipping admission checks."],
         exercise: "Explain three checks you would perform after YAML syntax validation and before applying a Kubernetes manifest.",
         expected: "Your answer should mention schema/API compatibility and environment-specific validation."
+      },
+      {
+        title: "04. Duplicate keys, parser diagnostics and strict mode",
+        objective: "Recognize duplicate mapping keys and interpret parser errors without confusing syntax with semantics.",
+        explanation: "A YAML mapping is expected to have unique keys for reliable configuration. Some parsers reject duplicate keys by default, while permissive modes may accept them and produce surprising results such as keeping one value and hiding another. Treat duplicate keys as a defect rather than relying on parser-specific last-value behavior. Parser diagnostics commonly include a line and column, but the real mistake can start earlier: an unclosed quote, missing colon or incorrect indentation may only become obvious on a later line. Reproduce the issue in a small document, correct the earliest structural mistake and run the same parser settings used by the application.",
+        importance: "Duplicate or mis-indented configuration can silently change the effective settings. Strict parsing makes failures visible before deployment.",
+        steps: ["Run the document through the same YAML parser and strictness settings as the consumer.","Check duplicate-key diagnostics and inspect every repeated mapping key.","Read the reported line and nearby preceding lines.","Reduce a complex failure to a minimal reproducing example.","Correct the source and rerun validation."],
+        example: "application:\n  name: orders-api\n  replicas: 3\n  # Keep only one replicas key.\n  enabled: true\n",
+        mistakes: ["Assuming every parser treats duplicate keys the same way.","Changing the line named in an error without checking earlier syntax.","Treating a successful permissive parse as proof of correctness.","Ignoring warnings because the document still loads."],
+        exercise: "Create a document with a repeated key and a separate unclosed quoted string. Identify both parser diagnostics, repair each problem and validate again.",
+        expected: "The duplicate mapping key is removed, the quote is closed correctly and the strict parser accepts the corrected document."
+      },
+      {
+        title: "05. Schema, policy and runtime validation layers",
+        objective: "Select the correct validation layer for Kubernetes and other YAML-consuming tools.",
+        explanation: "Validation is a sequence of increasingly specific checks. Parsing answers whether the text is valid YAML. Schema validation checks whether fields, types and required properties match a particular resource or application version. Policy validation checks organizational rules such as required labels, approved registries or security settings. Kubernetes server-side dry-run sends an object to the API server for schema, defaulting and admission checks without persisting it. None of these checks proves that containers will start, network paths work or the application is healthy. Runtime checks and controlled rollout observation are separate steps. Use the official validator for the exact tool and version that consumes the file.",
+        importance: "Choosing the right validation layer prevents false confidence: parseable YAML may still be rejected by an API, violate policy or fail at runtime.",
+        steps: ["Parse the YAML and fix syntax errors.","Validate against the consumer's versioned schema.","Run policy checks required by the organization.","For Kubernetes, check context and use server-side dry-run when appropriate.","Deploy through the approved process and verify runtime health separately."],
+        example: "kubectl config current-context\nkubectl apply --dry-run=server -f deployment.yaml\nkubectl diff -f deployment.yaml\n# After an approved deployment:\nkubectl rollout status deployment/orders-api",
+        mistakes: ["Calling parser success a Kubernetes schema pass.","Running server-side validation against the wrong cluster context.","Assuming dry-run proves the workload will become healthy.","Skipping policy checks and post-deployment verification."],
+        exercise: "Take a syntactically valid Deployment with an invalid container field. Describe which validation layer should catch it and which checks are still required after deployment.",
+        expected: "Parsing succeeds, API schema validation rejects the unsupported field, and runtime health remains a separate post-deployment verification."
       }
     ],
     workflow: ["Parse the YAML.", "Read the first error.", "Correct syntax and indentation.", "Run tool-specific schema validation.", "Review cluster or application acceptance."],
@@ -619,6 +685,28 @@ spec:
         mistakes: ["Assuming every live difference is accidental.", "Synchronizing without reviewing impact.", "Enabling pruning without checking deletion risk.", "Fixing live state without updating Git."],
         exercise: "A production replica count differs from Git. Explain how you would identify whether it is an approved emergency change or accidental drift.",
         expected: "Your response should include evidence, ownership, desired state and a safe reconciliation decision."
+      },
+      {
+        title: "04. Production rollback, change safety and verification",
+        objective: "Plan a reversible configuration rollout with evidence-based health checks.",
+        explanation: "A production YAML change should have a documented reason, expected impact, owner, approval and rollback path. Before rollout, capture the current configuration and relevant workload health. Review the diff, validate the rendered manifest and check resource selectors, probes, image versions and dependencies. Roll out progressively when the platform supports it, then verify rollout status, ready replicas, events, logs and service-level signals. If the release violates its success criteria, stop further rollout and use the approved rollback procedure. A rollback is not complete until the service is healthy and the incident record contains the change, evidence and outcome.",
+        importance: "A technically valid manifest can still cause an outage through a wrong image, selector, probe or resource setting. Planned rollback limits the duration and scope of failure.",
+        steps: ["Record the current revision, health indicators and intended change.","Review the exact diff and validate the final rendered manifest.","Confirm readiness probes, resource settings, selectors and rollback procedure.","Deploy progressively and observe rollout and service health.","Stop or roll back when agreed thresholds fail; record evidence and verify recovery."],
+        example: "kubectl config current-context\nkubectl get deployment orders-api -o wide\nkubectl rollout history deployment/orders-api\nkubectl apply --dry-run=server -f deployment.yaml\n# After approved rollout:\nkubectl rollout status deployment/orders-api\nkubectl get pods -l app=orders-api",
+        mistakes: ["Starting a rollout without recording the previous revision.","Using pod readiness alone as the only service health signal.","Continuing a rollout after error rates exceed the agreed threshold.","Rolling back without confirming the intended revision and context."],
+        exercise: "A new configuration increases replicas but points to an untested image. Write a safe pre-change checklist, rollout verification steps and a rollback decision condition.",
+        expected: "The image is verified before rollout, the current revision is recorded, health signals are monitored and rollback is triggered when the agreed failure threshold is crossed."
+      },
+      {
+        title: "05. Incident evidence, configuration drift and recovery",
+        objective: "Trace live configuration drift to its source and restore the approved desired state safely.",
+        explanation: "Configuration drift occurs when the live resource differs from the version-controlled desired configuration. The difference may come from a manual edit, an automated controller, an outdated release or a change made by another pipeline. During an incident, preserve evidence before changing resources: record the cluster context, object, timestamps, events, recent deployments and relevant audit information. Compare the live object with the repository version and identify the authoritative source of truth. If GitOps manages the resource, avoid repeatedly patching the live object because the controller may revert it. Correct the repository or approved source, review the diff, reconcile through the normal workflow and verify that the live object converges.",
+        importance: "Changing the wrong copy of configuration can make an incident worse or cause a controller to undo a hotfix. Evidence and source-of-truth identification make recovery durable.",
+        steps: ["Confirm cluster context, namespace and affected object.","Capture describe output, events, rollout history and relevant logs.","Compare live configuration with the approved repository revision.","Identify the controller or pipeline responsible for reconciliation.","Fix the authoritative source, reconcile safely and verify convergence."],
+        example: "kubectl config current-context\nkubectl -n production get deployment orders-api -o yaml\nkubectl -n production describe deployment orders-api\nkubectl -n production get events --sort-by=.lastTimestamp\n# Compare with the reviewed Git manifest before reconciliation.",
+        mistakes: ["Patching a GitOps-managed object without fixing its source of truth.","Deleting evidence before capturing events and object state.","Comparing resources from different namespaces or cluster contexts.","Assuming a successful sync proves application health."],
+        exercise: "A live replica count differs from Git and Argo CD repeatedly restores the repository value. Identify the source of truth, evidence to collect and safe recovery sequence.",
+        expected: "The repository is treated as authoritative, evidence is captured, the reviewed Git change is reconciled and both desired-state convergence and application health are verified."
       }
     ],
     workflow: ["Understand business and technical impact.", "Collect current state and change history.", "Review dependencies.", "Validate and approve the change.", "Apply and monitor.", "Verify success or rollback."],
@@ -703,6 +791,28 @@ spec:
         mistakes: ["Changing multiple values without evidence.", "Deleting resources before collecting logs.", "Treating a symptom as the root cause.", "Declaring recovery without testing requests."],
         exercise: "A Service exists and two Pods are Ready, but the Service has no endpoints. Explain the evidence you would collect and the first relationship you would inspect.",
         expected: "Your answer should include Service selectors, Pod labels, readiness and endpoint verification."
+      },
+      {
+        title: "04. Explain your answer with evidence and command output",
+        objective: "Build assessment responses that justify a YAML diagnosis with concrete evidence.",
+        explanation: "A strong technical answer does more than name a command or select a correct option. It states the observed symptom, the likely layer involved, the evidence that supports the diagnosis, the command used to gather that evidence and the safest next action. Separate facts from assumptions. For example, a Pod in CrashLoopBackOff is a symptom, not a root cause; container logs, previous logs, events, exit codes and probe configuration help narrow the cause. Include the expected result of a command and explain what a different result would mean. Avoid claiming that a syntax check proves a Kubernetes resource is operational.",
+        importance: "DevOps interviews and incident reviews evaluate reasoning and safe decision-making, not just memorized command names.",
+        steps: ["Restate the symptom and scope precisely.","Identify which validation or runtime layer is involved.","Choose a read-only command that gathers useful evidence.","Explain expected output and what it proves or does not prove.","Recommend a safe corrective action and verification step."],
+        example: "kubectl -n production get pods -l app=orders-api\nkubectl -n production describe pod <pod-name>\nkubectl -n production logs <pod-name> --previous\nkubectl -n production get events --sort-by=.lastTimestamp",
+        mistakes: ["Calling a symptom the root cause without evidence.","Listing commands without explaining their output.","Recommending destructive actions before read-only diagnosis.","Claiming YAML parsing proves runtime health."],
+        exercise: "Write an incident answer for a container restarting repeatedly. Include three evidence commands, what each command can reveal and one safe next step.",
+        expected: "The response distinguishes symptom from cause, uses read-only evidence collection, explains the output and delays changes until the cause is supported."
+      },
+      {
+        title: "05. Practical review rubric and readiness assessment",
+        objective: "Evaluate a YAML solution for correctness, safety, maintainability and operational readiness.",
+        explanation: "A production-ready YAML review checks more than indentation. Confirm that the document parses with the intended parser, fields match the consumer's versioned schema, values have correct types and referenced objects exist. Review security-sensitive settings, secret handling, resource requests and limits, probes, labels, selectors and rollout strategy where relevant. Check that the change is minimal, understandable and reversible. Confirm that validation evidence and peer approval are recorded. Finally, define how success will be observed after rollout and what condition triggers rollback. A solution is not ready merely because it passes a syntax validator.",
+        importance: "A consistent rubric makes assessment fair and teaches learners to connect YAML structure with real operational consequences.",
+        steps: ["Check syntax and duplicate-key handling.","Check schema, version compatibility and references.","Review security, resource and availability settings.","Inspect the diff, maintainability and rollback plan.","Record validation evidence and post-change success criteria."],
+        example: "review:\n  syntax: passed\n  schema: passed\n  secrets: external-secret-manager\n  resources:\n    requestsDefined: true\n    limitsReviewed: true\n  rollout:\n    readinessVerified: true\n    rollbackRevisionRecorded: true",
+        mistakes: ["Giving full credit for syntax alone.","Ignoring security and availability settings.","Accepting a change without a rollback plan.","Failing to define observable success criteria."],
+        exercise: "Review a Deployment manifest using the rubric. Record one check for syntax, schema, security, availability, maintainability and rollback readiness.",
+        expected: "The review records evidence for every category and marks the change ready only when required checks and operational safeguards pass."
       }
     ],
     workflow: ["Study the relevant lesson.", "Answer without looking at the explanation.", "Explain why the answer is correct.", "Review mistakes.", "Repeat practical tasks independently."],
