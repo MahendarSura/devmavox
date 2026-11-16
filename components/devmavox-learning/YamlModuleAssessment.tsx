@@ -47,6 +47,7 @@ export default function YamlModuleAssessment({ moduleName }: { moduleName: strin
   const storageKey = "devmavox-yaml-assessment-v1::" + moduleName;
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [loadedFor, setLoadedFor] = useState("");
 
   useEffect(() => {
     try {
@@ -59,19 +60,22 @@ export default function YamlModuleAssessment({ moduleName }: { moduleName: strin
         setAnswers({});
         setSubmitted(false);
       }
+      setLoadedFor(storageKey);
     } catch {
       setAnswers({});
       setSubmitted(false);
+      setLoadedFor(storageKey);
     }
   }, [storageKey]);
 
   useEffect(() => {
+    if (loadedFor !== storageKey) return;
     try {
       localStorage.setItem(storageKey, JSON.stringify({ answers, submitted }));
     } catch {
       // Assessment remains usable when browser storage is unavailable.
     }
-  }, [storageKey, answers, submitted]);
+  }, [storageKey, answers, submitted, loadedFor]);
 
   const score = useMemo(
     () => questions.reduce((total, question, index) => total + (answers[index] === question.answer ? 1 : 0), 0),
