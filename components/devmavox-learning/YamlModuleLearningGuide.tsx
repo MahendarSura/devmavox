@@ -1153,55 +1153,6 @@ export default function YamlModuleLearningGuide({
         <p className="mt-3 text-sm leading-7 text-slate-300">{guide.production}</p>
       </article>
 
-      <article className="rounded-2xl border border-cyan-900/70 bg-[#0d1523] p-5 sm:p-7">
-        <div className="text-xs font-bold uppercase tracking-wider text-cyan-300">{presentation?.assessmentEyebrow ?? "KNOWLEDGE CHECK"}</div>
-        <h3 className="mt-2 text-lg font-bold text-white">{guide.question}</h3>
-        <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          {guide.options.map((option) => (
-            <button
-              key={option}
-              type="button"
-              disabled={checked}
-              onClick={() => setAnswer(option)}
-              className={`rounded-lg border p-3 text-left text-sm ${
-                answer === option
-                  ? "border-cyan-500 bg-cyan-950/40 text-cyan-200"
-                  : "border-slate-700 bg-slate-900/60 text-slate-300"
-              }`}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-        {!checked ? (
-          <button
-            type="button"
-            disabled={!answer}
-            onClick={() => setChecked(true)}
-            className="mt-4 rounded-lg bg-cyan-500 px-4 py-2 text-xs font-bold text-slate-950 disabled:opacity-40"
-          >
-            Check answer
-          </button>
-        ) : (
-          <div className={`mt-4 rounded-xl border p-4 ${
-            answer === guide.answer
-              ? "border-emerald-800 bg-emerald-950/20"
-              : "border-amber-800 bg-amber-950/20"
-          }`}>
-            <div className="font-bold text-white">
-              {answer === guide.answer ? "Correct answer!" : `Correct answer: ${guide.answer}`}
-            </div>
-            <p className="mt-2 text-sm leading-6 text-slate-300">{guide.reason}</p>
-            <button
-              type="button"
-              onClick={() => { setAnswer(""); setChecked(false); }}
-              className="mt-3 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-slate-200"
-            >
-              Try again
-            </button>
-          </div>
-        )}
-      </article>
     </section>
   );
 }
