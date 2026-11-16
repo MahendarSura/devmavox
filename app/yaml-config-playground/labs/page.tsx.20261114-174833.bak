@@ -1,0 +1,1037 @@
+"use client";
+
+import React, { useEffect, useMemo, useState } from "react";
+
+type Lab = "kubernetes" | "troubleshooting" | "gitops";
+
+type Exercise = {
+  id: string;
+  title: string;
+  incident: string;
+  task: string;
+  broken: string;
+  solution: string;
+  checks: string[];
+  hint: string;
+  output: string;
+  commands: string[];
+};
+
+const labs: { id: Lab; name: string; subtitle: string; exercises: Exercise[] }[] = [
+{
+id:"kubernetes",
+name:"Kubernetes Manifest Lab",
+subtitle:"Build, repair, validate and simulate Kubernetes resources.",
+exercises:[
+{
+id:"K8-001",title:"Deployment selector mismatch",
+incident:"Production rollout created a Deployment, but its Pods are not selected correctly.",
+task:"Repair the pod labels so they match the Deployment selector. Preserve three replicas.",
+broken:`apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: checkout
+  template:
+    metadata:
+      labels:
+        app: payment
+    spec:
+      containers:
+        - name: checkout
+          image: nginx:1.27`,
+solution:`apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: checkout
+  template:
+    metadata:
+      labels:
+        app: checkout
+    spec:
+      containers:
+        - name: checkout
+          image: nginx:1.27`,
+checks:["kind: Deployment","replicas: 3","app: checkout","image: nginx:1.27"],
+hint:"Deployment selector and Pod template labels must match.",
+output:"Deployment checkout configured. Selector matches Pod template labels. Desired replicas: 3.",
+commands:["kubectl apply --dry-run=client -f deployment.yaml","kubectl apply -f deployment.yaml","kubectl rollout status deployment/checkout"],
+},
+{
+id:"K8-002",title:"Service routes to zero Pods",
+incident:"The application is running, but the internal Service has no matching endpoints.",
+task:"Correct the Service selector to target the checkout Pods.",
+broken:`apiVersion: v1
+kind: Service
+metadata:
+  name: checkout
+spec:
+  selector:
+    app: check-out
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+  type: ClusterIP`,
+solution:`apiVersion: v1
+kind: Service
+metadata:
+  name: checkout
+spec:
+  selector:
+    app: checkout
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+  type: ClusterIP`,
+checks:["kind: Service","app: checkout","targetPort: 8080","port: 80"],
+hint:"Compare the Service selector with the actual Pod label app=checkout.",
+output:"Service checkout created. Matching Pods found. Port 80 forwards to container port 8080.",
+commands:["kubectl get pods --show-labels","kubectl get endpoints checkout","kubectl describe svc checkout"],
+},
+{
+id:"K8-003",title:"ConfigMap configuration repair",
+incident:"Application startup fails because a required environment setting is missing from the ConfigMap.",
+task:"Repair the YAML mapping and provide both required application settings.",
+broken:`apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: checkout-config
+data:
+  APP_ENV production
+  LOG_LEVEL: info`,
+solution:`apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: checkout-config
+data:
+  APP_ENV: production
+  LOG_LEVEL: info`,
+checks:["kind: ConfigMap","APP_ENV: production","LOG_LEVEL: info"],
+hint:"Every YAML mapping entry needs a colon after its key.",
+output:"ConfigMap checkout-config accepted. APP_ENV and LOG_LEVEL are present.",
+commands:["kubectl apply --dry-run=client -f configmap.yaml","kubectl describe configmap checkout-config"],
+},
+{
+id:"K8-004",title:"Readiness probe port failure",
+incident:"Pods start but never become Ready because the readiness probe targets the wrong port.",
+task:"Correct the HTTP readiness probe port to 8080.",
+broken:`apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: probe-app
+spec:
+  selector:
+    matchLabels:
+      app: probe
+  template:
+    metadata:
+      labels:
+        app: probe
+    spec:
+      containers:
+        - name: app
+          image: nginx:1.27
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8081`,
+solution:`apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: probe-app
+spec:
+  selector:
+    matchLabels:
+      app: probe
+  template:
+    metadata:
+      labels:
+        app: probe
+    spec:
+      containers:
+        - name: app
+          image: nginx:1.27
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080`,
+checks:["readinessProbe:","path: /","port: 8080","image: nginx:1.27"],
+hint:"The probe must use the port on which the application listens.",
+output:"Readiness probe configuration accepted. Simulated Pod readiness: Ready.",
+commands:["kubectl describe pod <pod-name>","kubectl get pods","kubectl get events --sort-by=.lastTimestamp"],
+},
+{
+id:"K8-005",title:"Persistent volume claim mismatch",
+incident:"A workload remains Pending because its claim requests a storage class that is not available in the lab.",
+task:"Change the claim to the available standard storage class and retain the requested capacity.",
+broken:`apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: uploads
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: missing-fast
+  resources:
+    requests:
+      storage: 5Gi`,
+solution:`apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: uploads
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 5Gi`,
+checks:["kind: PersistentVolumeClaim","storageClassName: standard","storage: 5Gi","ReadWriteOnce"],
+hint:"Inspect the requested storage class against the classes available in the environment.",
+output:"PVC uploads passes lab checks. Storage class: standard. Requested capacity: 5Gi.",
+commands:["kubectl get storageclass","kubectl describe pvc uploads","kubectl get pvc"],
+},
+{
+id:"K8-006",title:"Resource limit configuration",
+incident:"A namespace workload is rejected by policy because the container has no CPU and memory limits.",
+task:"Add CPU and memory requests and limits.",
+broken:`apiVersion: v1
+kind: Pod
+metadata:
+  name: limited-worker
+spec:
+  containers:
+    - name: worker
+      image: busybox:1.36
+      command: ["sh","-c","sleep 3600"]`,
+solution:`apiVersion: v1
+kind: Pod
+metadata:
+  name: limited-worker
+spec:
+  containers:
+    - name: worker
+      image: busybox:1.36
+      command: ["sh","-c","sleep 3600"]
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "64Mi"
+        limits:
+          cpu: "500m"
+          memory: "256Mi"`,
+checks:["resources:","requests:","limits:","cpu: \"100m\"","memory: \"256Mi\""],
+hint:"Add resources under the container, not under Pod metadata.",
+output:"Resource policy checks passed. CPU request 100m, CPU limit 500m, memory limit 256Mi.",
+commands:["kubectl apply --dry-run=client -f pod.yaml","kubectl describe pod limited-worker"],
+},
+{
+id:"K8-007",title:"Ingress host and backend repair",
+incident:"External traffic reaches the ingress controller but the application backend is not configured correctly.",
+task:"Correct the backend Service name and port.",
+broken:`apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: checkout-ingress
+spec:
+  rules:
+    - host: shop.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: checkouts
+                port:
+                  number: 80`,
+solution:`apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: checkout-ingress
+spec:
+  rules:
+    - host: shop.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: checkout
+                port:
+                  number: 80`,
+checks:["kind: Ingress","host: shop.example.com","name: checkout","number: 80","pathType: Prefix"],
+hint:"The backend Service name must exactly match the Service resource.",
+output:"Ingress routing checks passed. shop.example.com routes to checkout:80.",
+commands:["kubectl describe ingress checkout-ingress","kubectl get svc checkout","kubectl get ingress"],
+},
+{
+id:"K8-008",title:"Rolling update strategy",
+incident:"A release configuration allows too many unavailable replicas during a rolling update.",
+task:"Set a safe rolling update strategy with zero unavailable replicas.",
+broken:`apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: catalog
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 3
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: catalog
+    spec:
+      containers:
+        - name: catalog
+          image: nginx:1.27`,
+solution:`apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: catalog
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: catalog
+    spec:
+      containers:
+        - name: catalog
+          image: nginx:1.27`,
+checks:["type: RollingUpdate","maxUnavailable: 0","maxSurge: 1","replicas: 4"],
+hint:"Set maxUnavailable to zero to preserve existing availability during the simulated rollout.",
+output:"Rolling update policy accepted. Simulated availability is maintained during rollout.",
+commands:["kubectl rollout history deployment/catalog","kubectl rollout status deployment/catalog"],
+},
+]
+},
+{
+id:"troubleshooting",
+name:"Troubleshooting Lab",
+subtitle:"Investigate incidents, repair broken configurations and verify recovery.",
+exercises:[
+{
+id:"TS-001",title:"ImagePullBackOff: invalid image tag",
+incident:"Checkout Pods repeatedly fail while pulling an image from the registry.",
+task:"Replace the nonexistent image tag with the known available tag.",
+broken:`apiVersion: v1
+kind: Pod
+metadata:
+  name: checkout
+spec:
+  containers:
+    - name: checkout
+      image: nginx:tag-does-not-exist`,
+solution:`apiVersion: v1
+kind: Pod
+metadata:
+  name: checkout
+spec:
+  containers:
+    - name: checkout
+      image: nginx:1.27`,
+checks:["kind: Pod","name: checkout","image: nginx:1.27"],
+hint:"Inspect the image repository and tag. An invalid tag causes image pull failures.",
+output:"Image reference check passed. Simulated image pull successful. Pod phase: Running.",
+commands:["kubectl describe pod checkout","kubectl get events --sort-by=.lastTimestamp","kubectl get pod checkout"],
+},
+{
+id:"TS-002",title:"CrashLoopBackOff: wrong startup command",
+incident:"A worker container exits immediately because its command references an invalid executable.",
+task:"Correct the command to use a valid shell executable.",
+broken:`apiVersion: v1
+kind: Pod
+metadata:
+  name: worker
+spec:
+  containers:
+    - name: worker
+      image: busybox:1.36
+      command: ["not-a-shell","-c","sleep 3600"]`,
+solution:`apiVersion: v1
+kind: Pod
+metadata:
+  name: worker
+spec:
+  containers:
+    - name: worker
+      image: busybox:1.36
+      command: ["sh","-c","sleep 3600"]`,
+checks:["kind: Pod","image: busybox:1.36","command: [\"sh\"","sleep 3600"],
+hint:"Check the executable available inside the container image.",
+output:"Startup command checks passed. Simulated container remains running.",
+commands:["kubectl logs worker --previous","kubectl describe pod worker","kubectl get pod worker"],
+},
+{
+id:"TS-003",title:"Pending Pod: impossible CPU request",
+incident:"A Pod cannot be scheduled because its CPU request exceeds the lab node capacity.",
+task:"Reduce the CPU request to a schedulable 100m.",
+broken:`apiVersion: v1
+kind: Pod
+metadata:
+  name: batch-job
+spec:
+  containers:
+    - name: batch
+      image: busybox:1.36
+      resources:
+        requests:
+          cpu: "100"
+          memory: "128Mi"`,
+solution:`apiVersion: v1
+kind: Pod
+metadata:
+  name: batch-job
+spec:
+  containers:
+    - name: batch
+      image: busybox:1.36
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "128Mi"`,
+checks:["kind: Pod","cpu: \"100m\"","memory: \"128Mi\""],
+hint:"Kubernetes CPU quantities use cores or millicores. 100m is one tenth of a CPU core.",
+output:"Scheduling request passes lab capacity checks. Simulated Pod scheduled.",
+commands:["kubectl describe pod batch-job","kubectl get nodes","kubectl get events"],
+},
+{
+id:"TS-004",title:"Permission denied: security context",
+incident:"A container process cannot write to its mounted application directory.",
+task:"Configure a non-root user and group for the container.",
+broken:`apiVersion: v1
+kind: Pod
+metadata:
+  name: file-worker
+spec:
+  containers:
+    - name: worker
+      image: busybox:1.36
+      command: ["sh","-c","sleep 3600"]
+      securityContext:
+        runAsNonRoot: true`,
+solution:`apiVersion: v1
+kind: Pod
+metadata:
+  name: file-worker
+spec:
+  containers:
+    - name: worker
+      image: busybox:1.36
+      command: ["sh","-c","sleep 3600"]
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000`,
+checks:["runAsNonRoot: true","runAsUser: 1000","runAsGroup: 1000"],
+hint:"A non-root policy needs an explicit non-zero user identity. Filesystem permissions must also allow that identity.",
+output:"Security context checks passed. Simulated process runs as UID 1000.",
+commands:["kubectl describe pod file-worker","kubectl logs file-worker","kubectl exec file-worker -- id"],
+},
+{
+id:"TS-005",title:"DNS resolution failure",
+incident:"A Pod cannot resolve the internal checkout Service name.",
+task:"Repair the Service reference used by the application configuration.",
+broken:`apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dns-settings
+data:
+  CHECKOUT_URL: http://check-out.default.svc.cluster.local
+  DNS_POLICY: ClusterFirst`,
+solution:`apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dns-settings
+data:
+  CHECKOUT_URL: http://checkout.default.svc.cluster.local
+  DNS_POLICY: ClusterFirst`,
+checks:["CHECKOUT_URL: http://checkout.default.svc.cluster.local","DNS_POLICY: ClusterFirst"],
+hint:"Compare the DNS hostname with the actual Kubernetes Service name.",
+output:"Service hostname matches checkout.default.svc.cluster.local.",
+commands:["kubectl get svc -A","kubectl exec <pod> -- nslookup checkout","kubectl logs <pod>"],
+},
+{
+id:"TS-006",title:"Secret key mismatch",
+incident:"Application startup fails because the Pod references a Secret key that does not exist.",
+task:"Use the actual database-password key in the Secret reference.",
+broken:`apiVersion: v1
+kind: Pod
+metadata:
+  name: database-client
+spec:
+  containers:
+    - name: app
+      image: nginx:1.27
+      env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: db-pass`,
+solution:`apiVersion: v1
+kind: Pod
+metadata:
+  name: database-client
+spec:
+  containers:
+    - name: app
+      image: nginx:1.27
+      env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: password`,
+checks:["secretKeyRef:","name: database-secret","key: password","name: DB_PASSWORD"],
+hint:"The Secret contains the key password, not db-pass. Never put secret values directly in YAML.",
+output:"Secret reference checks passed. Simulated environment variable reference resolved.",
+commands:["kubectl describe pod database-client","kubectl describe secret database-secret","kubectl get events"],
+},
+{
+id:"TS-007",title:"Liveness probe kills healthy process",
+incident:"The liveness probe uses an invalid endpoint and repeatedly restarts a healthy container.",
+task:"Correct the liveness probe path.",
+broken:`apiVersion: v1
+kind: Pod
+metadata:
+  name: api-server
+spec:
+  containers:
+    - name: api
+      image: nginx:1.27
+      livenessProbe:
+        httpGet:
+          path: /healthz-missing
+          port: 80`,
+solution:`apiVersion: v1
+kind: Pod
+metadata:
+  name: api-server
+spec:
+  containers:
+    - name: api
+      image: nginx:1.27
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 80`,
+checks:["livenessProbe:","path: /","port: 80"],
+hint:"Use the health endpoint actually served by the application.",
+output:"Liveness probe configuration passes the lab endpoint check.",
+commands:["kubectl describe pod api-server","kubectl logs api-server --previous","kubectl get pod api-server"],
+},
+{
+id:"TS-008",title:"Rollout unavailable after bad release",
+incident:"A new release is unhealthy and the previous stable ReplicaSet must be restored.",
+task:"Prepare the deployment rollback command and verify rollout recovery.",
+broken:`apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payments
+  template:
+    metadata:
+      labels:
+        app: payments
+    spec:
+      containers:
+        - name: payments
+          image: nginx:broken-release`,
+solution:`apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payments
+  template:
+    metadata:
+      labels:
+        app: payments
+    spec:
+      containers:
+        - name: payments
+          image: nginx:1.27`,
+checks:["kind: Deployment","replicas: 2","image: nginx:1.27","app: payments"],
+hint:"Restore the known-good image, then inspect rollout status and history.",
+output:"Known-good release configuration restored. Simulated rollout successful.",
+commands:["kubectl rollout history deployment/payments","kubectl rollout undo deployment/payments","kubectl rollout status deployment/payments"],
+},
+]
+},
+{
+id:"gitops",
+name:"CI/CD and GitOps Lab",
+subtitle:"Repair pipelines, Helm configuration, GitOps drift and release failures.",
+exercises:[
+{
+id:"CD-001",title:"Pipeline stage has invalid step",
+incident:"The CI pipeline cannot execute because the build step is missing its shell command.",
+task:"Add the missing script command to the build stage.",
+broken:`pipeline:
+  agent: any
+  stages:
+    - stage: Build
+      steps:
+        - echo "Building application"
+        - sh`,
+solution:`pipeline:
+  agent: any
+  stages:
+    - stage: Build
+      steps:
+        - echo "Building application"
+        - sh "npm run build"`,
+checks:["pipeline:","agent: any","stage: Build","sh \"npm run build\""],
+hint:"The shell step must receive the command it should execute.",
+output:"Pipeline structure checks passed. Simulated Build stage: SUCCESS.",
+commands:["git diff --check","jenkins pipeline syntax validation","npm run build"],
+},
+{
+id:"CD-002",title:"GitHub Actions workflow trigger",
+incident:"A workflow does not start when changes are pushed to the main branch.",
+task:"Add a push trigger for main.",
+broken:`name: Application CI
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci`,
+solution:`name: Application CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci`,
+checks:["push:","branches:","main","actions/checkout@v4","npm ci"],
+hint:"The workflow currently listens only for pull requests. Add the push event.",
+output:"Workflow trigger checks passed. Simulated push to main starts the build job.",
+commands:["git status --short","git diff --check","actionlint .github/workflows/ci.yml"],
+},
+{
+id:"CD-003",title:"Helm values override repair",
+incident:"The production release uses the wrong replica count and container image tag.",
+task:"Set three replicas and the release tag 2.4.1.",
+broken:`replicaCount: 1
+image:
+  repository: registry.example.com/checkout
+  tag: latest
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 80`,
+solution:`replicaCount: 3
+image:
+  repository: registry.example.com/checkout
+  tag: "2.4.1"
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 80`,
+checks:["replicaCount: 3","repository: registry.example.com/checkout","tag: \"2.4.1\"","type: ClusterIP"],
+hint:"Use an explicit immutable release tag instead of latest.",
+output:"Helm values checks passed. Rendered release requests three replicas with image 2.4.1.",
+commands:["helm lint ./chart","helm template checkout ./chart -f values.yaml","helm upgrade --install checkout ./chart -f values.yaml --dry-run"],
+},
+{
+id:"CD-004",title:"GitOps application target revision",
+incident:"Argo CD cannot deploy the intended release because the application points to an incorrect branch.",
+task:"Set the target revision to main.",
+broken:`apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: checkout
+  namespace: argocd
+spec:
+  source:
+    repoURL: https://github.com/example/checkout.git
+    targetRevision: release-missing
+    path: deploy/production
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production`,
+solution:`apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: checkout
+  namespace: argocd
+spec:
+  source:
+    repoURL: https://github.com/example/checkout.git
+    targetRevision: main
+    path: deploy/production
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production`,
+checks:["kind: Application","namespace: argocd","targetRevision: main","path: deploy/production","namespace: production"],
+hint:"Verify the Git branch or tag exists and contains the configured manifest path.",
+output:"GitOps source checks passed. Target revision main and production destination selected.",
+commands:["argocd app get checkout","argocd app diff checkout","argocd app sync checkout"],
+},
+{
+id:"CD-005",title:"Docker build context failure",
+incident:"The CI image build cannot find the Dockerfile because the build context is incorrect.",
+task:"Correct the Docker build command to use the repository root.",
+broken:`name: Container Build
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -f docker/Dockerfile ./missing-folder`,
+solution:`name: Container Build
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -f docker/Dockerfile .`,
+checks:["docker build","-f docker/Dockerfile","./missing-folder"],
+hint:"The build context should be the directory containing the application files. The correct root context is a dot.",
+output:"Build command checks passed. Simulated Docker build context: repository root.",
+commands:["docker build -f docker/Dockerfile .","docker image ls","docker inspect <image>"],
+},
+{
+id:"CD-006",title:"GitOps automated sync policy",
+incident:"A Git change is committed, but the application is not configured for automated synchronization.",
+task:"Enable automated sync and pruning.",
+broken:`apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: inventory
+  namespace: argocd
+spec:
+  syncPolicy:
+    automated:
+      selfHeal: true`,
+solution:`apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: inventory
+  namespace: argocd
+spec:
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true`,
+checks:["kind: Application","automated:","prune: true","selfHeal: true"],
+hint:"Pruning removes resources deleted from Git. Enable it only when that behavior is intended.",
+output:"Automated sync policy checks passed. Pruning and self-healing enabled in the lab configuration.",
+commands:["argocd app get inventory","argocd app diff inventory","argocd app sync inventory"],
+},
+{
+id:"CD-007",title:"Release artifact version mismatch",
+incident:"The deployment stage references an image tag different from the one produced by the build stage.",
+task:"Use the same immutable version in the deployment image.",
+broken:`build:
+  image: registry.example.com/orders:2.8.0
+deploy:
+  image: registry.example.com/orders:2.7.0
+  namespace: production`,
+solution:`build:
+  image: registry.example.com/orders:2.8.0
+deploy:
+  image: registry.example.com/orders:2.8.0
+  namespace: production`,
+checks:["build:","registry.example.com/orders:2.8.0","deploy:","namespace: production"],
+hint:"Compare the exact repository and tag produced by build with the image deployed.",
+output:"Artifact consistency check passed. Build and deployment both reference version 2.8.0.",
+commands:["docker image inspect registry.example.com/orders:2.8.0","kubectl set image deployment/orders orders=registry.example.com/orders:2.8.0","kubectl rollout status deployment/orders"],
+},
+{
+id:"CD-008",title:"Helm service port mismatch",
+incident:"The chart exposes a Service port that does not match the application's configured container port.",
+task:"Correct the target port to 8080.",
+broken:`service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+container:
+  port: 8080`,
+solution:`service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+container:
+  port: 8080`,
+checks:["type: ClusterIP","port: 80","targetPort: 8080","container:","port: 8080"],
+hint:"The Service targetPort must point to the container's listening port.",
+output:"Service port checks passed. Service port 80 forwards to container port 8080.",
+commands:["helm lint ./chart","helm template checkout ./chart","kubectl get svc checkout"],
+},
+]
+}
+];
+
+const storageKey = "devmavox-practical-labs-v1";
+
+export default function PracticalLabsPage() {
+  const [activeLab,setActiveLab] = useState<Lab>("kubernetes");
+  const [index,setIndex] = useState(0);
+  const [code,setCode] = useState("");
+  const [results,setResults] = useState<Record<string,boolean>>({});
+  const [attempts,setAttempts] = useState<Record<string,number>>({});
+  const [showHint,setShowHint] = useState(false);
+  const [showSolution,setShowSolution] = useState(false);
+  const [output,setOutput] = useState("");
+  const [tab,setTab] = useState<"editor"|"commands"|"result">("editor");
+
+  const lab = labs.find(x=>x.id===activeLab)!;
+  const exercise = lab.exercises[index];
+  const completed = lab.exercises.filter(x=>results[x.id]).length;
+
+  useEffect(()=>{
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if(raw) {
+        const parsed = JSON.parse(raw);
+        setResults(parsed.results || {});
+        setAttempts(parsed.attempts || {});
+      }
+    } catch {}
+  },[]);
+
+  useEffect(()=>{
+    if(!exercise) return;
+    setCode(exercise.broken);
+    setOutput("");
+    setShowHint(false);
+    setShowSolution(false);
+    setTab("editor");
+  },[activeLab,index]);
+
+  useEffect(()=>{
+    try { localStorage.setItem(storageKey,JSON.stringify({results,attempts})); } catch {}
+  },[results,attempts]);
+
+  const passed = useMemo(()=>exercise.checks.filter(x=>code.includes(x)),[exercise,code]);
+  const missing = exercise.checks.filter(x=>!code.includes(x));
+
+  function validate() {
+    setAttempts(old=>({...old,[exercise.id]:(old[exercise.id]||0)+1}));
+    if(missing.length===0) {
+      setResults(old=>({...old,[exercise.id]:true}));
+      setOutput("PASS — All lab checks passed.\n\n"+exercise.output+"\n\nVerification commands are shown in the Commands tab. This is a local simulation; no cluster or remote CI system was changed.");
+      setTab("result");
+    } else {
+      setResults(old=>({...old,[exercise.id]:false}));
+      setOutput("NOT PASSED — "+missing.length+" check(s) remain.\n\nMissing checks:\n"+missing.map(x=>"• "+x).join("\n")+"\n\nReview the incident, inspect the YAML and retry validation.");
+      setTab("result");
+    }
+  }
+
+  function resetExercise() {
+    setCode(exercise.broken);
+    setOutput("Exercise reset. Start again from the broken configuration.");
+    setShowHint(false);
+    setShowSolution(false);
+    setTab("editor");
+  }
+
+  function loadSolution() {
+    setCode(exercise.solution);
+    setShowSolution(true);
+    setOutput("Reference solution loaded. Run validation to check it.");
+    setTab("editor");
+  }
+
+  function nextExercise() {
+    if(index<lab.exercises.length-1) setIndex(index+1);
+  }
+
+  function previousExercise() {
+    if(index>0) setIndex(index-1);
+  }
+
+  function selectLab(id:Lab) {
+    setActiveLab(id);
+    setIndex(0);
+  }
+
+  const total = labs.reduce((n,x)=>n+x.exercises.length,0);
+  const done = Object.values(results).filter(Boolean).length;
+
+  return (
+    <main className="min-h-screen bg-[#080d18] text-slate-100">
+      <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6">
+        <header className="mb-6 rounded-2xl border border-cyan-900/60 bg-gradient-to-r from-[#10243b] to-[#111827] p-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div className="text-xs font-bold uppercase tracking-[.2em] text-cyan-300">DevMavox • Hands-on environment</div>
+              <h1 className="mt-2 text-2xl font-black sm:text-3xl">Real-World Lab Practice</h1>
+              <p className="mt-2 text-sm text-slate-300">Find the fault. Repair the configuration. Validate the fix. Verify the expected result.</p>
+            </div>
+            <div className="rounded-xl border border-cyan-800 bg-black/20 px-5 py-3">
+              <div className="text-xs text-slate-400">Overall progress</div>
+              <div className="mt-1 text-2xl font-bold text-cyan-300">{done}/{total}</div>
+              <div className="mt-1 text-xs text-slate-400">Completed exercises</div>
+            </div>
+          </div>
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-700">
+            <div className="h-full rounded-full bg-cyan-400 transition-all" style={{width:`${total?done/total*100:0}%`}} />
+          </div>
+        </header>
+
+        <nav className="mb-6 grid gap-3 md:grid-cols-3">
+          {labs.map(item=>{
+            const count=item.exercises.filter(x=>results[x.id]).length;
+            return <button key={item.id} onClick={()=>selectLab(item.id)} className={`rounded-xl border p-4 text-left transition ${activeLab===item.id?"border-cyan-400 bg-cyan-950/50":"border-slate-700 bg-slate-900 hover:border-slate-500"}`}>
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-bold">{item.name}</span>
+                <span className="text-xs text-cyan-300">{count}/{item.exercises.length}</span>
+              </div>
+              <p className="mt-2 text-xs text-slate-400">{item.subtitle}</p>
+            </button>
+          })}
+        </nav>
+
+        <div className="grid gap-5 lg:grid-cols-[280px_1fr]">
+          <aside className="rounded-xl border border-slate-700 bg-slate-900 p-3">
+            <div className="mb-3 flex items-center justify-between px-2">
+              <h2 className="font-bold">Incident queue</h2>
+              <span className="text-xs text-slate-400">{completed}/{lab.exercises.length} done</span>
+            </div>
+            <div className="space-y-2">
+              {lab.exercises.map((item,i)=>(
+                <button key={item.id} onClick={()=>setIndex(i)} className={`w-full rounded-lg border p-3 text-left ${index===i?"border-cyan-500 bg-cyan-950/40":"border-slate-800 bg-slate-950 hover:bg-slate-800"}`}>
+                  <div className="flex justify-between gap-2">
+                    <span className="text-xs font-bold text-cyan-300">{item.id}</span>
+                    <span className={`text-xs ${results[item.id]?"text-emerald-400":"text-slate-500"}`}>{results[item.id]?"PASSED":"OPEN"}</span>
+                  </div>
+                  <div className="mt-1 text-sm font-semibold">{item.title}</div>
+                  <div className="mt-1 text-xs text-slate-500">{item.difficulty}</div>
+                </button>
+              ))}
+            </div>
+          </aside>
+
+          <section className="min-w-0 space-y-4">
+            <div className="rounded-xl border border-slate-700 bg-slate-900 p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <span className="text-xs font-bold text-cyan-300">{exercise.id} • {exercise.difficulty}</span>
+                  <h2 className="mt-1 text-xl font-bold">{exercise.title}</h2>
+                </div>
+                <span className={`rounded-full px-3 py-1 text-xs ${results[exercise.id]?"bg-emerald-950 text-emerald-300":"bg-amber-950 text-amber-300"}`}>{results[exercise.id]?"Completed":"Practice required"}</span>
+              </div>
+              <div className="mt-4 rounded-lg border border-amber-900/60 bg-amber-950/20 p-4">
+                <div className="text-xs font-bold uppercase tracking-wider text-amber-300">Live incident</div>
+                <p className="mt-2 text-sm leading-6 text-slate-200">{exercise.incident}</p>
+              </div>
+              <div className="mt-3 rounded-lg bg-slate-950 p-4">
+                <div className="text-xs font-bold uppercase tracking-wider text-cyan-300">Your task</div>
+                <p className="mt-2 text-sm">{exercise.task}</p>
+              </div>
+            </div>
+
+            <div className="overflow-hidden rounded-xl border border-slate-700 bg-slate-900">
+              <div className="flex flex-wrap gap-2 border-b border-slate-700 p-3">
+                {(["editor","commands","result"] as const).map(t=><button key={t} onClick={()=>setTab(t)} className={`rounded-lg px-4 py-2 text-xs font-bold uppercase ${tab===t?"bg-cyan-700 text-white":"bg-slate-800 text-slate-300"}`}>{t==="editor"?"YAML editor":t==="commands"?"Commands":"Validation output"}</button>)}
+              </div>
+
+              {tab==="editor" && <div className="p-4">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-sm font-semibold">Edit the broken configuration</span>
+                  <span className="text-xs text-slate-500">YAML • Local practice editor</span>
+                </div>
+                <textarea spellCheck={false} value={code} onChange={e=>setCode(e.target.value)} className="min-h-[390px] w-full resize-y rounded-lg border border-slate-700 bg-[#050914] p-4 font-mono text-sm leading-6 text-emerald-200 outline-none focus:border-cyan-500" />
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button onClick={validate} className="rounded-lg bg-emerald-600 px-5 py-3 text-sm font-bold text-white hover:bg-emerald-500">Run validation</button>
+                  <button onClick={()=>{setShowHint(!showHint);}} className="rounded-lg border border-amber-700 px-4 py-3 text-sm font-semibold text-amber-300"> {showHint?"Hide hint":"Show hint"} </button>
+                  <button onClick={resetExercise} className="rounded-lg border border-slate-600 px-4 py-3 text-sm">Reset exercise</button>
+                  <button onClick={loadSolution} className="rounded-lg border border-rose-800 px-4 py-3 text-sm text-rose-300">Load reference fix</button>
+                </div>
+                {showHint && <div className="mt-3 rounded-lg border border-amber-800 bg-amber-950/30 p-3 text-sm text-amber-100"><b>Investigation hint:</b> {exercise.hint}</div>}
+                {showSolution && <div className="mt-3 rounded-lg border border-rose-800 bg-rose-950/20 p-3 text-sm text-rose-200">Reference fix loaded. Run validation to verify the configuration.</div>}
+              </div>}
+
+              {tab==="commands" && <div className="space-y-3 p-4">
+                <p className="text-sm text-slate-300">Use these commands in your own lab environment after reviewing the configuration. Commands are examples and are not executed by this browser workspace.</p>
+                {exercise.commands.map((cmd,i)=><div key={i} className="flex items-center justify-between gap-3 rounded-lg border border-slate-700 bg-slate-950 p-3">
+                  <code className="break-all text-xs text-emerald-300">{cmd}</code>
+                  <button onClick={()=>navigator.clipboard?.writeText(cmd)} className="shrink-0 rounded bg-slate-800 px-3 py-2 text-xs">Copy</button>
+                </div>)}
+                <div className="rounded-lg border border-slate-700 p-3 text-xs text-slate-400">Run commands only against a development or disposable lab cluster. Review context, namespace and target before applying changes.</div>
+              </div>}
+
+              {tab==="result" && <div className="space-y-4 p-4">
+                <div className="rounded-lg border border-slate-700 bg-slate-950 p-4">
+                  <div className="text-xs font-bold uppercase tracking-wider text-cyan-300">Validation result</div>
+                  <pre className="mt-3 whitespace-pre-wrap break-words font-mono text-sm leading-6 text-slate-200">{output||"No validation run yet. Open the editor and run validation."}</pre>
+                </div>
+                <div className="rounded-lg border border-slate-700 p-4">
+                  <div className="mb-3 flex justify-between text-sm"><b>Required checks</b><span>{passed.length}/{exercise.checks.length}</span></div>
+                  <div className="space-y-2">
+                    {exercise.checks.map((check,i)=>{
+                      const ok=code.includes(check);
+                      return <div key={i} className="flex items-center gap-2 text-xs"><span className={ok?"text-emerald-400":"text-rose-400"}>{ok?"✓":"✕"}</span><code className="text-slate-300">{check}</code></div>;
+                    })}
+                  </div>
+                </div>
+                {results[exercise.id] && <div className="rounded-lg border border-emerald-800 bg-emerald-950/30 p-4 text-sm text-emerald-300">Exercise passed. Expected output: {exercise.output}</div>}
+              </div>}
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <button disabled={index===0} onClick={previousExercise} className="rounded-lg border border-slate-700 px-4 py-3 text-sm disabled:opacity-30">← Previous incident</button>
+              <div className="text-xs text-slate-400">Attempt count: {attempts[exercise.id]||0}</div>
+              <button disabled={index===lab.exercises.length-1} onClick={nextExercise} className="rounded-lg bg-cyan-700 px-4 py-3 text-sm font-bold disabled:opacity-30">Next incident →</button>
+            </div>
+            <div className="rounded-lg border border-slate-800 bg-slate-900 p-3 text-xs text-slate-400">Practice engine note: validation checks the exercise-specific required configuration fragments. It is a guided local simulation, not a live Kubernetes API, YAML parser, Jenkins runner, Helm renderer or Argo CD connection. Use the displayed commands in a real development environment for actual infrastructure validation.</div>
+          </section>
+        </div>
+      </div>
+    </main>
+  );
+}

@@ -1,0 +1,1046 @@
+"use client";
+
+import React, { useMemo, useState } from "react";
+
+type Exercise = {
+  id: string;
+  title: string;
+  incident: string;
+  impact: string;
+  task: string;
+  broken: string;
+  solution: string;
+  required: string[];
+  forbidden?: string[];
+  investigate: string[];
+  commands: string[];
+  expected: string;
+};
+
+const labs: { id: string; title: string; description: string; exercises: Exercise[] }[] = [
+{
+  id: "kubernetes",
+  title: "04 — Kubernetes Manifest Lab",
+  description: "Repair and validate Kubernetes manifests through practical deployment incidents.",
+  exercises: [
+    {
+      id: "KML-01",
+      title: "Deployment selector mismatch",
+      incident: "A checkout Deployment creates Pods, but the Deployment reports that it cannot find its managed replicas.",
+      impact: "The application has no healthy managed replicas and the rollout cannot become available.",
+      task: "Find the mismatch between selector.matchLabels and template.metadata.labels. Repair the labels without changing the application identity.",
+      broken: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: checkout
+  template:
+    metadata:
+      labels:
+        app: payment
+    spec:
+      containers:
+        - name: checkout
+          image: nginx:1.27`,
+      solution: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: checkout
+  template:
+    metadata:
+      labels:
+        app: checkout
+    spec:
+      containers:
+        - name: checkout
+          image: nginx:1.27`,
+      required: ["kind: Deployment", "replicas: 3", "app: checkout", "image: nginx:1.27"],
+      forbidden: ["app: payment"],
+      investigate: ["Compare spec.selector.matchLabels with spec.template.metadata.labels.", "Check whether every selector key and value exists on the Pod template.", "Inspect rollout status and ReplicaSet events after applying the correction."],
+      commands: ["kubectl describe deployment checkout", "kubectl get rs,pods -l app=checkout", "kubectl rollout status deployment/checkout"],
+      expected: "Three desired replicas are created and the Deployment selector matches its Pod template labels."
+    },
+    {
+      id: "KML-02",
+      title: "Service selector sends traffic to no Pods",
+      incident: "The frontend Service exists, but requests fail because its endpoint list is empty.",
+      impact: "The frontend cannot reach the catalog workload through the Service.",
+      task: "Correct the Service selector so it selects the actual catalog Pods. Preserve the Service port and target port.",
+      broken: `apiVersion: v1
+kind: Service
+metadata:
+  name: catalog
+spec:
+  selector:
+    app: catalogue
+  ports:
+    - port: 80
+      targetPort: 8080`,
+      solution: `apiVersion: v1
+kind: Service
+metadata:
+  name: catalog
+spec:
+  selector:
+    app: catalog
+  ports:
+    - port: 80
+      targetPort: 8080`,
+      required: ["kind: Service", "name: catalog", "app: catalog", "port: 80", "targetPort: 8080"],
+      forbidden: ["app: catalogue"],
+      investigate: ["Inspect the Service selector.", "Inspect Pod labels using kubectl get pods --show-labels.", "Compare exact label spelling and case.", "Check endpoints after the correction."],
+      commands: ["kubectl get svc catalog -o yaml", "kubectl get pods --show-labels", "kubectl get endpoints catalog"],
+      expected: "The Service endpoint list contains the matching catalog Pod IP and target port."
+    },
+    {
+      id: "KML-03",
+      title: "Container image pull failure",
+      incident: "A production Pod remains in ImagePullBackOff after a release.",
+      impact: "The new application version never starts and the rollout is blocked.",
+      task: "Correct the invalid image reference. Use the intended repository and immutable release tag.",
+      broken: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: inventory
+  template:
+    metadata:
+      labels:
+        app: inventory
+    spec:
+      containers:
+        - name: inventory
+          image: registry.example.com/inventory:release-missing`,
+      solution: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: inventory
+  template:
+    metadata:
+      labels:
+        app: inventory
+    spec:
+      containers:
+        - name: inventory
+          image: registry.example.com/inventory:1.4.2`,
+      required: ["kind: Deployment", "replicas: 2", "registry.example.com/inventory:1.4.2"],
+      forbidden: ["release-missing"],
+      investigate: ["Inspect Pod events for the exact registry error.", "Verify repository, tag, registry reachability and imagePullSecrets.", "Confirm that the intended tag exists before rollout."],
+      commands: ["kubectl describe pod <pod-name>", "kubectl get events --sort-by=.lastTimestamp", "kubectl rollout status deployment/inventory"],
+      expected: "The Deployment references the intended image tag and Pods can pull that image when registry access is configured."
+    },
+    {
+      id: "KML-04",
+      title: "Readiness probe uses the wrong endpoint",
+      incident: "The application process starts, but Kubernetes repeatedly marks the Pod unready.",
+      impact: "Service traffic is withheld from otherwise running application containers.",
+      task: "Correct the readiness probe path to the application's health endpoint.",
+      broken: `apiVersion: v1
+kind: Pod
+metadata:
+  name: payments
+spec:
+  containers:
+    - name: payments
+      image: nginx:1.27
+      readinessProbe:
+        httpGet:
+          path: /wrong-health
+          port: 8080`,
+      solution: `apiVersion: v1
+kind: Pod
+metadata:
+  name: payments
+spec:
+  containers:
+    - name: payments
+      image: nginx:1.27
+      readinessProbe:
+        httpGet:
+          path: /health
+          port: 8080`,
+      required: ["readinessProbe:", "path: /health", "port: 8080"],
+      forbidden: ["/wrong-health"],
+      investigate: ["Inspect readiness probe events.", "Test the configured endpoint from inside the Pod or an approved diagnostic container.", "Confirm that the application listens on the configured port."],
+      commands: ["kubectl describe pod payments", "kubectl get pod payments -o wide", "kubectl get endpoints"],
+      expected: "The readiness probe checks the correct health path and the Pod becomes Ready when the application responds successfully."
+    },
+    {
+      id: "KML-05",
+      title: "ConfigMap reference prevents container startup",
+      incident: "A Deployment cannot create its application container because a referenced configuration object is missing.",
+      impact: "New Pods fail to start with a configuration reference error.",
+      task: "Make the ConfigMap name consistent between the ConfigMap resource and the Pod environment reference.",
+      broken: `apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orders-config
+data:
+  APP_MODE: production
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: orders
+spec:
+  containers:
+    - name: orders
+      image: nginx:1.27
+      envFrom:
+        - configMapRef:
+            name: order-config`,
+      solution: `apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orders-config
+data:
+  APP_MODE: production
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: orders
+spec:
+  containers:
+    - name: orders
+      image: nginx:1.27
+      envFrom:
+        - configMapRef:
+            name: orders-config`,
+      required: ["name: orders-config", "APP_MODE: production", "configMapRef:", "name: orders-config"],
+      forbidden: ["name: order-config"],
+      investigate: ["List ConfigMaps in the Pod namespace.", "Inspect the Pod events for the missing reference.", "Compare the referenced object name with the actual object name."],
+      commands: ["kubectl get configmap", "kubectl describe pod orders", "kubectl get pod orders -o yaml"],
+      expected: "The Pod references the existing orders-config ConfigMap in the same namespace."
+    },
+    {
+      id: "KML-06",
+      title: "PVC requests an invalid storage configuration",
+      incident: "A database Pod remains Pending because its storage claim cannot be fulfilled.",
+      impact: "The database cannot mount its persistent data volume.",
+      task: "Correct the access mode and storage request. Keep the intended 5Gi capacity.",
+      broken: `apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-data
+spec:
+  accessModes:
+    - InvalidMode
+  resources:
+    requests:
+      storage: 5Gi`,
+      solution: `apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi`,
+      required: ["kind: PersistentVolumeClaim", "ReadWriteOnce", "storage: 5Gi"],
+      forbidden: ["InvalidMode"],
+      investigate: ["Describe the PVC and inspect its events.", "Check available StorageClasses and provisioner status.", "Verify access mode and requested capacity against storage capabilities."],
+      commands: ["kubectl describe pvc database-data", "kubectl get storageclass", "kubectl get pv"],
+      expected: "The claim uses a supported access mode and can bind when a compatible StorageClass or PV is available."
+    },
+    {
+      id: "KML-07",
+      title: "Namespace mismatch during deployment",
+      incident: "A deployment pipeline creates a ConfigMap in one namespace while the application runs in another.",
+      impact: "The application cannot resolve the configuration object it depends on.",
+      task: "Place both resources in the same namespace and preserve their names.",
+      broken: `apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shipping-settings
+  namespace: staging
+data:
+  REGION: ap-south-1
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: shipping
+  namespace: production
+spec:
+  containers:
+    - name: shipping
+      image: nginx:1.27
+      envFrom:
+        - configMapRef:
+            name: shipping-settings`,
+      solution: `apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shipping-settings
+  namespace: production
+data:
+  REGION: ap-south-1
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: shipping
+  namespace: production
+spec:
+  containers:
+    - name: shipping
+      image: nginx:1.27
+      envFrom:
+        - configMapRef:
+            name: shipping-settings`,
+      required: ["name: shipping-settings", "namespace: production", "name: shipping"],
+      forbidden: ["namespace: staging"],
+      investigate: ["Check the namespace of each resource.", "Remember that namespaced ConfigMaps are not shared across namespaces.", "Inspect the application Pod events after correcting the namespace."],
+      commands: ["kubectl get configmap -A", "kubectl get pod -A", "kubectl describe pod shipping -n production"],
+      expected: "Both resources exist in production and the Pod references the ConfigMap in its own namespace."
+    },
+    {
+      id: "KML-08",
+      title: "Rolling update has no availability protection",
+      incident: "A production Deployment update removes too many healthy replicas during rollout.",
+      impact: "Users experience unavailable application capacity during a release.",
+      task: "Add a rolling update strategy that preserves at least one available Pod while updating.",
+      broken: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-store
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-store
+  template:
+    metadata:
+      labels:
+        app: web-store
+    spec:
+      containers:
+        - name: web-store
+          image: nginx:1.27`,
+      solution: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-store
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: web-store
+  template:
+    metadata:
+      labels:
+        app: web-store
+    spec:
+      containers:
+        - name: web-store
+          image: nginx:1.27`,
+      required: ["type: RollingUpdate", "maxUnavailable: 1", "maxSurge: 1", "replicas: 3"],
+      investigate: ["Inspect the current rollout strategy.", "Decide how many Pods can be unavailable during an update.", "Check rollout status and available replicas after applying."],
+      commands: ["kubectl describe deployment web-store", "kubectl rollout status deployment/web-store", "kubectl get pods -l app=web-store"],
+      expected: "The Deployment uses a controlled rolling update with maxUnavailable 1 and maxSurge 1."
+    }
+  ]
+},
+{
+  id: "troubleshooting",
+  title: "05 — Troubleshooting Lab",
+  description: "Investigate incidents, identify root causes, repair failures and verify recovery.",
+  exercises: [
+    {
+      id: "TSL-01",
+      title: "CrashLoopBackOff caused by wrong startup command",
+      incident: "A reporting service restarts continuously immediately after deployment.",
+      impact: "The reporting API is unavailable and restart counts keep increasing.",
+      task: "Correct the container command so the process starts and remains in the foreground.",
+      broken: `apiVersion: v1
+kind: Pod
+metadata:
+  name: reporting
+spec:
+  containers:
+    - name: reporting
+      image: busybox:1.36
+      command: ["sh", "-c", "exit 1"]`,
+      solution: `apiVersion: v1
+kind: Pod
+metadata:
+  name: reporting
+spec:
+  containers:
+    - name: reporting
+      image: busybox:1.36
+      command: ["sh", "-c", "sleep 3600"]`,
+      required: ['command: ["sh", "-c", "sleep 3600"]'],
+      forbidden: ["exit 1"],
+      investigate: ["Inspect the restart count and last termination reason.", "Read current and previous container logs.", "Check the configured command and exit code.", "Correct the process and observe the restart behavior."],
+      commands: ["kubectl describe pod reporting", "kubectl logs reporting --previous", "kubectl get pod reporting -w"],
+      expected: "The container process stays alive and the Pod no longer enters a repeated restart cycle."
+    },
+    {
+      id: "TSL-02",
+      title: "OOMKilled after memory usage spike",
+      incident: "A batch worker is terminated during large report generation.",
+      impact: "Jobs fail and must be retried, increasing processing delays.",
+      task: "Set an explicit memory request and a higher memory limit appropriate to the workload.",
+      broken: `apiVersion: v1
+kind: Pod
+metadata:
+  name: report-worker
+spec:
+  containers:
+    - name: worker
+      image: busybox:1.36
+      command: ["sh", "-c", "sleep 3600"]
+      resources:
+        limits:
+          memory: "64Mi"`,
+      solution: `apiVersion: v1
+kind: Pod
+metadata:
+  name: report-worker
+spec:
+  containers:
+    - name: worker
+      image: busybox:1.36
+      command: ["sh", "-c", "sleep 3600"]
+      resources:
+        requests:
+          memory: "128Mi"
+        limits:
+          memory: "512Mi"`,
+      required: ["requests:", 'memory: "128Mi"', "limits:", 'memory: "512Mi"'],
+      forbidden: ['memory: "64Mi"'],
+      investigate: ["Check the previous termination reason and Pod events.", "Inspect memory usage and workload peaks.", "Compare memory requests with limits and node capacity.", "Review whether the application has a memory leak."],
+      commands: ["kubectl describe pod report-worker", "kubectl top pod report-worker", "kubectl get events --sort-by=.lastTimestamp"],
+      expected: "The worker has an explicit memory request and a larger limit; verify actual workload memory before production rollout."
+    },
+    {
+      id: "TSL-03",
+      title: "DNS resolution failure between services",
+      incident: "The checkout application cannot resolve the inventory Service name.",
+      impact: "Internal API calls fail even though both workloads appear healthy.",
+      task: "Correct the service DNS hostname to use the actual Kubernetes Service and namespace.",
+      broken: `INVENTORY_URL=http://inventry.default.svc.cluster.local:8080`,
+      solution: `INVENTORY_URL=http://inventory.default.svc.cluster.local:8080`,
+      required: ["INVENTORY_URL=http://inventory.default.svc.cluster.local:8080"],
+      forbidden: ["inventry.default"],
+      investigate: ["Verify the Service name and namespace.", "Check DNS resolution from a diagnostic Pod.", "Inspect CoreDNS Pods and logs if multiple names fail.", "Test Service connectivity separately from DNS."],
+      commands: ["kubectl get svc -A", "kubectl get pods -n kube-system -l k8s-app=kube-dns", "nslookup inventory.default.svc.cluster.local"],
+      expected: "The application uses the correct Service FQDN and DNS resolution returns the Service address."
+    },
+    {
+      id: "TSL-04",
+      title: "NetworkPolicy blocks required application traffic",
+      incident: "A newly isolated namespace blocks API traffic from the frontend to the backend.",
+      impact: "Frontend requests time out even though backend Pods are healthy.",
+      task: "Add an ingress rule that permits traffic from frontend Pods on TCP port 8080.",
+      broken: `apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress: []`,
+      solution: `apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - protocol: TCP
+          port: 8080`,
+      required: ["app: backend", "app: frontend", "protocol: TCP", "port: 8080"],
+      forbidden: ["ingress: []"],
+      investigate: ["Check whether the CNI supports NetworkPolicy.", "Inspect policies selecting backend Pods.", "Verify source Pod labels and destination port.", "Test connectivity after applying the narrow allow rule."],
+      commands: ["kubectl get networkpolicy -A", "kubectl describe networkpolicy backend-ingress", "kubectl get pods --show-labels"],
+      expected: "The policy allows the intended frontend Pods to reach backend TCP port 8080 without opening all ingress traffic."
+    },
+    {
+      id: "TSL-05",
+      title: "Application returns HTTP 503 from unavailable endpoints",
+      incident: "An API gateway returns 503 while the backend Service has no ready endpoints.",
+      impact: "All requests routed through the gateway fail.",
+      task: "Find the incorrect readiness path and repair the backend probe.",
+      broken: `readinessProbe:
+  httpGet:
+    path: /readyz-old
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10`,
+      solution: `readinessProbe:
+  httpGet:
+    path: /readyz
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10`,
+      required: ["path: /readyz", "port: 8080", "periodSeconds: 10"],
+      forbidden: ["/readyz-old"],
+      investigate: ["Check Service endpoints before changing the gateway.", "Inspect backend Pod readiness conditions.", "Test the actual readiness endpoint and port.", "Verify that ready Pods appear as Service endpoints."],
+      commands: ["kubectl get endpoints backend", "kubectl describe pod <backend-pod>", "kubectl get pods -l app=backend"],
+      expected: "The backend readiness check targets /readyz and healthy Pods become eligible Service endpoints."
+    },
+    {
+      id: "TSL-06",
+      title: "Node disk pressure disrupts workload scheduling",
+      incident: "Pods become unstable after a worker node reports DiskPressure.",
+      impact: "Scheduling and container startup are affected by insufficient node storage.",
+      task: "Investigate node conditions, identify disk consumers and define a safe cleanup and capacity recovery procedure.",
+      broken: `incident:
+  nodeCondition: DiskPressure
+  action: delete-all-pods
+  verification: none`,
+      solution: `incident:
+  nodeCondition: DiskPressure
+  action: inspect-node-disk-and-container-runtime-usage
+  cleanup: remove-approved-unused-images-and-logs
+  verification: confirm-DiskPressure-cleared-and-node-Ready`,
+      required: ["DiskPressure", "inspect-node-disk-and-container-runtime-usage", "confirm-DiskPressure-cleared-and-node-Ready"],
+      forbidden: ["delete-all-pods"],
+      investigate: ["Inspect node conditions and events.", "Check filesystem capacity and inode usage.", "Identify container images, logs and ephemeral storage consumers.", "Use an approved cleanup procedure; do not delete workloads blindly.", "Confirm node Ready and DiskPressure cleared."],
+      commands: ["kubectl describe node <node-name>", "kubectl get events -A --sort-by=.lastTimestamp", "kubectl get pods -A -o wide"],
+      expected: "A controlled cleanup and capacity recovery plan is documented and node conditions are verified."
+    },
+    {
+      id: "TSL-07",
+      title: "RBAC denies an application service account",
+      incident: "A controller receives Forbidden errors when listing ConfigMaps.",
+      impact: "The controller cannot reconcile configuration changes.",
+      task: "Grant only the required get, list and watch permissions for ConfigMaps in the intended namespace.",
+      broken: `apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: config-reader
+  namespace: apps
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get"]`,
+      solution: `apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: config-reader
+  namespace: apps
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch"]`,
+      required: ['resources: ["configmaps"]', 'verbs: ["get", "list", "watch"]'],
+      forbidden: ['resources: ["pods"]'],
+      investigate: ["Read the exact Forbidden message and identify the service account.", "Check Role and RoleBinding in the correct namespace.", "Use kubectl auth can-i to test the required permission.", "Avoid granting cluster-admin for a namespace-scoped issue."],
+      commands: ["kubectl get role,rolebinding -n apps", "kubectl auth can-i list configmaps --as=system:serviceaccount:apps:controller -n apps", "kubectl describe role config-reader -n apps"],
+      expected: "The service account receives only the ConfigMap permissions required in namespace apps."
+    },
+    {
+      id: "TSL-08",
+      title: "Rollout stuck because maxUnavailable is too restrictive",
+      incident: "A Deployment with one replica cannot progress during a rollout.",
+      impact: "The release remains stuck and the application may have no available replacement Pod.",
+      task: "Adjust the rollout strategy to allow a replacement Pod to be created safely.",
+      broken: `strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 100%
+    maxSurge: 0`,
+      solution: `strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1`,
+      required: ["maxUnavailable: 0", "maxSurge: 1"],
+      forbidden: ["maxUnavailable: 100%", "maxSurge: 0"],
+      investigate: ["Inspect rollout status and Deployment events.", "Check desired replicas and available replicas.", "Determine whether surge capacity is available.", "Verify the replacement Pod becomes Ready before old capacity is removed."],
+      commands: ["kubectl rollout status deployment/<name>", "kubectl describe deployment <name>", "kubectl get pods -l app=<label> -w"],
+      expected: "The rollout can create one surge Pod while keeping the existing available replica until replacement readiness."
+    }
+  ]
+},
+{
+  id: "cicd",
+  title: "06 — CI/CD and GitOps Lab",
+  description: "Repair pipeline, Helm and GitOps delivery failures using release-focused exercises.",
+  exercises: [
+    {
+      id: "CDL-01",
+      title: "Jenkins pipeline checks out the wrong branch",
+      incident: "A release pipeline builds an older branch instead of the approved release branch.",
+      impact: "The deployed artifact does not contain the approved change set.",
+      task: "Correct the checkout branch and verify the pipeline uses the intended source revision.",
+      broken: `pipeline {
+  agent any
+  stages {
+    stage('Checkout') {
+      steps {
+        git branch: 'develop', url: 'https://example.com/team/store.git'
+      }
+    }
+  }
+}`,
+      solution: `pipeline {
+  agent any
+  stages {
+    stage('Checkout') {
+      steps {
+        git branch: 'release/2.4', url: 'https://example.com/team/store.git'
+      }
+    }
+  }
+}`,
+      required: ["branch: 'release/2.4'", "stage('Checkout')"],
+      forbidden: ["branch: 'develop'"],
+      investigate: ["Inspect the Jenkins build parameters and checkout log.", "Verify the remote branch exists.", "Record the commit SHA used by the build.", "Confirm the artifact was produced from the approved revision."],
+      commands: ["git ls-remote --heads origin release/2.4", "git rev-parse HEAD", "git log -1 --oneline"],
+      expected: "The pipeline checks out release/2.4 and the build log identifies the intended commit."
+    },
+    {
+      id: "CDL-02",
+      title: "Jenkins stage runs tests after packaging",
+      incident: "A pipeline publishes an artifact before the test stage has completed.",
+      impact: "A defective build can be promoted to the artifact repository.",
+      task: "Reorder the stages so tests must pass before packaging and publishing.",
+      broken: `pipeline {
+  agent any
+  stages {
+    stage('Package') { steps { sh 'mvn package' } }
+    stage('Test') { steps { sh 'mvn test' } }
+    stage('Publish') { steps { sh 'mvn deploy' } }
+  }
+}`,
+      solution: `pipeline {
+  agent any
+  stages {
+    stage('Test') { steps { sh 'mvn test' } }
+    stage('Package') { steps { sh 'mvn package' } }
+    stage('Publish') { steps { sh 'mvn deploy' } }
+  }
+}`,
+      required: ["stage('Test')", "stage('Package')", "stage('Publish')"],
+      investigate: ["Inspect stage order and the build result.", "Verify test failures stop later stages.", "Check whether publish is gated on successful packaging.", "Confirm artifact publication occurs only after successful tests."],
+      commands: ["mvn test", "mvn package", "mvn deploy"],
+      expected: "Tests run before packaging and publishing; a failed test prevents artifact promotion."
+    },
+    {
+      id: "CDL-03",
+      title: "Docker build uses an incorrect context directory",
+      incident: "The CI job cannot find the Dockerfile or application files during image build.",
+      impact: "The release pipeline fails before producing a container image.",
+      task: "Correct the Docker build context to the directory containing the Dockerfile and required files.",
+      broken: `steps:
+  - name: Build image
+    run: docker build -f services/catalog/Dockerfile ./wrong-folder`,
+      solution: `steps:
+  - name: Build image
+    run: docker build -f services/catalog/Dockerfile services/catalog`,
+      required: ["docker build -f services/catalog/Dockerfile services/catalog"],
+      forbidden: ["./wrong-folder"],
+      investigate: ["Inspect the repository checkout directory structure.", "Verify the Dockerfile path.", "Check whether COPY source paths exist inside the selected build context.", "Re-run the build with the corrected context."],
+      commands: ["pwd", "find . -name Dockerfile", "docker build -f services/catalog/Dockerfile services/catalog"],
+      expected: "Docker receives the intended Dockerfile and context directory and can access the required build files."
+    },
+    {
+      id: "CDL-04",
+      title: "Helm values override uses the wrong key",
+      incident: "A Helm release deploys the default replica count instead of the requested production count.",
+      impact: "The application runs below its required capacity.",
+      task: "Correct the values override key so it matches the chart's replica configuration.",
+      broken: `replicaCount: 2
+production:
+  replicas: 5`,
+      solution: `replicaCount: 5`,
+      required: ["replicaCount: 5"],
+      forbidden: ["replicaCount: 2"],
+      investigate: ["Inspect values.yaml and the chart template.", "Find the exact values key referenced by the Deployment template.", "Render the chart with the production values file.", "Inspect the rendered replica count before upgrade."],
+      commands: ["helm show values ./chart", "helm template catalog ./chart -f values-production.yaml", "helm get values catalog -a"],
+      expected: "The rendered Deployment has five replicas because the correct chart value is overridden."
+    },
+    {
+      id: "CDL-05",
+      title: "Helm upgrade references a missing values file",
+      incident: "The deployment job fails because its configured production values file does not exist.",
+      impact: "The release cannot be upgraded through the delivery pipeline.",
+      task: "Use the actual tracked values file and verify the path before the Helm upgrade.",
+      broken: `deploy:
+  chart: ./charts/catalog
+  valuesFile: ./missing-folder/production.yaml
+  command: helm upgrade --install catalog ./charts/catalog -f ./missing-folder/production.yaml`,
+      solution: `deploy:
+  chart: ./charts/catalog
+  valuesFile: ./charts/catalog/values-production.yaml
+  command: helm upgrade --install catalog ./charts/catalog -f ./charts/catalog/values-production.yaml`,
+      required: ["./charts/catalog/values-production.yaml"],
+      forbidden: ["./missing-folder/production.yaml"],
+      investigate: ["Inspect the repository tree and tracked values files.", "Check the pipeline working directory.", "Verify relative paths from the command execution directory.", "Render the chart before performing an upgrade."],
+      commands: ["git ls-files '*values*.yaml'", "pwd", "helm template catalog ./charts/catalog -f ./charts/catalog/values-production.yaml"],
+      expected: "The pipeline references the existing production values file and Helm can render the release."
+    },
+    {
+      id: "CDL-06",
+      title: "Argo CD OutOfSync caused by manual cluster drift",
+      incident: "A live Deployment replica count differs from the Git-managed manifest.",
+      impact: "The cluster no longer matches the reviewed desired state.",
+      task: "Identify the Git/live difference and reconcile through the approved GitOps workflow.",
+      broken: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storefront
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: storefront
+  template:
+    metadata:
+      labels:
+        app: storefront
+    spec:
+      containers:
+        - name: storefront
+          image: nginx:1.27`,
+      solution: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storefront
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: storefront
+  template:
+    metadata:
+      labels:
+        app: storefront
+    spec:
+      containers:
+        - name: storefront
+          image: nginx:1.27`,
+      required: ["replicas: 4", "app: storefront", "image: nginx:1.27"],
+      forbidden: ["replicas: 2"],
+      investigate: ["Inspect Argo CD application sync status and diff.", "Determine whether Git or the live cluster is the approved source of truth.", "Make the reviewed change in Git.", "Sync and verify the live resource matches Git."],
+      commands: ["argocd app get storefront", "argocd app diff storefront", "argocd app sync storefront"],
+      expected: "The Git manifest declares four replicas and the Argo CD application can reconcile the live resource to that desired state."
+    },
+    {
+      id: "CDL-07",
+      title: "GitOps image tag differs across environments",
+      incident: "Staging and production manifests reference different image versions after a promotion.",
+      impact: "The tested artifact is not the artifact deployed to production.",
+      task: "Promote the same approved immutable image tag to the production manifest.",
+      broken: `staging:
+  image: registry.example.com/shop:2.8.1
+production:
+  image: registry.example.com/shop:2.7.9`,
+      solution: `staging:
+  image: registry.example.com/shop:2.8.1
+production:
+  image: registry.example.com/shop:2.8.1`,
+      required: ["staging:", "production:", "registry.example.com/shop:2.8.1"],
+      forbidden: ["registry.example.com/shop:2.7.9"],
+      investigate: ["Identify the artifact digest approved in staging.", "Compare environment manifests and promotion commit.", "Verify that production references the same immutable artifact.", "Review the production diff before sync."],
+      commands: ["git diff HEAD~1 -- environments/", "git log -1 --oneline", "argocd app diff shop-production"],
+      expected: "Both environments reference the same approved image version; production promotion is traceable to a Git commit."
+    },
+    {
+      id: "CDL-08",
+      title: "Pipeline deploys without a successful quality gate",
+      incident: "A deployment stage runs even when the security scan reports a failure.",
+      impact: "An artifact with unresolved critical findings can reach production.",
+      task: "Make deployment conditional on a successful quality gate and preserve the scan result.",
+      broken: `stages:
+  - test
+  - security-scan
+  - deploy
+
+deploy:
+  stage: deploy
+  script:
+    - ./deploy.sh
+  when: always`,
+      solution: `stages:
+  - test
+  - security-scan
+  - deploy
+
+deploy:
+  stage: deploy
+  script:
+    - ./deploy.sh
+  when: on_success`,
+      required: ["stage: deploy", "when: on_success", "./deploy.sh"],
+      forbidden: ["when: always"],
+      investigate: ["Inspect the pipeline stage dependencies.", "Review how the security scan reports failure.", "Confirm deployment is gated by successful earlier stages.", "Run a controlled test with a deliberately failing scan."],
+      commands: ["git diff -- .gitlab-ci.yml", "gitlab-runner exec shell security-scan", "gitlab-runner exec shell deploy"],
+      expected: "The deployment job runs only after earlier required stages succeed; failed quality gates block deployment."
+    }
+  ]
+}
+];
+
+export default function PracticalLabsPage() {
+  const [labIndex, setLabIndex] = useState(0);
+  const [exerciseIndex, setExerciseIndex] = useState(0);
+  const [code, setCode] = useState("");
+  const [result, setResult] = useState<"idle" | "pass" | "fail">("idle");
+  const [message, setMessage] = useState("");
+  const [completed, setCompleted] = useState<string[]>([]);
+  const [showSolution, setShowSolution] = useState(false);
+
+  const lab = labs[labIndex];
+  const exercise = lab.exercises[exerciseIndex];
+
+  const total = useMemo(
+    () => labs.reduce((sum, item) => sum + item.exercises.length, 0),
+    []
+  );
+
+  const done = completed.length;
+
+  function selectLab(index: number) {
+    setLabIndex(index);
+    setExerciseIndex(0);
+    setCode(labs[index].exercises[0].broken);
+    setResult("idle");
+    setMessage("");
+    setShowSolution(false);
+  }
+
+  function selectExercise(index: number) {
+    const next = lab.exercises[index];
+    setExerciseIndex(index);
+    setCode(next.broken);
+    setResult("idle");
+    setMessage("");
+    setShowSolution(false);
+  }
+
+  function validate() {
+    const missing = exercise.required.filter((item) => !code.includes(item));
+    const forbidden = (exercise.forbidden || []).filter((item) => code.includes(item));
+
+    if (missing.length === 0 && forbidden.length === 0) {
+      setResult("pass");
+      setMessage("All exercise-specific checks passed. Review the expected result and verify against a real environment before production use.");
+      setCompleted((old) => old.includes(exercise.id) ? old : [...old, exercise.id]);
+    } else {
+      setResult("fail");
+      setMessage(
+        "Validation failed. Missing required values: " +
+        (missing.length ? missing.join(", ") : "none") +
+        ". Incorrect values still present: " +
+        (forbidden.length ? forbidden.join(", ") : "none")
+      );
+    }
+  }
+
+  function resetExercise() {
+    setCode(exercise.broken);
+    setResult("idle");
+    setMessage("");
+    setShowSolution(false);
+  }
+
+  function loadSolution() {
+    setCode(exercise.solution);
+    setShowSolution(true);
+    setResult("idle");
+    setMessage("Reference repair loaded. Study the differences, then validate.");
+  }
+
+  function nextExercise() {
+    if (exerciseIndex < lab.exercises.length - 1) {
+      selectExercise(exerciseIndex + 1);
+    } else if (labIndex < labs.length - 1) {
+      selectLab(labIndex + 1);
+    }
+  }
+
+  return (
+    <main className="mx-auto max-w-7xl space-y-6 px-4 py-8">
+      <header className="space-y-3">
+        <p className="text-sm font-bold tracking-widest text-blue-600">DEVMAVOX • PRACTICAL WORKSPACES</p>
+        <h1 className="text-3xl font-bold">Hands-on DevOps Labs</h1>
+        <p className="max-w-3xl text-sm text-gray-600">
+          Work through incidents. Inspect broken configurations, investigate the cause,
+          repair the files, validate your changes and compare the expected outcome.
+        </p>
+        <div className="rounded-lg border p-3 text-sm">
+          <strong>Practice environment:</strong> This workspace validates exercise-specific
+          text checks in the browser. It does not connect to a Kubernetes cluster, Jenkins,
+          Helm or Argo CD. Use the displayed commands in your authorized lab environment
+          to perform real execution and verification.
+        </div>
+      </header>
+
+      <section className="grid gap-3 md:grid-cols-3">
+        {labs.map((item, index) => (
+          <button
+            key={item.id}
+            onClick={() => selectLab(index)}
+            className={`rounded-xl border p-4 text-left transition ${
+              labIndex === index ? "border-blue-600 bg-blue-50" : "hover:bg-gray-50"
+            }`}
+          >
+            <div className="text-xs font-bold text-gray-500">{item.title.slice(0, 2)}</div>
+            <div className="mt-2 font-bold">{item.title.slice(5)}</div>
+            <p className="mt-2 text-sm text-gray-600">{item.description}</p>
+            <p className="mt-3 text-xs font-semibold">
+              {item.exercises.filter((e) => completed.includes(e.id)).length}/{item.exercises.length} completed
+            </p>
+          </button>
+        ))}
+      </section>
+
+      <section className="rounded-xl border p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 className="text-xl font-bold">{lab.title}</h2>
+            <p className="text-sm text-gray-600">{lab.description}</p>
+          </div>
+          <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold">
+            {done}/{total} exercises completed
+          </span>
+        </div>
+        <div className="mt-4 h-2 overflow-hidden rounded-full bg-gray-100">
+          <div className="h-full bg-blue-600" style={{ width: `${(done / total) * 100}%` }} />
+        </div>
+      </section>
+
+      <div className="grid gap-5 lg:grid-cols-[280px_1fr]">
+        <aside className="space-y-2">
+          <h3 className="font-bold">Incident list</h3>
+          {lab.exercises.map((item, index) => (
+            <button
+              key={item.id}
+              onClick={() => selectExercise(index)}
+              className={`w-full rounded-lg border p-3 text-left ${
+                exerciseIndex === index ? "border-blue-600 bg-blue-50" : "hover:bg-gray-50"
+              }`}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-bold text-gray-500">{item.id}</span>
+                {completed.includes(item.id) && <span className="text-xs font-bold text-green-700">DONE</span>}
+              </div>
+              <div className="mt-1 text-sm font-semibold">{item.title}</div>
+            </button>
+          ))}
+        </aside>
+
+        <section className="min-w-0 space-y-5">
+          <div className="rounded-xl border p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="text-xs font-bold text-gray-500">{exercise.id} • INCIDENT</span>
+              <span className="rounded bg-amber-100 px-2 py-1 text-xs font-bold text-amber-900">PRACTICE TASK</span>
+            </div>
+            <h3 className="mt-2 text-xl font-bold">{exercise.title}</h3>
+            <p className="mt-3 text-sm"><strong>Incident:</strong> {exercise.incident}</p>
+            <p className="mt-2 text-sm"><strong>Production impact:</strong> {exercise.impact}</p>
+            <p className="mt-2 text-sm"><strong>Your task:</strong> {exercise.task}</p>
+          </div>
+
+          <div className="rounded-xl border p-4">
+            <h3 className="font-bold">1. Investigate the failure</h3>
+            <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm">
+              {exercise.investigate.map((step, index) => <li key={index}>{step}</li>)}
+            </ol>
+            <h4 className="mt-4 font-bold">Diagnostic commands</h4>
+            <div className="mt-2 space-y-2">
+              {exercise.commands.map((command) => (
+                <pre key={command} className="overflow-x-auto rounded bg-gray-950 p-3 text-xs text-green-300">{command}</pre>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-xl border p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="font-bold">2. Repair the broken configuration</h3>
+              <button onClick={resetExercise} className="rounded border px-3 py-2 text-xs font-semibold">Reset broken file</button>
+            </div>
+            <p className="mt-2 text-sm text-gray-600">Edit the configuration below. Find the actual defect; do not simply copy the reference repair.</p>
+            <textarea
+              value={code}
+              onChange={(event) => { setCode(event.target.value); setResult("idle"); setMessage(""); }}
+              spellCheck={false}
+              className="mt-3 min-h-[340px] w-full rounded-lg border bg-gray-950 p-4 font-mono text-sm text-green-300 outline-none focus:border-blue-500"
+            />
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button onClick={validate} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white">Validate repair</button>
+              <button onClick={loadSolution} className="rounded-lg border px-4 py-2 text-sm font-semibold">Load reference repair</button>
+              <button onClick={() => { setCode(exercise.broken); setResult("idle"); setMessage(""); }} className="rounded-lg border px-4 py-2 text-sm font-semibold">Restore incident</button>
+            </div>
+            {message && (
+              <div className={`mt-3 rounded-lg border p-3 text-sm ${
+                result === "pass" ? "border-green-500 bg-green-50 text-green-900" :
+                result === "fail" ? "border-red-500 bg-red-50 text-red-900" : "bg-gray-50"
+              }`}>{message}</div>
+            )}
+            {showSolution && <p className="mt-2 text-xs text-amber-700">Reference solution loaded. This is not proof of a successful live deployment.</p>}
+          </div>
+
+          <div className="rounded-xl border p-4">
+            <h3 className="font-bold">3. Final expected result</h3>
+            <p className="mt-2 text-sm">{exercise.expected}</p>
+            <p className="mt-3 text-sm font-semibold">Live verification checklist</p>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+              <li>Apply only in an authorized non-production or approved environment.</li>
+              <li>Inspect resource status and recent events.</li>
+              <li>Verify the application behavior, not only the YAML text.</li>
+              <li>Check logs and confirm the original incident is resolved.</li>
+              <li>Record the final result and retain the reviewed configuration.</li>
+            </ul>
+          </div>
+
+          <div className="flex flex-wrap justify-between gap-2">
+            <button
+              disabled={exerciseIndex === 0}
+              onClick={() => selectExercise(exerciseIndex - 1)}
+              className="rounded-lg border px-4 py-2 text-sm font-semibold disabled:opacity-40"
+            >Previous exercise</button>
+            <button
+              onClick={nextExercise}
+              disabled={exerciseIndex === lab.exercises.length - 1 && labIndex === labs.length - 1}
+              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-bold text-white disabled:opacity-40"
+            >Next exercise →</button>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}
