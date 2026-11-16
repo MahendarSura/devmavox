@@ -130,11 +130,11 @@ export default function YamlModuleAssessment({ moduleName }: { moduleName: strin
       {questions.map((question, index) => (
         <fieldset key={question.prompt} className="space-y-3 rounded-xl border border-slate-700 bg-slate-900/70 p-4">
           <legend className="px-1 text-sm font-semibold text-white">{index + 1}. {question.prompt}</legend>
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {question.choices.map((choice, choiceIndex) => (
-              <label key={choice} className={"flex cursor-pointer items-start gap-2 rounded-lg border p-3 text-sm " + (answers[index] === choiceIndex ? "border-violet-500 bg-violet-950/40 text-violet-100" : "border-slate-700 text-slate-300")}>
+              <label key={choice} className={"flex min-w-0 cursor-pointer items-start gap-3 rounded-lg border p-3 text-sm leading-6 " + (answers[index] === choiceIndex ? "border-violet-500 bg-violet-950/40 text-violet-100" : "border-slate-700 text-slate-300")}>
                 <input type="radio" name={moduleName + "-assessment-" + index} checked={answers[index] === choiceIndex} disabled={submitted} onChange={() => setAnswers(current => ({ ...current, [index]: choiceIndex }))} className="mt-1 accent-violet-400" />
-                <span>{choice}</span>
+                <span className="min-w-0 break-words">{choice}</span>
               </label>
             ))}
           </div>
