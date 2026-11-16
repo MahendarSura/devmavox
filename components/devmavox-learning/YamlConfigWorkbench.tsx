@@ -1142,7 +1142,7 @@ kubectl get deployments,pods,services`,
                     <div className="mt-4 rounded-xl border border-cyan-900 bg-cyan-950/20 p-4">
                       <h4 className="text-sm font-bold text-cyan-200">Next validation layer: Kubernetes API schema and admission</h4>
                       <p className="mt-2 text-xs leading-5 text-slate-300">Save the manifest as a file, connect to the intended cluster context, then run a server-side dry run. This sends the resource to the API server for version-aware schema and admission checks without persisting it.</p>
-                      <pre className="mt-3 overflow-x-auto rounded-lg bg-[#070c14] p-3 text-xs leading-6 text-emerald-300"><code>{`kubectl config current-context
+                      <pre className="mt-3 max-w-full overflow-x-auto whitespace-pre rounded-lg bg-[#070c14] p-3 text-xs leading-6 text-emerald-300"><code className="block whitespace-pre">{`kubectl config current-context
 kubectl apply --dry-run=server -f deployment.yaml`}</code></pre>
                       <p className="mt-2 text-xs leading-5 text-slate-400">For other YAML consumers, use that tool's official schema or validation command. This playground does not claim to run cluster-side validation automatically.</p>
                     </div>
@@ -1193,13 +1193,13 @@ kubectl apply --dry-run=server -f deployment.yaml`}</code></pre>
                     type="button"
                     key={step}
                     onClick={() => setRightPanelSelection(selectedModuleWorkspace ? `module-path:${index}` : `path:${step}`)}
-                    className="flex w-full items-center gap-3 rounded-md text-left transition hover:bg-slate-800/50 hover:px-2"
+                    className="flex w-full min-w-0 items-center gap-3 rounded-md py-1 text-left transition hover:bg-slate-800/50 hover:px-2"
                     title={`Open ${step} learning section`}
                   >
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs text-cyan-300">
                       {index + 1}
                     </span>
-                    <span className="text-xs text-slate-300">{step}</span>
+                    <span className="min-w-0 break-words text-xs leading-5 text-slate-300">{step}</span>
                   </button>
                 ))}
               </div>
