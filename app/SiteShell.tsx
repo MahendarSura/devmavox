@@ -81,6 +81,16 @@ function getBackDetails(pathname: string) {
     };
   }
 
+  // Learning Labs: return to Learning Modules from the three practical labs.
+  if (
+    parts[0] === "learning-labs" &&
+    ["kubernetes-manifest", "troubleshooting", "cicd-gitops"].includes(parts[1])
+  ) {
+    return {
+      href: "/yaml-config-playground",
+      label: "← Back to Learning Modules",
+    };
+  }
   // General nested pages
   if (parts.length >= 2) {
     return {
