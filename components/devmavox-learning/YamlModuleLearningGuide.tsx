@@ -976,7 +976,7 @@ export default function YamlModuleLearningGuide({
               }`}
             >
               <span className="block text-xs text-slate-500">LESSON {index + 1}</span>
-              <span className="mt-2 block font-semibold">{item.title}</span>
+              <span className="mt-2 block font-semibold">{item.title.replace(/^\\d+\\.\\s*/, "")}</span>
             </button>
           ))}
         </div>
