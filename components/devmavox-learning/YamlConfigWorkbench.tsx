@@ -1164,9 +1164,17 @@ kubectl get deployments,pods,services`,
                   ))}
 
                   <p className="mt-3 text-xs leading-5 text-slate-500">
-                    This validator checks YAML syntax and parsing. It does not yet
-                    verify Kubernetes API schemas, cluster policies or deployment readiness.
+                    This browser validator checks YAML syntax and parsing only. A successful parse does not prove that Kubernetes accepts the resource or that the workload will run.
                   </p>
+                  {activeModule === "YAML Validator" && (
+                    <div className="mt-4 rounded-xl border border-cyan-900 bg-cyan-950/20 p-4">
+                      <h4 className="text-sm font-bold text-cyan-200">Next validation layer: Kubernetes API schema and admission</h4>
+                      <p className="mt-2 text-xs leading-5 text-slate-300">Save the manifest as a file, connect to the intended cluster context, then run a server-side dry run. This sends the resource to the API server for version-aware schema and admission checks without persisting it.</p>
+                      <pre className="mt-3 overflow-x-auto rounded-lg bg-[#070c14] p-3 text-xs leading-6 text-emerald-300"><code>{`kubectl config current-context
+kubectl apply --dry-run=server -f deployment.yaml`}</code></pre>
+                      <p className="mt-2 text-xs leading-5 text-slate-400">For other YAML consumers, use that tool's official schema or validation command. This playground does not claim to run cluster-side validation automatically.</p>
+                    </div>
+                  )}
                 </div>
 
                 {notice && (
