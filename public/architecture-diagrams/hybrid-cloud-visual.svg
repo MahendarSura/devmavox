@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1600" height="1050" viewBox="0 0 1600 1050" role="img"
+     aria-labelledby="diagram-title diagram-description">
+<title id="diagram-title">Hybrid Cloud Architecture</title>
+<desc id="diagram-description">Secure enterprise connectivity between on-premises infrastructure and public cloud services. Detailed HYBRID CLOUD architecture diagram.</desc>
+
+<defs>
+  <linearGradient id="pageBg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eaf1fb"/>
+  </linearGradient>
+  <linearGradient id="headerBg" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#102a43"/>
+    <stop offset="100%" stop-color="#1e40af"/>
+  </linearGradient>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3"
+          orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+  </marker>
+  <style>
+    .page-title { font:700 29px Arial,sans-serif; fill:#ffffff; }
+    .page-subtitle { font:14px Arial,sans-serif; fill:#dbeafe; }
+    .section-title { font:700 17px Arial,sans-serif; fill:#172554; }
+    .section-desc { font:12px Arial,sans-serif; fill:#64748b; }
+    .node-title { font:700 15px Arial,sans-serif; fill:#0f172a; }
+    .node-desc { font:12px Arial,sans-serif; fill:#475569; }
+    .node-tag { font:700 9px Arial,sans-serif; fill:#64748b; letter-spacing:1px; }
+    .edge { fill:none; stroke:#64748b; stroke-width:2.5; }
+    .edge-label { font:11px Arial,sans-serif; fill:#334155; text-anchor:middle; }
+    .footer { font:11px Arial,sans-serif; fill:#64748b; }
+    .legend { font:12px Arial,sans-serif; fill:#334155; }
+  </style>
+</defs>
+
+<rect width="1600" height="1050" fill="url(#pageBg)"/>
+<rect x="0" y="0" width="1600" height="112" fill="url(#headerBg)"/>
+<text x="55" y="48" class="page-title">Hybrid Cloud Architecture</text>
+<text x="57" y="78" class="page-subtitle">Secure enterprise connectivity between on-premises infrastructure and public cloud services</text>
+<rect x="1330" y="31" width="215" height="42" rx="20" fill="#ffffff" opacity="0.14"/>
+<text x="1437" y="57" font-family="Arial" font-size="12" font-weight="700"
+      fill="#ffffff" text-anchor="middle">HYBRID CLOUD</text>
+
+<rect x="45" y="145" width="1510" height="740" rx="18" fill="#ffffff" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 5"/>
+<text x="70" y="180" class="section-title">CONNECTED ON-PREMISES DATA CENTER AND PUBLIC CLOUD</text>
+<text x="70" y="202" class="section-desc">Secure connectivity, workload placement, identity federation, data replication and unified operations</text>
+
+<rect x="75" y="245" width="560" height="425" rx="16" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="100" y="280" class="section-title">ON-PREMISES DATA CENTER</text>
+<text x="100" y="302" class="section-desc">Enterprise-owned network and infrastructure</text>
+
+<rect x="965" y="245" width="560" height="425" rx="16" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+<text x="990" y="280" class="section-title">PUBLIC CLOUD LANDING ZONE</text>
+<text x="990" y="302" class="section-desc">Cloud VPC/VNet, private subnets and managed services</text>
+
+<rect x="665" y="325" width="270" height="265" rx="14" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="800" y="355" class="section-title" text-anchor="middle">PRIVATE CONNECTIVITY</text>
+<text x="800" y="377" class="section-desc" text-anchor="middle">Encrypted and routed links</text>
+
+<rect x="75" y="710" width="1450" height="165" rx="14" fill="#f5f3ff" stroke="#a78bfa" stroke-width="2"/>
+<text x="100" y="742" class="section-title">CROSS-ENVIRONMENT GOVERNANCE AND OPERATIONS</text>
+
+<g>
+  <path d="M 310 407 L 350 407" class="edge" marker-end="url(#arrow)"/>
+  <text x='330' y='398' class='edge-label'>Inspect</text>
+</g><g>
+  <path d="M 455 459 L 455 520" class="edge" marker-end="url(#arrow)"/>
+  <text x='455' y='481' class='edge-label'>Internal route</text>
+</g><g>
+  <path d="M 555 572 L 730 455" class="edge" marker-end="url(#arrow)"/>
+  <text x='642' y='505' class='edge-label'>VPN path</text>
+</g><g>
+  <path d="M 555 572 L 730 555" class="edge" marker-end="url(#arrow)"/>
+  <text x='642' y='555' class='edge-label'>Private circuit</text>
+</g><g>
+  <path d="M 935 455 L 995 407" class="edge" marker-end="url(#arrow)"/>
+  <text x='965' y='422' class='edge-label'>Secure route</text>
+</g><g>
+  <path d="M 1200 407 L 1240 407" class="edge" marker-end="url(#arrow)"/>
+  <text x='1220' y='398' class='edge-label'>Forward</text>
+</g><g>
+  <path d="M 1097 459 L 1097 520" class="edge" marker-end="url(#arrow)"/>
+  <text x='1097' y='481' class='edge-label'>Workload</text>
+</g><g>
+  <path d="M 1342 459 L 1342 520" class="edge" marker-end="url(#arrow)"/>
+  <text x='1342' y='481' class='edge-label'>Data access</text>
+</g><g>
+  <path d="M 215 670 L 215 770" class="edge" marker-end="url(#arrow)"/>
+  <text x='215' y='711' class='edge-label'>Federate</text>
+</g><g>
+  <path d="M 455 670 L 455 770" class="edge" marker-end="url(#arrow)"/>
+  <text x='455' y='711' class='edge-label'>Replicate</text>
+</g><g>
+  <path d="M 700 670 L 700 770" class="edge" marker-end="url(#arrow)"/>
+  <text x='700' y='711' class='edge-label'>Collect</text>
+</g><g>
+  <path d="M 945 670 L 945 770" class="edge" marker-end="url(#arrow)"/>
+  <text x='945' y='711' class='edge-label'>Enforce</text>
+</g><g>
+  <path d="M 1190 670 L 1190 770" class="edge" marker-end="url(#arrow)"/>
+  <text x='1190' y='711' class='edge-label'>Recover</text>
+</g><g>
+  <path d="M 1430 670 L 1430 770" class="edge" marker-end="url(#arrow)"/>
+  <text x='1430' y='711' class='edge-label'>Protect</text>
+</g>
+<g>
+  <rect x="105" y="355" width="205" height="104" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+  <rect x="105" y="355" width="205" height="8" rx="4" fill="#2563eb"/>
+  <text x="119" y="390" class="node-title">Enterprise Users</text>
+  <text x="119" y="413" class="node-desc">Office and remote workforce</text>
+  <text x="119" y="438" class="node-tag">CLIENT</text>
+</g><g>
+  <rect x="350" y="355" width="205" height="104" rx="12" fill="#ffffff" stroke="#dc2626" stroke-width="2"/>
+  <rect x="350" y="355" width="205" height="8" rx="4" fill="#dc2626"/>
+  <text x="364" y="390" class="node-title">Data Center Firewall</text>
+  <text x="364" y="413" class="node-desc">Perimeter security</text>
+  <text x="364" y="438" class="node-tag">NETWORK</text>
+</g><g>
+  <rect x="105" y="520" width="205" height="104" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+  <rect x="105" y="520" width="205" height="8" rx="4" fill="#2563eb"/>
+  <text x="119" y="555" class="node-title">VMware Cluster</text>
+  <text x="119" y="578" class="node-desc">Virtual machines and apps</text>
+  <text x="119" y="603" class="node-tag">VIRTUALIZATION</text>
+</g><g>
+  <rect x="350" y="520" width="205" height="104" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+  <rect x="350" y="520" width="205" height="8" rx="4" fill="#2563eb"/>
+  <text x="364" y="555" class="node-title">On-Prem Kubernetes</text>
+  <text x="364" y="578" class="node-desc">Local container workloads</text>
+  <text x="364" y="603" class="node-tag">CONTAINERS</text>
+</g><g>
+  <rect x="730" y="405" width="205" height="104" rx="12" fill="#ffffff" stroke="#ea580c" stroke-width="2"/>
+  <rect x="730" y="405" width="205" height="8" rx="4" fill="#ea580c"/>
+  <text x="744" y="440" class="node-title">VPN Gateway</text>
+  <text x="744" y="463" class="node-desc">IPsec encrypted tunnel</text>
+  <text x="744" y="488" class="node-tag">CONNECTIVITY</text>
+</g><g>
+  <rect x="730" y="505" width="205" height="104" rx="12" fill="#ffffff" stroke="#ea580c" stroke-width="2"/>
+  <rect x="730" y="505" width="205" height="8" rx="4" fill="#ea580c"/>
+  <text x="744" y="540" class="node-title">Direct Connect / ExpressRoute</text>
+  <text x="744" y="563" class="node-desc">Dedicated private circuit</text>
+  <text x="744" y="588" class="node-tag">PRIVATE LINK</text>
+</g><g>
+  <rect x="995" y="355" width="205" height="104" rx="12" fill="#ffffff" stroke="#dc2626" stroke-width="2"/>
+  <rect x="995" y="355" width="205" height="8" rx="4" fill="#dc2626"/>
+  <text x="1009" y="390" class="node-title">Cloud Firewall</text>
+  <text x="1009" y="413" class="node-desc">Cloud network inspection</text>
+  <text x="1009" y="438" class="node-tag">SECURITY</text>
+</g><g>
+  <rect x="1240" y="355" width="205" height="104" rx="12" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+  <rect x="1240" y="355" width="205" height="8" rx="4" fill="#16a34a"/>
+  <text x="1254" y="390" class="node-title">Cloud Load Balancer</text>
+  <text x="1254" y="413" class="node-desc">Application traffic entry</text>
+  <text x="1254" y="438" class="node-tag">INGRESS</text>
+</g><g>
+  <rect x="995" y="520" width="205" height="104" rx="12" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+  <rect x="995" y="520" width="205" height="8" rx="4" fill="#16a34a"/>
+  <text x="1009" y="555" class="node-title">Cloud Kubernetes</text>
+  <text x="1009" y="578" class="node-desc">Managed container platform</text>
+  <text x="1009" y="603" class="node-tag">CONTAINERS</text>
+</g><g>
+  <rect x="1240" y="520" width="205" height="104" rx="12" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+  <rect x="1240" y="520" width="205" height="8" rx="4" fill="#16a34a"/>
+  <text x="1254" y="555" class="node-title">Managed Database</text>
+  <text x="1254" y="578" class="node-desc">Cloud relational database</text>
+  <text x="1254" y="603" class="node-tag">DATABASE</text>
+</g><g>
+  <rect x="105" y="770" width="205" height="104" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="105" y="770" width="205" height="8" rx="4" fill="#7c3aed"/>
+  <text x="119" y="805" class="node-title">Federated Identity</text>
+  <text x="119" y="828" class="node-desc">SSO and directory sync</text>
+  <text x="119" y="853" class="node-tag">IDENTITY</text>
+</g><g>
+  <rect x="350" y="770" width="205" height="104" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="350" y="770" width="205" height="8" rx="4" fill="#7c3aed"/>
+  <text x="364" y="805" class="node-title">Data Replication</text>
+  <text x="364" y="828" class="node-desc">Database and file sync</text>
+  <text x="364" y="853" class="node-tag">DATA</text>
+</g><g>
+  <rect x="595" y="770" width="205" height="104" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="595" y="770" width="205" height="8" rx="4" fill="#7c3aed"/>
+  <text x="609" y="805" class="node-title">Central Monitoring</text>
+  <text x="609" y="828" class="node-desc">Unified logs and metrics</text>
+  <text x="609" y="853" class="node-tag">OBSERVABILITY</text>
+</g><g>
+  <rect x="840" y="770" width="205" height="104" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="840" y="770" width="205" height="8" rx="4" fill="#7c3aed"/>
+  <text x="854" y="805" class="node-title">Policy Governance</text>
+  <text x="854" y="828" class="node-desc">Compliance and guardrails</text>
+  <text x="854" y="853" class="node-tag">GOVERNANCE</text>
+</g><g>
+  <rect x="1085" y="770" width="205" height="104" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="1085" y="770" width="205" height="8" rx="4" fill="#7c3aed"/>
+  <text x="1099" y="805" class="node-title">Backup and DR</text>
+  <text x="1099" y="828" class="node-desc">Cross-site recovery</text>
+  <text x="1099" y="853" class="node-tag">RESILIENCE</text>
+</g><g>
+  <rect x="1330" y="770" width="205" height="104" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="1330" y="770" width="205" height="8" rx="4" fill="#7c3aed"/>
+  <text x="1344" y="805" class="node-title">Secrets Management</text>
+  <text x="1344" y="828" class="node-desc">Certificates and credentials</text>
+  <text x="1344" y="853" class="node-tag">SECURITY</text>
+</g>
+
+<rect x="45" y="925" width="1510" height="78" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="70" y="953" class="section-title">ARCHITECTURE FLOW</text>
+<text x="70" y="978" class="section-desc">Hybrid enterprise architecture — On-premises and cloud environments communicate through VPN or dedicated private connectivity</text>
+<path d="M 900 964 L 965 964" class="edge" marker-end="url(#arrow)"/>
+<text x="985" y="969" class="legend">Request / data / service communication</text>
+<rect x="1260" y="955" width="16" height="16" rx="3" fill="#2563eb"/>
+<text x="1285" y="968" class="legend">Cloud services</text>
+
+<text x="55" y="1030" class="footer">DevMavox Architecture Diagram Library | HYBRID CLOUD | Generated 2026-11-13 14:26</text>
+<text x="1545" y="1030" class="footer" text-anchor="end">Conceptual reference architecture — validate services and limits for your deployment</text>
+</svg>

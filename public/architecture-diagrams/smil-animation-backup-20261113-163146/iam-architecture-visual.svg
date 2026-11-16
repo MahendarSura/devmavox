@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-label="IAM Architecture architecture diagram">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#071426" />
+      <stop offset="1" stop-color="#10102b" />
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#132b46" />
+      <stop offset="1" stop-color="#101a31" />
+    </linearGradient>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#38bdf8" />
+      <stop offset=".5" stop-color="#a78bfa" />
+      <stop offset="1" stop-color="#34d399" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="5" result="b" />
+      <feMerge>
+        <feMergeNode in="b" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" />
+      <feOffset dy="7" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope=".4" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 10 5 0 10Z" fill="#67e8f9" />
+    </marker>
+    <style>
+ .flow{fill:none;stroke:url(#line);stroke-width:4;stroke-linecap:round;stroke-dasharray:10 12;animation:flow 2.8s linear infinite;marker-end:url(#arrow)}
+ .card{fill:url(#card);stroke:#315477;stroke-width:1.6;filter:url(#shadow)}
+ .gear{transform-box:fill-box;transform-origin:center;animation:spin 12s linear infinite}
+ .pulse{animation:none}
+ .bubble{animation:none}
+ .nodeTitle{font:700 21px Arial,sans-serif;fill:#f8fafc}
+ .nodeTech{font:600 14px Arial,sans-serif;fill:#93c5fd}
+ .nodeDesc{font:14px Arial,sans-serif;fill:#cbd5e1}
+ .linkLabel{font:600 13px Arial,sans-serif;fill:#a5f3fc;text-anchor:middle;paint-order:stroke;stroke:#071426;stroke-width:5px;stroke-linejoin:round}
+ @keyframes flow{to{stroke-dashoffset:-44}}}
+ @keyframes spin{to{transform:rotate(360deg)}}}
+ @keyframes pulse{0%,100%{opacity:.45;transform:scale(.85)}50%{opacity:1;transform:scale(1.18)}}
+ @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+ </style>
+  </defs>
+  <rect width="1600" height="1000" rx="28" fill="url(#bg)" />
+  <circle class="bubble" cx="100" cy="150" r="7" fill="#38bdf8" opacity=".15" />
+  <circle class="bubble" cx="510" cy="180" r="5" fill="#38bdf8" opacity=".15" />
+  <circle class="bubble" cx="950" cy="125" r="6" fill="#38bdf8" opacity=".15" />
+  <circle class="bubble" cx="1460" cy="170" r="8" fill="#38bdf8" opacity=".15" />
+  <circle class="bubble" cx="220" cy="520" r="5" fill="#38bdf8" opacity=".15" />
+  <circle class="bubble" cx="780" cy="520" r="7" fill="#38bdf8" opacity=".15" />
+  <circle class="bubble" cx="1490" cy="550" r="6" fill="#38bdf8" opacity=".15" />
+  <circle class="bubble" cx="300" cy="850" r="8" fill="#38bdf8" opacity=".15" />
+  <circle class="bubble" cx="1100" cy="850" r="5" fill="#38bdf8" opacity=".15" />
+  <circle class="bubble" cx="1400" cy="900" r="7" fill="#38bdf8" opacity=".15" />
+  <text x="70" y="78" fill="#f8fafc" font-family="Arial" font-size="34" font-weight="700">IAM Architecture</text>
+  <text x="72" y="115" fill="#94a3b8" font-family="Arial" font-size="17">Identity federation, MFA, authorization policies, secrets and audit controls</text>
+  <rect x="70" y="145" width="1460" height="2" fill="url(#line)" opacity=".6" />
+  <path class="flow" d="M370 345 H455" />
+  <text class="linkLabel" x="412.5" y="324">Federated login</text>
+  <path class="flow" d="M755 345 H840" />
+  <text class="linkLabel" x="797.5" y="324">MFA challenge</text>
+  <path class="flow" d="M1140 345 H1225" />
+  <text class="linkLabel" x="1182.5" y="324">Signed identity token</text>
+  <path class="flow" d="M1375 430 V620" />
+  <text class="linkLabel" x="1375" y="525">Authorization decision</text>
+  <path class="flow" d="M1210 705 H1130" />
+  <text class="linkLabel" x="1170" y="684">Policy audit trail</text>
+  <path class="flow" d="M825 705 H745" />
+  <text class="linkLabel" x="785" y="684">Secret retrieval</text>
+  <path class="flow" d="M440 705 H360" />
+  <text class="linkLabel" x="400" y="684">Least-privilege evaluation</text>
+  <g filter="url(#glow)" opacity=".35">
+    <rect x="70" y="260" width="300" height="170" rx="20" fill="#60a5fa" />
+  </g>
+  <rect class="card" x="70" y="260" width="300" height="170" rx="20" />
+  <rect x="70" y="260" width="5" height="170" rx="2" fill="#60a5fa" />
+  <circle cx="119" cy="315" r="29" fill="#60a5fa" opacity=".13" />
+  <g transform="translate(95,291)">
+    <circle cx="24" cy="15" r="8" fill="none" stroke="#60a5fa" stroke-width="3" />
+    <path d="M8 42c1-11 7-17 16-17s15 6 16 17" fill="none" stroke="#60a5fa" stroke-width="3" />
+  </g>
+  <text class="nodeTitle" x="160" y="308">Human &amp; Workload</text>
+  <text class="nodeTech" x="160" y="337">Users · services · CI/CD</text>
+  <text class="nodeDesc" x="93" y="379">Identity requests begin here</text>
+  <circle class="pulse" cx="95" cy="408" r="5" fill="#60a5fa" />
+  <text x="109" y="412" fill="#94a3b8" font-family="Arial" font-size="12">ACTIVE COMPONENT</text>
+  <g class="gear" transform="translate(340,285)">
+    <circle r="11" fill="none" stroke="#60a5fa" stroke-width="3" opacity=".8" />
+    <circle r="3" fill="#60a5fa" />
+    <g stroke="#60a5fa" stroke-width="4" stroke-linecap="round">
+      <path d="M0 -16V-12 M0 12V16 M-16 0H-12 M12 0H16 M-11 -11l3 3 M8 8l3 3 M11 -11l-3 3 M-8 8l-3 3" />
+    </g>
+  </g>
+  <g filter="url(#glow)" opacity=".35">
+    <rect x="455" y="260" width="300" height="170" rx="20" fill="#a78bfa" />
+  </g>
+  <rect class="card" x="455" y="260" width="300" height="170" rx="20" />
+  <rect x="455" y="260" width="5" height="170" rx="2" fill="#a78bfa" />
+  <circle cx="504" cy="315" r="29" fill="#a78bfa" opacity=".13" />
+  <g transform="translate(480,291)">
+    <circle cx="19" cy="17" r="8" fill="none" stroke="#a78bfa" stroke-width="3" />
+    <path d="M5 41c1-10 6-16 14-16 4 0 7 2 9 4" fill="none" stroke="#a78bfa" stroke-width="3" />
+    <path d="m32 22 10 4v8c0 5-4 9-10 12-5-3-9-7-9-12v-8Z" fill="none" stroke="#a78bfa" stroke-width="2" />
+  </g>
+  <text class="nodeTitle" x="545" y="308">Identity Provider</text>
+  <text class="nodeTech" x="545" y="337">OIDC · SAML · federation</text>
+  <text class="nodeDesc" x="478" y="379">Authenticate trusted identities</text>
+  <circle class="pulse" cx="480" cy="408" r="5" fill="#a78bfa" />
+  <text x="494" y="412" fill="#94a3b8" font-family="Arial" font-size="12">ACTIVE COMPONENT</text>
+  <g class="gear" transform="translate(725,285)">
+    <circle r="11" fill="none" stroke="#a78bfa" stroke-width="3" opacity=".8" />
+    <circle r="3" fill="#a78bfa" />
+    <g stroke="#a78bfa" stroke-width="4" stroke-linecap="round">
+      <path d="M0 -16V-12 M0 12V16 M-16 0H-12 M12 0H16 M-11 -11l3 3 M8 8l3 3 M11 -11l-3 3 M-8 8l-3 3" />
+    </g>
+  </g>
+  <g filter="url(#glow)" opacity=".35">
+    <rect x="840" y="260" width="300" height="170" rx="20" fill="#34d399" />
+  </g>
+  <rect class="card" x="840" y="260" width="300" height="170" rx="20" />
+  <rect x="840" y="260" width="5" height="170" rx="2" fill="#34d399" />
+  <circle cx="889" cy="315" r="29" fill="#34d399" opacity=".13" />
+  <g transform="translate(865,291)">
+    <rect x="13" y="6" width="22" height="36" rx="5" fill="none" stroke="#34d399" stroke-width="3" />
+    <circle cx="24" cy="33" r="2" fill="#34d399" />
+    <path d="m19 20 4 4 8-9" fill="none" stroke="#34d399" stroke-width="3" />
+  </g>
+  <text class="nodeTitle" x="930" y="308">MFA Verification</text>
+  <text class="nodeTech" x="930" y="337">Authenticator · FIDO2</text>
+  <text class="nodeDesc" x="863" y="379">Verify strong authentication</text>
+  <circle class="pulse" cx="865" cy="408" r="5" fill="#34d399" />
+  <text x="879" y="412" fill="#94a3b8" font-family="Arial" font-size="12">ACTIVE COMPONENT</text>
+  <g class="gear" transform="translate(1110,285)">
+    <circle r="11" fill="none" stroke="#34d399" stroke-width="3" opacity=".8" />
+    <circle r="3" fill="#34d399" />
+    <g stroke="#34d399" stroke-width="4" stroke-linecap="round">
+      <path d="M0 -16V-12 M0 12V16 M-16 0H-12 M12 0H16 M-11 -11l3 3 M8 8l3 3 M11 -11l-3 3 M-8 8l-3 3" />
+    </g>
+  </g>
+  <g filter="url(#glow)" opacity=".35">
+    <rect x="1225" y="260" width="300" height="170" rx="20" fill="#fbbf24" />
+  </g>
+  <rect class="card" x="1225" y="260" width="300" height="170" rx="20" />
+  <rect x="1225" y="260" width="5" height="170" rx="2" fill="#fbbf24" />
+  <circle cx="1274" cy="315" r="29" fill="#fbbf24" opacity=".13" />
+  <g transform="translate(1250,291)">
+    <path d="M8 15 24 6l16 9v18l-16 9L8 33Z" fill="none" stroke="#fbbf24" stroke-width="3" />
+    <path d="M16 24h16M24 16v16" stroke="#fbbf24" stroke-width="3" />
+  </g>
+  <text class="nodeTitle" x="1315" y="308">Token Service</text>
+  <text class="nodeTech" x="1315" y="337">JWT · STS · short-lived tokens</text>
+  <text class="nodeDesc" x="1248" y="379">Issue scoped identity claims</text>
+  <circle class="pulse" cx="1250" cy="408" r="5" fill="#fbbf24" />
+  <text x="1264" y="412" fill="#94a3b8" font-family="Arial" font-size="12">ACTIVE COMPONENT</text>
+  <g class="gear" transform="translate(1495,285)">
+    <circle r="11" fill="none" stroke="#fbbf24" stroke-width="3" opacity=".8" />
+    <circle r="3" fill="#fbbf24" />
+    <g stroke="#fbbf24" stroke-width="4" stroke-linecap="round">
+      <path d="M0 -16V-12 M0 12V16 M-16 0H-12 M12 0H16 M-11 -11l3 3 M8 8l3 3 M11 -11l-3 3 M-8 8l-3 3" />
+    </g>
+  </g>
+  <g filter="url(#glow)" opacity=".35">
+    <rect x="70" y="620" width="300" height="170" rx="20" fill="#34d399" />
+  </g>
+  <rect class="card" x="70" y="620" width="300" height="170" rx="20" />
+  <rect x="70" y="620" width="5" height="170" rx="2" fill="#34d399" />
+  <circle cx="119" cy="675" r="29" fill="#34d399" opacity=".13" />
+  <g transform="translate(95,651)">
+    <path d="M12 6h21l6 6v30H12Z" fill="none" stroke="#34d399" stroke-width="3" />
+    <path d="M18 20h15M18 27h15M18 34h9" stroke="#34d399" stroke-width="2" />
+  </g>
+  <text class="nodeTitle" x="160" y="668">Audit &amp; Evidence</text>
+  <text class="nodeTech" x="160" y="697">CloudTrail · audit events</text>
+  <text class="nodeDesc" x="93" y="739">Record access decisions</text>
+  <circle class="pulse" cx="95" cy="768" r="5" fill="#34d399" />
+  <text x="109" y="772" fill="#94a3b8" font-family="Arial" font-size="12">ACTIVE COMPONENT</text>
+  <g class="gear" transform="translate(340,645)">
+    <circle r="11" fill="none" stroke="#34d399" stroke-width="3" opacity=".8" />
+    <circle r="3" fill="#34d399" />
+    <g stroke="#34d399" stroke-width="4" stroke-linecap="round">
+      <path d="M0 -16V-12 M0 12V16 M-16 0H-12 M12 0H16 M-11 -11l3 3 M8 8l3 3 M11 -11l-3 3 M-8 8l-3 3" />
+    </g>
+  </g>
+  <g filter="url(#glow)" opacity=".35">
+    <rect x="455" y="620" width="300" height="170" rx="20" fill="#f59e0b" />
+  </g>
+  <rect class="card" x="455" y="620" width="300" height="170" rx="20" />
+  <rect x="455" y="620" width="5" height="170" rx="2" fill="#f59e0b" />
+  <circle cx="504" cy="675" r="29" fill="#f59e0b" opacity=".13" />
+  <g transform="translate(480,651)">
+    <path d="M24 5 40 14v20L24 43 8 34V14Z" fill="none" stroke="#fbbf24" stroke-width="3" />
+    <circle cx="24" cy="24" r="7" fill="none" stroke="#fbbf24" stroke-width="3" />
+  </g>
+  <text class="nodeTitle" x="545" y="668">Secrets Manager</text>
+  <text class="nodeTech" x="545" y="697">Vault · Secrets Manager</text>
+  <text class="nodeDesc" x="478" y="739">Protect credentials and keys</text>
+  <circle class="pulse" cx="480" cy="768" r="5" fill="#f59e0b" />
+  <text x="494" y="772" fill="#94a3b8" font-family="Arial" font-size="12">ACTIVE COMPONENT</text>
+  <g class="gear" transform="translate(725,645)">
+    <circle r="11" fill="none" stroke="#f59e0b" stroke-width="3" opacity=".8" />
+    <circle r="3" fill="#f59e0b" />
+    <g stroke="#f59e0b" stroke-width="4" stroke-linecap="round">
+      <path d="M0 -16V-12 M0 12V16 M-16 0H-12 M12 0H16 M-11 -11l3 3 M8 8l3 3 M11 -11l-3 3 M-8 8l-3 3" />
+    </g>
+  </g>
+  <g filter="url(#glow)" opacity=".35">
+    <rect x="840" y="620" width="300" height="170" rx="20" fill="#a78bfa" />
+  </g>
+  <rect class="card" x="840" y="620" width="300" height="170" rx="20" />
+  <rect x="840" y="620" width="5" height="170" rx="2" fill="#a78bfa" />
+  <circle cx="889" cy="675" r="29" fill="#a78bfa" opacity=".13" />
+  <g transform="translate(865,651)">
+    <path d="M24 5 41 14v20L24 43 7 34V14Z" fill="none" stroke="#a78bfa" stroke-width="3" />
+    <path d="m16 24 6 6 11-13" fill="none" stroke="#a78bfa" stroke-width="3" />
+  </g>
+  <text class="nodeTitle" x="930" y="668">Permission Boundary</text>
+  <text class="nodeTech" x="930" y="697">RBAC · ABAC · boundaries</text>
+  <text class="nodeDesc" x="863" y="739">Limit maximum permissions</text>
+  <circle class="pulse" cx="865" cy="768" r="5" fill="#a78bfa" />
+  <text x="879" y="772" fill="#94a3b8" font-family="Arial" font-size="12">ACTIVE COMPONENT</text>
+  <g class="gear" transform="translate(1110,645)">
+    <circle r="11" fill="none" stroke="#a78bfa" stroke-width="3" opacity=".8" />
+    <circle r="3" fill="#a78bfa" />
+    <g stroke="#a78bfa" stroke-width="4" stroke-linecap="round">
+      <path d="M0 -16V-12 M0 12V16 M-16 0H-12 M12 0H16 M-11 -11l3 3 M8 8l3 3 M11 -11l-3 3 M-8 8l-3 3" />
+    </g>
+  </g>
+  <g filter="url(#glow)" opacity=".35">
+    <rect x="1225" y="620" width="300" height="170" rx="20" fill="#38bdf8" />
+  </g>
+  <rect class="card" x="1225" y="620" width="300" height="170" rx="20" />
+  <rect x="1225" y="620" width="5" height="170" rx="2" fill="#38bdf8" />
+  <circle cx="1274" cy="675" r="29" fill="#38bdf8" opacity=".13" />
+  <g transform="translate(1250,651)">
+    <path d="M10 7h22l7 7v27H10Z" fill="none" stroke="#38bdf8" stroke-width="3" />
+    <path d="M17 21h15M17 28h15M17 35h9" stroke="#38bdf8" stroke-width="2" />
+  </g>
+  <text class="nodeTitle" x="1315" y="668">Policy Engine</text>
+  <text class="nodeTech" x="1315" y="697">IAM policies · authorization</text>
+  <text class="nodeDesc" x="1248" y="739">Evaluate action and resource</text>
+  <circle class="pulse" cx="1250" cy="768" r="5" fill="#38bdf8" />
+  <text x="1264" y="772" fill="#94a3b8" font-family="Arial" font-size="12">ACTIVE COMPONENT</text>
+  <g class="gear" transform="translate(1495,645)">
+    <circle r="11" fill="none" stroke="#38bdf8" stroke-width="3" opacity=".8" />
+    <circle r="3" fill="#38bdf8" />
+    <g stroke="#38bdf8" stroke-width="4" stroke-linecap="round">
+      <path d="M0 -16V-12 M0 12V16 M-16 0H-12 M12 0H16 M-11 -11l3 3 M8 8l3 3 M11 -11l-3 3 M-8 8l-3 3" />
+    </g>
+  </g>
+  <rect x="70" y="895" width="1460" height="1" fill="#315477" />
+  <circle cx="88" cy="930" r="6" fill="#34d399" />
+  <text x="105" y="935" fill="#94a3b8" font-family="Arial" font-size="14">Healthy component</text>
+  <path d="M330 930h55" stroke="url(#line)" stroke-width="4" stroke-dasharray="8 7" />
+  <text x="400" y="935" fill="#94a3b8" font-family="Arial" font-size="14">Animated data / control flow</text>
+  <g class="gear" transform="translate(755 930)">
+    <circle r="10" fill="none" stroke="#a78bfa" stroke-width="3" />
+    <circle r="3" fill="#a78bfa" />
+  </g>
+  <text x="775" y="935" fill="#94a3b8" font-family="Arial" font-size="14">Rotating system component</text>
+  <text x="1520" y="975" fill="#64748b" text-anchor="end" font-family="Arial" font-size="12">DEVMAVOX · ARCHITECTURE DESIGN</text>
+</svg>

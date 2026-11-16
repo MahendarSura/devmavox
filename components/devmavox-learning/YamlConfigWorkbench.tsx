@@ -1,5 +1,6 @@
 "use client";
 
+import YamlPracticalLabWorkspace from "./YamlPracticalLabWorkspace";
 import YamlKubernetesWorkloadsWorkspace from "./YamlKubernetesWorkloadsWorkspace";
 import YamlKubernetesNetworkingWorkspace from "./YamlKubernetesNetworkingWorkspace";
 import YamlKubernetesConfigurationWorkspace from "./YamlKubernetesConfigurationWorkspace";
@@ -14,8 +15,14 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import YamlFundamentalsWorkspace from "./YamlFundamentalsWorkspace";
+import YamlModuleLearningGuide from "./YamlModuleLearningGuide";
+import KubernetesManifestLab from "./practical-labs/kubernetes-manifest-lab/KubernetesManifestLab";
+import TroubleshootingLab from "./practical-labs/troubleshooting-lab/TroubleshootingLab";
+import CICDGitOpsLab from "./practical-labs/cicd-gitops-lab/CICDGitOpsLab";
 import { parseDocument, stringify } from "yaml";
 
+const DedicatedPracticalLabWorkspace =
+  YamlPracticalLabWorkspace as React.ComponentType<any>;
 const MonacoEditor = dynamic(
   () => import("@monaco-editor/react"),
   {
@@ -130,295 +137,13 @@ function ActionButton({
   );
 }
 
-
-type QuickReferenceItem = [string, string];
-
-const topicQuickReferences: Record<string, QuickReferenceItem[]> = {
-  "Syntax and Structure": [
-    ["Document", "Use --- to mark a YAML document start"],
-    ["Mapping", "Represent key-value pairs with a colon"],
-    ["Sequence", "Represent ordered items with a hyphen"],
-    ["Comments", "Use # for human-readable comments"]
-  ],
-  "Data Types": [
-    ["String", "Quote ambiguous values and strings with special characters"],
-    ["Integer", "Use numeric values without unnecessary quotes"],
-    ["Boolean", "Use true or false consistently"],
-    ["Null", "Use null or ~ for an explicit empty value"]
-  ],
-  "Lists": [
-    ["Sequence", "Use a hyphen followed by a space"],
-    ["Nested list", "Indent child items consistently"],
-    ["List of objects", "Place mapping fields under each list item"],
-    ["Validation", "Check indentation and item alignment"]
-  ],
-  "Objects": [
-    ["Mapping", "Use key-value pairs"],
-    ["Nested mapping", "Indent child mappings under their parent"],
-    ["Keys", "Use unique keys within a mapping"],
-    ["Values", "Use appropriate scalar, sequence or mapping types"]
-  ],
-  "Indentation": [
-    ["Spaces", "Use spaces rather than tabs"],
-    ["Consistency", "Keep sibling keys at the same indentation"],
-    ["Nesting", "Indent child structures consistently"],
-    ["Review", "Check list and mapping boundaries"]
-  ],
-  "Pod": [
-    ["API", "apiVersion: v1"],
-    ["Resource", "kind: Pod"],
-    ["Container", "spec.containers"],
-    ["Restart", "spec.restartPolicy"]
-  ],
-  "Deployment": [
-    ["API", "apiVersion: apps/v1"],
-    ["Replicas", "spec.replicas"],
-    ["Selector", "spec.selector.matchLabels"],
-    ["Template", "spec.template.metadata.labels"]
-  ],
-  "StatefulSet": [
-    ["API", "apps/v1"],
-    ["Identity", "spec.serviceName"],
-    ["Storage", "spec.volumeClaimTemplates"],
-    ["Updates", "spec.updateStrategy"]
-  ],
-  "DaemonSet": [
-    ["API", "apps/v1"],
-    ["Selector", "spec.selector"],
-    ["Pods", "spec.template"],
-    ["Updates", "spec.updateStrategy"]
-  ],
-  "Job": [
-    ["API", "batch/v1"],
-    ["Completions", "spec.completions"],
-    ["Parallelism", "spec.parallelism"],
-    ["Retries", "spec.backoffLimit"]
-  ],
-  "CronJob": [
-    ["API", "batch/v1"],
-    ["Schedule", "spec.schedule"],
-    ["Template", "spec.jobTemplate"],
-    ["Concurrency", "spec.concurrencyPolicy"]
-  ],
-  "Service": [
-    ["API", "apiVersion: v1"],
-    ["Selector", "spec.selector"],
-    ["Ports", "spec.ports"],
-    ["Target", "port and targetPort"]
-  ],
-  "Ingress": [
-    ["API", "networking.k8s.io/v1"],
-    ["Class", "spec.ingressClassName"],
-    ["Routing", "spec.rules and HTTP paths"],
-    ["TLS", "spec.tls"]
-  ],
-  "NetworkPolicy": [
-    ["API", "networking.k8s.io/v1"],
-    ["Selector", "spec.podSelector"],
-    ["Direction", "spec.policyTypes"],
-    ["Rules", "spec.ingress and spec.egress"]
-  ],
-  "ConfigMap": [
-    ["API", "apiVersion: v1"],
-    ["Values", "data"],
-    ["Binary", "binaryData"],
-    ["Immutability", "immutable"]
-  ],
-  "Secret": [
-    ["API", "apiVersion: v1"],
-    ["Type", "type"],
-    ["Values", "data or stringData"],
-    ["Security", "Base64 is not encryption; protect Secret access"]
-  ],
-  "RBAC": [
-    ["API", "rbac.authorization.k8s.io/v1"],
-    ["Permissions", "rules, apiGroups, resources and verbs"],
-    ["Binding", "RoleBinding or ClusterRoleBinding"],
-    ["Identity", "subjects"]
-  ],
-  "PersistentVolume": [
-    ["API", "apiVersion: v1"],
-    ["Capacity", "spec.capacity.storage"],
-    ["Access", "spec.accessModes"],
-    ["Reclaim", "spec.persistentVolumeReclaimPolicy"]
-  ],
-  "PersistentVolumeClaim": [
-    ["API", "apiVersion: v1"],
-    ["Request", "spec.resources.requests.storage"],
-    ["Access", "spec.accessModes"],
-    ["Binding", "spec.storageClassName or volumeName"]
-  ],
-  "StorageClass": [
-    ["API", "storage.k8s.io/v1"],
-    ["Provisioner", "provisioner"],
-    ["Policy", "reclaimPolicy"],
-    ["Binding", "volumeBindingMode"]
-  ],
-  "Liveness Probe": [
-    ["Purpose", "Detect an unhealthy container"],
-    ["Methods", "httpGet, tcpSocket or exec"],
-    ["Timing", "periodSeconds and timeoutSeconds"],
-    ["Failure", "failureThreshold"]
-  ],
-  "Readiness Probe": [
-    ["Purpose", "Determine whether a Pod can receive traffic"],
-    ["Methods", "httpGet, tcpSocket or exec"],
-    ["Success", "successThreshold"],
-    ["Failure", "failureThreshold"]
-  ],
-  "Startup Probe": [
-    ["Purpose", "Allow slow-starting applications to initialize"],
-    ["Methods", "httpGet, tcpSocket or exec"],
-    ["Timing", "periodSeconds"],
-    ["Failure", "failureThreshold controls startup allowance"]
-  ],
-  "Resource Requests and Limits": [
-    ["CPU request", "resources.requests.cpu"],
-    ["Memory request", "resources.requests.memory"],
-    ["CPU limit", "resources.limits.cpu"],
-    ["Memory limit", "resources.limits.memory"]
-  ],
-  "HPA": [
-    ["API", "autoscaling/v2"],
-    ["Target", "spec.scaleTargetRef"],
-    ["Bounds", "spec.minReplicas and maxReplicas"],
-    ["Metrics", "spec.metrics"]
-  ],
-  "Jenkinsfile": [
-    ["Pipeline", "pipeline"],
-    ["Agent", "agent"],
-    ["Stages", "stages and stage"],
-    ["Execution", "steps, post and environment"]
-  ],
-  "GitHub Actions Workflow": [
-    ["Triggers", "on"],
-    ["Jobs", "jobs"],
-    ["Runner", "runs-on"],
-    ["Steps", "steps, uses and run"]
-  ],
-  "GitLab CI Pipeline": [
-    ["Stages", "stages"],
-    ["Commands", "script"],
-    ["Dependencies", "needs"],
-    ["Artifacts", "artifacts and paths"]
-  ],
-  "Docker Compose": [
-    ["Services", "services"],
-    ["Ports", "ports"],
-    ["Storage", "volumes"],
-    ["Health", "healthcheck and depends_on conditions"]
-  ],
-  "Dockerfile": [
-    ["Base image", "FROM"],
-    ["Working directory", "WORKDIR"],
-    ["Copy files", "COPY"],
-    ["Runtime", "USER, ENTRYPOINT and CMD"]
-  ],
-  "Argo CD Application": [
-    ["API", "argoproj.io/v1alpha1"],
-    ["Source", "spec.source"],
-    ["Destination", "spec.destination"],
-    ["Sync", "spec.syncPolicy"]
-  ],
-  "Helm Values": [
-    ["Image", "image.repository and image.tag"],
-    ["Replicas", "replicaCount"],
-    ["Resources", "resources.requests and limits"],
-    ["Exposure", "service and ingress"]
-  ],
-  "Ansible Playbook": [
-    ["Target", "hosts"],
-    ["Tasks", "tasks and module arguments"],
-    ["Privilege", "become"],
-    ["Handlers", "notify and handlers"]
-  ],
-  "Ansible Inventory": [
-    ["Groups", "all, children and hosts"],
-    ["Host address", "ansible_host"],
-    ["Connection", "ansible_user and ansible_port"],
-    ["Variables", "group_vars and host_vars"]
-  ]
-};
-
-const categoryQuickReferences: Record<string, QuickReferenceItem[]> = {
-  "YAML Fundamentals": [
-    ["Syntax", "Mappings, sequences, scalars and document markers"],
-    ["Types", "Strings, numbers, booleans and null"],
-    ["Structure", "Nested mappings and sequences"],
-    ["Validation", "Check indentation, duplicate keys and parsing"]
-  ],
-  "Kubernetes Workloads": [
-    ["API", "apps/v1 or batch/v1 depending on resource"],
-    ["Selector", "Match workload selectors with Pod template labels"],
-    ["Template", "spec.template defines Pod configuration"],
-    ["Rollout", "Review replicas, strategy and readiness"]
-  ],
-  "Kubernetes Networking": [
-    ["Service", "Stable virtual endpoint for selected Pods"],
-    ["Ingress", "HTTP and HTTPS routing through an Ingress controller"],
-    ["Policy", "Pod-level network traffic rules"],
-    ["Check", "Selectors, ports, endpoints and controller status"]
-  ],
-  "Kubernetes Configuration": [
-    ["ConfigMap", "Non-sensitive application configuration"],
-    ["Secret", "Sensitive values with access controls"],
-    ["RBAC", "Roles, bindings, subjects and permissions"],
-    ["Security", "Least privilege and safe secret handling"]
-  ],
-  "Kubernetes Storage": [
-    ["PV", "Cluster storage resource"],
-    ["PVC", "Workload storage request"],
-    ["StorageClass", "Dynamic provisioning configuration"],
-    ["Check", "Capacity, access modes and binding status"]
-  ],
-  "Kubernetes Operations": [
-    ["Probes", "Startup, readiness and liveness checks"],
-    ["Resources", "CPU and memory requests and limits"],
-    ["Autoscaling", "HPA target and metrics"],
-    ["Safety", "Avoid probe and resource settings that cause restarts"]
-  ],
-  "CI/CD Configurations": [
-    ["Pipeline", "Stages, jobs, agents and runners"],
-    ["Execution", "Steps, scripts and reusable actions"],
-    ["Security", "Scoped credentials and least-privilege permissions"],
-    ["Delivery", "Artifacts, dependencies and deployment gates"]
-  ],
-  "Container Configurations": [
-    ["Compose", "Services, networks and volumes"],
-    ["Dockerfile", "Build instructions and runtime defaults"],
-    ["Security", "Non-root users and trusted base images"],
-    ["Health", "Health checks and startup dependencies"]
-  ],
-  "GitOps Configurations": [
-    ["Application", "Source repository and destination cluster"],
-    ["Values", "Helm chart configuration"],
-    ["Sync", "Automated or manual reconciliation"],
-    ["Safety", "Review pruning, self-heal and rollback behavior"]
-  ],
-  "Automation Configurations": [
-    ["Playbook", "Plays, hosts, tasks and modules"],
-    ["Inventory", "Hosts, groups and connection variables"],
-    ["Execution", "Syntax check, check mode and limited rollout"],
-    ["Security", "Vault, SSH credentials and least privilege"]
-  ]
-};
-
-function getTopicQuickReference(topic?: string, category?: string): QuickReferenceItem[] {
-  if (topic && topicQuickReferences[topic]) return topicQuickReferences[topic];
-  if (category && categoryQuickReferences[category]) return categoryQuickReferences[category];
-  return [
-    ["YAML", "Use consistent spaces and valid mappings or sequences"],
-    ["Structure", "Keep nested values under their parent keys"],
-    ["Safety", "Protect credentials and review changes before applying"],
-    ["Validation", "Separate YAML syntax checks from tool-specific schema checks"]
-  ];
-}
-
 export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
   const [activeModule, setActiveModule] = useState("Learn YAML");
+  const [moduleWorkspaceOpen, setModuleWorkspaceOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Learn");
   const [editorValue, setEditorValue] = useState(sampleYaml);
   const [notice, setNotice] = useState("");
+  const [rightPanelSelection, setRightPanelSelection] = useState<string | null>(null);
 
   const validation = useMemo(() => {
     try {
@@ -482,6 +207,7 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
 
   const base = `/${feature.id}`;
 
+  const isPracticalLabModule = ["Kubernetes Manifest Lab", "Troubleshooting Lab", "CI/CD and GitOps Lab"].includes(activeModule);
   const showEditor =
     activeModule === "YAML Editor" ||
     activeModule === "YAML Validator" ||
@@ -529,8 +255,269 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
     setNotice("Editor restored to the sample Deployment manifest.");
   }
 
+  const rightPanelContent: Record<string, {
+    title: string;
+    intro: string;
+    points: string[];
+    example: string;
+    takeaway: string;
+  }> = {
+    "quick:Syntax": {
+      title: "YAML Syntax Fundamentals",
+      intro: "YAML is a human-readable data serialization format. Its structure uses indentation, mappings, sequences and scalar values.",
+      points: [
+        "Use spaces for indentation. Tabs must not be used to structure YAML.",
+        "Mappings store key-value pairs using a colon followed by a space.",
+        "Sequences represent ordered lists. Each item starts with a hyphen and a space.",
+        "Nested properties must be indented consistently beneath their parent.",
+        "Comments begin with # and are ignored by the YAML parser.",
+        "Quoted strings help preserve values that could otherwise be interpreted as another data type."
+      ],
+      example: `# Application configuration
+app:
+  name: devmavox
+  environment: production
+  ports:
+    - 3000
+    - 8080
+  logging:
+    enabled: true
+    level: info`,
+      takeaway: "Maintain consistent indentation and validate YAML after every meaningful edit."
+    },
+    "quick:Data types": {
+      title: "YAML Data Types",
+      intro: "YAML supports scalar values and collections. Correct data types matter because applications interpret configuration values according to their expected schemas.",
+      points: [
+        "Strings represent text such as application names and image references.",
+        "Integers represent whole numbers such as replica counts.",
+        "Floating-point numbers represent decimal values.",
+        "Booleans represent true or false.",
+        "Null represents an intentionally empty value.",
+        "Sequences represent lists, while mappings represent related key-value properties.",
+        "Quote values when you need to preserve their exact textual representation."
+      ],
+      example: `app:
+  name: "devmavox"
+  replicas: 3
+  cpuLimit: 1.5
+  enabled: true
+  maintenanceMode: false
+  description: null
+  version: "1.0"
+  environments:
+    - development
+    - staging
+    - production`,
+      takeaway: "Choose the correct data type and verify that it matches the target application's expected configuration."
+    },
+    "quick:Kubernetes": {
+      title: "Kubernetes Manifest Structure",
+      intro: "A Kubernetes manifest describes the desired state of a resource. Its main fields identify the API version, resource kind, metadata and resource specification.",
+      points: [
+        "apiVersion identifies the Kubernetes API group and version.",
+        "kind specifies the resource type, such as Pod, Deployment or Service.",
+        "metadata contains the resource name, namespace, labels and annotations.",
+        "spec defines the desired configuration of the resource.",
+        "The fields inside spec depend on the selected resource kind.",
+        "A Deployment manages Pods through a selector and Pod template.",
+        "Kubernetes controllers work to maintain the desired state."
+      ],
+      example: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  labels:
+    app: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27`,
+      takeaway: "Use the correct API version and resource-specific fields. Keep Deployment selectors consistent with Pod template labels."
+    },
+    "quick:Validation": {
+      title: "YAML and Kubernetes Validation",
+      intro: "YAML syntax validation and Kubernetes resource validation are separate activities. A file can parse successfully while still containing invalid Kubernetes fields or values.",
+      points: [
+        "Syntax validation checks indentation, mappings, sequences and YAML parsing.",
+        "A YAML linter can identify formatting and common structural problems.",
+        "Kubernetes schema validation checks fields against the resource definition.",
+        "kubectl apply --dry-run=server asks the API server to validate without persisting the resource.",
+        "kubectl explain helps inspect supported resource fields.",
+        "kubectl diff compares proposed configuration with live configuration.",
+        "Runtime readiness and application behavior require additional checks after deployment."
+      ],
+      example: `# Check YAML formatting
+yamllint deployment.yaml
+
+# Inspect supported resource fields
+kubectl explain deployment.spec
+
+# Validate with the API server
+kubectl apply --dry-run=server -f deployment.yaml
+
+# Review proposed changes
+kubectl diff -f deployment.yaml`,
+      takeaway: "A successful YAML parse does not guarantee Kubernetes API acceptance or a healthy application."
+    },
+    "path:Understand": {
+      title: "Step 1 - Understand YAML",
+      intro: "Begin by learning how YAML represents structured data. Build a strong foundation before creating complex Kubernetes and DevOps configurations.",
+      points: [
+        "Understand key-value pairs and mappings.",
+        "Learn parent-child relationships through indentation.",
+        "Recognize sequences and nested lists.",
+        "Identify strings, numbers, booleans and null values.",
+        "Understand comments and quoted strings.",
+        "Practice reading a small YAML file and explaining each property."
+      ],
+      example: `application:
+  name: payments
+  replicas: 2
+  enabled: true
+  environments:
+    - development
+    - production`,
+      takeaway: "You should be able to read a YAML document and explain its structure without guessing."
+    },
+    "path:Explore": {
+      title: "Step 2 - Explore Existing Configurations",
+      intro: "Study real configuration files to understand how DevOps tools and applications organize their settings.",
+      points: [
+        "Read Kubernetes Pod and Deployment manifests.",
+        "Compare ConfigMaps and Secrets and understand their purposes.",
+        "Explore container images, ports and environment variables.",
+        "Identify labels, selectors and metadata.",
+        "Inspect nested properties and understand their parent relationships.",
+        "Compare development and production configuration files."
+      ],
+      example: `apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-settings
+data:
+  APP_MODE: production
+  LOG_LEVEL: info
+  FEATURE_ENABLED: "true"`,
+      takeaway: "Recognize common configuration patterns before writing your own manifests."
+    },
+    "path:Write": {
+      title: "Step 3 - Write YAML Configurations",
+      intro: "Create your own YAML files using the concepts you have learned. Start with small configurations and gradually build complete application manifests.",
+      points: [
+        "Create a YAML file with meaningful names and clear structure.",
+        "Organize parent and nested properties with correct indentation.",
+        "Add sequences for containers, ports and environment variables.",
+        "Use labels and selectors consistently in Kubernetes resources.",
+        "Keep configuration readable and avoid unnecessary duplication.",
+        "Review the generated YAML before validation."
+      ],
+      example: `apiVersion: v1
+kind: Pod
+metadata:
+  name: learning-pod
+  labels:
+    app: learning
+spec:
+  containers:
+    - name: nginx
+      image: nginx:1.27
+      ports:
+        - containerPort: 80`,
+      takeaway: "Write configurations incrementally and inspect the resulting structure."
+    },
+    "path:Validate": {
+      title: "Step 4 - Validate Configurations",
+      intro: "Validate your YAML before using it. Check syntax first, then verify that the configuration meets the requirements of its target platform.",
+      points: [
+        "Run a YAML linter or parser to detect syntax problems.",
+        "Check indentation, missing colons and malformed sequences.",
+        "Verify Kubernetes apiVersion and kind.",
+        "Inspect resource fields with kubectl explain.",
+        "Use server-side dry-run to check API server acceptance.",
+        "Review warnings and resolve configuration problems before deployment."
+      ],
+      example: `# Check YAML formatting
+yamllint deployment.yaml
+
+# Validate against the cluster API
+kubectl apply --dry-run=server -f deployment.yaml
+
+# Review configuration differences
+kubectl diff -f deployment.yaml`,
+      takeaway: "Passing syntax checks alone is not enough. Validate against the target platform too."
+    },
+    "path:Troubleshoot": {
+      title: "Step 5 - Troubleshoot YAML Errors",
+      intro: "Troubleshooting means identifying the actual cause of a configuration failure, collecting evidence and applying a safe correction.",
+      points: [
+        "Read parser errors and inspect the reported line and column.",
+        "Check indentation and missing spaces after colons.",
+        "Look for duplicate keys and incorrectly structured lists.",
+        "Verify resource names, selectors, image references and field names.",
+        "Use kubectl describe to investigate resource conditions and events.",
+        "Use kubectl logs to inspect application container failures.",
+        "Apply a minimal correction and validate the configuration again."
+      ],
+      example: `# Inspect Pods
+kubectl get pods
+
+# Investigate a failing Pod
+kubectl describe pod <pod-name>
+
+# Review recent events
+kubectl get events --sort-by=.metadata.creationTimestamp
+
+# Inspect container logs
+kubectl logs <pod-name>
+
+# Validate corrected manifest
+kubectl apply --dry-run=server -f deployment.yaml`,
+      takeaway: "Use error messages and cluster evidence to find the root cause instead of changing unrelated configuration."
+    },
+    "path:Apply": {
+      title: "Step 6 - Apply Real-world Configurations",
+      intro: "Use YAML in practical DevOps workflows. Combine application configuration, Kubernetes resources and automated delivery processes.",
+      points: [
+        "Create Deployments, Services, ConfigMaps and other Kubernetes resources.",
+        "Organize environment-specific settings for development, staging and production.",
+        "Use Helm values files to customize application releases.",
+        "Understand how CI/CD pipelines consume YAML configuration.",
+        "Use GitOps workflows to review and synchronize configuration changes.",
+        "Monitor rollout status and verify application behavior.",
+        "Track configuration changes through version control."
+      ],
+      example: `# Validate before deployment
+kubectl apply --dry-run=server -f deployment.yaml
+
+# Apply the configuration
+kubectl apply -f deployment.yaml
+
+# Monitor rollout
+kubectl rollout status deployment/web-app
+
+# Verify deployed resources
+kubectl get deployments,pods,services`,
+      takeaway: "A complete configuration workflow includes validation, controlled deployment and post-deployment verification."
+    }
+  };
+
+  const selectedRightPanelContent = rightPanelSelection
+    ? rightPanelContent[rightPanelSelection]
+    : null;
   return (
     <main className="min-h-screen bg-[#080d18] text-slate-100">
+      
+
       <div className="border-b border-slate-800 bg-[#0b1220]">
         <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-5 py-4">
           <Link href="/" className="text-sm text-slate-400 transition hover:text-white">
@@ -548,27 +535,27 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
       <div className="mx-auto max-w-[1600px] px-4 py-7 sm:px-6 lg:px-8">
         <section className="mb-7 overflow-hidden rounded-2xl border border-slate-800 bg-gradient-to-br from-[#10233a] via-[#101b2d] to-[#111827] p-6 sm:p-9">
           <div className="max-w-4xl">
-            <div className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-cyan-300">
+            <div className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-cyan-300">
               Learn · Write · Validate · Debug · Deploy
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               YAML Config Playground
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
+            <p className="mt-2 max-w-2xl text-sm leading-5 text-slate-300 sm:text-base">
               A hands-on configuration learning workbench. Explore YAML concepts,
               build configuration files, understand validation and practice
               real-world DevOps workflows.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <div className="rounded-xl border border-slate-700 bg-slate-950/50 px-4 py-3">
+            <div className="mt-2 flex flex-wrap gap-3">
+              <div className="rounded-xl border border-slate-700 bg-slate-950/50 px-4 py-2">
                 <strong className="block text-2xl text-white">{feature.categories.length}</strong>
                 <span className="text-xs text-slate-400">Categories</span>
               </div>
-              <div className="rounded-xl border border-slate-700 bg-slate-950/50 px-4 py-3">
+              <div className="rounded-xl border border-slate-700 bg-slate-950/50 px-4 py-2">
                 <strong className="block text-2xl text-white">{topicCount}</strong>
                 <span className="text-xs text-slate-400">Learning topics</span>
               </div>
-              <div className="rounded-xl border border-slate-700 bg-slate-950/50 px-4 py-3">
+              <div className="rounded-xl border border-slate-700 bg-slate-950/50 px-4 py-2">
                 <strong className="block text-2xl text-white">08</strong>
                 <span className="text-xs text-slate-400">Learning modules</span>
               </div>
@@ -609,6 +596,7 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
                   >
                     <Link
                       href={`${base}/${categorySlug}`}
+                        scroll={false}
                       className={`flex items-center gap-2 text-sm font-semibold ${
                         categoryActive ? "text-cyan-300" : "text-slate-200 hover:text-cyan-300"
                       }`}
@@ -623,7 +611,72 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
           </aside>
 
           <section className="min-w-0 space-y-5">
-            {selectedTopic ? (
+            {!moduleWorkspaceOpen && rightPanelSelection && selectedRightPanelContent ? (
+              <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5 sm:p-7">
+                <button
+                  type="button"
+                  onClick={() => setRightPanelSelection(null)}
+                  className="mb-6 inline-flex items-center gap-2 rounded-lg border border-cyan-800 bg-cyan-950/40 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:border-cyan-500 hover:bg-cyan-950"
+                >
+                  <span aria-hidden="true">←</span>
+                  Back to {rightPanelSelection.startsWith("quick:") ? "Quick Reference" : "Learning Path"}
+                </button>
+
+                <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-cyan-300">
+                  {rightPanelSelection.startsWith("quick:") ? "QUICK REFERENCE" : "LEARNING PATH"}
+                </div>
+
+                <h2 className="text-2xl font-bold text-white sm:text-3xl">
+                  {selectedRightPanelContent.title}
+                </h2>
+
+                <p className="mt-4 text-sm leading-7 text-slate-300">
+                  {selectedRightPanelContent.intro}
+                </p>
+
+                <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900/60 p-5">
+                  <h3 className="text-base font-semibold text-white">
+                    Key Concepts and Practical Details
+                  </h3>
+                  <ul className="mt-4 space-y-3">
+                    {selectedRightPanelContent.points.map((point, index) => (
+                      <li key={index} className="flex gap-3 text-sm leading-6 text-slate-300">
+                        <span className="mt-0.5 shrink-0 text-cyan-400">•</span>
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-6 overflow-hidden rounded-xl border border-slate-700">
+                  <div className="border-b border-slate-700 bg-slate-900 px-4 py-3">
+                    <h3 className="text-sm font-semibold text-cyan-300">
+                      Practical YAML / Command Example
+                    </h3>
+                  </div>
+                  <pre className="overflow-x-auto bg-[#080d18] p-5 text-sm leading-6 text-emerald-300">
+                    <code>{selectedRightPanelContent.example}</code>
+                  </pre>
+                </div>
+
+                <div className="mt-6 rounded-xl border border-cyan-900 bg-cyan-950/20 p-4">
+                  <h3 className="text-sm font-semibold text-cyan-300">
+                    What You Should Remember
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-300">
+                    {selectedRightPanelContent.takeaway}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setRightPanelSelection(null)}
+                  className="mt-6 rounded-lg border border-cyan-800 bg-cyan-950/40 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:border-cyan-500"
+                >
+                  ← Back to {rightPanelSelection.startsWith("quick:") ? "Quick Reference" : "Learning Path"}
+                </button>
+              </div>
+            ) : !moduleWorkspaceOpen && selectedTopic ? (
               <>
                 <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5 sm:p-7">
                   <Link
@@ -681,7 +734,7 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
                   <YamlFundamentalsWorkspace topic={selectedTopic} tab={activeTab} />
                 )}
               </>
-            ) : selectedCategory ? (
+            ) : !moduleWorkspaceOpen && selectedCategory ? (
               <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-6">
                 <div className="text-xs font-semibold text-cyan-300">
                   CURRICULUM TOPICS
@@ -709,6 +762,7 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
                       <Link
                         key={`${subcategory.name}-${topic}`}
                         href={`${base}/${slugify(selectedCategory.name)}/${slugify(subcategory.name)}/${slugify(topic)}`}
+                        scroll={false}
                         className="group rounded-xl border border-slate-700 bg-slate-900/70 p-5 transition hover:-translate-y-1 hover:border-cyan-600 hover:bg-slate-800"
                       >
                         <div className="mb-4 flex items-center justify-between">
@@ -730,7 +784,8 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
                 </div>
               </div>            ) : (
               <>
-                <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5">
+                {!moduleWorkspaceOpen && (
+<div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5">
                   <h2 className="text-xl font-bold text-white">Learning Modules</h2>
                   <p className="mt-2 text-sm leading-6 text-slate-400">
                     Choose a module to open its workspace.
@@ -742,6 +797,7 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
                         key={module.name}
                         onClick={() => {
                           setActiveModule(module.name);
+                          setModuleWorkspaceOpen(true);
                           setNotice("");
                         }}
                         className={`rounded-xl border p-4 text-left transition ${
@@ -758,13 +814,63 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
                   </div>
                 </div>
 
-                {!showEditor && (
-                  <YamlModuleWorkspaces
+                                )}
+
+{moduleWorkspaceOpen && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setModuleWorkspaceOpen(false);
+                    setActiveModule("Learn YAML");
+                    setNotice("");
+                  }}
+                  className="mb-4 rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:border-cyan-600 hover:bg-slate-800"
+                >
+                  ← Back to Learning Modules
+                </button>{isPracticalLabModule ? (
+                  activeModule === "Kubernetes Manifest Lab" ? (
+                    <KubernetesManifestLab />
+                  ) : activeModule === "Troubleshooting Lab" ? (
+                    <TroubleshootingLab />
+                  ) : (
+                    <CICDGitOpsLab />
+                  )
+                ) : (
+                  <YamlModuleLearningGuide
                     moduleName={activeModule}
-                    onOpenEditor={() => setActiveModule("YAML Editor")}
-                    onLoadExample={(yaml) => setEditorValue(yaml)}
+                    onLoadExample={(yaml) => {
+                      setEditorValue(yaml);
+                      setActiveModule("YAML Editor");
+                      setNotice("Learning example loaded into the YAML Editor.");
+                    }}
                   />
                 )}
+                {!showEditor && !isPracticalLabModule && (
+                  <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <h2 className="text-lg font-bold text-white">YAML Example Workspace</h2>
+                        <p className="mt-1 text-xs text-slate-400">Illustrative Kubernetes Deployment manifest</p>
+                      </div>
+                      <span className="rounded-full border border-emerald-900 bg-emerald-950/40 px-3 py-1 text-xs text-emerald-300">
+                        Example YAML
+                      </span>
+                    </div>
+                    <pre className="mt-4 overflow-x-auto rounded-xl border border-slate-800 bg-[#070c14] p-4 text-xs leading-6 text-emerald-300">
+                      <code>{sampleYaml}</code>
+                    </pre>
+                    <button
+                      type="button"
+                      onClick={() => setActiveModule("YAML Editor")}
+                      className="mt-4 rounded-lg bg-cyan-500 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-cyan-400"
+                    >
+                      Open in YAML Editor →
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
               </>
             )}
 
@@ -772,15 +878,9 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
               <div className="overflow-hidden rounded-2xl border border-slate-800 bg-[#0d1523]">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 p-4">
                   <div>
-                    <h3 className="font-bold text-white">
-                      {activeModule === "YAML Validator"
-                        ? "YAML Validation Workspace"
-                        : "YAML Code Editor"}
-                    </h3>
+                    <h3 className="font-bold text-white">YAML Code Editor</h3>
                     <p className="mt-1 text-xs text-slate-400">
-                      {activeModule === "YAML Validator"
-                        ? "Validate YAML syntax, inspect parser errors and review warnings in real time."
-                        : "Write, edit, format, copy and download YAML configuration files."}
+                      Monaco Editor · YAML syntax highlighting · Live parsing
                     </p>
                   </div>
                   <span className={`rounded-full border px-3 py-1 text-xs font-bold ${
@@ -889,11 +989,21 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
             <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5">
               <h2 className="text-sm font-bold text-white">Quick Reference</h2>
               <div className="mt-4 space-y-3 text-xs">
-                {getTopicQuickReference(selectedTopic, selectedCategory?.name).map(([label, description]) => (
-                  <div key={label} className="border-b border-slate-800 pb-3 last:border-0">
-                    <div className="font-semibold text-cyan-300">{label}</div>
-                    <p className="mt-1 leading-5 text-slate-400">{description}</p>
-                  </div>
+                {[
+                  ["Syntax", "Indentation, mappings and sequences"],
+                  ["Data types", "Strings, numbers, booleans and null"],
+                  ["Kubernetes", "apiVersion, kind, metadata and spec"],
+                  ["Validation", "Syntax checks and schema checks are separate"],
+                ].map(([label, description]) => (
+                  <button
+                      type="button"
+                      key={label}
+                      onClick={() => setRightPanelSelection(`quick:${label}`)}
+                      className="w-full border-b border-slate-800 pb-3 text-left last:border-0 rounded-md transition hover:bg-slate-800/50 hover:px-2"
+                    >
+                      <div className="font-semibold text-cyan-300">{label}</div>
+                      <p className="mt-1 leading-5 text-slate-400">{description}</p>
+                    </button>
                 ))}
               </div>
             </div>
@@ -902,12 +1012,18 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
               <h2 className="text-sm font-bold text-white">Learning Path</h2>
               <div className="mt-4 space-y-3">
                 {["Understand", "Explore", "Write", "Validate", "Troubleshoot", "Apply"].map((step, index) => (
-                  <div key={step} className="flex items-center gap-3">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-xs text-cyan-300">
+                  <button
+                    type="button"
+                    key={step}
+                    onClick={() => setRightPanelSelection(`path:${step}`)}
+                    className="flex w-full items-center gap-3 rounded-md text-left transition hover:bg-slate-800/50 hover:px-2"
+                    title={`Open ${step} learning section`}
+                  >
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs text-cyan-300">
                       {index + 1}
                     </span>
                     <span className="text-xs text-slate-300">{step}</span>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -922,723 +1038,15 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
   );
 }
 
-// -----------------------------------------------------------------------------
-// Dedicated YAML Config Playground module workspaces
-// -----------------------------------------------------------------------------
 
-interface YamlModuleWorkspacesProps {
-  moduleName: string;
-  onOpenEditor: () => void;
-  onLoadExample: (yaml: string) => void;
-}
 
-function YamlModuleWorkspaces({
-  moduleName,
-  onOpenEditor,
-  onLoadExample,
-}: YamlModuleWorkspacesProps) {
-  const [selectedResource, setSelectedResource] = useState("Deployment");
-  const [selectedIncident, setSelectedIncident] = useState(0);
-  const [selectedProductionScenario, setSelectedProductionScenario] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [quizSubmitted, setQuizSubmitted] = useState(false);
 
-  const examples: Record<string, string> = {
-    Deployment: `apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: web-app
-  namespace: production
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: web-app
-  template:
-    metadata:
-      labels:
-        app: web-app
-    spec:
-      containers:
-        - name: web
-          image: nginx:1.27
-          ports:
-            - containerPort: 80
-`,
 
-    Service: `apiVersion: v1
-kind: Service
-metadata:
-  name: web-service
-  namespace: production
-spec:
-  type: ClusterIP
-  selector:
-    app: web-app
-  ports:
-    - name: http
-      port: 80
-      targetPort: 80
-`,
 
-    ConfigMap: `apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: application-config
-  namespace: production
-data:
-  APP_ENV: production
-  LOG_LEVEL: info
-  FEATURE_FLAG: "true"
-`,
 
-    Secret: `apiVersion: v1
-kind: Secret
-metadata:
-  name: application-secret
-  namespace: production
-type: Opaque
-stringData:
-  DATABASE_USER: app_user
-  DATABASE_PASSWORD: replace-with-secret-manager-value
-`,
-  };
 
-  const incidents = [
-    {
-      title: "Pod remains in CrashLoopBackOff",
-      symptom: "The container repeatedly starts and exits. Restart count keeps increasing.",
-      causes: [
-        "Incorrect container command or entrypoint",
-        "Missing environment variables or configuration",
-        "Application startup failure",
-        "Liveness probe terminates the container"
-      ],
-      checks: [
-        "Inspect kubectl describe pod output",
-        "Review kubectl logs --previous",
-        "Check ConfigMap and Secret references",
-        "Review startup and liveness probe configuration"
-      ],
-      fix: "Correct the application configuration or startup command, validate the manifest, and roll out a controlled update."
-    },
-    {
-      title: "Service cannot reach application Pods",
-      symptom: "The Service exists, but requests fail or have no endpoints.",
-      causes: [
-        "Service selector does not match Pod labels",
-        "Incorrect targetPort",
-        "Pods are not Ready",
-        "NetworkPolicy blocks traffic"
-      ],
-      checks: [
-        "Run kubectl get endpoints",
-        "Compare Service selectors with Pod labels",
-        "Inspect container listening ports",
-        "Review namespace NetworkPolicies"
-      ],
-      fix: "Align Service selectors and Pod labels, correct targetPort, and verify endpoint readiness."
-    },
-    {
-      title: "Configuration changes are not reflected",
-      symptom: "A workload continues using an older configuration.",
-      causes: [
-        "Incorrect ConfigMap reference",
-        "Application does not reload mounted configuration",
-        "Environment variables require a Pod restart",
-        "GitOps reconciliation has not completed"
-      ],
-      checks: [
-        "Inspect the ConfigMap resource",
-        "Check Pod volume mounts and environment references",
-        "Compare live and desired manifests",
-        "Inspect rollout and GitOps synchronization status"
-      ],
-      fix: "Correct the configuration reference and use an appropriate rollout or application reload strategy."
-    },
-  ];
 
-  const productionScenarios = [
-    {
-      title: "Production deployment with zero-downtime rollout",
-      objective: "Deploy a new application version while maintaining service availability.",
-      plan: [
-        "Confirm the current replica count and Pod readiness",
-        "Configure a rolling update strategy",
-        "Use readiness probes and sensible resource requests",
-        "Apply the change in a controlled deployment window",
-        "Monitor rollout status and application health",
-        "Prepare rollback to the last known-good revision"
-      ],
-      risk: "Insufficient replicas, incorrect readiness probes, or an unhealthy rollout can interrupt traffic."
-    },
-    {
-      title: "Emergency Secret rotation",
-      objective: "Rotate application credentials without exposing sensitive values.",
-      plan: [
-        "Identify every workload consuming the affected Secret",
-        "Generate new credentials in an approved secret manager",
-        "Update the Kubernetes Secret reference securely",
-        "Coordinate application reload or controlled Pod restart",
-        "Verify successful authentication",
-        "Revoke the old credential after validation"
-      ],
-      risk: "Premature revocation or inconsistent application updates can cause authentication failures."
-    },
-    {
-      title: "GitOps drift remediation",
-      objective: "Restore agreement between the Git repository and live cluster state.",
-      plan: [
-        "Identify the desired state in the Git repository",
-        "Compare the live object with the committed manifest",
-        "Determine whether the drift is intentional or accidental",
-        "Correct the source of truth",
-        "Review the reconciliation plan",
-        "Verify synchronization and application health"
-      ],
-      risk: "Blindly applying manifests can overwrite legitimate emergency changes or operational settings."
-    },
-  ];
 
-  const quizQuestions = [
-    {
-      question: "Which YAML structure represents an ordered collection?",
-      options: ["Mapping", "Sequence", "Scalar", "Comment"],
-      answer: "Sequence",
-      explanation: "A YAML sequence represents an ordered list. Each item is commonly introduced with a hyphen."
-    },
-    {
-      question: "Which Kubernetes field identifies the container image?",
-      options: ["metadata.name", "spec.selector", "spec.containers[].image", "apiVersion"],
-      answer: "spec.containers[].image",
-      explanation: "The image field inside a container specification identifies the container image to run."
-    },
-    {
-      question: "What is the safest way to manage production credentials?",
-      options: [
-        "Commit passwords to Git",
-        "Put credentials in comments",
-        "Use an approved secret-management solution",
-        "Use public ConfigMaps"
-      ],
-      answer: "Use an approved secret-management solution",
-      explanation: "Credentials should be protected through approved secret-management controls and least-privilege access."
-    },
-    {
-      question: "What does a Kubernetes readiness probe determine?",
-      options: [
-        "Whether a container image exists",
-        "Whether a Pod is ready to receive traffic",
-        "Whether a node is powered off",
-        "Whether YAML indentation is correct"
-      ],
-      answer: "Whether a Pod is ready to receive traffic",
-      explanation: "Readiness controls whether a Pod should receive Service traffic."
-    },
-    {
-      question: "What is the GitOps source of truth?",
-      options: [
-        "A developer's terminal history",
-        "The committed desired configuration in Git",
-        "A manually edited Pod",
-        "A container log file"
-      ],
-      answer: "The committed desired configuration in Git",
-      explanation: "GitOps uses version-controlled desired state to drive automated reconciliation."
-    },
-  ];
 
-  const score = quizQuestions.filter(
-    (question, index) => answers[index] === question.answer
-  ).length;
 
-  const loadExample = (yaml: string) => {
-    onLoadExample(yaml);
-    onOpenEditor();
-  };
-
-  const panelClass =
-    "rounded-2xl border border-slate-800 bg-[#0d1523] p-5 sm:p-7";
-
-  const headingClass = "text-xl font-bold text-white";
-  const mutedClass = "text-sm leading-7 text-slate-400";
-
-  const actionClass =
-    "rounded-lg bg-cyan-500 px-4 py-2 text-xs font-bold text-slate-950 transition hover:bg-cyan-400";
-
-  return (
-    <section
-      data-yaml-module-workspace={moduleName}
-      className="space-y-5"
-    >
-      {moduleName === "Learn YAML" && (
-        <>
-          <div className={panelClass}>
-            <div className="text-xs font-bold uppercase tracking-widest text-cyan-300">
-              MODULE 01 · LEARNING FOUNDATION
-            </div>
-            <h2 className={`${headingClass} mt-3`}>Learn YAML</h2>
-            <p className={`${mutedClass} mt-3`}>
-              Understand YAML from the fundamentals through real DevOps
-              configuration patterns. Learn how YAML structure maps to
-              application settings, Kubernetes resources and automation tools.
-            </p>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            {[
-              {
-                title: "1. Scalars and data types",
-                description: "Understand strings, integers, booleans, null values and explicit quoting.",
-                example: 'appName: "payment-service"\nreplicas: 3\nenabled: true\nmaintenanceWindow: null'
-              },
-              {
-                title: "2. Mappings and nesting",
-                description: "Represent related configuration properties using indentation and key-value mappings.",
-                example: "application:\n  name: payment-service\n  environment:\n    name: production\n    region: ap-south-1"
-              },
-              {
-                title: "3. Sequences and lists",
-                description: "Represent containers, ports, environments and other ordered collections.",
-                example: "containers:\n  - name: api\n    image: nginx:1.27\n  - name: worker\n    image: busybox:1.36"
-              },
-              {
-                title: "4. Reusable configuration",
-                description: "Explore anchors, aliases, document boundaries and safe reuse patterns.",
-                example: "defaults: &defaults\n  restartPolicy: Always\n\nworker:\n  <<: *defaults\n  name: background-worker"
-              }
-            ].map((lesson) => (
-              <article key={lesson.title} className={panelClass}>
-                <h3 className="font-bold text-cyan-300">{lesson.title}</h3>
-                <p className={`${mutedClass} mt-2`}>{lesson.description}</p>
-                <pre className="mt-4 overflow-x-auto rounded-xl bg-[#070c14] p-4 text-xs leading-6 text-emerald-300">
-                  {lesson.example}
-                </pre>
-                <button
-                  type="button"
-                  className={`${actionClass} mt-4`}
-                  onClick={() => loadExample(lesson.example)}
-                >
-                  Practice this example
-                </button>
-              </article>
-            ))}
-          </div>
-
-          <div className={panelClass}>
-            <h3 className="font-bold text-white">YAML authoring rules</h3>
-            <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-7 text-slate-300">
-              <li>Use spaces for indentation; do not use tabs.</li>
-              <li>Keep indentation consistent throughout a document.</li>
-              <li>Quote values when their interpretation could be ambiguous.</li>
-              <li>Use meaningful names and predictable configuration structures.</li>
-              <li>Never commit production credentials or private keys to source control.</li>
-              <li>Validate syntax and the target application's schema separately.</li>
-            </ul>
-          </div>
-        </>
-      )}
-
-      {moduleName === "Kubernetes Manifest Lab" && (
-        <>
-          <div className={panelClass}>
-            <div className="text-xs font-bold uppercase tracking-widest text-cyan-300">
-              MODULE 04 · KUBERNETES PRACTICE
-            </div>
-            <h2 className={`${headingClass} mt-3`}>Kubernetes Manifest Lab</h2>
-            <p className={`${mutedClass} mt-3`}>
-              Explore Kubernetes API resources, metadata, specifications,
-              selectors, Pod templates, configuration references and workload
-              relationships through practical manifest examples.
-            </p>
-          </div>
-
-          <div className={panelClass}>
-            <h3 className="font-bold text-white">Choose a resource to explore</h3>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {Object.keys(examples).map((resource) => (
-                <button
-                  key={resource}
-                  type="button"
-                  onClick={() => setSelectedResource(resource)}
-                  className={`rounded-lg px-4 py-2 text-xs font-semibold ${
-                    selectedResource === resource
-                      ? "bg-cyan-500 text-slate-950"
-                      : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-                  }`}
-                >
-                  {resource}
-                </button>
-              ))}
-            </div>
-
-            <pre className="mt-5 overflow-x-auto rounded-xl bg-[#070c14] p-4 text-xs leading-6 text-emerald-300">
-              {examples[selectedResource]}
-            </pre>
-
-            <button
-              type="button"
-              className={`${actionClass} mt-4`}
-              onClick={() => loadExample(examples[selectedResource])}
-            >
-              Open {selectedResource} in YAML Editor
-            </button>
-          </div>
-
-          <div className={panelClass}>
-            <h3 className="font-bold text-white">Manifest review checklist</h3>
-            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-7 text-slate-300">
-              <li>Confirm apiVersion and kind match the intended resource.</li>
-              <li>Use unique metadata names and the correct namespace.</li>
-              <li>Match Deployment selectors with Pod template labels.</li>
-              <li>Verify Service selectors and targetPort values.</li>
-              <li>Review resource requests, limits and health probes.</li>
-              <li>Protect sensitive values and inspect RBAC permissions.</li>
-            </ul>
-            <p className="mt-4 text-xs leading-6 text-amber-300">
-              These examples are learning manifests. Kubernetes API-server
-              validation and cluster admission checks require a separate
-              schema-aware or cluster-connected validation step.
-            </p>
-          </div>
-        </>
-      )}
-
-      {moduleName === "Troubleshooting Lab" && (
-        <>
-          <div className={panelClass}>
-            <div className="text-xs font-bold uppercase tracking-widest text-cyan-300">
-              MODULE 05 · DIAGNOSIS AND RECOVERY
-            </div>
-            <h2 className={`${headingClass} mt-3`}>Troubleshooting Lab</h2>
-            <p className={`${mutedClass} mt-3`}>
-              Practice evidence-driven troubleshooting. Start with symptoms,
-              collect evidence, identify probable root causes, verify the
-              diagnosis and apply a controlled recovery.
-            </p>
-          </div>
-
-          <div className={panelClass}>
-            <h3 className="font-bold text-white">Select an incident</h3>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {incidents.map((incident, index) => (
-                <button
-                  key={incident.title}
-                  type="button"
-                  onClick={() => setSelectedIncident(index)}
-                  className={`rounded-lg px-3 py-2 text-xs font-semibold ${
-                    selectedIncident === index
-                      ? "bg-cyan-500 text-slate-950"
-                      : "bg-slate-800 text-slate-300"
-                  }`}
-                >
-                  Incident {index + 1}
-                </button>
-              ))}
-            </div>
-
-            <h4 className="mt-5 font-bold text-cyan-300">
-              {incidents[selectedIncident].title}
-            </h4>
-            <p className={`${mutedClass} mt-2`}>
-              {incidents[selectedIncident].symptom}
-            </p>
-
-            <div className="mt-5 grid gap-4 md:grid-cols-2">
-              <div className="rounded-xl border border-slate-800 p-4">
-                <h5 className="font-semibold text-white">Possible root causes</h5>
-                <ul className="mt-3 list-disc space-y-2 pl-5 text-xs leading-6 text-slate-300">
-                  {incidents[selectedIncident].causes.map((cause) => (
-                    <li key={cause}>{cause}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="rounded-xl border border-slate-800 p-4">
-                <h5 className="font-semibold text-white">Evidence collection</h5>
-                <ul className="mt-3 list-disc space-y-2 pl-5 text-xs leading-6 text-slate-300">
-                  {incidents[selectedIncident].checks.map((check) => (
-                    <li key={check}>{check}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="mt-4 rounded-xl border border-emerald-900 bg-emerald-950/20 p-4">
-              <h5 className="font-semibold text-emerald-300">Recovery direction</h5>
-              <p className="mt-2 text-sm leading-6 text-slate-300">
-                {incidents[selectedIncident].fix}
-              </p>
-            </div>
-          </div>
-
-          <div className={panelClass}>
-            <h3 className="font-bold text-white">Safe troubleshooting sequence</h3>
-            <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-300">
-              <li>Establish incident scope, impact and severity.</li>
-              <li>Collect logs, events, resource descriptions and recent changes.</li>
-              <li>Form a root-cause hypothesis based on evidence.</li>
-              <li>Test the hypothesis without introducing unnecessary changes.</li>
-              <li>Apply the smallest safe corrective action.</li>
-              <li>Verify recovery and document preventive measures.</li>
-            </ol>
-          </div>
-        </>
-      )}
-
-      {moduleName === "CI/CD and GitOps Lab" && (
-        <>
-          <div className={panelClass}>
-            <div className="text-xs font-bold uppercase tracking-widest text-cyan-300">
-              MODULE 06 · DELIVERY AUTOMATION
-            </div>
-            <h2 className={`${headingClass} mt-3`}>CI/CD and GitOps Lab</h2>
-            <p className={`${mutedClass} mt-3`}>
-              Learn how YAML defines automated build, test, deployment and
-              reconciliation workflows. Understand the difference between
-              pipeline execution and GitOps desired-state management.
-            </p>
-          </div>
-
-          <div className={panelClass}>
-            <h3 className="font-bold text-white">Example: GitHub Actions pipeline</h3>
-            <p className={`${mutedClass} mt-2`}>
-              This example checks out source code, configures a runtime,
-              validates a YAML file and builds an application artifact.
-            </p>
-            <pre className="mt-4 overflow-x-auto rounded-xl bg-[#070c14] p-4 text-xs leading-6 text-emerald-300">
-{`name: application-ci
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-
-jobs:
-  validate-and-build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Validate configuration
-        run: |
-          python -c "import yaml; yaml.safe_load(open('config.yaml'))"
-
-      - name: Build application
-        run: echo "Run application build here"
-`}
-            </pre>
-            <button
-              type="button"
-              className={`${actionClass} mt-4`}
-              onClick={() => loadExample(`name: application-ci
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-
-jobs:
-  validate-and-build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-      - name: Validate configuration
-        run: echo "Validate YAML"
-      - name: Build application
-        run: echo "Build application"
-`)}
-            >
-              Open pipeline example in editor
-            </button>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <article className={panelClass}>
-              <h3 className="font-bold text-cyan-300">CI/CD workflow</h3>
-              <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-300">
-                <li>Source change and pull request</li>
-                <li>Lint and configuration validation</li>
-                <li>Automated tests and security checks</li>
-                <li>Build and publish an artifact</li>
-                <li>Deployment approval and rollout</li>
-              </ol>
-            </article>
-            <article className={panelClass}>
-              <h3 className="font-bold text-cyan-300">GitOps workflow</h3>
-              <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-300">
-                <li>Commit desired deployment state to Git</li>
-                <li>Review and approve the change</li>
-                <li>GitOps controller detects repository changes</li>
-                <li>Controller reconciles cluster resources</li>
-                <li>Observe health, drift and synchronization status</li>
-              </ol>
-            </article>
-          </div>
-        </>
-      )}
-
-      {moduleName === "Production Scenarios" && (
-        <>
-          <div className={panelClass}>
-            <div className="text-xs font-bold uppercase tracking-widest text-cyan-300">
-              MODULE 07 · REAL-WORLD OPERATIONS
-            </div>
-            <h2 className={`${headingClass} mt-3`}>Production Scenarios</h2>
-            <p className={`${mutedClass} mt-3`}>
-              Apply YAML and DevOps knowledge to realistic operational
-              situations. Evaluate risk, plan controlled changes and verify
-              outcomes before considering an incident resolved.
-            </p>
-          </div>
-
-          <div className={panelClass}>
-            <h3 className="font-bold text-white">Choose a production exercise</h3>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {productionScenarios.map((scenario, index) => (
-                <button
-                  key={scenario.title}
-                  type="button"
-                  onClick={() => setSelectedProductionScenario(index)}
-                  className={`rounded-lg px-3 py-2 text-xs font-semibold ${
-                    selectedProductionScenario === index
-                      ? "bg-cyan-500 text-slate-950"
-                      : "bg-slate-800 text-slate-300"
-                  }`}
-                >
-                  Scenario {index + 1}
-                </button>
-              ))}
-            </div>
-
-            <h4 className="mt-5 text-lg font-bold text-cyan-300">
-              {productionScenarios[selectedProductionScenario].title}
-            </h4>
-            <p className={`${mutedClass} mt-2`}>
-              {productionScenarios[selectedProductionScenario].objective}
-            </p>
-
-            <h5 className="mt-5 font-semibold text-white">Execution plan</h5>
-            <ol className="mt-3 list-decimal space-y-3 pl-5 text-sm leading-6 text-slate-300">
-              {productionScenarios[selectedProductionScenario].plan.map((step) => (
-                <li key={step}>{step}</li>
-              ))}
-            </ol>
-
-            <div className="mt-5 rounded-xl border border-amber-900 bg-amber-950/20 p-4">
-              <h5 className="font-semibold text-amber-300">Operational risk</h5>
-              <p className="mt-2 text-sm leading-6 text-slate-300">
-                {productionScenarios[selectedProductionScenario].risk}
-              </p>
-            </div>
-          </div>
-        </>
-      )}
-
-      {moduleName === "Quiz and Assessment" && (
-        <>
-          <div className={panelClass}>
-            <div className="text-xs font-bold uppercase tracking-widest text-cyan-300">
-              MODULE 08 · KNOWLEDGE ASSESSMENT
-            </div>
-            <h2 className={`${headingClass} mt-3`}>Quiz and Assessment</h2>
-            <p className={`${mutedClass} mt-3`}>
-              Test your understanding of YAML fundamentals, Kubernetes
-              configuration, security, operational readiness and GitOps.
-              Select one answer for every question and submit your assessment.
-            </p>
-            <div className="mt-4 text-xs text-slate-400">
-              {Object.keys(answers).length} of {quizQuestions.length} questions answered
-            </div>
-          </div>
-
-          {quizQuestions.map((question, index) => (
-            <article key={question.question} className={panelClass}>
-              <h3 className="font-semibold text-white">
-                Question {index + 1}: {question.question}
-              </h3>
-
-              <div className="mt-4 grid gap-2">
-                {question.options.map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    disabled={quizSubmitted}
-                    onClick={() =>
-                      setAnswers((previous) => ({
-                        ...previous,
-                        [index]: option,
-                      }))
-                    }
-                    className={`rounded-lg border p-3 text-left text-sm transition ${
-                      answers[index] === option
-                        ? "border-cyan-500 bg-cyan-950/40 text-cyan-200"
-                        : "border-slate-800 bg-slate-900/50 text-slate-300 hover:border-slate-600"
-                    }`}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-
-              {quizSubmitted && (
-                <div className="mt-4 rounded-lg border border-slate-700 bg-slate-900/60 p-3">
-                  <p className={`text-sm font-semibold ${
-                    answers[index] === question.answer
-                      ? "text-emerald-300"
-                      : "text-red-300"
-                  }`}>
-                    {answers[index] === question.answer
-                      ? "Correct answer"
-                      : `Correct answer: ${question.answer}`}
-                  </p>
-                  <p className="mt-2 text-xs leading-6 text-slate-300">
-                    {question.explanation}
-                  </p>
-                </div>
-              )}
-            </article>
-          ))}
-
-          <div className={panelClass}>
-            {!quizSubmitted ? (
-              <button
-                type="button"
-                className={actionClass}
-                disabled={Object.keys(answers).length !== quizQuestions.length}
-                onClick={() => setQuizSubmitted(true)}
-              >
-                Submit assessment
-              </button>
-            ) : (
-              <>
-                <h3 className="text-xl font-bold text-white">
-                  Assessment result: {score}/{quizQuestions.length}
-                </h3>
-                <p className={`${mutedClass} mt-2`}>
-                  {score === quizQuestions.length
-                    ? "Excellent work. All answers are correct."
-                    : "Review the explanations above and practice the topics you missed."}
-                </p>
-                <button
-                  type="button"
-                  className={`${actionClass} mt-4`}
-                  onClick={() => {
-                    setAnswers({});
-                    setQuizSubmitted(false);
-                  }}
-                >
-                  Retake assessment
-                </button>
-              </>
-            )}
-          </div>
-        </>
-      )}
-
-    </section>
-  );
-}
 

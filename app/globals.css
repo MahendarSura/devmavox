@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source not "../backups";
 
 body {
   margin: 0;
@@ -87,3 +88,4 @@ body {
     font-size: 12px;
   }
 }
+

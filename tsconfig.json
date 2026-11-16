@@ -37,6 +37,7 @@
     "**/*.mts"
   ],
   "exclude": [
+    "yaml-module-source-review",
     "node_modules",
     "notes-cheat-sheets-backup-20261031-221750",
     "notes-cheat-sheets-backup-20261031-221759",

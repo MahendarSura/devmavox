@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1600" height="1050" viewBox="0 0 1600 1050" role="img"
+     aria-labelledby="diagram-title diagram-description">
+<title id="diagram-title">Multi-Cloud Architecture</title>
+<desc id="diagram-description">Resilient application platform distributing services across AWS, Azure and Google Cloud. Detailed MULTI-CLOUD architecture diagram.</desc>
+
+<defs>
+  <linearGradient id="pageBg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eaf1fb"/>
+  </linearGradient>
+  <linearGradient id="headerBg" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#102a43"/>
+    <stop offset="100%" stop-color="#1e40af"/>
+  </linearGradient>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3"
+          orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+  </marker>
+  <style>
+    .page-title { font:700 29px Arial,sans-serif; fill:#ffffff; }
+    .page-subtitle { font:14px Arial,sans-serif; fill:#dbeafe; }
+    .section-title { font:700 17px Arial,sans-serif; fill:#172554; }
+    .section-desc { font:12px Arial,sans-serif; fill:#64748b; }
+    .node-title { font:700 15px Arial,sans-serif; fill:#0f172a; }
+    .node-desc { font:12px Arial,sans-serif; fill:#475569; }
+    .node-tag { font:700 9px Arial,sans-serif; fill:#64748b; letter-spacing:1px; }
+    .edge { fill:none; stroke:#64748b; stroke-width:2.5; }
+    .edge-label { font:11px Arial,sans-serif; fill:#334155; text-anchor:middle; }
+    .footer { font:11px Arial,sans-serif; fill:#64748b; }
+    .legend { font:12px Arial,sans-serif; fill:#334155; }
+  </style>
+</defs>
+
+<rect width="1600" height="1050" fill="url(#pageBg)"/>
+<rect x="0" y="0" width="1600" height="112" fill="url(#headerBg)"/>
+<text x="55" y="48" class="page-title">Multi-Cloud Architecture</text>
+<text x="57" y="78" class="page-subtitle">Resilient application platform distributing services across AWS, Azure and Google Cloud</text>
+<rect x="1330" y="31" width="215" height="42" rx="20" fill="#ffffff" opacity="0.14"/>
+<text x="1437" y="57" font-family="Arial" font-size="12" font-weight="700"
+      fill="#ffffff" text-anchor="middle">MULTI-CLOUD</text>
+
+<rect x="45" y="145" width="1510" height="740" rx="18" fill="#ffffff" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 5"/>
+<text x="70" y="180" class="section-title">DISTRIBUTED MULTI-CLOUD PLATFORM</text>
+<text x="70" y="202" class="section-desc">Workloads distributed across AWS, Azure and Google Cloud with shared governance and observability</text>
+
+<rect x="70" y="235" width="1460" height="125" rx="14" fill="#eff6ff" stroke="#60a5fa" stroke-width="2"/>
+<text x="95" y="265" class="section-title">GLOBAL TRAFFIC AND SERVICE ENTRY</text>
+
+<rect x="70" y="390" width="450" height="300" rx="14" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="95" y="422" class="section-title">AWS CLOUD</text>
+<text x="95" y="444" class="section-desc">Independent cloud account and VPC</text>
+
+<rect x="575" y="390" width="450" height="300" rx="14" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="600" y="422" class="section-title">MICROSOFT AZURE</text>
+<text x="600" y="444" class="section-desc">Independent subscription and VNet</text>
+
+<rect x="1080" y="390" width="450" height="300" rx="14" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+<text x="1105" y="422" class="section-title">GOOGLE CLOUD</text>
+<text x="1105" y="444" class="section-desc">Independent project and VPC</text>
+
+<rect x="70" y="725" width="1460" height="150" rx="14" fill="#f5f3ff" stroke="#a78bfa" stroke-width="2"/>
+<text x="95" y="755" class="section-title">SHARED PLATFORM SERVICES AND CROSS-CLOUD CONTROL PLANE</text>
+
+<g>
+  <path d="M 310 327 L 350 327" class="edge" marker-end="url(#arrow)"/>
+  <text x='330' y='318' class='edge-label'>Resolve</text>
+</g><g>
+  <path d="M 555 327 L 595 327" class="edge" marker-end="url(#arrow)"/>
+  <text x='575' y='318' class='edge-label'>Protect</text>
+</g><g>
+  <path d="M 800 327 L 840 327" class="edge" marker-end="url(#arrow)"/>
+  <text x='820' y='318' class='edge-label'>Evaluate</text>
+</g><g>
+  <path d="M 1045 327 L 1085 327" class="edge" marker-end="url(#arrow)"/>
+  <text x='1065' y='318' class='edge-label'>Distribute</text>
+</g><g>
+  <path d="M 1187 360 L 1187 390" class="edge" marker-end="url(#arrow)"/>
+  <text x='1187' y='366' class='edge-label'>Provider routing</text>
+</g><g>
+  <path d="M 1187 390 L 207 485" class="edge" marker-end="url(#arrow)"/>
+  <text x='697' y='429' class='edge-label'>AWS route</text>
+</g><g>
+  <path d="M 1187 390 L 712 485" class="edge" marker-end="url(#arrow)"/>
+  <text x='950' y='429' class='edge-label'>Azure route</text>
+</g><g>
+  <path d="M 1187 390 L 1217 485" class="edge" marker-end="url(#arrow)"/>
+  <text x='1202' y='429' class='edge-label'>GCP route</text>
+</g><g>
+  <path d="M 310 537 L 350 537" class="edge" marker-end="url(#arrow)"/>
+  <text x='330' y='528' class='edge-label'>Persist</text>
+</g><g>
+  <path d="M 815 537 L 855 537" class="edge" marker-end="url(#arrow)"/>
+  <text x='835' y='528' class='edge-label'>Persist</text>
+</g><g>
+  <path d="M 1320 537 L 1360 537" class="edge" marker-end="url(#arrow)"/>
+  <text x='1340' y='528' class='edge-label'>Persist</text>
+</g><g>
+  <path d="M 207 690 L 207 780" class="edge" marker-end="url(#arrow)"/>
+  <text x='207' y='726' class='edge-label'>Identity</text>
+</g><g>
+  <path d="M 452 690 L 452 780" class="edge" marker-end="url(#arrow)"/>
+  <text x='452' y='726' class='edge-label'>Encrypt</text>
+</g><g>
+  <path d="M 697 690 L 697 780" class="edge" marker-end="url(#arrow)"/>
+  <text x='697' y='726' class='edge-label'>Monitor</text>
+</g><g>
+  <path d="M 942 690 L 942 780" class="edge" marker-end="url(#arrow)"/>
+  <text x='942' y='726' class='edge-label'>Govern</text>
+</g><g>
+  <path d="M 1187 690 L 1187 780" class="edge" marker-end="url(#arrow)"/>
+  <text x='1187' y='726' class='edge-label'>Integrate</text>
+</g><g>
+  <path d="M 1432 690 L 1432 780" class="edge" marker-end="url(#arrow)"/>
+  <text x='1432' y='726' class='edge-label'>Failover</text>
+</g>
+<g>
+  <rect x="105" y="275" width="205" height="104" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+  <rect x="105" y="275" width="205" height="8" rx="4" fill="#2563eb"/>
+  <text x="119" y="310" class="node-title">Global Users</text>
+  <text x="119" y="333" class="node-desc">Web, mobile and API clients</text>
+  <text x="119" y="358" class="node-tag">CLIENT</text>
+</g><g>
+  <rect x="350" y="275" width="205" height="104" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+  <rect x="350" y="275" width="205" height="8" rx="4" fill="#2563eb"/>
+  <text x="364" y="310" class="node-title">Global DNS</text>
+  <text x="364" y="333" class="node-desc">Health-based DNS routing</text>
+  <text x="364" y="358" class="node-tag">DNS</text>
+</g><g>
+  <rect x="595" y="275" width="205" height="104" rx="12" fill="#ffffff" stroke="#dc2626" stroke-width="2"/>
+  <rect x="595" y="275" width="205" height="8" rx="4" fill="#dc2626"/>
+  <text x="609" y="310" class="node-title">CDN and WAF</text>
+  <text x="609" y="333" class="node-desc">Edge cache and protection</text>
+  <text x="609" y="358" class="node-tag">EDGE</text>
+</g><g>
+  <rect x="840" y="275" width="205" height="104" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+  <rect x="840" y="275" width="205" height="8" rx="4" fill="#2563eb"/>
+  <text x="854" y="310" class="node-title">Traffic Manager</text>
+  <text x="854" y="333" class="node-desc">Route to healthy provider</text>
+  <text x="854" y="358" class="node-tag">GLOBAL ROUTING</text>
+</g><g>
+  <rect x="1085" y="275" width="205" height="104" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+  <rect x="1085" y="275" width="205" height="8" rx="4" fill="#2563eb"/>
+  <text x="1099" y="310" class="node-title">API Gateway</text>
+  <text x="1099" y="333" class="node-desc">Unified API entry point</text>
+  <text x="1099" y="358" class="node-tag">API</text>
+</g><g>
+  <rect x="105" y="485" width="205" height="104" rx="12" fill="#ffffff" stroke="#f97316" stroke-width="2"/>
+  <rect x="105" y="485" width="205" height="8" rx="4" fill="#f97316"/>
+  <text x="119" y="520" class="node-title">AWS EKS / ECS</text>
+  <text x="119" y="543" class="node-desc">Container workloads</text>
+  <text x="119" y="568" class="node-tag">COMPUTE</text>
+</g><g>
+  <rect x="350" y="485" width="205" height="104" rx="12" fill="#ffffff" stroke="#f97316" stroke-width="2"/>
+  <rect x="350" y="485" width="205" height="8" rx="4" fill="#f97316"/>
+  <text x="364" y="520" class="node-title">RDS and S3</text>
+  <text x="364" y="543" class="node-desc">Database and object storage</text>
+  <text x="364" y="568" class="node-tag">DATA</text>
+</g><g>
+  <rect x="610" y="485" width="205" height="104" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+  <rect x="610" y="485" width="205" height="8" rx="4" fill="#2563eb"/>
+  <text x="624" y="520" class="node-title">Azure AKS</text>
+  <text x="624" y="543" class="node-desc">Container workloads</text>
+  <text x="624" y="568" class="node-tag">COMPUTE</text>
+</g><g>
+  <rect x="855" y="485" width="205" height="104" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+  <rect x="855" y="485" width="205" height="8" rx="4" fill="#2563eb"/>
+  <text x="869" y="520" class="node-title">Azure SQL and Blob</text>
+  <text x="869" y="543" class="node-desc">Database and object storage</text>
+  <text x="869" y="568" class="node-tag">DATA</text>
+</g><g>
+  <rect x="1115" y="485" width="205" height="104" rx="12" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+  <rect x="1115" y="485" width="205" height="8" rx="4" fill="#16a34a"/>
+  <text x="1129" y="520" class="node-title">GKE and Cloud Run</text>
+  <text x="1129" y="543" class="node-desc">Container and serverless</text>
+  <text x="1129" y="568" class="node-tag">COMPUTE</text>
+</g><g>
+  <rect x="1360" y="485" width="205" height="104" rx="12" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+  <rect x="1360" y="485" width="205" height="8" rx="4" fill="#16a34a"/>
+  <text x="1374" y="520" class="node-title">Spanner and GCS</text>
+  <text x="1374" y="543" class="node-desc">Database and object storage</text>
+  <text x="1374" y="568" class="node-tag">DATA</text>
+</g><g>
+  <rect x="105" y="780" width="205" height="104" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="105" y="780" width="205" height="8" rx="4" fill="#7c3aed"/>
+  <text x="119" y="815" class="node-title">Central IAM</text>
+  <text x="119" y="838" class="node-desc">Federated identity and roles</text>
+  <text x="119" y="863" class="node-tag">IDENTITY</text>
+</g><g>
+  <rect x="350" y="780" width="205" height="104" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="350" y="780" width="205" height="8" rx="4" fill="#7c3aed"/>
+  <text x="364" y="815" class="node-title">Secrets and KMS</text>
+  <text x="364" y="838" class="node-desc">Cross-cloud key strategy</text>
+  <text x="364" y="863" class="node-tag">SECURITY</text>
+</g><g>
+  <rect x="595" y="780" width="205" height="104" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="595" y="780" width="205" height="8" rx="4" fill="#7c3aed"/>
+  <text x="609" y="815" class="node-title">Observability</text>
+  <text x="609" y="838" class="node-desc">Unified metrics and logs</text>
+  <text x="609" y="863" class="node-tag">SRE</text>
+</g><g>
+  <rect x="840" y="780" width="205" height="104" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="840" y="780" width="205" height="8" rx="4" fill="#7c3aed"/>
+  <text x="854" y="815" class="node-title">Policy as Code</text>
+  <text x="854" y="838" class="node-desc">Guardrails and compliance</text>
+  <text x="854" y="863" class="node-tag">GOVERNANCE</text>
+</g><g>
+  <rect x="1085" y="780" width="205" height="104" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="1085" y="780" width="205" height="8" rx="4" fill="#7c3aed"/>
+  <text x="1099" y="815" class="node-title">Data Integration</text>
+  <text x="1099" y="838" class="node-desc">Events and data pipelines</text>
+  <text x="1099" y="863" class="node-tag">INTEGRATION</text>
+</g><g>
+  <rect x="1330" y="780" width="205" height="104" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="1330" y="780" width="205" height="8" rx="4" fill="#7c3aed"/>
+  <text x="1344" y="815" class="node-title">DR Orchestration</text>
+  <text x="1344" y="838" class="node-desc">Failover and recovery</text>
+  <text x="1344" y="863" class="node-tag">RESILIENCE</text>
+</g>
+
+<rect x="45" y="925" width="1510" height="78" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="70" y="953" class="section-title">ARCHITECTURE FLOW</text>
+<text x="70" y="978" class="section-desc">Multi-cloud enterprise architecture — Global traffic management selects cloud providers while shared controls govern identity, security, data and recovery</text>
+<path d="M 900 964 L 965 964" class="edge" marker-end="url(#arrow)"/>
+<text x="985" y="969" class="legend">Request / data / service communication</text>
+<rect x="1260" y="955" width="16" height="16" rx="3" fill="#2563eb"/>
+<text x="1285" y="968" class="legend">Cloud services</text>
+
+<text x="55" y="1030" class="footer">DevMavox Architecture Diagram Library | MULTI-CLOUD | Generated 2026-11-13 14:26</text>
+<text x="1545" y="1030" class="footer" text-anchor="end">Conceptual reference architecture — validate services and limits for your deployment</text>
+</svg>

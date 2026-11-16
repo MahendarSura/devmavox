@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img">
+<title>EVENT-DRIVEN APPLICATION ARCHITECTURE</title>
+<desc>Producers publish events routed to independent consumers through a broker</desc>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0" stop-color="#071326"/><stop offset="1" stop-color="#172D4C"/>
+ </linearGradient>
+ <linearGradient id="head" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0" stop-color="#142B4B"/><stop offset="1" stop-color="#29234B"/>
+ </linearGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+  <feGaussianBlur in="SourceAlpha" stdDeviation="7" result="b"/>
+  <feOffset in="b" dy="5" result="o"/>
+  <feComponentTransfer in="o"><feFuncA type="linear" slope=".4"/></feComponentTransfer>
+  <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+ </filter>
+ <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+  <path d="M1 1 L10 6 L1 11 Z" fill="#FDE68A"/>
+ </marker>
+ <style>
+ text{font-family:Segoe UI,Arial,sans-serif}
+ .heading{font-size:28px;font-weight:800;fill:#F8FAFC;letter-spacing:1px}
+ .sub{font-size:15px;fill:#B9C8DD}
+ .zone-title{font-size:17px;font-weight:800;fill:#E2E8F0;letter-spacing:1px}
+ .logo{font-size:11px;font-weight:900;letter-spacing:.5px}
+ .node-title{font-size:17px;font-weight:800;fill:#F8FAFC}
+ .detail{font-size:13px;fill:#C3D0E2}
+ .flow-label{font-size:10px;font-weight:700;fill:#FDE68A}
+ .flow{fill:none;stroke:#FDE68A;stroke-width:3;stroke-dasharray:9 8;animation:dash 1.5s linear infinite}
+ .pulse{animation:pulse 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+ .gear{transform-box:fill-box;transform-origin:center;animation:spin 18s linear infinite}
+ .bubble{animation:float 4s ease-in-out infinite}
+ @keyframes dash{to{stroke-dashoffset:-34}}
+ @keyframes pulse{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1.25)}}
+ @keyframes spin{to{transform:rotate(360deg)}}
+ @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+ </style>
+</defs>
+<rect width="1600" height="1100" fill="url(#bg)"/>
+<rect width="1600" height="165" fill="url(#head)"/>
+<rect y='160' width='1600' height='5' fill='#34D399'/>
+<circle cx="90" cy="80" r="34" fill="#38BDF8" opacity=".16"/>
+<text x="90" y="87" text-anchor="middle" font-size="20" font-weight="900" fill="#38BDF8">DEV</text>
+<text x='150' y='68' class='heading'>EVENT-DRIVEN APPLICATION ARCHITECTURE</text>
+<text x='150' y='102' class='sub'>Producers publish events routed to independent consumers through a broker</text>
+<text x="1540" y="55" text-anchor="end" font-size="12" fill="#94A3B8">DEVMAVOX / ARCHITECTURE LIBRARY</text>
+<rect x="30" y="205" width="1540" height="345" rx="22" fill="#10223B" stroke="#355273"/>
+<rect x="30" y="590" width="1540" height="355" rx="22" fill="#10223B" stroke="#355273"/>
+<text x='55' y='245' class='zone-title'>EVENT PRODUCERS AND INGESTION</text>
+<text x='55' y='630' class='zone-title'>BROKER, CONSUMERS AND EVENT DATA</text>
+<g id='node-1'>
+<rect x='50' y='290' width='330' height='190' rx='18' fill='#101D35' stroke='#38BDF8' stroke-width='2.2' filter='url(#shadow)'/>
+<rect x='50' y='290' width='330' height='9' rx='5' fill='#38BDF8'/>
+<rect x='68' y='315' width='125' height='30' rx='8' fill='#38BDF8' fill-opacity='.18' stroke='#38BDF8'/>
+<text x='130' y='335' text-anchor='middle' class='logo' fill='#38BDF8'>WEB APP</text>
+<circle cx='345' cy='330' r='7' fill='#4ADE80' class='pulse'/>
+<text x='68' y='375' class='node-title'>User Applications</text>
+<text x='68' y='406' class='detail'>Business actions</text>
+<text x='68' y='429' class='detail'>Order and payment flows</text>
+<text x='68' y='452' class='detail'>Event requests</text>
+<text x='360' y='470' text-anchor='end' font-size='10' fill='#64748B'>01</text>
+</g>
+<g id='node-2'>
+<rect x='440' y='290' width='330' height='190' rx='18' fill='#101D35' stroke='#22C55E' stroke-width='2.2' filter='url(#shadow)'/>
+<rect x='440' y='290' width='330' height='9' rx='5' fill='#22C55E'/>
+<rect x='458' y='315' width='125' height='30' rx='8' fill='#22C55E' fill-opacity='.18' stroke='#22C55E'/>
+<text x='520' y='335' text-anchor='middle' class='logo' fill='#22C55E'>PRODUCER</text>
+<circle cx='735' cy='330' r='7' fill='#4ADE80' class='pulse'/>
+<text x='458' y='375' class='node-title'>Event Producers</text>
+<text x='458' y='406' class='detail'>Create event payloads</text>
+<text x='458' y='429' class='detail'>Event ID and timestamp</text>
+<text x='458' y='452' class='detail'>Publish domain facts</text>
+<text x='750' y='470' text-anchor='end' font-size='10' fill='#64748B'>02</text>
+</g>
+<g id='node-3'>
+<rect x='830' y='290' width='330' height='190' rx='18' fill='#101D35' stroke='#A78BFA' stroke-width='2.2' filter='url(#shadow)'/>
+<rect x='830' y='290' width='330' height='9' rx='5' fill='#A78BFA'/>
+<rect x='848' y='315' width='125' height='30' rx='8' fill='#A78BFA' fill-opacity='.18' stroke='#A78BFA'/>
+<text x='910' y='335' text-anchor='middle' class='logo' fill='#A78BFA'>SCHEMA</text>
+<circle cx='1125' cy='330' r='7' fill='#4ADE80' class='pulse'/>
+<text x='848' y='375' class='node-title'>Schema Registry</text>
+<text x='848' y='406' class='detail'>Event contracts</text>
+<text x='848' y='429' class='detail'>Payload compatibility</text>
+<text x='848' y='452' class='detail'>Schema evolution</text>
+<text x='1140' y='470' text-anchor='end' font-size='10' fill='#64748B'>03</text>
+</g>
+<g id='node-4'>
+<rect x='1220' y='290' width='330' height='190' rx='18' fill='#101D35' stroke='#F59E0B' stroke-width='2.2' filter='url(#shadow)'/>
+<rect x='1220' y='290' width='330' height='9' rx='5' fill='#F59E0B'/>
+<rect x='1238' y='315' width='125' height='30' rx='8' fill='#F59E0B' fill-opacity='.18' stroke='#F59E0B'/>
+<text x='1300' y='335' text-anchor='middle' class='logo' fill='#F59E0B'>KAFKA</text>
+<circle cx='1515' cy='330' r='7' fill='#4ADE80' class='pulse'/>
+<text x='1238' y='375' class='node-title'>Event Broker</text>
+<text x='1238' y='406' class='detail'>Topics and partitions</text>
+<text x='1238' y='429' class='detail'>Durable event retention</text>
+<text x='1238' y='452' class='detail'>Consumer coordination</text>
+<text x='1530' y='470' text-anchor='end' font-size='10' fill='#64748B'>04</text>
+</g>
+<g id='node-5'>
+<rect x='1220' y='670' width='330' height='190' rx='18' fill='#101D35' stroke='#EF4444' stroke-width='2.2' filter='url(#shadow)'/>
+<rect x='1220' y='670' width='330' height='9' rx='5' fill='#EF4444'/>
+<rect x='1238' y='695' width='125' height='30' rx='8' fill='#EF4444' fill-opacity='.18' stroke='#EF4444'/>
+<text x='1300' y='715' text-anchor='middle' class='logo' fill='#EF4444'>ORDER SVC</text>
+<circle cx='1515' cy='710' r='7' fill='#4ADE80' class='pulse'/>
+<text x='1238' y='755' class='node-title'>Order Consumer</text>
+<text x='1238' y='786' class='detail'>Order-created events</text>
+<text x='1238' y='809' class='detail'>Workflow updates</text>
+<text x='1238' y='832' class='detail'>Idempotent handling</text>
+<text x='1530' y='850' text-anchor='end' font-size='10' fill='#64748B'>05</text>
+</g>
+<g id='node-6'>
+<rect x='830' y='670' width='330' height='190' rx='18' fill='#101D35' stroke='#60A5FA' stroke-width='2.2' filter='url(#shadow)'/>
+<rect x='830' y='670' width='330' height='9' rx='5' fill='#60A5FA'/>
+<rect x='848' y='695' width='125' height='30' rx='8' fill='#60A5FA' fill-opacity='.18' stroke='#60A5FA'/>
+<text x='910' y='715' text-anchor='middle' class='logo' fill='#60A5FA'>NOTIFY</text>
+<circle cx='1125' cy='710' r='7' fill='#4ADE80' class='pulse'/>
+<text x='848' y='755' class='node-title'>Notification Consumer</text>
+<text x='848' y='786' class='detail'>Email and SMS alerts</text>
+<text x='848' y='809' class='detail'>Retry transient failures</text>
+<text x='848' y='832' class='detail'>Delivery status</text>
+<text x='1140' y='850' text-anchor='end' font-size='10' fill='#64748B'>06</text>
+</g>
+<g id='node-7'>
+<rect x='440' y='670' width='330' height='190' rx='18' fill='#101D35' stroke='#34D399' stroke-width='2.2' filter='url(#shadow)'/>
+<rect x='440' y='670' width='330' height='9' rx='5' fill='#34D399'/>
+<rect x='458' y='695' width='125' height='30' rx='8' fill='#34D399' fill-opacity='.18' stroke='#34D399'/>
+<text x='520' y='715' text-anchor='middle' class='logo' fill='#34D399'>ANALYTICS</text>
+<circle cx='735' cy='710' r='7' fill='#4ADE80' class='pulse'/>
+<text x='458' y='755' class='node-title'>Analytics Consumer</text>
+<text x='458' y='786' class='detail'>Stream processing</text>
+<text x='458' y='809' class='detail'>Business aggregates</text>
+<text x='458' y='832' class='detail'>Reporting pipelines</text>
+<text x='750' y='850' text-anchor='end' font-size='10' fill='#64748B'>07</text>
+</g>
+<g id='node-8'>
+<rect x='50' y='670' width='330' height='190' rx='18' fill='#101D35' stroke='#F472B6' stroke-width='2.2' filter='url(#shadow)'/>
+<rect x='50' y='670' width='330' height='9' rx='5' fill='#F472B6'/>
+<rect x='68' y='695' width='125' height='30' rx='8' fill='#F472B6' fill-opacity='.18' stroke='#F472B6'/>
+<text x='130' y='715' text-anchor='middle' class='logo' fill='#F472B6'>DLQ</text>
+<circle cx='345' cy='710' r='7' fill='#4ADE80' class='pulse'/>
+<text x='68' y='755' class='node-title'>Retry and Dead Letter</text>
+<text x='68' y='786' class='detail'>Failed messages</text>
+<text x='68' y='809' class='detail'>Replay and recovery</text>
+<text x='68' y='832' class='detail'>Poison event handling</text>
+<text x='360' y='850' text-anchor='end' font-size='10' fill='#64748B'>08</text>
+</g>
+<g id='flow-1'>
+<path d='M 380 385 L 440 385' class='flow' marker-end='url(#arrow)'/>
+<circle r='5' fill='#FDE68A' filter='url(#glow)'><animateMotion dur='2.8s' repeatCount='indefinite' path='M 380 385 L 440 385'/></circle>
+<rect x='347' y='336' width='126' height='22' rx='7' fill='#0B1428' stroke='#475569'/>
+<text x='410' y='351' text-anchor='middle' class='flow-label'>Business action</text>
+</g>
+<g id='flow-2'>
+<path d='M 770 385 L 830 385' class='flow' marker-end='url(#arrow)'/>
+<circle r='5' fill='#FDE68A' filter='url(#glow)'><animateMotion dur='2.8s' repeatCount='indefinite' path='M 770 385 L 830 385'/></circle>
+<rect x='737' y='336' width='126' height='22' rx='7' fill='#0B1428' stroke='#475569'/>
+<text x='800' y='351' text-anchor='middle' class='flow-label'>Publish event</text>
+</g>
+<g id='flow-3'>
+<path d='M 1160 385 L 1220 385' class='flow' marker-end='url(#arrow)'/>
+<circle r='5' fill='#FDE68A' filter='url(#glow)'><animateMotion dur='2.8s' repeatCount='indefinite' path='M 1160 385 L 1220 385'/></circle>
+<rect x='1127' y='336' width='126' height='22' rx='7' fill='#0B1428' stroke='#475569'/>
+<text x='1190' y='351' text-anchor='middle' class='flow-label'>Contract validation</text>
+</g>
+<g id='flow-4'>
+<path d='M 1385 480 L 1385 670' class='flow' marker-end='url(#arrow)'/>
+<circle r='5' fill='#FDE68A' filter='url(#glow)'><animateMotion dur='2.8s' repeatCount='indefinite' path='M 1385 480 L 1385 670'/></circle>
+<rect x='1322' y='526' width='126' height='22' rx='7' fill='#0B1428' stroke='#475569'/>
+<text x='1385' y='541' text-anchor='middle' class='flow-label'>Broker distribution</text>
+</g>
+<g id='flow-5'>
+<path d='M 1220 765 L 1160 765' class='flow' marker-end='url(#arrow)'/>
+<circle r='5' fill='#FDE68A' filter='url(#glow)'><animateMotion dur='2.8s' repeatCount='indefinite' path='M 1220 765 L 1160 765'/></circle>
+<rect x='1127' y='716' width='126' height='22' rx='7' fill='#0B1428' stroke='#475569'/>
+<text x='1190' y='731' text-anchor='middle' class='flow-label'>Order processing</text>
+</g>
+<g id='flow-6'>
+<path d='M 830 765 L 770 765' class='flow' marker-end='url(#arrow)'/>
+<circle r='5' fill='#FDE68A' filter='url(#glow)'><animateMotion dur='2.8s' repeatCount='indefinite' path='M 830 765 L 770 765'/></circle>
+<rect x='737' y='716' width='126' height='22' rx='7' fill='#0B1428' stroke='#475569'/>
+<text x='800' y='731' text-anchor='middle' class='flow-label'>Notification flow</text>
+</g>
+<g id='flow-7'>
+<path d='M 440 765 L 380 765' class='flow' marker-end='url(#arrow)'/>
+<circle r='5' fill='#FDE68A' filter='url(#glow)'><animateMotion dur='2.8s' repeatCount='indefinite' path='M 440 765 L 380 765'/></circle>
+<rect x='347' y='716' width='126' height='22' rx='7' fill='#0B1428' stroke='#475569'/>
+<text x='410' y='731' text-anchor='middle' class='flow-label'>Failure recovery</text>
+</g>
+<g transform="translate(800 565)">
+<g class="gear"><circle r="43" fill="#0B172B" stroke="#38BDF8" stroke-width="5"/><circle r="30" fill="none" stroke="#38BDF8" stroke-width="4" stroke-dasharray="8 5"/><path d="M0 -56 V-43 M0 43 V56 M-56 0 H-43 M43 0 H56 M-40 -40 L-30 -30 M30 30 L40 40 M40 -40 L30 -30 M-30 30 L-40 40" stroke="#38BDF8" stroke-width="8" stroke-linecap="round"/><circle r="11" fill="#38BDF8"/></g>
+<text y='76' text-anchor='middle' font-size='12' font-weight='900' fill='#E2E8F0'>ASYNC EVENT FLOW</text>
+<text y='94' text-anchor='middle' font-size='10' fill='#9FB3CC'>Publish once, consume independently, recover safely</text>
+</g>
+<g class="bubble"><circle cx="760" cy="205" r="8" fill="#38BDF8"/><circle cx="785" cy="190" r="4" fill="#FDE68A"/><circle cx="815" cy="205" r="6" fill="#60A5FA"/></g>
+<g class="bubble"><circle cx="1490" cy="570" r="7" fill="#34D399"/><circle cx="1515" cy="550" r="4" fill="#FDE68A"/></g>
+<g class="bubble"><circle cx="105" cy="965" r="6" fill="#38BDF8"/><circle cx="130" cy="980" r="4" fill="#34D399"/></g>
+<rect x="30" y="975" width="1540" height="85" rx="16" fill="#0A1629" stroke="#29415F"/>
+<text x="55" y="1008" font-size="13" font-weight="800" fill="#E2E8F0">ARCHITECTURE LEGEND</text>
+<circle cx="270" cy="1004" r="6" fill="#4ADE80" class="pulse"/><text x="285" y="1009" font-size="11" fill="#C4D1E2">Healthy component</text>
+<path d="M440 1004 H500" stroke="#FDE68A" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#arrow)"/><text x="512" y="1009" font-size="11" fill="#C4D1E2">Animated data flow</text>
+<circle cx="760" cy="1004" r="12" fill="none" stroke="#38BDF8" stroke-width="3"/><text x="780" y="1009" font-size="11" fill="#C4D1E2">Processing engine</text>
+<text x="55" y="1038" font-size="10" fill="#8195B1">Conceptual reference architecture. Adapt security, resilience and capacity to the production environment.</text>
+<text x="1540" y="1038" text-anchor="end" font-size="10" fill="#8195B1">1600 x 1100 / ANIMATED SVG</text>
+</svg>
