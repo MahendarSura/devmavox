@@ -16,7 +16,6 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import YamlFundamentalsWorkspace from "./YamlFundamentalsWorkspace";
 import YamlModuleLearningGuide from "./YamlModuleLearningGuide";
-import YamlModuleDeepLearningWorkspace from "./YamlModuleDeepLearningWorkspace";
 import YamlModuleAssessment from "./YamlModuleAssessment";
 import KubernetesManifestLab from "./practical-labs/kubernetes-manifest-lab/KubernetesManifestLab";
 import TroubleshootingLab from "./practical-labs/troubleshooting-lab/TroubleshootingLab";
@@ -1030,40 +1029,11 @@ kubectl get deployments,pods,services`,
                       }}
                     />
                     {["Learn YAML", "YAML Editor", "YAML Validator", "Production Scenarios", "Quiz and Assessment"].includes(activeModule) && (
-                      <YamlModuleDeepLearningWorkspace moduleName={activeModule} />
-                    )}
-                    {["Learn YAML", "YAML Editor", "YAML Validator", "Production Scenarios", "Quiz and Assessment"].includes(activeModule) && (
                       <YamlModuleAssessment moduleName={activeModule} />
                     )}
                   </>
                 )}
-                {!showEditor && !isPracticalLabModule && (
-                  <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div>
-                        <h2 className="text-lg font-bold text-white">{selectedModuleWorkspace?.exampleTitle ?? "YAML Example Workspace"}</h2>
-                        <p className="mt-1 text-xs text-slate-400">{selectedModuleWorkspace?.exampleDescription ?? "Illustrative Kubernetes Deployment manifest"}</p>
-                      </div>
-                      <span className="rounded-full border border-emerald-900 bg-emerald-950/40 px-3 py-1 text-xs text-emerald-300">
-                        Example YAML
-                      </span>
-                    </div>
-                    <pre className="mt-4 overflow-x-auto rounded-xl border border-slate-800 bg-[#070c14] p-4 text-xs leading-6 text-emerald-300">
-                      <code>{selectedModuleWorkspace?.exampleYaml ?? sampleYaml}</code>
-                    </pre>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEditorValue(selectedModuleWorkspace?.exampleYaml ?? sampleYaml);
-                        setActiveModule("YAML Editor");
-                        setNotice("Module example loaded into the YAML Editor.");
-                      }}
-                      className="mt-4 rounded-lg bg-cyan-500 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-cyan-400"
-                    >
-                      Open in YAML Editor →
-                    </button>
-                  </div>
-                )}
+                {/* Module examples are presented in their lesson content to avoid a second, generic copy. */}
               </>
             )}
               </>
