@@ -1085,7 +1085,7 @@ export default function YamlModuleLearningGuide({
             {guide.lessons.length} detailed lessons
           </span>
         </div>
-        <div className="mt-4 grid gap-2 sm:grid-cols-3">
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {guide.lessons.map((item, index) => (
             <button
               key={item.title}
@@ -1094,7 +1094,7 @@ export default function YamlModuleLearningGuide({
                 setLessonIndex(index);
                 setShowExpected(false);
               }}
-              className={`rounded-xl border p-3 text-left text-sm ${
+              className={`flex min-h-[104px] flex-col items-start justify-start gap-2 rounded-xl border p-4 text-left text-sm ${
                 lessonIndex === index
                   ? "border-cyan-600 bg-cyan-950/40 text-cyan-200"
                   : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500"
@@ -1241,7 +1241,7 @@ export default function YamlModuleLearningGuide({
         <p className="mt-2 text-xs text-slate-400">{completed.filter((value) => Number.isInteger(value) && value >= 100 && value < 100 + guide.workflow.length).length} of {guide.workflow.length} workflow steps completed</p>
         <div className="mt-4 space-y-3">
           {guide.workflow.map((step, index) => (
-            <label key={step} className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-800 bg-slate-900/50 p-3">
+            <label key={step} className="flex min-w-0 cursor-pointer items-start gap-3 rounded-lg border border-slate-800 bg-slate-900/50 p-3">
               <input
                 type="checkbox"
                 checked={completed.includes(index + 100)}
@@ -1252,7 +1252,7 @@ export default function YamlModuleLearningGuide({
                 )}
                 className="mt-1 accent-cyan-500"
               />
-              <span className="text-sm leading-6 text-slate-300">{step}</span>
+              <span className="min-w-0 break-words text-sm leading-6 text-slate-300">{step}</span>
             </label>
           ))}
         </div>
