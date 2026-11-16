@@ -16,6 +16,8 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import YamlFundamentalsWorkspace from "./YamlFundamentalsWorkspace";
 import YamlModuleLearningGuide from "./YamlModuleLearningGuide";
+import YamlModuleDeepLearningWorkspace from "./YamlModuleDeepLearningWorkspace";
+import YamlModuleAssessment from "./YamlModuleAssessment";
 import KubernetesManifestLab from "./practical-labs/kubernetes-manifest-lab/KubernetesManifestLab";
 import TroubleshootingLab from "./practical-labs/troubleshooting-lab/TroubleshootingLab";
 import CICDGitOpsLab from "./practical-labs/cicd-gitops-lab/CICDGitOpsLab";
@@ -1026,6 +1028,12 @@ kubectl get deployments,pods,services`,
                       setNotice("Learning example loaded into the YAML Editor.");
                     }}
                   />
+                  {["Learn YAML", "YAML Editor", "YAML Validator", "Production Scenarios", "Quiz and Assessment"].includes(activeModule) && (
+                    <YamlModuleDeepLearningWorkspace moduleName={activeModule} />
+                  )}
+                  {["Learn YAML", "YAML Editor", "YAML Validator", "Production Scenarios", "Quiz and Assessment"].includes(activeModule) && (
+                    <YamlModuleAssessment moduleName={activeModule} />
+                  )}
                 )}
                 {!showEditor && !isPracticalLabModule && (
                   <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5">
