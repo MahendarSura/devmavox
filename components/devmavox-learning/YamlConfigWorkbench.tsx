@@ -1,5 +1,7 @@
 "use client";
 
+import YamlModuleLearningGuide from "./YamlModuleLearningGuide";
+
 import YamlKubernetesWorkloadsWorkspace from "./YamlKubernetesWorkloadsWorkspace";
 import YamlKubernetesNetworkingWorkspace from "./YamlKubernetesNetworkingWorkspace";
 import YamlKubernetesConfigurationWorkspace from "./YamlKubernetesConfigurationWorkspace";
@@ -759,10 +761,12 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
                 </div>
 
                 {!showEditor && (
-                  <YamlModuleWorkspaces
+                  <YamlModuleLearningGuide
                     moduleName={activeModule}
-                    onOpenEditor={() => setActiveModule("YAML Editor")}
-                    onLoadExample={(yaml) => setEditorValue(yaml)}
+                    onLoadExample={(yaml) => {
+                      setEditorValue(yaml);
+                      setActiveModule("YAML Editor");
+                    }}
                   />
                 )}
               </>
@@ -1641,4 +1645,5 @@ jobs:
     </section>
   );
 }
+
 
