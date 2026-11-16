@@ -722,6 +722,62 @@ export default function YamlModuleLearningGuide({
   onLoadExample: (yaml: string) => void;
 }) {
   const guide = modules[moduleName];
+  const modulePresentation: Record<string, {
+    banner: string;
+    audienceHeading: string;
+    lessonsHeading: string;
+    workflowHeading: string;
+    workflowHint: string;
+    productionHeading: string;
+    assessmentEyebrow: string;
+  }> = {
+    "Learn YAML": {
+      banner: "YAML FOUNDATIONS AND STRUCTURE",
+      audienceHeading: "Who should learn YAML fundamentals?",
+      lessonsHeading: "YAML concepts and syntax lessons",
+      workflowHeading: "Build YAML skills step by step",
+      workflowHint: "Complete each YAML structure activity as you practise.",
+      productionHeading: "Writing safe and maintainable YAML",
+      assessmentEyebrow: "YAML FUNDAMENTALS CHECK",
+    },
+    "YAML Editor": {
+      banner: "YAML AUTHORING AND EDITING WORKSPACE",
+      audienceHeading: "Who should use the YAML Editor?",
+      lessonsHeading: "Configuration editing lessons",
+      workflowHeading: "Edit, review and prepare configuration",
+      workflowHint: "Complete the editing workflow before exporting a file.",
+      productionHeading: "Configuration review and change control",
+      assessmentEyebrow: "EDITOR WORKFLOW CHECK",
+    },
+    "YAML Validator": {
+      banner: "YAML PARSING AND VALIDATION WORKSPACE",
+      audienceHeading: "Who should use YAML validation?",
+      lessonsHeading: "Parsing, schema and semantic validation lessons",
+      workflowHeading: "Validate from syntax through acceptance",
+      workflowHint: "Complete each validation layer and record its result.",
+      productionHeading: "Validation gates for reliable delivery",
+      assessmentEyebrow: "VALIDATION KNOWLEDGE CHECK",
+    },
+    "Production Scenarios": {
+      banner: "PRODUCTION OPERATIONS AND CHANGE SCENARIOS",
+      audienceHeading: "Who should practise production scenarios?",
+      lessonsHeading: "Production reliability and incident lessons",
+      workflowHeading: "Production change and recovery workflow",
+      workflowHint: "Complete each operational control before considering a change safe.",
+      productionHeading: "Production governance and operational safety",
+      assessmentEyebrow: "PRODUCTION DECISION CHECK",
+    },
+    "Quiz and Assessment": {
+      banner: "KNOWLEDGE, MANIFEST AND READINESS ASSESSMENT",
+      audienceHeading: "Who should take these assessments?",
+      lessonsHeading: "Assessment tracks and practical reviews",
+      workflowHeading: "Assessment and improvement cycle",
+      workflowHint: "Attempt each review, explain your reasoning and revisit gaps.",
+      productionHeading: "Using assessment results to prove readiness",
+      assessmentEyebrow: "ASSESSMENT QUESTION",
+    },
+  };
+  const presentation = modulePresentation[moduleName];
   const storagePrefix = "devmavox-yaml-learning-progress-v1:";
   const [lessonIndex, setLessonIndex] = useState(0);
   const [completed, setCompleted] = useState<number[]>([]);
@@ -888,18 +944,18 @@ export default function YamlModuleLearningGuide({
   return (
     <section className="space-y-5" data-yaml-module-guide={moduleName}>
       <article className="rounded-2xl border border-cyan-900/70 bg-gradient-to-br from-[#10263b] to-[#0d1523] p-5 sm:p-7">
-        <div className="text-xs font-bold uppercase tracking-widest text-cyan-300">COMPLETE LEARNING WORKSPACE</div>
+        <div className="text-xs font-bold uppercase tracking-widest text-cyan-300">{presentation?.banner ?? "COMPLETE LEARNING WORKSPACE"}</div>
         <h2 className="mt-3 text-2xl font-bold text-white">{moduleName}</h2>
         <p className="mt-3 text-sm leading-7 text-slate-300">{guide.introduction}</p>
         <div className="mt-4 rounded-xl border border-slate-700 bg-slate-950/40 p-4">
-          <h3 className="font-bold text-cyan-300">Who should learn this?</h3>
+          <h3 className="font-bold text-cyan-300">{presentation?.audienceHeading ?? "Who should learn this?"}</h3>
           <p className="mt-2 text-sm leading-7 text-slate-300">{guide.audience}</p>
         </div>
       </article>
 
       <article className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5 sm:p-7">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3 className="text-lg font-bold text-white">Module lessons</h3>
+          <h3 className="text-lg font-bold text-white">{presentation?.lessonsHeading ?? "Module lessons"}</h3>
           <span className="rounded-full border border-cyan-900 bg-cyan-950/40 px-3 py-1 text-xs text-cyan-300">
             {guide.lessons.length} detailed lessons
           </span>
@@ -1052,8 +1108,8 @@ export default function YamlModuleLearningGuide({
       </article>
 
       <article className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5 sm:p-7">
-        <h3 className="text-lg font-bold text-white">Learning workflow</h3>
-        <p className="mt-2 text-sm text-slate-400">Mark each activity after completing it.</p>
+        <h3 className="text-lg font-bold text-white">{presentation?.workflowHeading ?? "Learning workflow"}</h3>
+        <p className="mt-2 text-sm text-slate-400">{presentation?.workflowHint ?? "Mark each activity after completing it."}</p>
         <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-800">
           <div className="h-full rounded-full bg-cyan-500 transition-all" style={{ width: `${progress}%` }} />
         </div>
@@ -1078,12 +1134,12 @@ export default function YamlModuleLearningGuide({
       </article>
 
       <article className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5 sm:p-7">
-        <h3 className="text-lg font-bold text-white">Real-world production guidance</h3>
+        <h3 className="text-lg font-bold text-white">{presentation?.productionHeading ?? "Real-world production guidance"}</h3>
         <p className="mt-3 text-sm leading-7 text-slate-300">{guide.production}</p>
       </article>
 
       <article className="rounded-2xl border border-cyan-900/70 bg-[#0d1523] p-5 sm:p-7">
-        <div className="text-xs font-bold uppercase tracking-wider text-cyan-300">KNOWLEDGE CHECK</div>
+        <div className="text-xs font-bold uppercase tracking-wider text-cyan-300">{presentation?.assessmentEyebrow ?? "KNOWLEDGE CHECK"}</div>
         <h3 className="mt-2 text-lg font-bold text-white">{guide.question}</h3>
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
           {guide.options.map((option) => (
