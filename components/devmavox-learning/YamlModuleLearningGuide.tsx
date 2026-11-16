@@ -887,10 +887,10 @@ export default function YamlModuleLearningGuide({
 
         summary[name] = {
           completedLessons: completedValues.filter(
-            (value) => value >= 0 && value < moduleGuide.lessons.length
+            (value: number) => value >= 0 && value < moduleGuide.lessons.length
           ).length,
           workflowDone: completedValues.filter(
-            (value) =>
+            (value: number) =>
               value >= 100 &&
               value < 100 + moduleGuide.workflow.length
           ).length,
