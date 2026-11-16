@@ -872,26 +872,41 @@ export default function YamlModuleLearningGuide({
       workflowCount: number;
     }> = {};
 
-    try {
-      Object.keys(modules).forEach((name) => {
+    Object.keys(modules).forEach((name) => {
+      const moduleGuide = modules[name];
+
+      try {
         const raw = localStorage.getItem(storagePrefix + name);
         const saved = raw ? JSON.parse(raw) : {};
-        const moduleGuide = modules[name];
+        const completedValues = Array.isArray(saved?.completed)
+          ? saved.completed.filter(
+              (value: unknown): value is number =>
+                typeof value === "number" && Number.isInteger(value)
+            )
+          : [];
 
         summary[name] = {
-          completedLessons: Array.isArray(saved.completed)
-            ? saved.completed.filter((value: number) => value >= 0 && value < moduleGuide.lessons.length).length
-            : 0,
-          workflowDone: Array.isArray(saved.completed)
-            ? saved.completed.filter((value: number) => Number.isInteger(value) && value >= 100 && value < 100 + moduleGuide.workflow.length).length
-            : 0,
+          completedLessons: completedValues.filter(
+            (value) => value >= 0 && value < moduleGuide.lessons.length
+          ).length,
+          workflowDone: completedValues.filter(
+            (value) =>
+              value >= 100 &&
+              value < 100 + moduleGuide.workflow.length
+          ).length,
           lessonCount: moduleGuide.lessons.length,
           workflowCount: moduleGuide.workflow.length
         };
-      });
-    } catch {
-      // Keep the dashboard available even if one saved entry is damaged.
-    }
+      } catch {
+        // A damaged entry must not prevent other modules from loading.
+        summary[name] = {
+          completedLessons: 0,
+          workflowDone: 0,
+          lessonCount: moduleGuide.lessons.length,
+          workflowCount: moduleGuide.workflow.length
+        };
+      }
+    });
 
     setProgressSummary(summary);
   }, []);
