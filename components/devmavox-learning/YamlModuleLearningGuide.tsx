@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 
@@ -897,73 +897,6 @@ export default function YamlModuleLearningGuide({
         </div>
       </article>
 
-      <article className="rounded-2xl border border-cyan-900/60 bg-[#0d1523] p-5 sm:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h3 className="text-lg font-bold text-white">Your Learning Progress</h3>
-            <p className="mt-1 text-sm text-slate-400">Progress is saved automatically in this browser.</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              if (!window.confirm(`Reset all saved progress for ${moduleName}? This cannot be undone.`)) return;
-              try {
-                localStorage.removeItem(storagePrefix + moduleName);
-              } catch {}
-              setLessonIndex(0);
-              setCompleted([]);
-              setPracticeAnswers({});
-              setAnswer("");
-              setChecked(false);
-              setShowExpected(false);
-              setProgressSummary((old) => ({
-                ...old,
-                [moduleName]: {
-                  completedLessons: 0,
-                  workflowDone: 0,
-                  lessonCount: guide.lessons.length,
-                  workflowCount: guide.workflow.length
-                }
-              }));
-            }}
-            className="rounded-lg border border-rose-800 bg-rose-950/30 px-3 py-2 text-xs font-semibold text-rose-300 hover:bg-rose-950/60"
-          >
-            Reset this module
-          </button>
-        </div>
-
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          {Object.keys(modules).map((name) => {
-            const item = progressSummary[name];
-            const lessonTotal = item?.lessonCount || modules[name].lessons.length;
-            const workflowTotal = item?.workflowCount || modules[name].workflow.length;
-            const lessonDone = item?.completedLessons || 0;
-            const workflowDone = item?.workflowDone || 0;
-            const percent = Math.round(
-              ((lessonDone + workflowDone) / Math.max(1, lessonTotal + workflowTotal)) * 100
-            );
-
-            return (
-              <div key={name} className={`rounded-xl border p-3 ${
-                name === moduleName
-                  ? "border-cyan-700 bg-cyan-950/20"
-                  : "border-slate-800 bg-slate-900/60"
-              }`}>
-                <div className="flex items-start justify-between gap-2">
-                  <span className="text-xs font-semibold leading-5 text-slate-200">{name}</span>
-                  <span className="text-xs font-bold tabular-nums text-cyan-300">{percent}%</span>
-                </div>
-                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-800">
-                  <div className="h-full rounded-full bg-cyan-500 transition-all" style={{ width: `${percent}%` }} />
-                </div>
-                <p className="mt-2 text-[11px] text-slate-500">
-                  {lessonDone}/{lessonTotal} lessons · {workflowDone}/{workflowTotal} activities
-                </p>
-              </div>
-            );
-          })}
-        </div>
-      </article>
       <article className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5 sm:p-7">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="text-lg font-bold text-white">Module lessons</h3>
