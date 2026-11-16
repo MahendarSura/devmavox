@@ -1,0 +1,43 @@
+name: YAML Playground Build Verification
+
+on:
+  push:
+    branches:
+      - publish/yaml-playground-latest-20261116
+    paths:
+      - "app/**"
+      - "components/devmavox-learning/**"
+      - "package.json"
+      - "package-lock.json"
+      - "next.config.*"
+      - "tsconfig.json"
+      - ".github/workflows/yaml-playground-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: yaml-playground-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Install and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run production build
+        run: npm run build
