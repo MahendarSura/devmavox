@@ -102,6 +102,13 @@ export default function YamlModuleAssessment({ moduleName }: { moduleName: strin
     }
   }, [storageKey, answers, submitted, loadedFor]);
 
+  const answeredCount = questions.reduce(
+    (total, _question, index) =>
+      total + (Number.isInteger(answers[index]) ? 1 : 0),
+    0
+  );
+  const allQuestionsAnswered = answeredCount === questions.length;
+
   const score = useMemo(
     () => questions.reduce((total, question, index) => total + (answers[index] === question.answer ? 1 : 0), 0),
     [answers, questions]
@@ -116,7 +123,7 @@ export default function YamlModuleAssessment({ moduleName }: { moduleName: strin
         <h3 id="module-assessment-title" className="mt-2 text-xl font-bold text-white">{moduleName} — Knowledge Assessment</h3>
         <p className="mt-2 text-sm leading-6 text-slate-300">Answer every question, submit once, then review the correct answers and explanations. Your attempt is saved in this browser for this module.</p>
         <div className="mt-3 flex flex-wrap gap-3 text-xs text-slate-400">
-          <span>{Object.keys(answers).length} / {questions.length} answered</span>
+          <span>{answeredCount} / {questions.length} answered</span>
           {submitted && <span className="font-semibold text-violet-200">Score: {score} / {questions.length} ({Math.round(score / questions.length * 100)}%)</span>}
         </div>
       </header>
@@ -141,7 +148,7 @@ export default function YamlModuleAssessment({ moduleName }: { moduleName: strin
       ))}
       <div className="flex flex-wrap gap-3">
         {!submitted ? (
-          <button type="button" disabled={Object.keys(answers).length !== questions.length} onClick={() => setSubmitted(true)} className="rounded-lg bg-violet-500 px-4 py-2 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-40">Submit assessment</button>
+          <button type="button" disabled={!allQuestionsAnswered} onClick={() => { if (allQuestionsAnswered) setSubmitted(true); }} className="rounded-lg bg-violet-500 px-4 py-2 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-40">Submit assessment</button>
         ) : (
           <button type="button" onClick={() => { setAnswers({}); setSubmitted(false); }} className="rounded-lg border border-slate-600 px-4 py-2 text-sm font-semibold text-slate-200">Retake assessment</button>
         )}
