@@ -319,9 +319,6 @@ const topicAliases: Record<string,string> = {
   "Artifact checksum verification":"sha256sum <artifact-file>",
   "Prometheus targets API":"curl -fsS <prometheus-url>/api/v1/targets",
   "Prometheus TSDB commands":"promtool tsdb analyze <prometheus-data-directory>",
-  "PromQL selectors":"curl -G <prometheus-url>/api/v1/query --data-urlencode \"query=up{job=\\\"<job>\\\"}\"",
-  "PromQL rate and increase":"curl -G <prometheus-url>/api/v1/query --data-urlencode \"query=sum(rate(http_requests_total[5m]))\"",
-  "PromQL aggregation":"curl -G <prometheus-url>/api/v1/query --data-urlencode \"query=sum by (job) (rate(http_requests_total[5m]))\"",
   "Grafana API dashboards":"curl -fsS <grafana-url>/api/search",
   "Grafana data source API":"curl -fsS <grafana-url>/api/datasources",
   "Alertmanager API":"curl -fsS <alertmanager-url>/api/v2/alerts",
@@ -330,8 +327,6 @@ const topicAliases: Record<string,string> = {
   "Redis memory diagnostics":"redis-cli INFO memory",
   "GitLab CI lint":"glab ci lint .gitlab-ci.yml",
   "GitLab artifacts and trace":"glab job trace <job-id>",
-  "Database connection checks":"nc -vz <db-host> <db-port>",
-  "Database slow query checks":"Inspect the engine slow-query log with an approved read-only query",
   "HTTP health checks":"curl -fsS -i <health-url>",
   "HTTP status diagnostics":"curl -sS -D - -o /dev/null <url>",
   "TLS certificate checks":"openssl s_client -connect <host>:443 -servername <host>",
@@ -343,7 +338,6 @@ const topicAliases: Record<string,string> = {
   "process resource diagnostics":"ps -eo pid,ppid,%cpu,%mem,stat,etime,cmd --sort=-%cpu | head",
   "JVM diagnostics":"jcmd <java-pid> VM.info",
   "snyk CLI":"snyk test",
-  "Terraform logging and TRACE":"terraform plan",
   "Tomcat service status":"systemctl status tomcat --no-pager",
   "Tomcat logs":"journalctl -u tomcat -n 100 --no-pager",
   "Tomcat thread dump":"jcmd <java-pid> Thread.print",
@@ -354,13 +348,9 @@ const topicAliases: Record<string,string> = {
   "Ansible tags":"ansible-playbook -i <inventory> <playbook.yml> --list-tags",
   "Ansible limit":"ansible-playbook -i <inventory> <playbook.yml> --list-hosts --limit <host-pattern>",
   "Ansible verbosity":"ansible-playbook -i <inventory> <playbook.yml> -vv",
-  "Ansible connection diagnostics":"ansible all -i <inventory> -m ping -vvv",
   "Jenkins CLI":"java -jar jenkins-cli.jar -s <jenkins-url> help",
   "jenkins build":"java -jar jenkins-cli.jar -s <jenkins-url> build <job>",
   "jenkins console":"java -jar jenkins-cli.jar -s <jenkins-url> console <job>",
-  "jenkins safe-restart":"java -jar jenkins-cli.jar -s <jenkins-url> safe-restart",
-  "jenkins reload-configuration":"java -jar jenkins-cli.jar -s <jenkins-url> reload-configuration",
-  "Nexus component upload":"curl --fail --user \"$NEXUS_USER:$NEXUS_TOKEN\" --request POST <nexus-url>/service/rest/v1/components",
   "Nexus cleanup tasks":"curl -fsS <nexus-url>/service/rest/v1/tasks",
   "YAML validation commands":"python -c \"import yaml; yaml.safe_load(open('<file.yaml>'))\"",
   pwd:"", ls:"-lah", cd:"<directory>", find:". -maxdepth 2 -type f", locate:"<filename>", tree:"-L 2",
@@ -399,7 +389,6 @@ const topicAliases: Record<string,string> = {
   "mvn clean":"", "mvn compile":"", "mvn test":"", "mvn package":"", "mvn dependency:tree":"",
   "gradle build":"--dry-run", "gradle test":"--dry-run", "promtool check config":"<prometheus.yml>",
   "trivy image":"<image:tag>", "trivy fs":".", "checkov":"-d .", "semgrep":"scan --config auto",
-  "mysql client":"-h <host> -u <user> -p", "psql":"-h <host> -U <user> -d <database>",
   "pg_isready":"-h <host> -p 5432", "redis-cli ping":"", "redis-cli info":"memory",
   bash:"--version", "bash -x":"<script.sh>", "Get-Process":"| Sort-Object CPU -Descending | Select-Object -First 10",
   "Get-Service":"", "Get-ChildItem":"-Force", "Get-Content":"<file> -Tail 100",
@@ -407,13 +396,31 @@ const topicAliases: Record<string,string> = {
   "java -version":"", javac:"-version", jps:"-lv", jcmd:"<pid> VM.version",
   "crictl ps":"-a", "crictl pods":"-a", "crictl images":"", "crictl logs":"<container-id>",
   "ctr containers":"list", "ctr images":"list", "kubeadm certs":"check-expiration"
+  "Jenkins build":"java -jar jenkins-cli.jar -s <jenkins-url> build <job> -s -v",
+  "Jenkins console":"java -jar jenkins-cli.jar -s <jenkins-url> console <job> -n 100",
+  "jenkins safe-restart":"java -jar jenkins-cli.jar -s <jenkins-url> safe-restart",
+  "jenkins reload-configuration":"java -jar jenkins-cli.jar -s <jenkins-url> reload-configuration",
+  "Ansible connection diagnostics":"ansible -i <inventory> all -m ping",
+  "ssh config checks":"ssh -G <user>@<host>",
+  "certbot":"certbot certificates",
+  "cosign verify":"cosign verify <image@digest>",
+  "cosign sign":"cosign sign <image@digest>",
+  "Database connection checks":"nc -vz <database-host> <port>",
+  "Database slow query checks":"psql -c 'SELECT pid, now()-query_start AS duration, state, query FROM pg_stat_activity WHERE state <> \'idle\' ORDER BY duration DESC LIMIT 10;'",
+  "mysql client":"mysql --host=<database-host> --user=<user> --execute='SELECT 1;'",
+  "Nexus component upload":"curl --fail --user \"$NEXUS_USER:$NEXUS_TOKEN\" --request POST --form 'raw.directory=<directory>' --form 'raw.asset1=@<artifact>' --form 'raw.asset1.filename=<filename>' '<nexus-url>/service/rest/v1/components?repository=<raw-repo>'",
+  "Terraform logging and TRACE":"env TF_LOG=TRACE terraform plan",
+  "PromQL selectors":"curl -G <prometheus-url>/api/v1/query --data-urlencode 'query=up{job=\"<job>\"}'",
+  "PromQL rate and increase":"curl -G <prometheus-url>/api/v1/query --data-urlencode 'query=sum(rate(http_requests_total[5m]))'",
+  "PromQL aggregation":"curl -G <prometheus-url>/api/v1/query --data-urlencode 'query=sum by (job) (rate(http_requests_total[5m]))'",
+  "bash -x":"bash -x <script.sh>",
 };
 function inferSeed(topic: string, category: string, subcategory: string): GuideSeed {
   const categoryKey = category.toLowerCase();
   const subcategoryKey = subcategory.toLowerCase();
   const alias = topicAliases[topic];
-  const known = /^(pwd|ls|cd|find|locate|tree|mkdir|touch|cp|mv|rm|ln|readlink|file|stat|cat|less|head|tail|grep|egrep|sed|awk|cut|sort|uniq|wc|tr|xargs|tee|diff|cmp|chmod|chown|chgrp|umask|getfacl|setfacl|namei|id|groups|sudo|tar|gzip|gunzip|zip|unzip|rsync|scp|sftp|ssh|sha256sum|ps|top|htop|pgrep|pkill|kill|killall|nice|renice|systemctl|service|journalctl|df|du|lsblk|blkid|mount|umount|free|vmstat|iostat|iotop|uptime|nproc|lscpu|dmesg|useradd|usermod|userdel|passwd|chage|getent|apt|apt-cache|dpkg|yum|dnf|rpm|crontab|at|timedatectl|ip|ss|netstat|ethtool|nmcli|route|arp|ping|traceroute|tracepath|mtr|tcpdump|tshark|nc|nmap|telnet|curl|wget|dig|nslookup|host|resolvectl|openssl|git|docker|kubectl|aws|terraform|ansible|ansible-playbook|ansible-inventory|ansible-doc|ansible-config|ansible-vault|ansible-galaxy|ansible-pull|ansible-lint|ansible-navigator|helm|argocd|jenkins|gh|glab|mvn|gradle|promtool|grafana-cli|amtool|trivy|grype|syft|checkov|tfsec|snyk|sonar-scanner|gitleaks|git-secrets|semgrep|cosign|mysql|mysqldump|mysqladmin|psql|pg_dump|pg_restore|pg_isready|redis-cli|bash|sh|source|export|env|printenv|read|getopts|trap|timeout|Get-Process|Get-Service|Get-ChildItem|Get-Content|Select-String|Test-NetConnection|Invoke-WebRequest|Invoke-RestMethod|Get-Command|Get-Help|python|pip|jq|yq|java|javac|jar|jps|jcmd|jstack|jmap|jstat|jinfo|catalina.sh|startup.sh|shutdown.sh|version.sh|crictl|ctr|kubeadm|kubelet)$/i;
-  const prefixes = ["git","docker","kubectl","terraform","helm","argocd","mvn","gradle","ip","aws","ansible","gh","glab","crictl","ctr","kubeadm","redis-cli","promtool","amtool","trivy","java","jcmd","jstack","jmap","jstat","openssl","curl","psql","mysql","systemctl","journalctl","jcmd"];
+  const known = /^(pwd|ls|cd|find|locate|tree|mkdir|touch|cp|mv|rm|ln|readlink|file|stat|cat|less|head|tail|grep|egrep|sed|awk|cut|sort|uniq|wc|tr|xargs|tee|diff|cmp|chmod|chown|chgrp|umask|getfacl|setfacl|namei|id|groups|sudo|tar|gzip|gunzip|zip|unzip|rsync|scp|sftp|ssh|sha256sum|ps|top|htop|pgrep|pkill|kill|killall|nice|renice|systemctl|service|journalctl|df|du|lsblk|blkid|mount|umount|free|vmstat|iostat|iotop|uptime|nproc|lscpu|dmesg|useradd|usermod|userdel|passwd|chage|getent|apt|apt-cache|dpkg|yum|dnf|rpm|crontab|at|timedatectl|ip|ss|netstat|ethtool|nmcli|route|arp|ping|traceroute|tracepath|mtr|tcpdump|tshark|nc|nmap|telnet|curl|wget|dig|nslookup|host|resolvectl|openssl|git|docker|kubectl|aws|terraform|ansible|ansible-playbook|ansible-inventory|ansible-doc|ansible-config|ansible-vault|ansible-galaxy|ansible-pull|ansible-lint|ansible-navigator|helm|argocd|jenkins|gh|glab|mvn|gradle|promtool|grafana-cli|amtool|trivy|grype|syft|checkov|tfsec|snyk|sonar-scanner|gitleaks|git-secrets|semgrep|cosign|certbot|ssh-keygen|ssh-add|ssh-agent|ssh-keyscan|grype|syft|checkov|tfsec|snyk|sonar-scanner|gitleaks|git-secrets|semgrep|bash|sh|python|pip|jq|yq|mysql|mysqldump|mysqladmin|psql|pg_dump|pg_restore|pg_isready|redis-cli|bash|sh|source|export|env|printenv|read|getopts|trap|timeout|Get-Process|Get-Service|Get-ChildItem|Get-Content|Select-String|Test-NetConnection|Invoke-WebRequest|Invoke-RestMethod|Get-Command|Get-Help|python|pip|jq|yq|java|javac|jar|jps|jcmd|jstack|jmap|jstat|jinfo|catalina.sh|startup.sh|shutdown.sh|version.sh|crictl|ctr|kubeadm|kubelet)$/i;
+  const prefixes = ["git","docker","kubectl","terraform","helm","argocd","mvn","gradle","ip","aws","ansible","gh","glab","crictl","ctr","kubeadm","redis-cli","promtool","amtool","trivy","java","jcmd","jstack","jmap","jstat","openssl","curl","psql","mysql","systemctl","journalctl","bash","sh","python","pip","jq","yq","ssh-keygen","ssh-add","ssh-agent","ssh-keyscan","certbot","cosign","grype","syft","checkov","tfsec","snyk","sonar-scanner","gitleaks","git-secrets","semgrep","mysqladmin","mysqldump","pg_dump","pg_restore","pg_isready","jcmd"];
   const executable = known.test(topic) ? topic : prefixes.find((candidate) => topic.toLowerCase().startsWith(candidate + " "));
   const aliasIsArguments = Boolean(alias && executable && (known.test(topic) || !alias.trim().toLowerCase().startsWith(executable.toLowerCase() + " ")));
   const raw = alias || topic;
