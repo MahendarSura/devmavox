@@ -687,7 +687,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
       { "name": "Workplace Readiness & First 90 Days", "subcategories": [{ "name": "Transition into a DevOps Role", "topics": ["Prepare for Your First DevOps Job", "Understand Team Workflow & Ownership", "First 30-60-90 Days Plan", "Professional Communication & Collaboration"] }] },
       { "name": "Career Growth & Professional Development", "subcategories": [{ "name": "Plan Long-Term Progress", "topics": ["Set Career Goals & Growth Milestones", "Build a Promotion Case", "Develop Leadership & Mentoring Skills", "Plan a Career Transition or Specialization"] }] }
     ]
-  }
+  },
   "devops-ai-assistant": {
     "id": "devops-ai-assistant",
     "title": "DevOps AI Assistant",
