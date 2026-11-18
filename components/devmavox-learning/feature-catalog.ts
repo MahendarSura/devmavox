@@ -674,120 +674,18 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
   "devops-career-center": {
     "id": "devops-career-center",
     "title": "DevOps Career Center",
-    "description": "Explore career paths, role expectations and job-readiness topics.",
+    "description": "Navigate DevOps career choices, understand employer expectations, prepare your professional profile, manage applications, interviews and career growth.",
     "style": "career",
     "label": "Career Pathways",
     "categories": [
-      {
-        "name": "Career Paths",
-        "subcategories": [
-          {
-            "name": "Engineering Roles",
-            "topics": [
-              "DevOps Engineer",
-              "Cloud Engineer",
-              "SRE",
-              "Platform Engineer",
-              "DevSecOps Engineer"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Experience Levels",
-        "subcategories": [
-          {
-            "name": "Career Stages",
-            "topics": [
-              "Fresher",
-              "Junior Engineer",
-              "Mid-Level Engineer",
-              "Senior Engineer"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Skill Roadmaps",
-        "subcategories": [
-          {
-            "name": "Core Skills",
-            "topics": [
-              "Linux",
-              "Cloud",
-              "Git",
-              "CI/CD",
-              "Kubernetes",
-              "IaC"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Resume Preparation",
-        "subcategories": [
-          {
-            "name": "Resume Sections",
-            "topics": [
-              "Resume Structure",
-              "Technical Skills",
-              "Projects",
-              "Experience"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Interview Preparation",
-        "subcategories": [
-          {
-            "name": "Interview Types",
-            "topics": [
-              "Technical Interviews",
-              "Scenario-Based Interviews",
-              "HR Interviews"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "System Design",
-        "subcategories": [
-          {
-            "name": "Engineering Design",
-            "topics": [
-              "Architecture Design",
-              "Scalability",
-              "Reliability"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Practical Projects",
-        "subcategories": [
-          {
-            "name": "Project Levels",
-            "topics": [
-              "Beginner Projects",
-              "Intermediate Projects",
-              "Production-Style Projects"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Job Readiness",
-        "subcategories": [
-          {
-            "name": "Readiness Assessment",
-            "topics": [
-              "Skill Gap Analysis",
-              "Preparation Checklist"
-            ]
-          }
-        ]
-      }
+      { "name": "Career Direction & Role Selection", "subcategories": [{ "name": "Choose Your Career Track", "topics": ["DevOps Career Overview", "Compare DevOps Engineering Roles", "Choose a Role Based on Your Strengths", "Career Opportunities & Industry Trends"] }] },
+      { "name": "Industry Expectations & Job Levels", "subcategories": [{ "name": "Understand the Workplace", "topics": ["DevOps Job Titles & Responsibilities", "Fresher vs Experienced Expectations", "Understanding Experience Requirements", "What Employers Look For"] }] },
+      { "name": "Resume & Personal Branding", "subcategories": [{ "name": "Present Your Professional Profile", "topics": ["Build a DevOps Resume", "Write Achievement-Based Experience", "Create a Strong LinkedIn Profile", "Present Your Existing Projects & Portfolio"] }] },
+      { "name": "Interview Strategy", "subcategories": [{ "name": "Prepare for Interview Stages", "topics": ["Understand the Interview Process", "Technical Round Preparation Strategy", "Scenario & Problem-Solving Communication", "HR & Behavioral Interview Preparation", "Mock Interview Self-Evaluation"] }] },
+      { "name": "Job Search & Application Management", "subcategories": [{ "name": "Manage Your Job Hunt", "topics": ["Find Relevant DevOps Opportunities", "Read Job Descriptions & Identify Fit", "Tailor Applications & Cover Letters", "Recruiter Communication & Application Tracking"] }] },
+      { "name": "Salary, Offers & Negotiation", "subcategories": [{ "name": "Evaluate Employment Offers", "topics": ["Understand DevOps Compensation", "Evaluate an Offer & Benefits", "Salary Negotiation & Offer Decisions"] }] },
+      { "name": "Workplace Readiness & First 90 Days", "subcategories": [{ "name": "Transition into a DevOps Role", "topics": ["Prepare for Your First DevOps Job", "Understand Team Workflow & Ownership", "First 30-60-90 Days Plan", "Professional Communication & Collaboration"] }] },
+      { "name": "Career Growth & Professional Development", "subcategories": [{ "name": "Plan Long-Term Progress", "topics": ["Set Career Goals & Growth Milestones", "Build a Promotion Case", "Develop Leadership & Mentoring Skills", "Plan a Career Transition or Specialization"] }] }
     ]
   },
   "devops-ai-assistant": {

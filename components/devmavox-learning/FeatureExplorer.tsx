@@ -1,4 +1,7 @@
 import YamlConfigWorkbench from "./YamlConfigWorkbench";
+import CareerDashboard from "./CareerDashboard";
+import CareerTopicPage from "./CareerTopicPage";
+import { getCareerTopicContent } from "./career-topic-content";
 import Link from "next/link";
 import ArchitectureTopicPage from "./ArchitectureTopicPage";
 import { getArchitectureTopic } from "./architecture-topic-content";
@@ -280,6 +283,10 @@ export default function FeatureExplorer({
 
   const theme = featureTheme(feature.style);
 
+  if (slug.length === 0 && featureId === "devops-career-center") {
+    return <CareerDashboard feature={feature} />;
+  }
+
   if (slug.length === 0 && featureId === "incident-simulator") {
     return <IncidentDashboard feature={feature} />;
   }
@@ -398,6 +405,10 @@ export default function FeatureExplorer({
 
     const topic = subcategory.topics.find((item) => slugify(item) === slug[2]);
     if (!topic) notFound();
+
+    if (featureId === "devops-career-center") {
+      return <CareerTopicPage topic={topic} category={category.name} section={subcategory.name} content={getCareerTopicContent(topic)} baseHref={`/${feature.id}/${slug[0]}/${slug[1]}`} />;
+    }
 
     if (featureId === "architecture-diagram-library") {
       const architectureContent = getArchitectureTopic(topic);
