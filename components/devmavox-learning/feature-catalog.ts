@@ -171,52 +171,28 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
     "label": "Incident Response Center",
     "categories": [
       { "name": "Linux Incidents", "subcategories": [
-        { "name": "System Resource Incidents", "topics": ["High CPU Usage", "Memory Exhaustion", "Disk Full", "Swap Thrashing"] },
-        { "name": "Service & Process Incidents", "topics": ["Service Down", "Systemd Unit Failure", "Zombie Process Accumulation", "Runaway Process"] },
-        { "name": "Filesystem & Kernel Incidents", "topics": ["Filesystem Read-Only", "Inode Exhaustion", "Kernel Panic", "File Descriptor Exhaustion"] },
-        { "name": "Host Access Incidents", "topics": ["SSH Login Failure", " sudo Permission Failure", "Boot Failure", "Host Unreachable"] }
+        { "name": "System Resource Incidents", "topics": ["High CPU Usage", "Memory Exhaustion", "Disk Full", "Service Down"] }
       ]},
       { "name": "Docker Incidents", "subcategories": [
-        { "name": "Container Lifecycle Incidents", "topics": ["Container Exited", "OOMKilled", "Restart Loop", "Container Health Check Failure"] },
-        { "name": "Image & Registry Incidents", "topics": ["ImagePull Failure", "Registry Authentication Failure", "Image Build Failure", "Invalid Image Entrypoint"] },
-        { "name": "Container Networking Incidents", "topics": ["Container Network Failure", "Port Mapping Failure", "DNS Resolution Failure in Container", "Bridge Network Conflict"] },
-        { "name": "Container Storage Incidents", "topics": ["Volume Mount Failure", "Overlay Filesystem Full", "Permission Denied on Volume", "Container Log Growth"] }
+        { "name": "Container Incidents", "topics": ["Container Exited", "OOMKilled", "Container Network Failure"] }
       ]},
       { "name": "Kubernetes Incidents", "subcategories": [
-        { "name": "Workload Incidents", "topics": ["CrashLoopBackOff", "ImagePullBackOff", "Pending Pods", "Deployment Unavailable"] },
-        { "name": "Node & Scheduling Incidents", "topics": ["Node NotReady", "Insufficient CPU or Memory", "Taints and Tolerations Mismatch", " kubelet NotReady"] },
-        { "name": "Networking & Service Incidents", "topics": ["CoreDNS Failure", "Service Endpoint Missing", "Ingress Routing Failure", "NetworkPolicy Blocking Traffic"] },
-        { "name": "Storage & Configuration Incidents", "topics": ["PVC Pending", "Volume Mount Failure", "ConfigMap Not Updated", "Secret Mount Failure"] }
+        { "name": "Workload Incidents", "topics": ["CrashLoopBackOff", "ImagePullBackOff", "Pending Pods", "Node NotReady"] }
       ]},
       { "name": "CI/CD Incidents", "subcategories": [
-        { "name": "Jenkins Platform Incidents", "topics": ["Jenkins Build Failure", "Agent Offline", "Controller Unavailable", "Plugin Compatibility Failure"] },
-        { "name": "Build & Artifact Incidents", "topics": ["Dependency Download Failure", "Maven Build Failure", "Nexus Artifact Upload Failure", "Build Cache Corruption"] },
-        { "name": "Pipeline & Deployment Incidents", "topics": ["Pipeline Stuck", "Deployment Failure", "Rollback Failure", "Approval Gate Blocked"] },
-        { "name": "GitOps & Release Incidents", "topics": ["Argo CD Sync Failure", "Helm Upgrade Failure", "Git Webhook Delivery Failure", "Release Configuration Drift"] }
+        { "name": "Pipeline Incidents", "topics": ["Jenkins Build Failure", "Agent Offline", "Deployment Failure"] }
       ]},
       { "name": "AWS Incidents", "subcategories": [
-        { "name": "Compute & Scaling Incidents", "topics": ["EC2 Unreachable", "EC2 Status Check Failed", "Auto Scaling Not Launching Instances", "Instance Capacity Exhausted"] },
-        { "name": "Identity & Access Incidents", "topics": ["IAM Access Denied", "AssumeRole Failure", "Expired Session Credentials", "Instance Profile Missing"] },
-        { "name": "VPC & Load Balancing Incidents", "topics": ["VPC Route Failure", "Security Group Blocking Traffic", "ALB Unhealthy Targets", "NAT Gateway Connectivity Failure"] },
-        { "name": "Managed Kubernetes & Cloud Services", "topics": ["EKS Cluster Failure", "EKS Node Group Degraded", "ECR Image Pull Denied", "CloudWatch Metrics Missing"] }
+        { "name": "Cloud Infrastructure Incidents", "topics": ["EC2 Unreachable", "EKS Cluster Failure", "IAM Access Denied"] }
       ]},
       { "name": "Networking Incidents", "subcategories": [
-        { "name": "DNS Incidents", "topics": ["DNS Failure", "DNS Propagation Issue", "Incorrect DNS Record", "Split-Horizon DNS Misconfiguration"] },
-        { "name": "Connectivity & Routing Incidents", "topics": ["Connection Timeout", "Port Unreachable", "Packet Loss", "Asymmetric Routing"] },
-        { "name": "TLS & Certificate Incidents", "topics": ["SSL Certificate Expired", "TLS Handshake Failure", "Certificate Chain Invalid", "Mutual TLS Authentication Failure"] },
-        { "name": "Load Balancing & Firewall Incidents", "topics": ["Load Balancer Unhealthy Targets", "Firewall Rule Blocking Traffic", "Ingress Routing Failure", "Uneven Traffic Distribution"] }
+        { "name": "Connectivity Incidents", "topics": ["DNS Failure", "Connection Timeout", "Port Unreachable"] }
       ]},
       { "name": "Application Incidents", "subcategories": [
-        { "name": "HTTP & API Availability", "topics": ["HTTP 500", "HTTP 502", "HTTP 503", "API Gateway Timeout"] },
-        { "name": "Application Runtime Incidents", "topics": ["Application Crash", "Thread Pool Exhaustion", "Memory Leak", "High Application Latency"] },
-        { "name": "Dependency & Integration Incidents", "topics": ["Database Connectivity Failure", "Third-Party API Failure", "Connection Pool Exhaustion", "Message Broker Unavailable"] },
-        { "name": "Release & Configuration Incidents", "topics": ["Bad Configuration Deployment", "Feature Flag Misconfiguration", "Regression After Release", "Health Check Failure"] }
+        { "name": "Application Availability", "topics": ["HTTP 500", "HTTP 502", "HTTP 503", "Database Connectivity Failure"] }
       ]},
       { "name": "Security Incidents", "subcategories": [
-        { "name": "Credential & Secret Incidents", "topics": ["Exposed Secrets", "Leaked API Token", "Compromised Service Account", "Secret Rotation Failure"] },
-        { "name": "Identity & Access Incidents", "topics": ["Unauthorized Access", "Privilege Escalation Alert", "Suspicious IAM Policy Change", "MFA Bypass Attempt"] },
-        { "name": "Threat Detection Incidents", "topics": ["Suspicious Activity", "Brute Force Login Attempt", "Unexpected Outbound Traffic", "Cryptomining Workload Detected"] },
-        { "name": "Vulnerability & Workload Incidents", "topics": ["Critical Container Vulnerability", "Malicious Image Detected", "Unexpected Privileged Container", "Unpatched Internet-Facing Service"] }
+        { "name": "Security Response", "topics": ["Exposed Secrets", "Unauthorized Access", "Suspicious Activity"] }
       ]},
       { "name": "Database Incidents", "subcategories": [
         { "name": "Database Availability Incidents", "topics": ["Database Connection Failure", "Database Server Down", "Too Many Connections", "Database Authentication Failure"] },
