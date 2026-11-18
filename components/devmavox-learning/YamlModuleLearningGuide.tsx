@@ -832,6 +832,7 @@ export default function YamlModuleLearningGuide({
   onLoadExample: (yaml: string) => void;
 }) {
   const guide = modules[moduleName];
+  if (moduleName === "Quiz and Assessment") return null;
   const modulePresentation: Record<string, {
     banner: string;
     audienceHeading: string;
