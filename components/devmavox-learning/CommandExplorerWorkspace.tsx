@@ -234,7 +234,8 @@ export default function CommandExplorerWorkspace({
       { pattern: /^cosign\s+sign\b|^certbot\s+(renew|delete)\b|^amtool\s+silence\s+add\b/i, reason: "This operation can publish signatures, renew/delete certificates or alter alert silences." },
     ];
     const explicitDryRun = /(?:^|\s)--dry-run(?:=client|=server)?(?:\s|$)/.test(value);
-    const blockedMutation = explicitDryRun ? undefined : mutationRules.find((rule) => rule.pattern.test(value));
+    const explicitHelp = /(?:^|\s)(?:--help|-h)(?:\s|$)/.test(value);
+    const blockedMutation = explicitDryRun || explicitHelp ? undefined : mutationRules.find((rule) => rule.pattern.test(value));
     if (blockedMutation) {
       result = "MUTATING COMMAND NOT SIMULATED\n" + blockedMutation.reason + "\n\nNo command was executed. Use a disposable lab, verify the target and impact, and obtain the required approval before running this command in a real environment.\n\nSIMULATOR LIMITATION — this workspace never connects to a shell, server, cloud account or cluster.";
     } else if (/^kubectl\s+get\s+pods/.test(normalized)) result = simulated("NAMESPACE   NAME             READY   STATUS    RESTARTS   AGE\nproduction  api-7d9f         1/1     Running   0          18m\nproduction  worker-5c8       0/1     Pending   0          4m");
