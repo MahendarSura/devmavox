@@ -14,6 +14,10 @@ const categoryVisuals: Record<string, { icon: string; accent: string; tint: stri
   "networking-incidents": { icon: "⌘", accent: "text-teal-300", tint: "from-teal-500/20", description: "Trace DNS, connectivity, routing and port reachability failures across service dependencies." },
   "application-incidents": { icon: "⚙", accent: "text-emerald-300", tint: "from-emerald-500/20", description: "Diagnose HTTP errors, upstream failures, database connectivity and application availability." },
   "security-incidents": { icon: "🛡", accent: "text-rose-300", tint: "from-rose-500/20", description: "Practice defensive incident handling for exposed secrets, unauthorized access and suspicious activity." },
+  "database-incidents": { icon: "🗄️", accent: "text-indigo-300", tint: "from-indigo-500/20", description: "Investigate database availability, query performance, connection pressure, replication and recovery failures." },
+  "storage-backup-incidents": { icon: "💾", accent: "text-orange-300", tint: "from-orange-500/20", description: "Troubleshoot block, file and object storage, backup jobs, restore validation and capacity incidents." },
+  "monitoring-observability-incidents": { icon: "📈", accent: "text-fuchsia-300", tint: "from-fuchsia-500/20", description: "Restore metrics, dashboards, alert delivery, log ingestion and distributed tracing visibility." },
+  "messaging-integration-incidents": { icon: "📨", accent: "text-lime-300", tint: "from-lime-500/20", description: "Resolve broker availability, consumer lag, queue backlogs, cache connectivity and event delivery failures." },
 };
 
 const workflow = [
