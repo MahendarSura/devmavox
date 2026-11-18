@@ -33,10 +33,7 @@ type GuideSeed = {
   pitfalls?: string[];
 };
 
-const commonFlags = [
-  { flag: "--help", meaning: "Display supported subcommands and options." },
-  { flag: "--version", meaning: "Display the installed tool version where supported." },
-];
+
 
 const topicArgs: Record<string, string> = {
   "ip addr": "addr show",
@@ -771,7 +768,7 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     "java and tomcat":["java -version","jcmd <pid> VM.version","journalctl -u tomcat -n 100 --no-pager"],
     "container runtime and platform tools":["crictl ps -a","crictl pods -a","journalctl -u kubelet -n 100 --no-pager"]
   };
-  const flagsByBase: Record<string,{flag:string;meaning:string}[]> = {
+  []> = {
     git:[{flag:"--help",meaning:"Show help for the selected Git subcommand."},{flag:"--no-pager",meaning:"Keep output in the terminal stream for easier capture."}],
     docker:[{flag:"--format",meaning:"Format list or inspect output using Go templates where supported."},{flag:"--filter",meaning:"Restrict results to matching labels, names or status."}],
     kubectl:[{flag:"-n <namespace>",meaning:"Target a specific namespace."},{flag:"-o wide",meaning:"Include additional resource columns."},{flag:"--context <context>",meaning:"Select an explicit kubeconfig context."}],
