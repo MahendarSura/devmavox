@@ -568,13 +568,6 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
   const raw = alias || topic;
   const first = raw.trim().split(/\\s+/)[0] || "help";
 
-  let base = aliasIsArguments ? executable! : (alias ? first : (executable || defaults[categoryKey] || first));
-  let args = topicArgs[topic] ?? (aliasIsArguments ? alias! : (alias ? raw.slice(first.length).trim() : (base === topic ? "" : "--help")));
-  if (!alias) {
-    const prefix = prefixes.find((candidate) => topic.toLowerCase().startsWith(candidate + " "));
-    if (prefix) { base = prefix; args = topic.slice(prefix.length).trim(); }
-  }
-
   const defaults: Record<string,string> = {
     "linux":"ls", "linux administration":"systemctl", "networking":"ip", "git":"git",
     "docker":"docker", "kubernetes":"kubectl", "aws cli":"aws", "terraform":"terraform",
@@ -584,13 +577,14 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     "scripting and automation":"bash", "java and tomcat":"java",
     "container runtime and platform tools":"crictl"
   };
-  let base = alias ? first : (known.test(topic) ? topic : (defaults[categoryKey] || first));
-  let args = topicArgs[topic] ?? (alias ? raw.slice(first.length).trim() : (base === topic ? "" : "--help"));
-  const prefixes = ["git","docker","kubectl","terraform","helm","argocd","mvn","gradle","ip","aws","ansible","gh","glab","crictl","ctr","kubeadm","redis-cli","promtool","amtool","trivy","java","jcmd","jstack","jmap","jstat","openssl","curl","psql","mysql"];
+  let base = aliasIsArguments ? executable! : (alias ? first : (executable || defaults[categoryKey] || first));
+  let args = topicArgs[topic] ?? (aliasIsArguments ? alias! : (alias ? raw.slice(first.length).trim() : (base === topic ? "" : "--help")));
   if (!alias) {
     const prefix = prefixes.find((candidate) => topic.toLowerCase().startsWith(candidate + " "));
     if (prefix) { base = prefix; args = topic.slice(prefix.length).trim(); }
   }
+
+
   if (topic.startsWith("git ")) { base="git"; args=topic.slice(4)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
   else if (topic.startsWith("docker ")) { base="docker"; args=topic.slice(7)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
   else if (topic.startsWith("kubectl ")) { base="kubectl"; args=topic.slice(8)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
