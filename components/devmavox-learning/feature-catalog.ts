@@ -674,122 +674,22 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
   "devops-career-center": {
     "id": "devops-career-center",
     "title": "DevOps Career Center",
-    "description": "Explore career paths, role expectations and job-readiness topics.",
+    "description": "Build your DevOps career with role guidance, competency assessments, practical projects, interview preparation and job-search workflows.",
     "style": "career",
     "label": "Career Pathways",
     "categories": [
-      {
-        "name": "Career Paths",
-        "subcategories": [
-          {
-            "name": "Engineering Roles",
-            "topics": [
-              "DevOps Engineer",
-              "Cloud Engineer",
-              "SRE",
-              "Platform Engineer",
-              "DevSecOps Engineer"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Experience Levels",
-        "subcategories": [
-          {
-            "name": "Career Stages",
-            "topics": [
-              "Fresher",
-              "Junior Engineer",
-              "Mid-Level Engineer",
-              "Senior Engineer"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Skill Roadmaps",
-        "subcategories": [
-          {
-            "name": "Core Skills",
-            "topics": [
-              "Linux",
-              "Cloud",
-              "Git",
-              "CI/CD",
-              "Kubernetes",
-              "IaC"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Resume Preparation",
-        "subcategories": [
-          {
-            "name": "Resume Sections",
-            "topics": [
-              "Resume Structure",
-              "Technical Skills",
-              "Projects",
-              "Experience"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Interview Preparation",
-        "subcategories": [
-          {
-            "name": "Interview Types",
-            "topics": [
-              "Technical Interviews",
-              "Scenario-Based Interviews",
-              "HR Interviews"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "System Design",
-        "subcategories": [
-          {
-            "name": "Engineering Design",
-            "topics": [
-              "Architecture Design",
-              "Scalability",
-              "Reliability"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Practical Projects",
-        "subcategories": [
-          {
-            "name": "Project Levels",
-            "topics": [
-              "Beginner Projects",
-              "Intermediate Projects",
-              "Production-Style Projects"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Job Readiness",
-        "subcategories": [
-          {
-            "name": "Readiness Assessment",
-            "topics": [
-              "Skill Gap Analysis",
-              "Preparation Checklist"
-            ]
-          }
-        ]
-      }
+      { "name": "Career Paths", "subcategories": [{ "name": "Engineering Roles", "topics": ["DevOps Engineer", "Cloud Engineer", "Site Reliability Engineer (SRE)", "Platform Engineer", "DevSecOps Engineer"] }] },
+      { "name": "Experience Levels", "subcategories": [{ "name": "Career Stages", "topics": ["DevOps Fresher", "Junior DevOps Engineer", "Mid-Level DevOps Engineer", "Senior / Lead DevOps Engineer"] }] },
+      { "name": "Skills & Competency Matrix", "subcategories": [{ "name": "Technical Skill Domains", "topics": ["Linux & Networking Skills", "Cloud & Infrastructure Skills", "DevOps Tools & Automation Skills", "Monitoring, Security & Reliability Skills"] }] },
+      { "name": "Career Learning Roadmaps", "subcategories": [{ "name": "Role-Based Roadmaps", "topics": ["Beginner to DevOps Engineer", "AWS Cloud & DevOps Roadmap", "Kubernetes & Platform Engineering Roadmap", "SRE & DevSecOps Roadmap"] }] },
+      { "name": "Resume & Professional Profile", "subcategories": [{ "name": "Professional Branding", "topics": ["DevOps Resume Builder", "Technical Skills & Experience Writing", "Project Portfolio & GitHub Profile", "LinkedIn Profile Optimization"] }] },
+      { "name": "Interview Preparation", "subcategories": [{ "name": "Interview Practice Tracks", "topics": ["Linux, Networking & Git Interviews", "AWS, Docker & Kubernetes Interviews", "Jenkins, Terraform & Ansible Interviews", "Production Scenario & Troubleshooting Interviews", "HR & Behavioral Interviews"] }] },
+      { "name": "System Design & Architecture", "subcategories": [{ "name": "Engineering Design Skills", "topics": ["DevOps Architecture Design", "CI/CD Pipeline Architecture", "Scalable Cloud Infrastructure", "High Availability & Disaster Recovery"] }] },
+      { "name": "Practical Career Projects", "subcategories": [{ "name": "Portfolio Project Levels", "topics": ["Beginner DevOps Projects", "Intermediate Automation Projects", "Advanced Kubernetes & GitOps Projects", "Production-Grade Cloud Projects"] }] },
+      { "name": "Job Search & Applications", "subcategories": [{ "name": "Job Application Workflow", "topics": ["Finding Relevant DevOps Jobs", "Job Description & Skill Matching", "Applications, Recruiter Communication & Follow-ups"] }] },
+      { "name": "Job Readiness & Career Growth", "subcategories": [{ "name": "Career Readiness Assessment", "topics": ["DevOps Job Readiness Checklist", "Mock Interview & Skill Evaluation", "30-60-90 Day Career Growth Plan"] }] }
     ]
-  },
+  }
   "devops-ai-assistant": {
     "id": "devops-ai-assistant",
     "title": "DevOps AI Assistant",
