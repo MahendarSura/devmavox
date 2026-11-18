@@ -7,6 +7,7 @@ import IncidentCategoryPage from "./IncidentCategoryPage";
 import IncidentDashboard from "./IncidentDashboard";
 import IncidentSubcategoryPage from "./IncidentSubcategoryPage";
 import { getIncidentLesson } from "./incident-topic-content";
+import MonitoringPlaygroundHome from "./MonitoringPlaygroundHome";
 import { notFound } from "next/navigation";
 import {
   featureCatalog,
@@ -276,6 +277,10 @@ export default function FeatureExplorer({
 
   if (featureId === "yaml-config-playground") {
     return <YamlConfigWorkbench feature={feature} slug={slug} />;
+  }
+
+  if (featureId === "monitoring-playground" && slug.length === 0) {
+    return <MonitoringPlaygroundHome feature={feature} />;
   }
 
   const theme = featureTheme(feature.style);
