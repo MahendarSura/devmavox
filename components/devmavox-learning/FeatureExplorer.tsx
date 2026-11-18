@@ -24,6 +24,16 @@ function slugify(value: string) {
     .replace(/^-|-$/g, "");
 }
 
+const incidentCategorySlugAliases: Record<string, string> = {
+  "linx-incidents": "linux-incidents",
+  "secrity-incidents": "security-incidents",
+  "storage-backp-incidents": "storage-backup-incidents",
+};
+
+function resolveIncidentCategorySlug(slug: string) {
+  return incidentCategorySlugAliases[slug] ?? slug;
+}
+
 function topicCount(category: FeatureCategory) {
   return category.subcategories.reduce((sum, item) => sum + item.topics.length, 0);
 }
@@ -328,7 +338,8 @@ export default function FeatureExplorer({
     );
   }
 
-  const category = feature.categories.find((item) => slugify(item.name) === slug[0]);
+  const requestedCategorySlug = featureId === "incident-simulator" ? resolveIncidentCategorySlug(slug[0]) : slug[0];
+  const category = feature.categories.find((item) => slugify(item.name) === requestedCategorySlug);
   if (!category) notFound();
 
   if (slug.length === 1) {
