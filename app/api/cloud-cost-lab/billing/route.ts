@@ -27,7 +27,7 @@ function serviceKey(block: string) {
 }
 
 export async function GET(request: Request) {
-  const billingAccessKey = process.env.CLOUD_COST_LAB_BILLING_ACCESS_KEY;\n  const suppliedToken = request.headers.get("authorization")?.replace(/^Bearer\\s+/i, "") || "";\n  if (!billingAccessKey || suppliedToken.length !== billingAccessKey.length || !timingSafeEqual(Buffer.from(suppliedToken), Buffer.from(billingAccessKey))) {\n    return NextResponse.json({ connected: false, code: "BILLING_ACCESS_REQUIRED", message: "Enter the Cloud Cost Lab billing access key to view account billing data." }, { status: 401 });\n  }\n\n  const accessKey = process.env.AWS_ACCESS_KEY_ID;
+  const billingAccessKey = process.env.CLOUD_COST_LAB_BILLING_ACCESS_KEY;\n  const suppliedToken = request.headers.get("authorization")?.replace(/^Bearer\\s+/i, "") || "";\n  const suppliedBytes = Buffer.from(suppliedToken);\n  const expectedBytes = Buffer.from(billingAccessKey || "");\n  if (!billingAccessKey || suppliedBytes.length !== expectedBytes.length || !timingSafeEqual(suppliedBytes, expectedBytes)) {\n    return NextResponse.json({ connected: false, code: "BILLING_ACCESS_REQUIRED", message: "Enter the Cloud Cost Lab billing access key to view account billing data." }, { status: 401 });\n  }\n\n  const accessKey = process.env.AWS_ACCESS_KEY_ID;
   const secretKey = process.env.AWS_SECRET_ACCESS_KEY;
   const sessionToken = process.env.AWS_SESSION_TOKEN;
   if (!accessKey || !secretKey) {
