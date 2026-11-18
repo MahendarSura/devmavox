@@ -289,6 +289,7 @@ export default function FeatureExplorer({
         );
       }
     }
+    notFound();
   }
 
   if (featureId === "yaml-config-playground") {
