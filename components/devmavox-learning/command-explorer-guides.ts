@@ -779,7 +779,7 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
   };
 
   // Do not apply executable-wide flags to every subcommand. Only curated topic/seed flags are safe to display.
-  const safeFlags = [];
+  const safeFlags: { flag: string; meaning: string }[] = [];
   const example = base + (args ? " " + args : "");
   const outputBySubcategory: Record<string,string> = {
     "navigation and file operations":"Expect the current path, directory entries, file type, permissions, timestamps, inode details or the result of a file operation. Confirm the resolved path before modifying or deleting anything.",
