@@ -777,21 +777,7 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     "java and tomcat":["java -version","jcmd <pid> VM.version","journalctl -u tomcat -n 100 --no-pager"],
     "container runtime and platform tools":["crictl ps -a","crictl pods -a","journalctl -u kubelet -n 100 --no-pager"]
   };
-  []> = {
-    git:[{flag:"--help",meaning:"Show help for the selected Git subcommand."},{flag:"--no-pager",meaning:"Keep output in the terminal stream for easier capture."}],
-    docker:[{flag:"--format",meaning:"Format list or inspect output using Go templates where supported."},{flag:"--filter",meaning:"Restrict results to matching labels, names or status."}],
-    kubectl:[{flag:"-n <namespace>",meaning:"Target a specific namespace."},{flag:"-o wide",meaning:"Include additional resource columns."},{flag:"--context <context>",meaning:"Select an explicit kubeconfig context."}],
-    aws:[{flag:"--region <region>",meaning:"Select the AWS Region for the API request."},{flag:"--profile <profile>",meaning:"Use a named local AWS CLI profile."},{flag:"--output json",meaning:"Return structured JSON output."}],
-    terraform:[{flag:"-chdir=<directory>",meaning:"Run Terraform from the specified working directory."},{flag:"-var-file=<file>",meaning:"Load variables from an explicit file."},{flag:"-out=<plan-file>",meaning:"Save a generated plan for later review."}],
-    ansible:[{flag:"-i <inventory>",meaning:"Select the inventory source."},{flag:"--limit <pattern>",meaning:"Restrict the play to selected hosts."},{flag:"-vvv",meaning:"Increase diagnostic verbosity."}],
-    helm:[{flag:"-n <namespace>",meaning:"Select the release namespace."},{flag:"-f <values.yaml>",meaning:"Load an explicit values file."},{flag:"--dry-run --debug",meaning:"Render and inspect without applying a release."}],
-    argocd:[{flag:"--app-namespace <namespace>",meaning:"Select the namespace containing the Argo CD Application."},{flag:"--grpc-web",meaning:"Use gRPC-Web for compatible ingress/proxy setups."}],
-    curl:[{flag:"-I",meaning:"Fetch response headers only."},{flag:"-sS",meaning:"Suppress progress while retaining error messages."},{flag:"-v",meaning:"Show connection and TLS diagnostic details."}],
-    journalctl:[{flag:"-u <service>",meaning:"Filter logs to a systemd unit."},{flag:"--since <time>",meaning:"Restrict logs to a time window."},{flag:"-p warning",meaning:"Filter by warning priority and more severe messages."}],
-    systemctl:[{flag:"--no-pager",meaning:"Print output directly without an interactive pager."},{flag:"--type=service",meaning:"Limit unit listings to services."}],
-    ssh:[{flag:"-G",meaning:"Print evaluated client configuration without connecting."},{flag:"-vvv",meaning:"Show detailed connection diagnostics."}],
-    openssl:[{flag:"-servername <name>",meaning:"Send SNI for the intended TLS virtual host."},{flag:"-showcerts",meaning:"Display certificates sent by the peer."}]
-  };
+
   // Do not apply executable-wide flags to every subcommand. Only curated topic/seed flags are safe to display.
   const safeFlags = [];
   const example = base + (args ? " " + args : "");
