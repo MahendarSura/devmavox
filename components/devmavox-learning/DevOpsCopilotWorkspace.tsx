@@ -23,7 +23,7 @@ const accents = [
 
 const glyphs = ["✳", ">_", "{ }", "⌘", "◉", "⌁", "⇄", "◇", "◎", "⚑"];
 
-export default function DevOpsCopilotWorkspace({ feature, slug = [] }: { feature: FeatureDefinition; slug?: string[] }) {
+export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature: FeatureDefinition; slug?: string[] }) {
   const [mode, setMode] = useState("Explain");
   const [question, setQuestion] = useState("");
   const [context, setContext] = useState("");
@@ -40,7 +40,7 @@ export default function DevOpsCopilotWorkspace({ feature, slug = [] }: { feature
       <div className="relative mx-auto max-w-[1440px] px-4 py-5 sm:px-7 lg:px-10">
         <nav className="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-5">
           <Link href="/" className="text-sm font-bold tracking-wide text-[#e8e6dc]">DEV<span className="text-[#c7ff43]">MAVOX</span><span className="ml-2 text-[10px] font-medium uppercase tracking-[.25em] text-white/35">/ AI ENGINEERING</span></Link>
-          <div className="flex items-center gap-3 text-xs text-white/50"><Link href="/" className="hover:text-white">← Home</Link><span className="text-white/20">/</span><span className="text-[#c7ff43]">Copilot workspace</span></div>
+          <div className="flex items-center gap-3 text-xs text-white/50"><Link href="/" className="hover:text-white">← Home</Link><span className="text-white/20">/</span><span className="text-[#c7ff43]">ChatGPT workspace</span></div>
         </nav>
 
         {slug.length === 0 ? (
@@ -51,12 +51,12 @@ export default function DevOpsCopilotWorkspace({ feature, slug = [] }: { feature
                 <div>
                   <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#c7ff43]/30 bg-[#c7ff43]/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.22em] text-[#d5ff79]"><span className="h-2 w-2 rounded-full bg-[#c7ff43]" /> DevOps intelligence layer</div>
                   <p className="mb-3 font-mono text-xs uppercase tracking-[.28em] text-[#ff896d]">Ask. Inspect. Understand. Improve.</p>
-                  <h1 className="max-w-3xl text-4xl font-black leading-[1.04] tracking-tight sm:text-6xl">Your DevOps workbench, <span className="text-[#c7ff43]">with an AI copilot.</span></h1>
+                  <h1 className="max-w-3xl text-4xl font-black leading-[1.04] tracking-tight sm:text-6xl">Your DevOps workbench, <span className="text-[#c7ff43]">powered by ChatGPT.</span></h1>
                   <p className="mt-5 max-w-2xl text-sm leading-7 text-white/60 sm:text-base">A focused engineering workspace for command guidance, configuration reviews, infrastructure decisions and production incident reasoning.</p>
                   <div className="mt-7 flex flex-wrap gap-2 text-[11px] font-semibold"><span className="rounded-lg bg-[#c7ff43] px-3 py-2 text-[#171b13]">10 capability domains</span><span className="rounded-lg border border-white/15 px-3 py-2 text-white/65">{topicCount} specialist workflows</span><span className="rounded-lg border border-white/15 px-3 py-2 text-white/65">3-level navigation</span></div>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-[#0c100d]/80 p-5 shadow-2xl shadow-black/30">
-                  <div className="mb-4 flex items-center justify-between"><span className="font-mono text-[10px] uppercase tracking-[.2em] text-white/45">Copilot session preview</span><span className="rounded-full bg-[#ff896d]/10 px-2 py-1 text-[9px] text-[#ff9b83]">API setup required</span></div>
+                  <div className="mb-4 flex items-center justify-between"><span className="font-mono text-[10px] uppercase tracking-[.2em] text-white/45">ChatGPT session preview</span><span className="rounded-full bg-[#ff896d]/10 px-2 py-1 text-[9px] text-[#ff9b83]">OpenAI API setup required</span></div>
                   <div className="space-y-3 font-mono text-xs">
                     <div className="max-w-[90%] rounded-xl rounded-tl-sm bg-white/[.07] p-3 text-white/75">Why are my Kubernetes pods stuck in Pending?</div>
                     <div className="ml-auto max-w-[90%] rounded-xl rounded-tr-sm border border-[#c7ff43]/20 bg-[#c7ff43]/[.08] p-3 text-[#e6f8c7]">Inspect scheduling events, resource requests, node capacity and PVC binding. Start with <span className="text-[#c7ff43]">kubectl describe pod</span>.</div>
@@ -86,7 +86,7 @@ export default function DevOpsCopilotWorkspace({ feature, slug = [] }: { feature
             </section>
           </>
         ) : !category ? (
-          <div className="rounded-2xl border border-[#ff896d]/30 bg-[#ff896d]/10 p-6">Category not found. <Link className="underline" href={root}>Return to Copilot home</Link></div>
+          <div className="rounded-2xl border border-[#ff896d]/30 bg-[#ff896d]/10 p-6">Category not found. <Link className="underline" href={root}>Return to ChatGPT home</Link></div>
         ) : slug.length === 1 ? (
           <>
             <Link href={root} className="text-xs text-white/45 hover:text-white">← All capability domains</Link>
@@ -99,13 +99,13 @@ export default function DevOpsCopilotWorkspace({ feature, slug = [] }: { feature
           <>
             <Link href={root + "/" + slug[0]} className="text-xs text-white/45 hover:text-white">← {category.name}</Link>
             <h1 className="my-6 text-3xl font-black">{subcategory.name}</h1>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{subcategory.topics.map((item, i) => <Link key={item} href={root + "/" + slug[0] + "/" + slug[1] + "/" + slugify(item)} className="rounded-2xl border border-white/10 bg-[#1b211b] p-5 hover:border-[#c7ff43]/40"><p className="font-mono text-[10px] text-[#ff896d]">SPECIALIST_TOPIC_{String(i + 1).padStart(2, "0")}</p><h2 className="mt-3 font-bold">{item}</h2><p className="mt-4 text-[11px] text-white/40">Open copilot workflow →</p></Link>)}</div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{subcategory.topics.map((item, i) => <Link key={item} href={root + "/" + slug[0] + "/" + slug[1] + "/" + slugify(item)} className="rounded-2xl border border-white/10 bg-[#1b211b] p-5 hover:border-[#c7ff43]/40"><p className="font-mono text-[10px] text-[#ff896d]">SPECIALIST_TOPIC_{String(i + 1).padStart(2, "0")}</p><h2 className="mt-3 font-bold">{item}</h2><p className="mt-4 text-[11px] text-white/40">Open ChatGPT workflow →</p></Link>)}</div>
           </>
         ) : !topic ? (
           <div className="rounded-2xl border border-[#ff896d]/30 bg-[#ff896d]/10 p-6">Topic not found. <Link className="underline" href={root + "/" + slug[0] + "/" + slug[1]}>Return to topics</Link></div>
         ) : (
           <>
-            <div className="mb-6 flex flex-wrap items-center gap-2 text-xs text-white/40"><Link href={root}>Copilot</Link><span>/</span><Link href={root + "/" + slug[0]}>{category.name}</Link><span>/</span><Link href={root + "/" + slug[0] + "/" + slug[1]}>{subcategory.name}</Link></div>
+            <div className="mb-6 flex flex-wrap items-center gap-2 text-xs text-white/40"><Link href={root}>ChatGPT</Link><span>/</span><Link href={root + "/" + slug[0]}>{category.name}</Link><span>/</span><Link href={root + "/" + slug[0] + "/" + slug[1]}>{subcategory.name}</Link></div>
             <section className="mb-6 rounded-3xl border border-[#c7ff43]/20 bg-[#1a2018] p-7"><p className="font-mono text-[10px] uppercase tracking-[.22em] text-[#c7ff43]">Specialist workflow</p><h1 className="mt-3 text-3xl font-black">{topic}</h1><p className="mt-2 text-sm text-white/50">Provide a question and relevant engineering context. Review suggestions before applying them.</p></section>
             <section className="grid gap-5 lg:grid-cols-[1fr_300px]">
               <div className="rounded-2xl border border-white/10 bg-[#1a201b] p-5 sm:p-7">
@@ -115,10 +115,10 @@ export default function DevOpsCopilotWorkspace({ feature, slug = [] }: { feature
                 <label className="mb-2 mt-5 block text-xs font-semibold text-white/65">Environment context (optional)</label>
                 <input value={context} onChange={e=>setContext(e.target.value)} placeholder="e.g. EKS 1.30 · Ubuntu 24.04 · Production (read-only analysis)" className="w-full rounded-xl border border-white/10 bg-[#0d110e] p-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#c7ff43]/50" />
                 <button onClick={()=>setNotice(true)} disabled={!question.trim()} className="mt-5 rounded-xl bg-[#c7ff43] px-5 py-3 text-xs font-black text-[#151a12] disabled:cursor-not-allowed disabled:opacity-40">PREPARE REQUEST ↗</button>
-                {notice && <p className="mt-4 rounded-xl border border-[#ff896d]/25 bg-[#ff896d]/10 p-4 text-xs leading-6 text-[#ffc0b1]">AI model connection is not configured yet. Your request has not been sent and no AI response was generated. Configure a server-side OpenAI API integration to enable live assistance.</p>}
+                {notice && <p className="mt-4 rounded-xl border border-[#ff896d]/25 bg-[#ff896d]/10 p-4 text-xs leading-6 text-[#ffc0b1]">ChatGPT is not connected yet. Your request has not been sent and no AI response was generated. Configure a server-side OpenAI API integration to enable live ChatGPT responses.</p>}
               </div>
               <aside className="space-y-3">
-                <div className="rounded-2xl border border-[#ff896d]/25 bg-[#ff896d]/[.06] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#ff9a83]">Connection status</p><p className="mt-3 text-lg font-bold">Model not connected</p><p className="mt-2 text-xs leading-5 text-white/45">This workspace UI is ready for backend integration. No credentials are stored in the browser.</p></div>
+                <div className="rounded-2xl border border-[#ff896d]/25 bg-[#ff896d]/[.06] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#ff9a83]">Connection status</p><p className="mt-3 text-lg font-bold">OpenAI API not connected</p><p className="mt-2 text-xs leading-5 text-white/45">This workspace UI is ready for backend integration. No credentials are stored in the browser.</p></div>
                 <div className="rounded-2xl border border-white/10 bg-[#1a201b] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#c7ff43]">Safe-use checklist</p><ul className="mt-3 space-y-2 text-xs leading-5 text-white/55"><li>• Remove passwords and tokens</li><li>• Redact customer data</li><li>• Verify commands before execution</li><li>• Require human approval for production changes</li></ul></div>
               </aside>
             </section>
