@@ -33,34 +33,10 @@ export default function IncidentCategoryPage({ feature, category }: { feature: F
   const categorySlug = slugify(category.name);
   const visual = categoryVisuals[categorySlug] ?? { icon: "⚡", accent: "text-rose-300", tint: "from-rose-500/20", description: "Investigate production symptoms, gather evidence and restore service safely." };
   const topics = category.subcategories.flatMap((group) => group.topics.map((topic) => ({ topic, group: group.name, groupSlug: slugify(group.name) })));
-  const categoryLinks = feature.categories.map((item) => ({ item, slug: slugify(item.name), count: item.subcategories.reduce((n, group) => n + group.topics.length, 0) }));
-
   return (
     <main className="min-h-screen bg-[#080d18] text-slate-100">
-      <div className="mx-auto grid max-w-[1600px] lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside className="border-b border-slate-800 bg-[#0d1525] p-5 lg:min-h-screen lg:border-b-0 lg:border-r">
-          <Link href={`/${feature.id}`} className="text-xs text-slate-400 hover:text-white">← Incident Response Center</Link>
-          <div className="mt-7 flex items-center gap-3">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-rose-500/20 bg-rose-500/10 text-2xl">🛡️</span>
-            <div><p className="font-bold text-white">Incident Response Center</p><p className="text-xs text-slate-400">Production incident training</p></div>
-          </div>
-          <p className="mt-4 text-sm leading-6 text-slate-400">Explore production incident scenarios and response workflows.</p>
-          <div className="mt-7 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500"><span>{feature.categories.length} Categories</span><span>{topics.length} topics here</span></div>
-          <nav className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-1">
-            {categoryLinks.map(({ item, slug, count }, index) => (
-              <Link key={slug} href={`/${feature.id}/${slug}`} aria-current={slug === categorySlug ? "page" : undefined} className={`flex items-center justify-between gap-2 rounded-xl border px-3 py-3 text-sm transition ${slug === categorySlug ? "border-blue-400/50 bg-blue-600/25 text-white shadow-lg shadow-blue-950/30" : "border-transparent text-slate-300 hover:border-slate-700 hover:bg-slate-900"}`}>
-                <span className="flex min-w-0 items-center gap-2"><span>{categoryVisuals[slug]?.icon === "aws" ? "☁️" : categoryVisuals[slug]?.icon ?? "⚡"}</span><span className="truncate">{item.name}</span></span>
-                <span className="text-xs text-slate-500">({count})</span>
-              </Link>
-            ))}
-          </nav>
-          <div className="mt-7 rounded-2xl border border-blue-500/20 bg-gradient-to-br from-blue-950/80 to-slate-900 p-4">
-            <p className="font-bold text-white">🚀 Be Ready for Real-World Incidents</p>
-            <p className="mt-2 text-xs leading-5 text-slate-400">Learn · Investigate · Recover · Improve</p>
-          </div>
-        </aside>
-
-        <section className="min-w-0 p-4 sm:p-6 lg:p-7">
+      <div className="mx-auto max-w-[1600px]">
+<section className="min-w-0 p-4 sm:p-6 lg:p-7">
           <nav className="mb-5 flex flex-wrap items-center gap-2 text-xs text-slate-500"><Link href={`/${feature.id}`} className="hover:text-white">Incident Response Center</Link><span>›</span><span className="text-slate-200">{category.name}</span></nav>
           <header className={`relative overflow-hidden rounded-3xl border border-slate-700 bg-gradient-to-br ${visual.tint} via-slate-900 to-[#0b1220] p-6 sm:p-8`}>
             <div className="absolute -right-12 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />

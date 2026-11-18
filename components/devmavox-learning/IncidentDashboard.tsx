@@ -22,32 +22,8 @@ export default function IncidentDashboard({ feature }: { feature: FeatureDefinit
 
   return (
     <main className="min-h-screen bg-[#080d18] text-slate-100">
-      <div className="mx-auto grid max-w-[1800px] lg:grid-cols-[270px_minmax(0,1fr)]">
-        <aside className="border-b border-slate-800 bg-[#0d1525] p-5 lg:min-h-screen lg:border-b-0 lg:border-r">
-          <Link href="/" className="text-xs text-slate-500 hover:text-white">← DevMavox Home</Link>
-          <div className="mt-6 flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-rose-500/30 bg-rose-500/10 text-xl text-rose-300">!</div>
-            <div><p className="font-black tracking-wide text-white">DEVMAVOX</p><p className="text-[10px] uppercase tracking-[.2em] text-rose-300">Incident Response</p></div>
-          </div>
-          <div className="mt-8">
-            <p className="mb-3 text-[10px] font-bold uppercase tracking-[.2em] text-slate-500">Incident domains · 12 areas</p>
-            <nav className="space-y-1">
-              {feature.categories.map((category, index) => {
-                const count = category.subcategories.reduce((n, group) => n + group.topics.length, 0);
-                return <Link key={category.name} href={`/${feature.id}/${slugify(category.name)}`} className="group flex items-center justify-between gap-2 rounded-lg border border-transparent px-3 py-2.5 text-xs text-slate-300 transition hover:border-slate-700 hover:bg-slate-800/80 hover:text-white">
-                  <span className="min-w-0"><span className="mr-2 font-mono text-[10px] text-rose-300">{String(index + 1).padStart(2, "0")}</span>{category.name}</span>
-                  <span className="rounded-md bg-slate-800 px-2 py-1 text-[10px] text-slate-400">{count}</span>
-                </Link>;
-              })}
-            </nav>
-          </div>
-          <div className="mt-8 rounded-xl border border-lime-500/20 bg-lime-500/5 p-3">
-            <p className="text-xs font-bold text-lime-200">Safe training environment</p>
-            <p className="mt-1 text-[11px] leading-5 text-slate-400">Use disposable labs and synthetic data. Never reproduce incidents in production.</p>
-          </div>
-        </aside>
-
-        <section className="min-w-0 p-4 sm:p-6 lg:p-8">
+      <div className="mx-auto max-w-[1800px]">
+<section className="min-w-0 p-4 sm:p-6 lg:p-8">
           <header className="relative overflow-hidden rounded-3xl border border-rose-500/25 bg-gradient-to-br from-[#171a2c] via-[#111b2d] to-[#0b1220] p-6 sm:p-9">
             <div className="pointer-events-none absolute -right-12 -top-16 h-64 w-64 rounded-full bg-rose-500/10 blur-3xl" />
             <div className="relative">
