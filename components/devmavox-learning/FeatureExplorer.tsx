@@ -422,6 +422,19 @@ export default function FeatureExplorer({
     }
 
     if (featureId === "devops-knowledge-base") {
+      const allTopics = feature.categories.flatMap((item) =>
+        item.subcategories.flatMap((sub) =>
+          sub.topics.map((name) => ({
+            name,
+            categorySlug: slugify(item.name),
+            subcategorySlug: slugify(sub.name),
+          }))
+        )
+      );
+      const currentIndex = allTopics.findIndex((item) => item.name === topic);
+      const previousTopic = currentIndex > 0 ? allTopics[currentIndex - 1] : undefined;
+      const nextTopic = currentIndex >= 0 && currentIndex < allTopics.length - 1 ? allTopics[currentIndex + 1] : undefined;
+
       return (
         <DevOpsKnowledgeTopicPage
           featureId={feature.id}
@@ -430,6 +443,8 @@ export default function FeatureExplorer({
           topic={topic}
           categorySlug={slug[0]}
           subcategorySlug={slug[1]}
+          previousTopic={previousTopic}
+          nextTopic={nextTopic}
         />
       );
     }
