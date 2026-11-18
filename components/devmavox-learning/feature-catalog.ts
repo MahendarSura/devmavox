@@ -243,7 +243,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         { "name": "Event & Integration Incidents", "topics": ["Webhook Delivery Failure", "Event Processing Stalled", "Dead-Letter Queue Growth", "Message Schema Mismatch"] }
       ]}
     ]
-  }
+  },
   "monitoring-playground": {
     "id": "monitoring-playground",
     "title": "Monitoring Playground",
