@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ArchitectureTopicPage from "./ArchitectureTopicPage";
+import CommandExplorerWorkspace from "./CommandExplorerWorkspace";
 import { getArchitectureTopic } from "./architecture-topic-content";
 import { notFound } from "next/navigation";
 import {
@@ -257,6 +258,18 @@ export default function FeatureExplorer({
 }) {
   const feature = featureCatalog[featureId];
   if (!feature) notFound();
+
+  if (featureId === "command-explorer" && slug.length === 0) {
+    return <CommandExplorerWorkspace mode="home" />;
+  }
+
+  if (featureId === "command-explorer" && slug.length === 3) {
+    const commandCategory = feature.categories.find((item) => slugify(item.name) === slug[0]);
+    const commandSubcategory = commandCategory?.subcategories.find((item) => slugify(item.name) === slug[1]);
+    const commandTopic = commandSubcategory?.topics.find((item) => slugify(item) === slug[2]);
+    if (!commandCategory || !commandSubcategory || !commandTopic) notFound();
+    return <CommandExplorerWorkspace mode="detail" topic={commandTopic} category={commandCategory.name} subcategory={commandSubcategory.name} />;
+  }
 
   const theme = featureTheme(feature.style);
 
