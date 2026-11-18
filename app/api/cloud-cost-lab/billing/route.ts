@@ -20,6 +20,11 @@ function xml(xmlText: string, tag: string) {
 function amount(block: string) {
   return Number(xml(block, "Amount") || 0);
 }
+function serviceKey(block: string) {
+  const keys = xml(block, "Keys");
+  const member = xml(keys, "member");
+  return member.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+}
 
 export async function GET(request: Request) {
   const accessKey = process.env.AWS_ACCESS_KEY_ID;
@@ -80,7 +85,7 @@ export async function GET(request: Request) {
     const totalBlock = xml(responseText, "Total");
     const groups = Array.from(responseText.matchAll(/<Groups>([\\s\\S]*?)<\\/Groups>/g)).map(match => {
       const block = match[1];
-      return { service: xml(block, "Key"), amount: amount(block), unit: xml(block, "Unit") || "USD" };
+      return { service: serviceKey(block), amount: amount(block), unit: xml(block, "Unit") || "USD" };
     }).sort((a, b) => b.amount - a.amount);
     const periods = Array.from(responseText.matchAll(/<ResultsByTime>([\\s\\S]*?)<\\/ResultsByTime>/g)).map(match => {
       const block = match[1];
