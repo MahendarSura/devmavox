@@ -166,117 +166,58 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
   "incident-simulator": {
     "id": "incident-simulator",
     "title": "Incident Simulator",
-    "description": "Explore production incident scenarios and response workflows.",
+    "description": "Practice realistic production incident response across infrastructure, platforms, applications and security.",
     "style": "incident",
     "label": "Incident Response Center",
     "categories": [
-      {
-        "name": "Linux Incidents",
-        "subcategories": [
-          {
-            "name": "System Resource Incidents",
-            "topics": [
-              "High CPU Usage",
-              "Memory Exhaustion",
-              "Disk Full",
-              "Service Down"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Docker Incidents",
-        "subcategories": [
-          {
-            "name": "Container Incidents",
-            "topics": [
-              "Container Exited",
-              "OOMKilled",
-              "Container Network Failure"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Kubernetes Incidents",
-        "subcategories": [
-          {
-            "name": "Workload Incidents",
-            "topics": [
-              "CrashLoopBackOff",
-              "ImagePullBackOff",
-              "Pending Pods",
-              "Node NotReady"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "CI/CD Incidents",
-        "subcategories": [
-          {
-            "name": "Pipeline Incidents",
-            "topics": [
-              "Jenkins Build Failure",
-              "Agent Offline",
-              "Deployment Failure"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "AWS Incidents",
-        "subcategories": [
-          {
-            "name": "Cloud Infrastructure Incidents",
-            "topics": [
-              "EC2 Unreachable",
-              "EKS Cluster Failure",
-              "IAM Access Denied"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Networking Incidents",
-        "subcategories": [
-          {
-            "name": "Connectivity Incidents",
-            "topics": [
-              "DNS Failure",
-              "Connection Timeout",
-              "Port Unreachable"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Application Incidents",
-        "subcategories": [
-          {
-            "name": "Application Availability",
-            "topics": [
-              "HTTP 500",
-              "HTTP 502",
-              "HTTP 503",
-              "Database Connectivity Failure"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Security Incidents",
-        "subcategories": [
-          {
-            "name": "Security Response",
-            "topics": [
-              "Exposed Secrets",
-              "Unauthorized Access",
-              "Suspicious Activity"
-            ]
-          }
-        ]
-      }
+      { "name": "Linux Incidents", "subcategories": [
+        { "name": "System Resource Incidents", "topics": ["High CPU Usage", "Memory Exhaustion", "Disk Full", "Service Down"] }
+      ]},
+      { "name": "Docker Incidents", "subcategories": [
+        { "name": "Container Incidents", "topics": ["Container Exited", "OOMKilled", "Container Network Failure"] }
+      ]},
+      { "name": "Kubernetes Incidents", "subcategories": [
+        { "name": "Workload Incidents", "topics": ["CrashLoopBackOff", "ImagePullBackOff", "Pending Pods", "Node NotReady"] }
+      ]},
+      { "name": "CI/CD Incidents", "subcategories": [
+        { "name": "Pipeline Incidents", "topics": ["Jenkins Build Failure", "Agent Offline", "Deployment Failure"] }
+      ]},
+      { "name": "AWS Incidents", "subcategories": [
+        { "name": "Cloud Infrastructure Incidents", "topics": ["EC2 Unreachable", "EKS Cluster Failure", "IAM Access Denied"] }
+      ]},
+      { "name": "Networking Incidents", "subcategories": [
+        { "name": "Connectivity Incidents", "topics": ["DNS Failure", "Connection Timeout", "Port Unreachable"] }
+      ]},
+      { "name": "Application Incidents", "subcategories": [
+        { "name": "Application Availability", "topics": ["HTTP 500", "HTTP 502", "HTTP 503", "Database Connectivity Failure"] }
+      ]},
+      { "name": "Security Incidents", "subcategories": [
+        { "name": "Security Response", "topics": ["Exposed Secrets", "Unauthorized Access", "Suspicious Activity"] }
+      ]},
+      { "name": "Database Incidents", "subcategories": [
+        { "name": "Database Availability Incidents", "topics": ["Database Connection Failure", "Database Server Down", "Too Many Connections", "Database Authentication Failure"] },
+        { "name": "Database Performance Incidents", "topics": ["Slow SQL Queries", "High Database CPU", "Lock Contention", "Deadlocks"] },
+        { "name": "Replication & Recovery Incidents", "topics": ["Replication Lag", "Replica Failure", "Database Corruption", "Point-in-Time Recovery Failure"] },
+        { "name": "Database Capacity & Storage Incidents", "topics": ["Database Storage Full", "Connection Pool Exhaustion", "Transaction Log Full", "Backup Job Failure"] }
+      ]},
+      { "name": "Storage & Backup Incidents", "subcategories": [
+        { "name": "Block & File Storage Incidents", "topics": ["EBS Volume Full", "EBS Attachment Failure", "EFS Mount Timeout", "Persistent Volume Unavailable"] },
+        { "name": "Object Storage Incidents", "topics": ["S3 Access Denied", "S3 Upload Failure", "Object Lifecycle Misconfiguration", "Bucket Policy Blocks Application"] },
+        { "name": "Backup & Restore Incidents", "topics": ["Backup Job Failed", "Snapshot Creation Failure", "Restore Validation Failure", "Backup Retention Misconfiguration"] },
+        { "name": "Storage Performance & Integrity", "topics": ["High Disk Latency", "IOPS Throttling", "Filesystem Corruption", "Storage Capacity Exhaustion"] }
+      ]},
+      { "name": "Monitoring & Observability Incidents", "subcategories": [
+        { "name": "Prometheus Incidents", "topics": ["Prometheus Target Down", "Scrape Failure", "High Cardinality", "TSDB Storage Full"] },
+        { "name": "Grafana Incidents", "topics": ["Dashboard Not Loading", "Data Source Connection Failure", "Missing Metrics", "Dashboard Query Timeout"] },
+        { "name": "Alerting Incidents", "topics": ["Alert Rule Evaluation Failure", "Alertmanager Notification Failure", "Duplicate Alert Storm", "Silenced Critical Alert"] },
+        { "name": "Logging & Tracing Incidents", "topics": ["Log Ingestion Failure", "Elasticsearch Cluster Red", "Missing Application Logs", "Distributed Trace Gaps"] }
+      ]},
+      { "name": "Messaging & Integration Incidents", "subcategories": [
+        { "name": "Kafka Incidents", "topics": ["Kafka Broker Unavailable", "Consumer Lag Increasing", "Under-Replicated Partitions", "Producer Publish Failure"] },
+        { "name": "RabbitMQ Incidents", "topics": ["RabbitMQ Node Down", "Queue Backlog Growing", "Unacked Messages Accumulating", "Publisher Confirm Failure"] },
+        { "name": "Redis Incidents", "topics": ["Redis Connection Failure", "Redis Memory Limit Reached", "Cache Eviction Storm", "Redis Replication Failure"] },
+        { "name": "Event & Integration Incidents", "topics": ["Webhook Delivery Failure", "Event Processing Stalled", "Dead-Letter Queue Growth", "Message Schema Mismatch"] }
+      ]}
     ]
   },
   "monitoring-playground": {

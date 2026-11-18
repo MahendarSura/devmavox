@@ -2,6 +2,11 @@ import YamlConfigWorkbench from "./YamlConfigWorkbench";
 import Link from "next/link";
 import ArchitectureTopicPage from "./ArchitectureTopicPage";
 import { getArchitectureTopic } from "./architecture-topic-content";
+import IncidentTopicPage from "./IncidentTopicPage";
+import IncidentCategoryPage from "./IncidentCategoryPage";
+import IncidentDashboard from "./IncidentDashboard";
+import IncidentSubcategoryPage from "./IncidentSubcategoryPage";
+import { getIncidentLesson } from "./incident-topic-content";
 import { notFound } from "next/navigation";
 import {
   featureCatalog,
@@ -265,6 +270,10 @@ export default function FeatureExplorer({
 
   const theme = featureTheme(feature.style);
 
+  if (slug.length === 0 && featureId === "incident-simulator") {
+    return <IncidentDashboard feature={feature} />;
+  }
+
   if (slug.length === 0) {
     const totalTopics = feature.categories.reduce((sum, category) => sum + topicCount(category), 0);
 
@@ -323,6 +332,10 @@ export default function FeatureExplorer({
   if (!category) notFound();
 
   if (slug.length === 1) {
+    if (featureId === "incident-simulator") {
+      return <IncidentCategoryPage feature={feature} category={category} />;
+    }
+
     return (
       <PageFrame feature={feature} eyebrow="Category Explorer" title={category.name} description={`Explore the ${category.name} learning areas and open a subcategory to view its individual topics.`}>
         <Breadcrumbs feature={feature} items={[{ label: category.name }]} />
@@ -341,6 +354,10 @@ export default function FeatureExplorer({
 
   const subcategory = category.subcategories.find((item) => slugify(item.name) === slug[1]);
   if (!subcategory) notFound();
+
+  if (slug.length === 2 && featureId === "incident-simulator") {
+    return <IncidentSubcategoryPage feature={feature} category={category} subcategory={subcategory} />;
+  }
 
   if (slug.length === 2) {
     return (
@@ -385,6 +402,21 @@ export default function FeatureExplorer({
           />
         );
       }
+    }
+
+    if (featureId === "incident-simulator") {
+      const incidentContent = getIncidentLesson(slug[2], topic, category.name, subcategory.name);
+
+      return (
+        <IncidentTopicPage
+          content={incidentContent}
+          featureId={feature.id}
+          categoryName={category.name}
+          subcategoryName={subcategory.name}
+          categorySlug={slug[0]}
+          subcategorySlug={slug[1]}
+        />
+      );
     }
 
     return (
