@@ -399,6 +399,44 @@ const topicArgs: Record<string, string> = {
 };
 
 const seeds: Record<string, GuideSeed> = {
+  "docker pull": {
+    base: "docker",
+    args: "pull <image:tag>",
+    purpose: "Download an image and its required layers from the configured registry into the local Docker image store. It does not create or start a container and does not report container health.",
+    when: "Use docker pull when you need to make a specific image tag or platform available locally before creating or updating a container.",
+    flags: [
+      { flag: "--all-tags", meaning: "Download all tagged images in the repository. Use only when you intentionally need every tag." },
+      { flag: "--platform <platform>", meaning: "Request a specific platform variant, such as linux/amd64 or linux/arm64." },
+      { flag: "--quiet", meaning: "Suppress progress output and print image identifiers." }
+    ],
+    examples: [
+      { label: "Pull a pinned image tag", command: "docker pull nginx:1.27" },
+      { label: "Pull a specific platform", command: "docker pull --platform linux/amd64 nginx:1.27" }
+    ],
+    example: "docker pull nginx:1.27",
+    output: "Docker reports the registry/repository and tag, checks or downloads the image layers, and finishes with a downloaded image digest or image ID. If the image and layers are already present, Docker may report that the image is up to date. No container ID, port mapping, running state or health status is produced by docker pull.",
+    next: ["docker image ls nginx", "docker image inspect nginx:1.27", "docker image inspect --format '{{.Id}} {{.Os}}/{{.Architecture}}' nginx:1.27"],
+    task: "In a disposable lab, pull nginx:1.27. Then list the local image and inspect its repository, tag, image ID, OS and architecture. Explain why a successful pull does not mean an Nginx container is running.",
+    verify: "Confirm nginx:1.27 appears in docker image ls and that docker image inspect nginx:1.27 returns the expected image metadata. Record the image ID and digest when available. Do not use docker ps as proof that the image was downloaded; docker ps lists containers.",
+    safety: "Confirm the Docker context and trusted registry before pulling. Prefer an explicit version tag or digest instead of relying on latest. Pulling downloads image data but does not start a container; review image provenance and scan the image before production use.",
+    workflow: [
+      "Confirm the active Docker context with docker context show.",
+      "Choose the trusted registry, repository, exact tag or digest, and target platform.",
+      "Run docker pull with the selected image reference.",
+      "Review the reported layer-download status and final digest or image ID.",
+      "Run docker image ls to confirm the requested repository and tag are present locally.",
+      "Run docker image inspect to verify OS, architecture, digest and metadata.",
+      "Only after image verification, create or update a container through a separately reviewed workflow."
+    ],
+    pitfalls: [
+      "Assuming docker pull creates or starts a container; it only downloads or confirms image content.",
+      "Using latest when a reproducible, pinned version or digest is required.",
+      "Assuming a successful pull proves the application is healthy.",
+      "Ignoring platform differences between the image and target host.",
+      "Pulling from an untrusted registry or overlooking image provenance."
+    ],
+    level: "Intermediate"
+  },
   "crashloopbackoff": {
     base: "kubectl",
     args: "get pods -n <namespace> -o wide",
@@ -701,7 +739,7 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     "daily repository workflow":"inspect repository state, stage changes, create commits and synchronize with remotes",
     "branches, tags and collaboration":"create, switch, merge, rebase and share branches and tags with remote repositories",
     "undo, recovery and inspection":"trace authorship and history, compare revisions, and recover commits or file changes safely",
-    "images and containers":"inspect image metadata, download image layers from registries, and inspect container lifecycle state; the exact operation depends on the selected Docker subcommand",
+    "images and containers":"inspect local image metadata and container state; image download, image inspection and container lifecycle are separate Docker operations",
     "networks, volumes and compose":"inspect container ports, networks and volumes, and validate or operate Compose application stacks",
     "registry, build and troubleshooting":"authenticate to registries, tag and transfer images, inspect storage usage and review daemon events",
     "cluster, nodes and namespaces":"inspect Kubernetes contexts, API resources, namespaces, permissions and node health",
@@ -795,7 +833,7 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     "daily repository workflow":"Expect branch name, staged and unstaged paths, untracked files, commit IDs and remote synchronization state. Review the diff before committing or pushing.",
     "branches, tags and collaboration":"Expect local and remote refs, tracking relationships, commit ancestry, merge conflicts or worktree paths. Verify the destination branch before integrating changes.",
     "undo, recovery and inspection":"Expect commit history, reflog references, file diffs, object integrity or a proposed recovery target. Preserve a backup and inspect the exact revision before reset or cleanup.",
-    "images and containers":"For image pull/list/inspect commands, expect repository, tag, image ID, digest, size or layer-download status. For container commands, expect container IDs, lifecycle state, exit codes, ports and health metadata. Do not interpret image-download output as container health.",
+    "images and containers":"Inspect only the result type produced by the selected Docker command: image commands return repository, tag, image ID, digest, size or layer information; container commands return container IDs, lifecycle state, exit codes, ports or health metadata. Never infer container health from an image operation.",
     "networks, volumes and compose":"Expect network endpoints, attached containers, volume mounts, Compose service configuration and port mappings. Verify persistent data and dependencies before taking a stack down.",
     "registry, build and troubleshooting":"Expect image tags, registry authentication status, pushed digests, layer history, storage usage and daemon events. Verify the destination repository and immutable digest.",
     "cluster, nodes and namespaces":"Expect cluster endpoint and version, current context, namespace names, RBAC authorization and node readiness conditions. Confirm that the selected context is the intended cluster.",
