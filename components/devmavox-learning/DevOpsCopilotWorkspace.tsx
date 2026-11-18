@@ -28,11 +28,25 @@ export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature
   const [question, setQuestion] = useState("");
   const [context, setContext] = useState("");
   const [notice, setNotice] = useState(false);
+  const [answer, setAnswer] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const category = feature.categories.find((item) => slugify(item.name) === slug[0]);
   const subcategory = category?.subcategories.find((item) => slugify(item.name) === slug[1]);
   const topic = subcategory?.topics.find((item) => slugify(item) === slug[2]);
   const topicCount = useMemo(() => feature.categories.reduce((n, c) => n + c.subcategories.reduce((m, s) => m + s.topics.length, 0), 0), [feature]);
   const root = "/devops-ai-assistant";
+  async function submitRequest() {
+    if (!question.trim() || loading) return;
+    setLoading(true); setError(""); setAnswer(""); setNotice(false);
+    try {
+      const response = await fetch("/api/devops-chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode, question, context, category: category?.name, topic }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "ChatGPT request failed.");
+      setAnswer(data.answer);
+    } catch (err) { setError(err instanceof Error ? err.message : "Unable to reach ChatGPT."); }
+    finally { setLoading(false); }
+  }
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#111411] text-[#f5f1e7]">
@@ -114,17 +128,18 @@ export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature
                 <textarea value={question} onChange={e=>setQuestion(e.target.value)} rows={6} placeholder="Describe the issue, paste a command, configuration or error message..." className="w-full resize-y rounded-xl border border-white/10 bg-[#0d110e] p-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#c7ff43]/50" />
                 <label className="mb-2 mt-5 block text-xs font-semibold text-white/65">Environment context (optional)</label>
                 <input value={context} onChange={e=>setContext(e.target.value)} placeholder="e.g. EKS 1.30 · Ubuntu 24.04 · Production (read-only analysis)" className="w-full rounded-xl border border-white/10 bg-[#0d110e] p-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#c7ff43]/50" />
-                <button onClick={()=>setNotice(true)} disabled={!question.trim()} className="mt-5 rounded-xl bg-[#c7ff43] px-5 py-3 text-xs font-black text-[#151a12] disabled:cursor-not-allowed disabled:opacity-40">PREPARE REQUEST ↗</button>
-                {notice && <p className="mt-4 rounded-xl border border-[#ff896d]/25 bg-[#ff896d]/10 p-4 text-xs leading-6 text-[#ffc0b1]">ChatGPT is not connected yet. Your request has not been sent and no AI response was generated. Configure a server-side OpenAI API integration to enable live ChatGPT responses.</p>}
+                <button onClick={submitRequest} disabled={!question.trim() || loading} className="mt-5 rounded-xl bg-[#c7ff43] px-5 py-3 text-xs font-black text-[#151a12] disabled:cursor-not-allowed disabled:opacity-40">{loading ? "CHATGPT IS THINKING…" : "ASK CHATGPT ↗"}</button>
+                {error && <p role="alert" className="mt-4 rounded-xl border border-[#ff896d]/25 bg-[#ff896d]/10 p-4 text-xs leading-6 text-[#ffc0b1]">{error}</p>}
+                {answer && <div className="mt-6 rounded-xl border border-[#c7ff43]/25 bg-[#0d110e] p-5"><p className="mb-3 font-mono text-[10px] uppercase tracking-[.18em] text-[#c7ff43]">ChatGPT response</p><div className="whitespace-pre-wrap text-sm leading-7 text-white/80">{answer}</div></div>}
               </div>
               <aside className="space-y-3">
-                <div className="rounded-2xl border border-[#ff896d]/25 bg-[#ff896d]/[.06] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#ff9a83]">Connection status</p><p className="mt-3 text-lg font-bold">OpenAI API not connected</p><p className="mt-2 text-xs leading-5 text-white/45">This workspace UI is ready for backend integration. No credentials are stored in the browser.</p></div>
+                <div className="rounded-2xl border border-[#ff896d]/25 bg-[#ff896d]/[.06] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#ff9a83]">Connection status</p><p className="mt-3 text-lg font-bold">OpenAI API not connected</p><p className="mt-2 text-xs leading-5 text-white/45">Requests use a server-side endpoint. Add OPENAI_API_KEY in Vercel environment variables to activate ChatGPT. No key is exposed in the browser.</p></div>
                 <div className="rounded-2xl border border-white/10 bg-[#1a201b] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#c7ff43]">Safe-use checklist</p><ul className="mt-3 space-y-2 text-xs leading-5 text-white/55"><li>• Remove passwords and tokens</li><li>• Redact customer data</li><li>• Verify commands before execution</li><li>• Require human approval for production changes</li></ul></div>
               </aside>
             </section>
           </>
         )}
-        <footer className="mt-14 border-t border-white/10 pt-5 text-[10px] tracking-wide text-white/30">DEVMAVOX / ENGINEERING COPILOT · Human-reviewed operations only</footer>
+        <footer className="mt-14 border-t border-white/10 pt-5 text-[10px] tracking-wide text-white/30">DEVMAVOX / CHATGPT DEVOPS ASSISTANT · Human-reviewed operations only</footer>
       </div>
     </main>
   );
