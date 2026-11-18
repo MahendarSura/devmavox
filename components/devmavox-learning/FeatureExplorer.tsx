@@ -4,7 +4,7 @@ import ArchitectureTopicPage from "./ArchitectureTopicPage";
 import { getArchitectureTopic } from "./architecture-topic-content";
 import IncidentTopicPage from "./IncidentTopicPage";
 import IncidentCategoryPage from "./IncidentCategoryPage";
-import { incidentLessons } from "./incident-topic-content";
+import { getIncidentLesson } from "./incident-topic-content";
 import { notFound } from "next/navigation";
 import {
   featureCatalog,
@@ -395,8 +395,7 @@ export default function FeatureExplorer({
     }
 
     if (featureId === "incident-simulator") {
-      const incidentContent = incidentLessons[slug[2]];
-      if (!incidentContent) notFound();
+      const incidentContent = getIncidentLesson(slug[2], topic, category.name, subcategory.name);
 
       return (
         <IncidentTopicPage
