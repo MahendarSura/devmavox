@@ -101,6 +101,7 @@ const topicArgs: Record<string, string> = {
   "helm dependency": "dependency list <chart>",
   "helm package": "package <chart-directory>",
   "helm test": "test <release> --namespace <namespace>",
+  "docker pull": "pull <image:tag>",
   "docker compose logs": "compose logs --tail=100",
   "docker port": "port <container>",
   "docker system df": "system df",
@@ -590,11 +591,10 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     base = matchedPrefix;
     const topicSubcommand = topic.slice(matchedPrefix.length).trim();
     const mappedArgs = topicArgs[topic];
-    // A mapping may contain a complete subcommand or only its required target.
-    // Preserve the topic's command verb in either case.
-    args = mappedArgs
-      ? (mappedArgs.toLowerCase().startsWith(topicSubcommand.toLowerCase()) ? mappedArgs : topicSubcommand + " " + mappedArgs).trim()
-      : topicSubcommand;
+    // topicArgs entries are complete argument strings for the executable.
+    // Keep topic labels (for example "terraform module commands") separate
+    // from the actual CLI syntax instead of concatenating descriptive words.
+    args = mappedArgs || topicSubcommand;
   } else if (topicArgs[topic]) {
     args = topicArgs[topic];
   }
