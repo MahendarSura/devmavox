@@ -153,9 +153,14 @@ export default function CommandExplorerWorkspace({
 
   useEffect(() => {
     try {
-      setFavorites(JSON.parse(localStorage.getItem("devmavox-command-favorites") || "[]"));
-      setHistory(JSON.parse(localStorage.getItem("devmavox-command-history") || "[]"));
-    } catch { setFavorites([]); setHistory([]); }
+      const savedFavorites: unknown = JSON.parse(localStorage.getItem("devmavox-command-favorites") || "[]");
+      const savedHistory: unknown = JSON.parse(localStorage.getItem("devmavox-command-history") || "[]");
+      setFavorites(Array.isArray(savedFavorites) ? savedFavorites.filter((item): item is string => typeof item === "string").slice(0, 100) : []);
+      setHistory(Array.isArray(savedHistory) ? savedHistory.filter((item): item is string => typeof item === "string").slice(0, 12) : []);
+    } catch {
+      setFavorites([]);
+      setHistory([]);
+    }
   }, []);
 
   const matches = useMemo(() => {
