@@ -598,7 +598,7 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
   else if (topic.startsWith("mvn ")) { base="mvn"; args=topic.slice(4); }
   else if (topic.startsWith("gradle ")) { base="gradle"; args=topic.slice(7); }
   else if (topic.startsWith("ip ")) { base="ip"; args=topic.slice(3); }
-  if (topicArgs[topic]) args = topicArgs[topic];\n  if (!args && base !== "pwd" && base !== "cd") args="--help";
+  if (topicArgs[topic]) args = topicArgs[topic];\n  const noArgumentCommands = new Set(["pwd", "cd", "mount", "uptime", "nproc", "lscpu", "startup.sh", "shutdown.sh", "version.sh"]);\n  if (!args && !noArgumentCommands.has(base)) args="--help";
 
   const purposeBySubcategory: Record<string,string> = {
     "navigation and file operations":"navigate directories and inspect file metadata or filesystem paths",
