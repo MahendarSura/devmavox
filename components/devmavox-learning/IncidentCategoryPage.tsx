@@ -112,7 +112,7 @@ export default function IncidentCategoryPage({ feature, category }: { feature: F
               <div className="mt-5 rounded-xl border border-lime-500/20 bg-lime-500/10 p-3 text-xs leading-5 text-lime-200">🛡 Simulated learning environment · No production changes</div>
             </aside>
           </div>
-          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 rounded-xl border border-slate-700 bg-slate-900/80 px-4 py-4 text-xs text-slate-300"><strong className="text-amber-300">💡 What you'll practice:</strong><span>› Terminal evidence</span><span>▥ Root-cause analysis</span><span>↶ Rollback decisions</span><span>▣ Incident communication</span></div>
+          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 rounded-xl border border-slate-700 bg-slate-900/80 px-4 py-4 text-xs text-slate-300"><strong className="text-amber-300">💡 What you&apos;ll practice:</strong><span>› Terminal evidence</span><span>▥ Root-cause analysis</span><span>↶ Rollback decisions</span><span>▣ Incident communication</span></div>
           <footer className="mt-8 border-t border-slate-800 pt-5 text-xs text-slate-500">DevMavox · Practical DevOps Learning</footer>
         </section>
       </div>
