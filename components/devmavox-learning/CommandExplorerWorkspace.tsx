@@ -210,7 +210,25 @@ export default function CommandExplorerWorkspace({
     const normalized = value.toLowerCase();
     const simulated = (body: string) => body + "\n\nSIMULATED OUTPUT — teaching example only; no live command was executed.";
     let result = "";
-    if (/^kubectl\s+get\s+pods/.test(normalized)) result = simulated("NAMESPACE   NAME             READY   STATUS    RESTARTS   AGE\nproduction  api-7d9f         1/1     Running   0          18m\nproduction  worker-5c8       0/1     Pending   0          4m");
+    const mutationRules: { pattern: RegExp; reason: string }[] = [
+      { pattern: /^kubectl\s+(apply|create|delete|replace|patch|scale|drain|cordon|uncordon|taint|label|annotate|set\s+|rollout\s+(restart|undo)\b)/, reason: "Kubernetes resources can be changed or removed." },
+      { pattern: /^docker\s+(run|rm|rmi|stop|start|restart|kill|push|pull|build|exec)\b|^docker\s+compose\s+(up|down|start|stop|restart)\b/, reason: "Docker containers, images or application stacks can be changed." },
+      { pattern: /^git\s+(add|commit|push|pull|merge|rebase|reset|restore|clean|switch|checkout|cherry-pick)\b/, reason: "Git repository or remote history can be changed." },
+      { pattern: /^aws\s+(ec2\s+(run-instances|start-instances|stop-instances|terminate-instances|reboot-instances|modify-|create-|delete-)|s3\s+(cp|mv|rm|sync)\b|iam\s+(create-|delete-|attach-|detach-|put-|update-)|eks\s+(create-|delete-|update-))/, reason: "AWS resources or data can be changed." },
+      { pattern: /^terraform\s+(apply|destroy|import|taint|untaint|force-unlock)\b/, reason: "Terraform can modify infrastructure or state." },
+      { pattern: /^ansible-playbook\s+(?!.*--(syntax-check|list-hosts|list-tasks|list-tags)\b)/, reason: "Ansible playbooks may change remote hosts, even when a task appears routine." },
+      { pattern: /^helm\s+(install|upgrade|uninstall|rollback)\b|^argocd\s+app\s+(sync|rollback|terminate-op)\b/, reason: "Helm or Argo CD can change live application resources." },
+      { pattern: /^(gh\s+(run\s+(rerun|cancel)|workflow\s+run)|glab\s+pipeline\s+(run|cancel|retry)|jenkins\s+(build|safe-restart|reload-configuration))\b/, reason: "CI/CD operations can trigger builds, deployments or controller changes." },
+      { pattern: /^(systemctl|service)\s+(start|stop|restart|reload|enable|disable)\b|^(kill|killall|pkill)\s/, reason: "This can interrupt a process or service." },
+      { pattern: /^(rm|rmdir|useradd|usermod|userdel|passwd|chmod|chown)\s/, reason: "This can delete data or change host access and permissions." },
+      { pattern: /^redis-cli\s+(FLUSHALL|FLUSHDB|DEL|UNLINK|SET|MSET|CONFIG|SHUTDOWN|REPLICAOF)\b/i, reason: "This Redis command can change or delete stored data or server configuration." },
+      { pattern: /^curl\b.*(?:--request\s+(POST|PUT|PATCH|DELETE)|-[X]\s*(POST|PUT|PATCH|DELETE))\b/i, reason: "This HTTP request may modify a remote service or upload data." },
+      { pattern: /^cosign\s+sign\b|^certbot\s+(renew|delete)\b|^amtool\s+silence\s+add\b/i, reason: "This operation can publish signatures, renew/delete certificates or alter alert silences." },
+    ];
+    const blockedMutation = mutationRules.find((rule) => rule.pattern.test(value));
+    if (blockedMutation) {
+      result = "MUTATING COMMAND NOT SIMULATED\\n" + blockedMutation.reason + "\\n\\nNo command was executed. Use a disposable lab, verify the target and impact, and obtain the required approval before running this command in a real environment.\\n\\nSIMULATOR LIMITATION — this workspace never connects to a shell, server, cloud account or cluster.";
+    } else if (/^kubectl\\s+get\\s+pods/.test(normalized)) result = simulated("NAMESPACE   NAME             READY   STATUS    RESTARTS   AGE\nproduction  api-7d9f         1/1     Running   0          18m\nproduction  worker-5c8       0/1     Pending   0          4m");
     else if (/^kubectl\s+(get nodes|get node)/.test(normalized)) result = simulated("NAME       STATUS   ROLES           VERSION\nworker-1   Ready    control-plane   v1.31.4\nworker-2   Ready    <none>          v1.31.4");
     else if (/^kubectl\s+(get|describe|logs|events|top|rollout|auth|config|cluster-info)/.test(normalized)) result = simulated("Kubernetes resource response preview\nnamespace: use the namespace supplied in the command\nstatus: sample data only\nNext: inspect Events, resource conditions and application logs.");
     else if (/^docker\s+(ps|images|logs|inspect|stats|network|volume|compose|events|history|system)/.test(normalized)) result = simulated("CONTAINER ID   IMAGE        STATUS          NAMES\n9abc123       nginx:1.27   Up 12 minutes   web\n\nUse inspect and logs to correlate container state with application errors.");
