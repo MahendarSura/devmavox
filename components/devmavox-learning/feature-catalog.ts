@@ -220,6 +220,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
       ]}
     ]
   },
+  // Keep the separator above: monitoring-playground is a sibling catalog entry.
   "monitoring-playground": {
     "id": "monitoring-playground",
     "title": "Monitoring Playground",
