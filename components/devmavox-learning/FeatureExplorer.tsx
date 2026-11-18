@@ -1,4 +1,5 @@
 import YamlConfigWorkbench from "./YamlConfigWorkbench";
+import DevOpsKnowledgeHome from "./DevOpsKnowledgeHome";
 import Link from "next/link";
 import ArchitectureTopicPage from "./ArchitectureTopicPage";
 import { getArchitectureTopic } from "./architecture-topic-content";
@@ -282,6 +283,10 @@ export default function FeatureExplorer({
 
   if (slug.length === 0 && featureId === "incident-simulator") {
     return <IncidentDashboard feature={feature} />;
+  }
+
+  if (slug.length === 0 && featureId === "devops-knowledge-base") {
+    return <DevOpsKnowledgeHome feature={feature} />;
   }
 
   if (slug.length === 0) {
