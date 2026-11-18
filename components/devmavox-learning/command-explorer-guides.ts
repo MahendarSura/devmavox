@@ -332,7 +332,7 @@ const topicAliases: Record<string,string> = {
   "Tomcat logs":"journalctl -u tomcat -n 100 --no-pager",
   "Tomcat thread dump":"jcmd <java-pid> Thread.print",
   "WAR deployment checks":"curl -fsS -I <application-url>/health",
-  "CNI diagnostics":"kubectl get pods -n kube-system -o wide",
+  "Tomcat service status":"systemctl status tomcat --no-pager",\n  "Tomcat logs":"journalctl -u tomcat -n 100 --no-pager",\n  "Tomcat thread dump":"jcmd <java-pid> Thread.print",\n  "WAR deployment checks":"curl -fsS -I <application-url>/health",\n  "CNI diagnostics":"kubectl get pods -n kube-system -o wide",
   "Jenkins agent diagnostics":"curl -fsS <jenkins-url>/computer/api/json",
   "GitLab CI lint":"glab ci lint .gitlab-ci.yml",
   "GitLab artifacts and trace":"glab job trace <job-id>",
@@ -343,7 +343,7 @@ const topicAliases: Record<string,string> = {
   "TLS certificate checks":"openssl s_client -connect <host>:443 -servername <host>",
   "curl HTTP checks":"curl -sS -D - -o /dev/null <url>",
   "Jenkins agent diagnostics":"curl -fsS <jenkins-url>/computer/api/json",
-  "Jenkins pipeline replay":"Use Jenkins UI Replay only after reviewing the original build and pipeline changes",
+  "Jenkins pipeline replay":"curl -fsS <jenkins-url>/job/<job>/<build>/api/json",
   "jenkins CLI":"java -jar jenkins-cli.jar -s <jenkins-url> help",
   "journal log filtering":"journalctl -p warning..alert --since '1 hour ago' --no-pager",
   "process resource diagnostics":"ps -eo pid,ppid,%cpu,%mem,stat,etime,cmd --sort=-%cpu | head",
@@ -447,7 +447,7 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
   else if (topic.startsWith("mvn ")) { base="mvn"; args=topic.slice(4); }
   else if (topic.startsWith("gradle ")) { base="gradle"; args=topic.slice(7); }
   else if (topic.startsWith("ip ")) { base="ip"; args=topic.slice(3); }
-  if (!args && base !== "pwd" && base !== "cd") args="--help";
+  if (topicArgs[topic]) args = topicArgs[topic];\n  if (!args && base !== "pwd" && base !== "cd") args="--help";
 
   const purposeBySubcategory: Record<string,string> = {
     "navigation and file operations":"navigate directories and inspect file metadata or filesystem paths",
