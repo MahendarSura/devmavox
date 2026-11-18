@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable react-hooks/set-state-in-effect -- Browser storage hydration and route-specific draft synchronization. */
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -52,7 +53,6 @@ const accents:Record<string,string>={orange:"text-orange-300",green:"text-green-
 type Data={fullName:string;role:string;location:string;email:string;summary:string;skills:string;project:string;github:string;achievement:string;caseStudy:string;topicDrafts:Record<string,string>};
 const blank:Data={fullName:"",role:"DevOps Engineer",location:"",email:"",summary:"",skills:"",project:"",github:"",achievement:"",caseStudy:"",topicDrafts:{}};
 function topicKey(category:string,name:string){return slugify(category)+":"+slugify(name);}
-function topicField(name:string):keyof Data {if(name.includes("Summary"))return "summary";if(name.includes("Skills"))return "skills";if(name.includes("Project")||name==="Architecture"||name==="Responsibilities")return "project";if(name.includes("GitHub")||name==="Screenshots"||name.includes("Diagrams")||name==="Documentation")return "github";if(name==="Certifications"||name.includes("Contributions"))return "achievement";return "caseStudy";}
 function guideFor(category:Category,topic:Topic){
  const c=category.name,t=topic.name;
  const standards=[
