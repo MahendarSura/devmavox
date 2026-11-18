@@ -565,7 +565,7 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
   const aliasFirstIsCommand = Boolean(aliasFirst && (known.test(aliasFirst) || prefixes.includes(aliasFirst)));
   const aliasIsArguments = Boolean(alias && executable && !aliasFirstIsCommand);
   const raw = alias || topic;
-  const first = raw.trim().split(/\\s+/)[0] || "help";
+  const first = raw.trim().split(/\s+/)[0] || "help";
 
   const defaults: Record<string,string> = {
     "linux":"ls", "linux administration":"systemctl", "networking":"ip", "git":"git",
