@@ -1,3 +1,4 @@
+import { dailyChallengeCategories } from "./daily-challenge-catalog";
 export type FeatureTopic = string;
 
 export type FeatureSubcategory = {
@@ -524,152 +525,10 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
   "daily-devops-challenge": {
     "id": "daily-devops-challenge",
     "title": "Daily DevOps Challenge",
-    "description": "Explore practical challenges across tools and production scenarios.",
+    "description": "Build practical DevOps skills through daily tool tasks, guided troubleshooting and production-grade scenarios.",
     "style": "challenge",
     "label": "Challenge Arena",
-    "categories": [
-      {
-        "name": "Linux",
-        "subcategories": [
-          {
-            "name": "Linux Challenges",
-            "topics": [
-              "File Operations",
-              "Permissions",
-              "Process Management"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Git",
-        "subcategories": [
-          {
-            "name": "Git Challenges",
-            "topics": [
-              "Branching",
-              "Merging",
-              "Recovery"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Docker",
-        "subcategories": [
-          {
-            "name": "Container Challenges",
-            "topics": [
-              "Images",
-              "Containers",
-              "Networking"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Kubernetes",
-        "subcategories": [
-          {
-            "name": "Kubernetes Challenges",
-            "topics": [
-              "Pods",
-              "Deployments",
-              "Services"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "AWS",
-        "subcategories": [
-          {
-            "name": "Cloud Challenges",
-            "topics": [
-              "EC2",
-              "S3",
-              "IAM",
-              "Networking"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "CI/CD",
-        "subcategories": [
-          {
-            "name": "Pipeline Challenges",
-            "topics": [
-              "Pipeline Design",
-              "Build",
-              "Deployment"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "IaC",
-        "subcategories": [
-          {
-            "name": "Automation Challenges",
-            "topics": [
-              "Terraform",
-              "Ansible"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Monitoring",
-        "subcategories": [
-          {
-            "name": "Observability Challenges",
-            "topics": [
-              "PromQL",
-              "Alert Rules"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Security",
-        "subcategories": [
-          {
-            "name": "Security Challenges",
-            "topics": [
-              "IAM",
-              "Secrets",
-              "Image Security"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Production",
-        "subcategories": [
-          {
-            "name": "Production Challenges",
-            "topics": [
-              "Incident Response",
-              "Architecture",
-              "Troubleshooting"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Interview",
-        "subcategories": [
-          {
-            "name": "Interview Challenges",
-            "topics": [
-              "Technical Concepts",
-              "Production Scenarios"
-            ]
-          }
-        ]
-      }
-    ]
+    "categories": dailyChallengeCategories
   },
   "devops-career-center": {
     "id": "devops-career-center",
