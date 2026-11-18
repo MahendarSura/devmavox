@@ -691,105 +691,97 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
   "devops-ai-assistant": {
     "id": "devops-ai-assistant",
     "title": "DevOps AI Assistant",
-    "description": "Explore assistant capabilities for learning, commands and engineering.",
+    "description": "An engineering command center for DevOps questions, command guidance, configuration reviews and production decision support.",
     "style": "assistant",
-    "label": "DevOps Assistant Workspace",
+    "label": "DevOps ChatGPT Command Center",
     "categories": [
       {
-        "name": "Learning Assistant",
+        "name": "AI Learning ChatGPT",
         "subcategories": [
           {
-            "name": "Concept Support",
-            "topics": [
-              "Concept Explanation",
-              "Technology Comparisons"
-            ]
+            "name": "Concept Coaching",
+            "topics": ["Explain a DevOps Concept", "Telugu-English Learning", "Compare Technologies", "Learning Path Guidance"]
           }
         ]
       },
       {
-        "name": "Command Assistant",
+        "name": "Command ChatGPT",
         "subcategories": [
           {
-            "name": "Command Support",
-            "topics": [
-              "Command Explanation",
-              "Command Generation"
-            ]
+            "name": "Command Builder",
+            "topics": ["Linux Command Help", "Git Command Guidance", "Docker Command Builder", "kubectl and AWS CLI Help"]
           }
         ]
       },
       {
-        "name": "Configuration Assistant",
+        "name": "Configuration ChatGPT",
         "subcategories": [
           {
-            "name": "Configuration Support",
-            "topics": [
-              "YAML Assistance",
-              "Dockerfile Assistance",
-              "Jenkinsfile Assistance"
-            ]
+            "name": "Configuration Review",
+            "topics": ["YAML Review", "Kubernetes Manifest Review", "Dockerfile Review", "Terraform Configuration Review"]
           }
         ]
       },
       {
-        "name": "Infrastructure Assistant",
+        "name": "Cloud & Infrastructure ChatGPT",
         "subcategories": [
           {
-            "name": "IaC Support",
-            "topics": [
-              "Terraform Assistance",
-              "Ansible Assistance"
-            ]
+            "name": "Cloud Engineering",
+            "topics": ["AWS Architecture Guidance", "EC2 and Networking Guidance", "IAM Policy Review", "Infrastructure Recommendations"]
           }
         ]
       },
       {
-        "name": "Kubernetes Assistant",
+        "name": "Kubernetes ChatGPT",
         "subcategories": [
           {
-            "name": "Kubernetes Support",
-            "topics": [
-              "Manifest Review",
-              "Resource Explanation"
-            ]
+            "name": "Cluster Operations",
+            "topics": ["Pod Diagnostics", "Deployment Analysis", "Service and Ingress Review", "Cluster Health Guidance"]
           }
         ]
       },
       {
-        "name": "Troubleshooting Assistant",
+        "name": "Troubleshooting ChatGPT",
         "subcategories": [
           {
-            "name": "Diagnostic Support",
-            "topics": [
-              "Log Analysis",
-              "Error Explanation",
-              "RCA Suggestions"
-            ]
+            "name": "Diagnostic Workbench",
+            "topics": ["Error Analysis", "Log Interpretation", "Root Cause Hypotheses", "Recovery Plan Review"]
           }
         ]
       },
       {
-        "name": "Architecture Assistant",
+        "name": "CI/CD & GitOps ChatGPT",
         "subcategories": [
           {
-            "name": "Design Support",
-            "topics": [
-              "Architecture Suggestions",
-              "Component Selection"
-            ]
+            "name": "Delivery Engineering",
+            "topics": ["Pipeline Design Review", "Jenkinsfile Review", "GitHub Actions Review", "Argo CD Sync Guidance"]
           }
         ]
       },
       {
-        "name": "Interview Assistant",
+        "name": "Architecture ChatGPT",
+        "subcategories": [
+          {
+            "name": "System Design",
+            "topics": ["Architecture Recommendations", "High Availability Review", "Scalability Assessment", "Reliability and Cost Trade-offs"]
+          }
+        ]
+      },
+      {
+        "name": "Interview ChatGPT",
         "subcategories": [
           {
             "name": "Interview Practice",
-            "topics": [
-              "Mock Questions",
-              "Answer Feedback"
-            ]
+            "topics": ["Technical Mock Interview", "Production Scenario Questions", "Answer Evaluation", "HR and Behavioural Practice"]
+          }
+        ]
+      },
+      {
+        "name": "Production Incident ChatGPT",
+        "subcategories": [
+          {
+            "name": "Incident Response",
+            "topics": ["Incident Triage", "Impact Assessment", "Safe Mitigation Planning", "Post-Incident Report Drafting"]
           }
         ]
       }
