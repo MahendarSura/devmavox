@@ -1,5 +1,5 @@
-import FeatureExplorer from "@/components/devmavox-learning/FeatureExplorer";
+import TechVersionCompatibilityCenter from "@/components/devmavox-learning/TechVersionCompatibilityCenter";
 
 export default function Page() {
-  return <FeatureExplorer featureId="tech-version-compatibility" />;
+  return <TechVersionCompatibilityCenter />;
 }
