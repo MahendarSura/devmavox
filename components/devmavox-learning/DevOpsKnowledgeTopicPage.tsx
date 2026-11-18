@@ -52,7 +52,7 @@ const lessons: Record<string, Lesson> = {
   "Progressive Delivery": { intro:"Progressive delivery releases changes gradually with automated analysis and policy-controlled promotion or rollback.", purpose:"Reduce blast radius by validating a change against real traffic before exposing it to everyone.", concepts:["Canary and ring deployments","Traffic shifting","Automated analysis and guardrails","Feature flags","Promotion and rollback policy"], workflow:["Build and sign an immutable artifact","Deploy to a small cohort","Compare key metrics against baseline","Promote in controlled stages","Automatically pause or roll back when guardrails fail"], commands:[{label:"Inspect rollout status",code:"kubectl rollout status deployment/<name> -n <namespace>",explanation:"Track Kubernetes rollout completion."},{label:"Inspect recent events",code:"kubectl get events -n <namespace> --sort-by=.lastTimestamp",explanation:"Review recent rollout and workload events."}], scenario:"A new API version receives 1% of traffic. Automated analysis checks error rate and p95 latency before allowing the next traffic step.",failure:"Promoting on deployment success alone ignores real user impact and delayed regressions.",practices:["Define baseline and abort thresholds before release","Keep cohorts representative","Separate deployment from feature enablement"] }
 };
 
-export default function DevOpsKnowledgeTopicPage({ featureId, category, subcategory, topic, categorySlug, subcategorySlug }: { featureId:string; category:string; subcategory:string; topic:string; categorySlug:string; subcategorySlug:string }) {
+export default function DevOpsKnowledgeTopicPage({ featureId, category, subcategory, topic, categorySlug, subcategorySlug, previousTopic, nextTopic }: { featureId:string; category:string; subcategory:string; topic:string; categorySlug:string; subcategorySlug:string; previousTopic?: { name:string; categorySlug:string; subcategorySlug:string }; nextTopic?: { name:string; categorySlug:string; subcategorySlug:string } }) {
   const lesson = lessons[topic] ?? {
     intro: `${topic} is an important engineering concept within ${category}. It connects the underlying principles of ${subcategory} with practical DevOps delivery and production operations.`,
     purpose: `Use ${topic} to make ${subcategory} implementations more understandable, repeatable, secure and supportable in real environments.`,
@@ -129,9 +129,24 @@ export default function DevOpsKnowledgeTopicPage({ featureId, category, subcateg
           <p className="text-xs font-bold uppercase tracking-widest text-lime-300">06 · Engineering standards</p><h2 className="mt-2 text-2xl font-extrabold text-white">Best Practices</h2><div className="mt-5 grid gap-3 sm:grid-cols-2">{lesson.practices.map((item)=><div key={item} className="flex gap-3 rounded-xl bg-slate-950/60 p-4"><span className="text-lime-300">✓</span><p className="text-sm leading-6 text-slate-200">{item}</p></div>)}</div>
         </section>
 
+        <section className="mt-5 rounded-2xl border border-violet-400/25 bg-slate-900/80 p-5 sm:p-7">
+          <p className="text-xs font-bold uppercase tracking-widest text-violet-300">07 · Knowledge check</p>
+          <h2 className="mt-2 text-2xl font-extrabold text-white">Check Your Understanding</h2>
+          <div className="mt-4 space-y-3">
+            <details className="rounded-xl border border-slate-700 bg-slate-950/60 p-4"><summary className="cursor-pointer text-sm font-semibold text-slate-100">What is the main purpose of {topic}?</summary><p className="mt-3 text-sm leading-6 text-slate-300">{lesson.purpose}</p></details>
+            <details className="rounded-xl border border-slate-700 bg-slate-950/60 p-4"><summary className="cursor-pointer text-sm font-semibold text-slate-100">Name one important concept to remember.</summary><p className="mt-3 text-sm leading-6 text-slate-300">{lesson.concepts[0]}</p></details>
+            <details className="rounded-xl border border-slate-700 bg-slate-950/60 p-4"><summary className="cursor-pointer text-sm font-semibold text-slate-100">What is one operational practice to apply?</summary><p className="mt-3 text-sm leading-6 text-slate-300">{lesson.practices[0]}</p></details>
+          </div>
+        </section>
         <footer className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 pt-5">
-          <Link href={`/${featureId}/${categorySlug}/${subcategorySlug}`} className="rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-200 hover:border-cyan-400/50 hover:text-white">← Back to {subcategory}</Link>
-          <Link href={`/${featureId}`} className="rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Knowledge Base Home →</Link>
+          <div className="flex flex-wrap gap-2">
+            <Link href={`/${featureId}/${categorySlug}/${subcategorySlug}`} className="rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-200 hover:border-cyan-400/50 hover:text-white">← Back to {subcategory}</Link>
+            {previousTopic && <Link href={`/${featureId}/${previousTopic.categorySlug}/${previousTopic.subcategorySlug}/${previousTopic.name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}`} className="rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-200 hover:border-fuchsia-400/50 hover:text-white">← Previous: {previousTopic.name}</Link>}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {nextTopic && <Link href={`/${featureId}/${nextTopic.categorySlug}/${nextTopic.subcategorySlug}/${nextTopic.name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}`} className="rounded-xl bg-emerald-400 px-4 py-2.5 text-sm font-extrabold text-slate-950 hover:bg-emerald-300">Next: {nextTopic.name} →</Link>}
+            <Link href={`/${featureId}`} className="rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Knowledge Base Home →</Link>
+          </div>
         </footer>
       </div>
     </main>
