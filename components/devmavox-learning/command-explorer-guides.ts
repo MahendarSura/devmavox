@@ -148,92 +148,167 @@ const seeds: Record<string, GuideSeed> = {
   },
 };
 
+const topicAliases: Record<string,string> = {
+  "EC2 instance commands":"aws ec2 describe-instances --region <region>",
+  "Auto Scaling commands":"aws autoscaling describe-auto-scaling-groups --region <region>",
+  "ELB and Target Group commands":"aws elbv2 describe-target-groups --region <region>",
+  "EKS cluster commands":"aws eks list-clusters --region <region>",
+  "ECR repository commands":"aws ecr describe-repositories --region <region>",
+  "ECS service commands":"aws ecs list-services --cluster <cluster> --region <region>",
+  "S3 bucket commands":"aws s3api list-buckets",
+  "EBS volume commands":"aws ec2 describe-volumes --region <region>",
+  "RDS commands":"aws rds describe-db-instances --region <region>",
+  "VPC and subnet commands":"aws ec2 describe-vpcs --region <region>",
+  "Security Group commands":"aws ec2 describe-security-groups --region <region>",
+  "Route 53 commands":"aws route53 list-hosted-zones",
+  "AWS CLI profiles":"aws configure list-profiles",
+  "IAM users and roles CLI":"aws iam list-roles",
+  "IAM policy inspection":"aws iam list-policies --scope Local",
+  "CloudWatch log commands":"aws logs describe-log-groups --region <region>",
+  "CloudWatch metrics commands":"aws cloudwatch list-metrics --region <region>",
+  "CloudWatch alarms commands":"aws cloudwatch describe-alarms --region <region>",
+  "AWS CLI query and output":"aws ec2 describe-instances --query Reservations[].Instances[].InstanceId --output table",
+  "AWS CLI pagination and filters":"aws ec2 describe-instances --max-items 20 --region <region>",
+  "Nexus repository inspection":"curl -fsS <nexus-url>/service/rest/v1/repositories",
+  "Nexus component search":"curl -fsS '<nexus-url>/service/rest/v1/search?repository=<repo>&name=<name>'",
+  "Nexus REST API":"curl -fsS <nexus-url>/service/rest/v1/status",
+  "Artifact checksum verification":"sha256sum <artifact-file>",
+  "Prometheus targets API":"curl -fsS <prometheus-url>/api/v1/targets",
+  "Prometheus TSDB commands":"promtool tsdb analyze <prometheus-data-directory>",
+  "PromQL selectors":"up{job=\"<job>\"}",
+  "PromQL rate and increase":"sum(rate(http_requests_total[5m]))",
+  "PromQL aggregation":"sum by (job) (rate(http_requests_total[5m]))",
+  "Grafana API dashboards":"curl -fsS <grafana-url>/api/search",
+  "Grafana data source API":"curl -fsS <grafana-url>/api/datasources",
+  "Alertmanager API":"curl -fsS <alertmanager-url>/api/v2/alerts",
+  "SSH config checks":"ssh -G <user>@<host>",
+  "PostgreSQL activity queries":"psql -c 'SELECT pid, state, wait_event_type FROM pg_stat_activity;'",
+  "Redis memory diagnostics":"redis-cli INFO memory",
+  "Tomcat service status":"systemctl status tomcat --no-pager",
+  "Tomcat logs":"journalctl -u tomcat -n 100 --no-pager",
+  "Tomcat thread dump":"jcmd <java-pid> Thread.print",
+  "WAR deployment checks":"curl -fsS -I <application-url>/health",
+  "CNI diagnostics":"kubectl get pods -n kube-system -o wide",
+  "Jenkins agent diagnostics":"curl -fsS <jenkins-url>/computer/api/json",
+  "GitLab CI lint":"glab ci lint .gitlab-ci.yml",
+  "GitLab artifacts and trace":"glab job trace <job-id>",
+  "Database connection checks":"nc -vz <db-host> <db-port>",
+  "Database slow query checks":"Inspect the engine slow-query log with an approved read-only query",
+  "HTTP health checks":"curl -fsS -i <health-url>",
+  "HTTP status diagnostics":"curl -sS -D - -o /dev/null <url>",
+  "TLS certificate checks":"openssl s_client -connect <host>:443 -servername <host>"
+};
+const topicArgs: Record<string,string> = {
+  pwd:"", ls:"-lah", cd:"<directory>", find:". -maxdepth 2 -type f", locate:"<filename>", tree:"-L 2",
+  mkdir:"-p <directory>", touch:"<file>", cp:"<source> <destination>", mv:"<source> <destination>", rm:"-i <file>",
+  cat:"<file>", less:"<file>", head:"-n 20 <file>", tail:"-n 100 <file>", grep:"-n '<pattern>' <file>",
+  sed:"-n '1,20p' <file>", awk:"'{print $1}' <file>", cut:"-d: -f1 /etc/passwd", sort:"<file>", uniq:"-c",
+  wc:"-l <file>", chmod:"644 <file>", chown:"<user>:<group> <path>", sudo:"-l", tar:"-tzf <archive.tar.gz>",
+  rsync:"-avhn <source>/ <destination>/", scp:"<file> <user>@<host>:<path>", ssh:"-o BatchMode=yes <user>@<host> true",
+  ps:"auxww", top:"-b -n 1", pgrep:"-a <process>", systemctl:"status <service> --no-pager", journalctl:"-n 100 --no-pager",
+  df:"-hT", du:"-sh <path>", lsblk:"-f", free:"-h", vmstat:"1 5", uptime:"", lscpu:"",
+  useradd:"-m <user>", usermod:"-aG <group> <user>", passwd:"-S <user>", crontab:"-l",
+  "ip addr":"show", "ip link":"show", "ip route":"show", ss:"-lntup", ping:"-c 4 <host>",
+  traceroute:"<host>", tcpdump:"-ni <interface> -c 20", nc:"-vz <host> <port>", curl:"-sS -D - -o /dev/null <url>",
+  dig:"<name>", nslookup:"<name>", host:"<name>", "openssl s_client":"-connect <host>:443 -servername <host>",
+  "git clone":"<repository-url>", "git status":"--short --branch", "git add":"-p", "git commit":"--dry-run",
+  "git push":"--dry-run", "git pull":"--ff-only", "git fetch":"--all --prune", "git log":"--oneline --decorate -10",
+  "git diff":"--stat", "git branch":"-avv", "git switch":"<branch>", "git merge":"--no-commit --no-ff <branch>",
+  "git tag":"--list", "git stash":"list", "git remote":"-v", "git restore":"--staged <path>",
+  "docker pull":"<image:tag>", "docker build":"-t <image:tag> .", "docker images":"--digests", "docker ps":"-a",
+  "docker run":"--rm --name test <image:tag>", "docker exec":"-it <container> sh", "docker logs":"--tail=100 <container>",
+  "docker inspect":"<container>", "docker stats":"--no-stream", "docker network":"ls", "docker volume":"ls",
+  "kubectl cluster-info":"", "kubectl get nodes":"-o wide", "kubectl get namespaces":"", "kubectl config":"current-context",
+  "kubectl get pods":"-A -o wide", "kubectl get deployments":"-A", "kubectl apply":"--dry-run=server -f <manifest.yaml>",
+  "kubectl describe":"pod/<name> -n <namespace>", "kubectl logs":"pod/<name> -n <namespace> --all-containers --tail=100",
+  "kubectl events":"-n <namespace> --sort-by=.lastTimestamp", "kubectl top":"pods -A",
+  "terraform init":"-backend=false", "terraform fmt":"-check -recursive", "terraform validate":"",
+  "terraform plan":"", "terraform output":"", "terraform state":"list", "terraform workspace":"show",
+  "ansible":"all -i <inventory> -m ping", "ansible-inventory":"-i <inventory> --graph",
+  "ansible-playbook":"-i <inventory> <playbook.yml> --syntax-check",
+  "helm lint":"<chart-directory>", "helm template":"<release> <chart> --namespace <namespace>",
+  "helm install":"<release> <chart> --namespace <namespace> --dry-run --debug",
+  "helm upgrade":"<release> <chart> --namespace <namespace> --install --dry-run",
+  "helm history":"<release> --namespace <namespace>", "argocd app get":"<app>",
+  "argocd app diff":"<app>", "argocd app sync":"<app> --dry-run",
+  "gh run list":"--limit 10", "gh run view":"<run-id>", "glab pipeline":"list",
+  "mvn clean":"", "mvn compile":"", "mvn test":"", "mvn package":"", "mvn dependency:tree":"",
+  "gradle build":"--dry-run", "gradle test":"--dry-run", "promtool check config":"<prometheus.yml>",
+  "trivy image":"<image:tag>", "trivy fs":".", "checkov":"-d .", "semgrep":"scan --config auto",
+  "mysql client":"-h <host> -u <user> -p", "psql":"-h <host> -U <user> -d <database>",
+  "pg_isready":"-h <host> -p 5432", "redis-cli ping":"", "redis-cli info":"memory",
+  bash:"--version", "bash -x":"<script.sh>", "Get-Process":"| Sort-Object CPU -Descending | Select-Object -First 10",
+  "Get-Service":"", "Get-ChildItem":"-Force", "Get-Content":"<file> -Tail 100",
+  "Test-NetConnection":"<host> -Port <port>", "Invoke-WebRequest":"-Uri <url> -Method Head",
+  "java -version":"", javac:"-version", jps:"-lv", jcmd:"<pid> VM.version",
+  "crictl ps":"-a", "crictl pods":"-a", "crictl images":"", "crictl logs":"<container-id>",
+  "ctr containers":"list", "ctr images":"list", "kubeadm certs":"check-expiration"
+};
 function inferSeed(topic: string, category: string, subcategory: string): GuideSeed {
-  const value = topic.toLowerCase();
-  const categoryName = category.toLowerCase();
-
-  if (categoryName.includes("kubernetes") || value.includes("kubectl") || value.includes("pod") || value.includes("deployment")) {
-    return {
-      base: "kubectl",
-      args: "get pods -n <namespace> -o wide",
-      purpose: "Inspect Kubernetes resources and collect evidence before taking corrective action.",
-      example: "kubectl get pods -n <namespace> -o wide",
-      output: "Kubernetes resource status, readiness, restart counts and placement. Exact columns depend on the selected resource.",
-      next: ["kubectl describe <resource> <name> -n <namespace>", "kubectl get events -n <namespace> --sort-by=.lastTimestamp", "kubectl logs <pod> -n <namespace> --all-containers --tail=100"],
-      safety: "Check kubectl config current-context and namespace before every operation. Use read-only inspection first.",
-      level: "Production",
-    };
-  }
-  if (categoryName.includes("docker") || value.includes("docker") || value.includes("container")) {
-    return {
-      base: "docker",
-      args: "ps -a",
-      purpose: "Inspect container lifecycle state and gather runtime evidence.",
-      example: "docker ps -a",
-      output: "Container IDs, image names, status, ports and names.",
-      next: ["docker logs --tail=100 <container>", "docker inspect <container>", "docker stats --no-stream"],
-      safety: "Confirm the target container and mounted volumes before stop, remove or prune operations.",
-      level: "Intermediate",
-    };
-  }
-  if (categoryName.includes("git") || value.startsWith("git ") || ["commit", "branch", "merge", "rebase", "push", "pull"].some((word) => value.includes(word))) {
-    return {
-      base: "git",
-      args: "status --short --branch",
-      purpose: "Inspect repository state and avoid accidental loss of uncommitted work.",
-      example: "git status --short --branch",
-      output: "Current branch and staged, unstaged or untracked changes.",
-      next: ["git diff", "git log --oneline --decorate -10", "git remote -v"],
-      safety: "Create a backup branch before reset, clean, rebase or force-push. Never rewrite a shared branch without approval.",
-      level: "Intermediate",
-    };
-  }
-  if (categoryName.includes("terraform") || value.includes("terraform")) {
-    return {
-      base: "terraform",
-      args: "plan",
-      purpose: "Preview infrastructure changes and inspect the selected workspace and state.",
-      example: "terraform plan",
-      output: "Planned infrastructure additions, modifications and deletions.",
-      next: ["terraform workspace show", "terraform validate", "terraform show"],
-      safety: "Confirm account, workspace, backend and state lock. Review every planned change before apply.",
-      level: "Production",
-    };
-  }
-  if (categoryName.includes("aws") || value.includes("aws")) {
-    return {
-      base: "aws",
-      args: "sts get-caller-identity",
-      purpose: "Confirm the active AWS account and identity before running service commands.",
-      example: "aws sts get-caller-identity",
-      output: "AWS account ID, caller ARN and user ID for the active credentials.",
-      next: ["aws configure list", "aws ec2 describe-regions", "aws help"],
-      safety: "Verify account, role and region. Do not expose access keys or session tokens in terminal output.",
-      level: "Intermediate",
-    };
-  }
-  if (categoryName.includes("linux")) {
-    return {
-      base: "journalctl",
-      args: "-n 100 --no-pager",
-      purpose: "Inspect recent system or service logs during Linux host troubleshooting.",
-      example: "journalctl -n 100 --no-pager",
-      output: "Recent journal entries with timestamps, service metadata and messages.",
-      next: ["systemctl status <service> --no-pager", "journalctl -u <service> -n 100 --no-pager", "df -hT"],
-      level: "Intermediate",
-    };
-  }
-  return {
-    base: "help",
-    args: "",
-    purpose: "Identify the installed tool and confirm its supported syntax before using it.",
-    example: "<tool> --help",
-    output: "Help text from the installed tool. No command is executed by this guide.",
-    next: ["<tool> --version", "<tool> --help"],
-    safety: "This topic needs version-specific validation. Do not run guessed commands against production systems.",
-    level: "Practice",
+  const categoryKey = category.toLowerCase();
+  const alias = topicAliases[topic];
+  const raw = alias || topic;
+  const first = raw.trim().split(/\s+/)[0] || "help";
+  let base = first;
+  let args = topicArgs[topic] ?? raw.slice(first.length).trim();
+  if (topic.startsWith("git ")) { base="git"; args=topic.slice(4)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
+  else if (topic.startsWith("docker ")) { base="docker"; args=topic.slice(7)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
+  else if (topic.startsWith("kubectl ")) { base="kubectl"; args=topic.slice(8)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
+  else if (topic.startsWith("terraform ")) { base="terraform"; args=topic.slice(10)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
+  else if (topic.startsWith("helm ")) { base="helm"; args=topic.slice(5)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
+  else if (topic.startsWith("argocd ")) { base="argocd"; args=topic.slice(7)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
+  else if (topic.startsWith("mvn ")) { base="mvn"; args=topic.slice(4); }
+  else if (topic.startsWith("gradle ")) { base="gradle"; args=topic.slice(7); }
+  else if (topic.startsWith("ip ")) { base="ip"; args=topic.slice(3)+" "+(topicArgs[topic] || "show"); }
+  if (!args && base !== "pwd") args="--help";
+  const purpose = categoryKey.includes("linux") ? "Use "+topic+" to inspect or manage Linux files, processes, services, storage, permissions or system configuration."
+    : categoryKey.includes("network") ? "Use "+topic+" to diagnose network interfaces, routing, connectivity, DNS, TLS, HTTP or packet behavior."
+    : categoryKey.includes("git") ? "Use "+topic+" to inspect or manage repository state, history, branches and collaboration safely."
+    : categoryKey.includes("docker") ? "Use "+topic+" to inspect or manage Docker images, containers, networks, volumes, builds or registries."
+    : categoryKey.includes("kubernetes") ? "Use "+topic+" to inspect or manage Kubernetes resources, workloads, scheduling, networking or configuration."
+    : categoryKey.includes("aws") ? "Use "+topic+" to query AWS resources. Confirm the active account, role, profile and region before use."
+    : categoryKey.includes("terraform") ? "Use "+topic+" to validate, plan, inspect or manage Terraform configuration, providers, modules and state."
+    : categoryKey.includes("ansible") ? "Use "+topic+" to inspect inventory, validate automation or troubleshoot controlled Ansible execution."
+    : categoryKey.includes("helm") ? "Use "+topic+" to inspect Helm releases/charts or Argo CD GitOps application state."
+    : categoryKey.includes("ci/cd") ? "Use "+topic+" to inspect CI/CD authentication, pipelines, jobs, agents, logs and deployments."
+    : categoryKey.includes("build") ? "Use "+topic+" to build, test, resolve dependencies or verify application artifacts."
+    : categoryKey.includes("monitoring") ? "Use "+topic+" to validate monitoring, query metrics, inspect alerts or diagnose service health."
+    : categoryKey.includes("security") ? "Use "+topic+" to inspect credentials, certificates, vulnerabilities or software supply-chain security."
+    : categoryKey.includes("database") ? "Use "+topic+" to inspect database connectivity, sessions, backups, queries or cache behavior."
+    : categoryKey.includes("scripting") ? "Use "+topic+" to write, validate, debug or automate repeatable DevOps tasks."
+    : categoryKey.includes("java") ? "Use "+topic+" to inspect Java runtime, JVM diagnostics, Tomcat services, logs or deployments."
+    : "Use "+topic+" to inspect container runtime, CRI, kubelet or Kubernetes node health.";
+  const safety = categoryKey.includes("git") ? "Check git status and preserve uncommitted work. Back up before reset, clean, rebase or force-push."
+    : categoryKey.includes("aws") ? "Verify aws sts get-caller-identity, profile and region. Never expose access keys or session tokens."
+    : categoryKey.includes("kubernetes") || categoryKey.includes("container runtime") ? "Verify kubectl current-context, namespace and target. Start read-only; review impact before changing live resources."
+    : categoryKey.includes("terraform") ? "Confirm workspace, backend and state lock. Review a saved plan before apply; avoid destroy or force-unlock without approval."
+    : categoryKey.includes("database") ? "Use least-privilege credentials and read-only queries for diagnosis. Verify host and database; avoid production writes."
+    : "Confirm host, identity, working directory and target. Prefer read-only inspection and use a disposable lab for changes.";
+  const nextByCategory: Record<string,string[]> = {
+    "linux":["stat <path>","find <path> -maxdepth 2 -type f","journalctl -n 50 --no-pager"],
+    "linux administration":["systemctl status <service> --no-pager","journalctl -u <service> -n 100 --no-pager","df -hT"],
+    "networking":["ip route","ss -lntup","dig <hostname>"],
+    "git":["git status --short --branch","git diff","git log --oneline --decorate -10"],
+    "docker":["docker ps -a","docker inspect <container>","docker logs --tail=100 <container>"],
+    "kubernetes":["kubectl get events -A --sort-by=.lastTimestamp","kubectl describe <resource> <name> -n <namespace>","kubectl logs <pod> -n <namespace> --all-containers"],
+    "aws cli":["aws sts get-caller-identity","aws configure list","aws <service> help"],
+    "terraform":["terraform workspace show","terraform validate","terraform plan"],
+    "ansible":["ansible-inventory -i <inventory> --graph","ansible-playbook -i <inventory> <playbook> --syntax-check","ansible all -i <inventory> -m ping"],
+    "helm and argo cd":["helm list -A","helm history <release> -n <namespace>","argocd app get <application>"],
+    "ci/cd platforms":["gh run list --limit 10","glab pipeline list","curl -fsS <jenkins-url>/api/json"],
+    "build and artifact tools":["mvn -version","gradle --version","sha256sum <artifact>"],
+    "monitoring and observability":["curl -fsS <prometheus-url>/-/ready","curl -fsS <alertmanager-url>/api/v2/alerts","journalctl -p warning -n 100 --no-pager"],
+    "devsecops and security":["ssh -G <user>@<host>","openssl x509 -in <certificate> -noout -dates","trivy image <image:tag>"],
+    "databases and caching":["nc -vz <database-host> <port>","psql -c 'SELECT 1;'","redis-cli PING"],
+    "scripting and automation":["bash -n <script.sh>","python -m py_compile <script.py>","jq . <file.json>"],
+    "java and tomcat":["java -version","jcmd <pid> VM.version","journalctl -u tomcat -n 100 --no-pager"],
+    "container runtime and platform tools":["crictl ps -a","crictl pods -a","journalctl -u kubelet -n 100 --no-pager"]
   };
+  return { base, args, purpose, example:base+(args ? " "+args : ""),
+    output:"Illustrative output for "+topic+": inspect the command result, resource identifiers, status fields and exit code. Exact fields vary by tool version and environment; no live system was queried.",
+    next:nextByCategory[categoryKey] || ["<tool> --help","<tool> --version"], safety, level:"Intermediate" };
 }
+
 
 export function buildCommandGuide(
   topic: string,
