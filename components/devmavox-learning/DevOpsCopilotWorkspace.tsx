@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { FeatureDefinition } from "./feature-catalog";
+import { assistantTopicGuides } from "./devops-ai-topic-guides";
 
 function slugify(value: string) {
   return value.toLowerCase().normalize("NFKD").replace(/[\\u0300-\\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -35,6 +36,7 @@ export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature
   const subcategory = category?.subcategories.find((item) => slugify(item.name) === slug[1]);
   const topic = subcategory?.topics.find((item) => slugify(item) === slug[2]);
   const topicCount = useMemo(() => feature.categories.reduce((n, c) => n + c.subcategories.reduce((m, s) => m + s.topics.length, 0), 0), [feature]);
+  const topicGuide = topic ? assistantTopicGuides[topic] : undefined;
   const root = "/devops-ai-assistant";
   async function submitRequest() {
     if (!question.trim() || loading) return;
@@ -120,7 +122,12 @@ export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature
         ) : (
           <>
             <div className="mb-6 flex flex-wrap items-center gap-2 text-xs text-white/40"><Link href={root}>ChatGPT</Link><span>/</span><Link href={root + "/" + slug[0]}>{category.name}</Link><span>/</span><Link href={root + "/" + slug[0] + "/" + slug[1]}>{subcategory.name}</Link></div>
-            <section className="mb-6 rounded-3xl border border-[#c7ff43]/20 bg-[#1a2018] p-7"><p className="font-mono text-[10px] uppercase tracking-[.22em] text-[#c7ff43]">Specialist workflow</p><h1 className="mt-3 text-3xl font-black">{topic}</h1><p className="mt-2 text-sm text-white/50">Provide a question and relevant engineering context. Review suggestions before applying them.</p></section>
+            <section className="mb-6 rounded-3xl border border-[#c7ff43]/20 bg-[#1a2018] p-7"><p className="font-mono text-[10px] uppercase tracking-[.22em] text-[#c7ff43]">Specialist workflow</p><h1 className="mt-3 text-3xl font-black">{topic}</h1><p className="mt-2 text-sm text-white/50">{topicGuide?.purpose || "Provide a question and relevant engineering context. Review suggestions before applying them."}</p></section>
+            {topicGuide && <section className="mb-5 grid gap-3 md:grid-cols-3">
+              <div className="rounded-xl border border-white/10 bg-white/[.035] p-4"><p className="font-mono text-[10px] uppercase tracking-[.16em] text-[#c7ff43]">Context to provide</p><p className="mt-2 text-xs leading-6 text-white/55">{topicGuide.context}</p></div>
+              <div className="rounded-xl border border-white/10 bg-white/[.035] p-4"><p className="font-mono text-[10px] uppercase tracking-[.16em] text-[#ff896d]">Expected output</p><p className="mt-2 text-xs leading-6 text-white/55">{topicGuide.deliverables}</p></div>
+              <div className="rounded-xl border border-[#c7ff43]/20 bg-[#c7ff43]/[.045] p-4"><p className="font-mono text-[10px] uppercase tracking-[.16em] text-[#c7ff43]">Starter prompt</p><p className="mt-2 text-xs leading-6 text-white/70">{topicGuide.starterPrompt}</p><button type="button" onClick={() => setQuestion(topicGuide.starterPrompt)} className="mt-3 rounded-lg bg-[#c7ff43] px-3 py-2 text-[10px] font-black text-[#151a12]">USE THIS PROMPT ↗</button></div>
+            </section>}
             <section className="mb-5 grid gap-3 md:grid-cols-3">
               <div className="rounded-xl border border-white/10 bg-white/[.035] p-4"><p className="font-mono text-[10px] uppercase tracking-[.16em] text-[#c7ff43]">01 / Context to provide</p><p className="mt-2 text-xs leading-6 text-white/55">Share tool and version, environment, expected behaviour, actual result and relevant redacted logs or configuration.</p></div>
               <div className="rounded-xl border border-white/10 bg-white/[.035] p-4"><p className="font-mono text-[10px] uppercase tracking-[.16em] text-[#ff896d]">02 / What ChatGPT returns</p><p className="mt-2 text-xs leading-6 text-white/55">A structured explanation, assumptions, recommended steps, example commands or configuration, and validation guidance.</p></div>
