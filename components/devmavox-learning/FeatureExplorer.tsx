@@ -3,6 +3,7 @@ import Link from "next/link";
 import ArchitectureTopicPage from "./ArchitectureTopicPage";
 import { getArchitectureTopic } from "./architecture-topic-content";
 import IncidentTopicPage from "./IncidentTopicPage";
+import IncidentCategoryPage from "./IncidentCategoryPage";
 import { incidentLessons } from "./incident-topic-content";
 import { notFound } from "next/navigation";
 import {
@@ -325,6 +326,10 @@ export default function FeatureExplorer({
   if (!category) notFound();
 
   if (slug.length === 1) {
+    if (featureId === "incident-simulator") {
+      return <IncidentCategoryPage feature={feature} category={category} />;
+    }
+
     return (
       <PageFrame feature={feature} eyebrow="Category Explorer" title={category.name} description={`Explore the ${category.name} learning areas and open a subcategory to view its individual topics.`}>
         <Breadcrumbs feature={feature} items={[{ label: category.name }]} />
