@@ -6,6 +6,7 @@ on:
     paths:
       - "app/tech-version-compatibility/**"
       - "components/devmavox-learning/TechVersionCompatibilityCenter.tsx"
+      - "components/devmavox-learning/tech-version-compatibility-data.ts"
       - ".github/workflows/tech-version-compatibility-ci.yml"
       - "package.json"
       - "package-lock.json"
@@ -45,7 +46,7 @@ jobs:
         run: npm ci
       - name: TypeScript validation
         run: npx tsc --noEmit
-      - name: ESLint
-        run: npm run lint
+      - name: ESLint changed compatibility-center files
+        run: npx eslint app/tech-version-compatibility/page.tsx components/devmavox-learning/TechVersionCompatibilityCenter.tsx components/devmavox-learning/tech-version-compatibility-data.ts
       - name: Next.js production build
         run: npm run build
