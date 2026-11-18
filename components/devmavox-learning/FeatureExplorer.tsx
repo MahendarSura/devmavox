@@ -8,6 +8,7 @@ import IncidentTopicPage from "./IncidentTopicPage";
 import IncidentCategoryPage from "./IncidentCategoryPage";
 import IncidentDashboard from "./IncidentDashboard";
 import IncidentSubcategoryPage from "./IncidentSubcategoryPage";
+import GitWorkflowStudio from "./GitWorkflowStudio";
 import { getIncidentLesson } from "./incident-topic-content";
 import { notFound } from "next/navigation";
 import {
@@ -306,6 +307,17 @@ export default function FeatureExplorer({
 
   if (slug.length === 0 && featureId === "incident-simulator") {
     return <IncidentDashboard feature={feature} />;
+  }
+
+  if (featureId === "git-workflow-simulator") {
+    const gitCategory = slug.length ? feature.categories.find((item) => slugify(item.name) === slug[0]) : undefined;
+    const gitSubcategory = gitCategory && slug.length > 1 ? gitCategory.subcategories.find((item) => slugify(item.name) === slug[1]) : undefined;
+    const gitTopic = gitSubcategory && slug.length > 2 ? gitSubcategory.topics.find((item) => slugify(item) === slug[2]) : undefined;
+    if (slug.length > 0 && !gitCategory) notFound();
+    if (slug.length > 1 && !gitSubcategory) notFound();
+    if (slug.length > 2 && !gitTopic) notFound();
+    if (slug.length > 3) notFound();
+    return <GitWorkflowStudio feature={feature} slug={slug} category={gitCategory} subcategory={gitSubcategory} topic={gitTopic} />;
   }
 
   if (slug.length === 0) {
