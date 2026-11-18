@@ -417,7 +417,6 @@ export default function FeatureExplorer({
             subcategoryName={subcategory.name}
             categorySlug={slug[0]}
             subcategorySlug={slug[1]}
-            topicSlug={slug[2]}
           />
         );
       }
