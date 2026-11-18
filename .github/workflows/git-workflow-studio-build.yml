@@ -1,0 +1,42 @@
+name: Git Workflow Simulator Build
+
+on:
+  push:
+    branches:
+      - feature/git-workflow-studio-12-category-ui-20261118
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "components/devmavox-learning/GitWorkflowStudio.tsx"
+      - "components/devmavox-learning/FeatureExplorer.tsx"
+      - "components/devmavox-learning/feature-catalog.ts"
+      - ".github/workflows/git-workflow-studio-build.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: git-workflow-studio-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: TypeScript, feature lint and Next.js production build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: TypeScript validation
+        run: npx tsc --noEmit
+      - name: ESLint changed feature files
+        run: npx eslint components/devmavox-learning/GitWorkflowStudio.tsx components/devmavox-learning/FeatureExplorer.tsx components/devmavox-learning/feature-catalog.ts
+      - name: Next.js production build
+        run: npm run build
