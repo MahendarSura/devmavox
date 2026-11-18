@@ -1032,118 +1032,502 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
   "git-workflow-simulator": {
     "id": "git-workflow-simulator",
     "title": "Git Workflow Simulator",
-    "description": "Explore branching, collaboration, merge and recovery workflows.",
+    "description": "Master real-world Git workflows through visual learning, hands-on repository practice, collaboration simulations and production recovery labs.",
     "style": "git",
     "label": "Git Workflow Studio",
     "categories": [
-      {
-        "name": "Git Basics",
-        "subcategories": [
           {
-            "name": "Repository Fundamentals",
-            "topics": [
-              "Repository",
-              "Working Tree",
-              "Staging Area",
-              "Commits"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Branching",
-        "subcategories": [
+                "name": "Git Basics",
+                "subcategories": [
+                      {
+                            "name": "Git Fundamentals",
+                            "topics": [
+                                  "What Is Git?",
+                                  "Git vs GitHub",
+                                  "Distributed Version Control",
+                                  "Git Architecture"
+                            ]
+                      },
+                      {
+                            "name": "Repository Management",
+                            "topics": [
+                                  "Initialize a Repository",
+                                  "Clone a Repository",
+                                  "Repository Structure",
+                                  "The .git Directory"
+                            ]
+                      },
+                      {
+                            "name": "File Lifecycle",
+                            "topics": [
+                                  "Working Directory",
+                                  "Staging Area",
+                                  "git add and git status",
+                                  "Track and Untrack Files"
+                            ]
+                      },
+                      {
+                            "name": "Commit History",
+                            "topics": [
+                                  "Create Commits",
+                                  "Write Commit Messages",
+                                  "Inspect Commit History",
+                                  "Amend the Last Commit"
+                            ]
+                      }
+                ]
+          },
           {
-            "name": "Branch Operations",
-            "topics": [
-              "Create Branch",
-              "Switch Branch",
-              "Rename Branch",
-              "Delete Branch"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Collaboration",
-        "subcategories": [
+                "name": "Branching",
+                "subcategories": [
+                      {
+                            "name": "Branch Fundamentals",
+                            "topics": [
+                                  "What Is a Branch?",
+                                  "Main vs Feature Branch",
+                                  "Create and List Branches",
+                                  "Switch Branches"
+                            ]
+                      },
+                      {
+                            "name": "Feature Branch Workflow",
+                            "topics": [
+                                  "Create a Feature Branch",
+                                  "Implement a Feature",
+                                  "Commit Feature Changes",
+                                  "Merge a Feature Branch"
+                            ]
+                      },
+                      {
+                            "name": "Branch Management",
+                            "topics": [
+                                  "Rename a Branch",
+                                  "Delete a Branch",
+                                  "Track Remote Branches",
+                                  "Configure Upstream Branches"
+                            ]
+                      },
+                      {
+                            "name": "Branch Strategies",
+                            "topics": [
+                                  "GitHub Flow",
+                                  "Git Flow",
+                                  "Trunk-Based Development",
+                                  "Environment Branch Strategy"
+                            ]
+                      }
+                ]
+          },
           {
-            "name": "Remote Workflows",
-            "topics": [
-              "Pull",
-              "Push",
-              "Fetch",
-              "Remote Tracking"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Merge Workflows",
-        "subcategories": [
+                "name": "Collaboration",
+                "subcategories": [
+                      {
+                            "name": "Remote Repositories",
+                            "topics": [
+                                  "Inspect Git Remotes",
+                                  "Add a Remote",
+                                  "Change Remote URL",
+                                  "Remote Tracking Branches"
+                            ]
+                      },
+                      {
+                            "name": "Push and Pull",
+                            "topics": [
+                                  "Push Local Commits",
+                                  "Pull Remote Changes",
+                                  "Fetch Without Merging",
+                                  "Pull vs Fetch"
+                            ]
+                      },
+                      {
+                            "name": "Pull Requests",
+                            "topics": [
+                                  "Create a Pull Request",
+                                  "Review a Pull Request",
+                                  "Approve or Request Changes",
+                                  "Merge a Pull Request"
+                            ]
+                      },
+                      {
+                            "name": "Team Collaboration",
+                            "topics": [
+                                  "Multiple Developer Workflow",
+                                  "Shared Branch Risks",
+                                  "Code Review Workflow",
+                                  "Protected Branch Rules"
+                            ]
+                      }
+                ]
+          },
           {
-            "name": "Merge Strategies",
-            "topics": [
-              "Fast-Forward Merge",
-              "Three-Way Merge",
-              "Merge Conflicts"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Rebase Workflows",
-        "subcategories": [
+                "name": "Merge Workflows",
+                "subcategories": [
+                      {
+                            "name": "Merge Fundamentals",
+                            "topics": [
+                                  "Fast-Forward Merge",
+                                  "Three-Way Merge",
+                                  "Create a Merge Commit",
+                                  "Choose a Merge Strategy"
+                            ]
+                      },
+                      {
+                            "name": "Conflict Management",
+                            "topics": [
+                                  "Detect Merge Conflicts",
+                                  "Understand Conflict Markers",
+                                  "Resolve File Conflicts",
+                                  "Complete or Abort a Merge"
+                            ]
+                      },
+                      {
+                            "name": "Advanced Merge",
+                            "topics": [
+                                  "Squash Merge",
+                                  "No-Fast-Forward Merge",
+                                  "Abort a Merge",
+                                  "Merge Strategy Options"
+                            ]
+                      },
+                      {
+                            "name": "Merge Practice",
+                            "topics": [
+                                  "Merge Feature into Main",
+                                  "Merge Parallel Changes",
+                                  "Resolve Multi-File Conflicts",
+                                  "Verify Merge History"
+                            ]
+                      }
+                ]
+          },
           {
-            "name": "Rebase Operations",
-            "topics": [
-              "Interactive Rebase",
-              "Rebase vs Merge",
-              "Rebase Conflicts"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Recovery",
-        "subcategories": [
+                "name": "Rebase Workflows",
+                "subcategories": [
+                      {
+                            "name": "Rebase Fundamentals",
+                            "topics": [
+                                  "What Is Rebase?",
+                                  "Rebase vs Merge",
+                                  "Run git rebase",
+                                  "Rebase Onto"
+                            ]
+                      },
+                      {
+                            "name": "Interactive Rebase",
+                            "topics": [
+                                  "Reorder Commits",
+                                  "Squash Commits",
+                                  "Edit Commit Messages",
+                                  "Drop a Commit"
+                            ]
+                      },
+                      {
+                            "name": "Rebase Recovery",
+                            "topics": [
+                                  "Abort a Rebase",
+                                  "Continue a Rebase",
+                                  "Skip a Commit",
+                                  "Resolve Rebase Conflicts"
+                            ]
+                      },
+                      {
+                            "name": "Safe Rebase Practices",
+                            "topics": [
+                                  "Rebase Private Branches",
+                                  "Avoid Rewriting Shared History",
+                                  "Update Feature Branch",
+                                  "Verify Rewritten History"
+                            ]
+                      }
+                ]
+          },
           {
-            "name": "Recover Git Changes",
-            "topics": [
-              "Reset",
-              "Revert",
-              "Restore",
-              "Reflog"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Team Workflows",
-        "subcategories": [
+                "name": "Recovery",
+                "subcategories": [
+                      {
+                            "name": "Undo Working Changes",
+                            "topics": [
+                                  "git restore",
+                                  "Unstage Files",
+                                  "Restore Deleted Files",
+                                  "Discard Local Changes"
+                            ]
+                      },
+                      {
+                            "name": "Commit Recovery",
+                            "topics": [
+                                  "git revert",
+                                  "git reset --soft",
+                                  "git reset --mixed",
+                                  "git reset --hard"
+                            ]
+                      },
+                      {
+                            "name": "Lost Work Recovery",
+                            "topics": [
+                                  "Use git reflog",
+                                  "Recover a Deleted Branch",
+                                  "Recover a Lost Commit",
+                                  "Restore Stashed Work"
+                            ]
+                      },
+                      {
+                            "name": "Incident Recovery",
+                            "topics": [
+                                  "Undo a Wrong Main Commit",
+                                  "Recover from Bad Merge",
+                                  "Recover from Force Push",
+                                  "Rollback a Release"
+                            ]
+                      }
+                ]
+          },
           {
-            "name": "Branching Models",
-            "topics": [
-              "Feature Branch Workflow",
-              "Git Flow",
-              "Trunk-Based Development"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Release Management",
-        "subcategories": [
+                "name": "Team Workflows",
+                "subcategories": [
+                      {
+                            "name": "Developer Workflows",
+                            "topics": [
+                                  "Daily Git Workflow",
+                                  "Feature Development",
+                                  "Bug Fix Workflow",
+                                  "Hotfix Workflow"
+                            ]
+                      },
+                      {
+                            "name": "Branch Policies",
+                            "topics": [
+                                  "Branch Naming Conventions",
+                                  "Branch Protection",
+                                  "Required Reviews",
+                                  "Required Status Checks"
+                            ]
+                      },
+                      {
+                            "name": "Conflict Scenarios",
+                            "topics": [
+                                  "Parallel Development",
+                                  "Shared File Conflicts",
+                                  "Long-Lived Branch Risks",
+                                  "Keep Branches in Sync"
+                            ]
+                      },
+                      {
+                            "name": "Enterprise Collaboration",
+                            "topics": [
+                                  "Monorepo Workflow",
+                                  "Multi-Team Collaboration",
+                                  "CODEOWNERS",
+                                  "Fork-Based Workflow"
+                            ]
+                      }
+                ]
+          },
           {
-            "name": "Release Operations",
-            "topics": [
-              "Git Tags",
-              "Hotfix Workflow",
-              "Release Branches"
-            ]
+                "name": "Release Management",
+                "subcategories": [
+                      {
+                            "name": "Tags and Versions",
+                            "topics": [
+                                  "Create Git Tags",
+                                  "Annotated vs Lightweight Tags",
+                                  "Semantic Versioning",
+                                  "Push and Fetch Tags"
+                            ]
+                      },
+                      {
+                            "name": "Release Branches",
+                            "topics": [
+                                  "Create a Release Branch",
+                                  "Stabilize a Release",
+                                  "Merge a Release Branch",
+                                  "Close a Release Branch"
+                            ]
+                      },
+                      {
+                            "name": "Hotfix Management",
+                            "topics": [
+                                  "Emergency Hotfix",
+                                  "Patch Release",
+                                  "Backport a Fix",
+                                  "Cherry-Pick a Hotfix"
+                            ]
+                      },
+                      {
+                            "name": "Deployment Integration",
+                            "topics": [
+                                  "Trigger CI from Git Tags",
+                                  "Build from a Release Tag",
+                                  "Promote Release Artifacts",
+                                  "Rollback a Release"
+                            ]
+                      }
+                ]
+          },
+          {
+                "name": "Git Internals and Advanced Operations",
+                "subcategories": [
+                      {
+                            "name": "Git Objects",
+                            "topics": [
+                                  "Blob Objects",
+                                  "Tree Objects",
+                                  "Commit Objects",
+                                  "Object Database"
+                            ]
+                      },
+                      {
+                            "name": "References and HEAD",
+                            "topics": [
+                                  "HEAD and Symbolic References",
+                                  "Branch References",
+                                  "Tag References",
+                                  "Detached HEAD"
+                            ]
+                      },
+                      {
+                            "name": "Advanced Commands",
+                            "topics": [
+                                  "git cherry-pick",
+                                  "git bisect",
+                                  "git blame",
+                                  "git show"
+                            ]
+                      },
+                      {
+                            "name": "Repository Maintenance",
+                            "topics": [
+                                  "git gc",
+                                  "git fsck",
+                                  "git prune",
+                                  "Verify Repository Integrity"
+                            ]
+                      }
+                ]
+          },
+          {
+                "name": "Git Troubleshooting",
+                "subcategories": [
+                      {
+                            "name": "Authentication Errors",
+                            "topics": [
+                                  "Permission Denied",
+                                  "SSH Key Authentication Failure",
+                                  "HTTPS Token Authentication",
+                                  "Expired Credentials"
+                            ]
+                      },
+                      {
+                            "name": "Push and Pull Errors",
+                            "topics": [
+                                  "Non-Fast-Forward Rejection",
+                                  "Push Rejected by Hook",
+                                  "Divergent Branches",
+                                  "Unrelated Histories"
+                            ]
+                      },
+                      {
+                            "name": "Repository Errors",
+                            "topics": [
+                                  "Corrupted Repository",
+                                  "Missing Git Objects",
+                                  "Detached HEAD Recovery",
+                                  "Invalid Remote URL"
+                            ]
+                      },
+                      {
+                            "name": "Performance Issues",
+                            "topics": [
+                                  "Large Repository Clone",
+                                  "Slow Git Operations",
+                                  "Large File Handling",
+                                  "Git LFS Troubleshooting"
+                            ]
+                      }
+                ]
+          },
+          {
+                "name": "Git Security and Best Practices",
+                "subcategories": [
+                      {
+                            "name": "Secrets Protection",
+                            "topics": [
+                                  "Prevent Secret Commits",
+                                  "Remove Exposed Credentials",
+                                  "Secret Scanning",
+                                  "Design a .gitignore"
+                            ]
+                      },
+                      {
+                            "name": "Access Security",
+                            "topics": [
+                                  "SSH Authentication",
+                                  "Personal Access Tokens",
+                                  "Least-Privilege Access",
+                                  "Signed Commits"
+                            ]
+                      },
+                      {
+                            "name": "Repository Standards",
+                            "topics": [
+                                  "Commit Message Standards",
+                                  "Branch Naming Standards",
+                                  "Pull Request Templates",
+                                  "CODEOWNERS Policies"
+                            ]
+                      },
+                      {
+                            "name": "Production Safety",
+                            "topics": [
+                                  "Protect the Main Branch",
+                                  "Restrict Force Push",
+                                  "Require Reviews",
+                                  "Audit Repository History"
+                            ]
+                      }
+                ]
+          },
+          {
+                "name": "Real-World Git DevOps Scenarios",
+                "subcategories": [
+                      {
+                            "name": "CI/CD Integration",
+                            "topics": [
+                                  "GitHub Actions Trigger Workflow",
+                                  "Jenkins Webhook Integration",
+                                  "Pipeline Branch Strategy",
+                                  "Recover a Failed Git Trigger"
+                            ]
+                      },
+                      {
+                            "name": "Production Incidents",
+                            "topics": [
+                                  "Bad Commit Reaches Production",
+                                  "Emergency Production Rollback",
+                                  "Release Hotfix Workflow",
+                                  "Recover Failed Deployment"
+                            ]
+                      },
+                      {
+                            "name": "Team Incidents",
+                            "topics": [
+                                  "Resolve Conflict Before Release",
+                                  "Concurrent File Changes",
+                                  "Incorrect Pull Request Merge",
+                                  "Recover Diverged Branches"
+                            ]
+                      },
+                      {
+                            "name": "Enterprise Scenarios",
+                            "topics": [
+                                  "Multi-Environment Git Workflow",
+                                  "Monorepo Release Coordination",
+                                  "Cross-Team Integration",
+                                  "Repository Disaster Recovery"
+                            ]
+                      }
+                ]
           }
-        ]
-      }
     ]
   },
   "tech-version-compatibility": {
