@@ -236,9 +236,7 @@ const topicAliases: Record<string,string> = {
   "CNI diagnostics":"kubectl get pods -n kube-system -o wide",
   "YAML validation commands":"python -c \"import yaml; yaml.safe_load(open('<file.yaml>'))\"",
   "HTTP health checks":"curl -fsS -i <health-url>",
-  "HTTP status diagnostics":"curl -sS -D - -o /dev/null <url>",
-  "TLS certificate checks":"openssl s_client -connect <host>:443 -servername <host>"
-const topicArgs: Record<string,string> = {
+  "HTTP status diagnostics":"curl -sS -D - -o /dev/null <url>"const topicArgs: Record<string,string> = {
   pwd:"", ls:"-lah", cd:"<directory>", find:". -maxdepth 2 -type f", locate:"<filename>", tree:"-L 2",
   mkdir:"-p <directory>", touch:"<file>", cp:"<source> <destination>", mv:"<source> <destination>", rm:"-i <file>",
   cat:"<file>", less:"<file>", head:"-n 20 <file>", tail:"-n 100 <file>", grep:"-n '<pattern>' <file>",
