@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable react-hooks/set-state-in-effect -- Hydrate persisted browser-only planner state after mount to avoid server/client hydration mismatch. */
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { featureCatalog } from "./feature-catalog";
@@ -119,7 +121,7 @@ export default function StudyPlanner({ slug = [] }: { slug?: string[] }) {
             <section className="rounded-2xl border border-indigo-100 bg-white p-5 shadow-md"><h2 className="font-black">⚡ Quick Actions</h2><div className="mt-3 grid grid-cols-2 gap-2"><Link href={base+"/learning-goals"} className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-center text-sm font-bold text-emerald-800">🎯<br/>Set Goals</Link><Link href={base+"/roadmaps"} className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-center text-sm font-bold text-blue-800">🗺️<br/>View Roadmap</Link><Link href={base+"/daily-plan"} className="rounded-xl border border-violet-200 bg-violet-50 p-4 text-center text-sm font-bold text-violet-800">▶<br/>Start Study</Link><Link href={base+"/analytics"} className="rounded-xl border border-orange-200 bg-orange-50 p-4 text-center text-sm font-bold text-orange-800">📈<br/>Track Progress</Link></div></section>
           </aside>
         </div>
-        <div className="mt-5 grid gap-4 lg:grid-cols-[1.5fr_1fr]"><section className="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm"><h2 className="font-black">◷ Recent Activity</h2><p className="mt-3 rounded-xl bg-blue-50 p-4 text-sm">✨ {completed.length ? `Completed ${completed.length} learning topic(s)` : "Your learning activity will appear here as you complete topics."}</p></section><section className="rounded-2xl bg-gradient-to-r from-violet-700 to-indigo-600 p-5 text-center text-white shadow-lg"><div className="text-3xl">🏆</div><h2 className="text-xl font-black text-amber-200">You're on the right track!</h2><p className="mt-1 text-sm">Continue planning and achieve your DevOps dreams!</p></section></div>
+        <div className="mt-5 grid gap-4 lg:grid-cols-[1.5fr_1fr]"><section className="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm"><h2 className="font-black">◷ Recent Activity</h2><p className="mt-3 rounded-xl bg-blue-50 p-4 text-sm">✨ {completed.length ? `Completed ${completed.length} learning topic(s)` : "Your learning activity will appear here as you complete topics."}</p></section><section className="rounded-2xl bg-gradient-to-r from-violet-700 to-indigo-600 p-5 text-center text-white shadow-lg"><div className="text-3xl">🏆</div><h2 className="text-xl font-black text-amber-200">You&apos;re on the right track!</h2><p className="mt-1 text-sm">Continue planning and achieve your DevOps dreams!</p></section></div>
       </div><footer className="mt-8 bg-[#06143d] px-6 py-5 text-xs text-white">∞　 DevMavox · Practical DevOps Learning <span className="float-right">Learn Today. Lead Tomorrow. 🚀</span></footer>
     </main>
   );
