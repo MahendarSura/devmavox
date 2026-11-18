@@ -1,6 +1,9 @@
 name: Incident Simulator Build
 
 on:
+  push:
+    branches:
+      - feature/incident-simulator-main-only-20261118
   pull_request:
     branches:
       - main
