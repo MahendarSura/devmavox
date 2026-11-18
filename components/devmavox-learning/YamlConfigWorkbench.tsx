@@ -363,6 +363,7 @@ export default function YamlConfigWorkbench({ feature, slug = [] }: Props) {
   const base = `/${feature.id}`;
 
   const isPracticalLabModule = ["Kubernetes Manifest Lab", "Troubleshooting Lab", "CI/CD and GitOps Lab"].includes(activeModule);
+  const isQuizAssessmentModule = moduleWorkspaceOpen && activeModule === "Quiz and Assessment";
   const showEditor =
     activeModule === "YAML Editor" ||
     activeModule === "YAML Validator" ||
@@ -743,7 +744,8 @@ kubectl get deployments,pods,services`,
           </div>
         </section>
 
-        <div className="grid items-start gap-5 lg:grid-cols-[260px_minmax(0,1fr)_245px]">
+        <div className={`grid items-start gap-5 ${isQuizAssessmentModule ? "grid-cols-1" : "lg:grid-cols-[260px_minmax(0,1fr)_245px]"}`}>
+          {!isQuizAssessmentModule && (
           <aside className="rounded-2xl border border-slate-800 bg-[#0d1523] p-4">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-sm font-bold text-white">Learning Curriculum</h2>
@@ -789,6 +791,7 @@ kubectl get deployments,pods,services`,
               })}
             </nav>
           </aside>
+          )}
 
           <section className="min-w-0 space-y-5">
             {!moduleWorkspaceOpen && rightPanelSelection && selectedRightPanelContent ? (
@@ -1028,8 +1031,8 @@ kubectl get deployments,pods,services`,
                         setNotice("Learning example loaded into the YAML Editor.");
                       }}
                     />
-                    {["Learn YAML", "YAML Editor", "YAML Validator", "Production Scenarios", "Quiz and Assessment"].includes(activeModule) && (
-                      <YamlModuleAssessment moduleName={activeModule} />
+                    {activeModule === "Quiz and Assessment" && (
+                      <YamlModuleAssessment moduleName="Quiz and Assessment" />
                     )}
                   </>
                 )}
@@ -1158,6 +1161,7 @@ kubectl apply --dry-run=server -f deployment.yaml`}</code></pre>
             )}
           </section>
 
+          {!isQuizAssessmentModule && (
           <aside className="space-y-4">
             <div className="rounded-2xl border border-slate-800 bg-[#0d1523] p-5">
               <h2 className="text-sm font-bold text-white">Quick Reference</h2>
@@ -1205,6 +1209,7 @@ kubectl apply --dry-run=server -f deployment.yaml`}</code></pre>
               </div>
             </div>
           </aside>
+          )}
         </div>
       </div>
 
