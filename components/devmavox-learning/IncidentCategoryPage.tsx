@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { FeatureCategory, FeatureDefinition } from "./feature-catalog";
 
 function slugify(value: string) {
-  return value.toLowerCase().normalize("NFKD").replace(/[\\u0300-\\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
 const categoryVisuals: Record<string, { icon: string; accent: string; tint: string; description: string }> = {
