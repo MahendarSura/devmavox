@@ -21,7 +21,20 @@ const playbooks: {match:RegExp;drivers:string[];commands:string[];lab:string[]}[
 const defaultPlaybook = {drivers:["Usage volume and duration, capacity or request dimensions, regional unit price","Discounts, credits, commitment coverage, shared infrastructure and allocation metadata","Workload utilization, traffic shape, reliability headroom and service-level objectives"],commands:["# Set START_DATE and END_DATE to a closed billing period (YYYY-MM-DD)","aws ce get-cost-and-usage --time-period Start=$START_DATE,End=$END_DATE --granularity MONTHLY --metrics UnblendedCost --group-by Type=DIMENSION,Key=SERVICE","aws ce get-dimension-values --time-period Start=$START_DATE,End=$END_DATE --dimension USAGE_TYPE --context COST_AND_USAGE"],lab:["Capture a 30-day closed-period baseline and record account, region, service and usage dimensions.","Identify the three largest cost drivers and connect each to an owner and workload metric.","Compare two optimization options, estimate savings and document risk, approval and rollback evidence."]};
 
 export function getFinOpsLesson(category:string,subcategory:string,topic:string):FinOpsLesson {
- const playbook=playbooks.find(item=>item.match.test(topic+" "+subcategory+" "+category))||defaultPlaybook;
+ const categoryPlaybook:Record<string,RegExp> = {
+  "Compute Costs":/ec2|instance|compute|cpu|memory|graviton|spot|autoscal|savings plan|reserved/i,
+  "Storage Costs":/s3|storage|ebs|snapshot|backup|archive|lifecycle|volume|retrieval/i,
+  "Networking Costs":/network|transfer|nat|load balancer|ipv4|cloudfront|route 53|vpc endpoint|egress|cache/i,
+  "Container Costs":/eks|ecs|kubernetes|container|namespace|pod|node|karpenter|cluster|fargate/i,
+  "Database Costs":/rds|database|dynamo|aurora|iops|replica|point-in-time|instance/i,
+  "Cloud Billing":/budget|billing|cost explorer|invoice|forecast|allocation|tag|showback|chargeback|governance|anomal|report|unit economics|finops/i,
+  "Cost Governance":/budget|billing|cost explorer|invoice|forecast|allocation|tag|showback|chargeback|governance|anomal|report|unit economics|finops/i,
+  "Cost Optimization":/ec2|instance|compute|cpu|memory|graviton|spot|autoscal|savings plan|reserved|idle|waste|right.?siz|optimization|utilization/i
+ };
+ const preferred=categoryPlaybook[category];
+ const playbook=(preferred ? playbooks.find(item=>item.match.source===preferred.source) : undefined)
+  || playbooks.find(item=>item.match.test(topic+" "+subcategory+" "+category))
+  || defaultPlaybook;
  return {
   overview:`${topic} is a dedicated engineering practice in ${category} → ${subcategory}. The objective is to connect workload architecture and operating behavior to measurable cloud expenditure. Establish a named owner, business purpose, service-level objective and closed billing window before proposing any cost change. Separate recurring run rate from one-time charges, discounts and credits.`,
   costDrivers:playbook.drivers,
