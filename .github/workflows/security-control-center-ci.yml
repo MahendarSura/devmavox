@@ -1,0 +1,43 @@
+name: Security Control Center CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "app/devsecops-security-lab/**"
+      - "components/devmavox-learning/SecurityControlCenter.tsx"
+      - ".github/workflows/security-control-center-ci.yml"
+  push:
+    branches: [feature/security-control-center-ops-20261118]
+    paths:
+      - "app/devsecops-security-lab/**"
+      - "components/devmavox-learning/SecurityControlCenter.tsx"
+      - ".github/workflows/security-control-center-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-control-center-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Typecheck, lint and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: TypeScript validation
+        run: npx tsc --noEmit
+      - name: Feature lint
+        run: npx eslint app/devsecops-security-lab/page.tsx components/devmavox-learning/SecurityControlCenter.tsx
+      - name: Production build
+        run: npm run build

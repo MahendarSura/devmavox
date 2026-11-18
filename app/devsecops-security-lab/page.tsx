@@ -1,5 +1,5 @@
-import FeatureExplorer from "@/components/devmavox-learning/FeatureExplorer";
+import SecurityControlCenter from "@/components/devmavox-learning/SecurityControlCenter";
 
-export default function Page() {
-  return <FeatureExplorer featureId="devsecops-security-lab" />;
+export default function DevSecOpsSecurityLabPage() {
+  return <SecurityControlCenter />;
 }
