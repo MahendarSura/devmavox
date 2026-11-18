@@ -248,7 +248,7 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
   const categoryKey = category.toLowerCase();
   const alias = topicAliases[topic];
   const raw = alias || topic;
-  const first = raw.trim().split(/\\s+/)[0] || "help";
+  const first = raw.trim().split(/\s+/)[0] || "help";
   const categoryDefaults: Record<string,string> = {
     "linux":"ls", "linux administration":"systemctl", "networking":"ip", "git":"git",
     "docker":"docker", "kubernetes":"kubectl", "aws cli":"aws", "terraform":"terraform",
