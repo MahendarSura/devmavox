@@ -520,3 +520,94 @@ export const incidentLessons: Record<string, IncidentLesson> = {
     [{question:"Why should suspicious activity be correlated across multiple data sources?",answer:"A single alert may be noisy or incomplete. Identity, process, DNS and network events together help establish scope, intent and whether the behavior is legitimate."},{question:"Should an engineer immediately shut down a suspicious production server?",answer:"Not automatically. Follow the incident response plan and security lead's direction; isolation may be safer than shutdown because volatile evidence and business-critical services can be lost."}]
   )
 };
+
+
+/**
+ * Provides a complete, safe first-response lab for newly catalogued scenarios.
+ * Existing hand-authored lessons always take precedence.
+ */
+export function getIncidentLesson(
+  slug: string,
+  topic: string,
+  categoryName: string,
+  subcategoryName: string,
+): IncidentLesson {
+  const existing = incidentLessons[slug];
+  if (existing) return existing;
+
+  const domain = categoryName.replace(/ Incidents?$/i, "");
+  const lower = `${categoryName} ${subcategoryName} ${topic}`.toLowerCase();
+  let commands: IncidentCommand[] = [
+    { command: "date -Is; hostname; uptime", purpose: "Timestamp the exercise and record the host's basic health before changing anything.", expected: "A timestamp, host identity and current load are captured for the incident timeline." },
+    { command: "journalctl --since '-15 min' --no-pager | tail -80", purpose: "Review recent system events around the reported symptom.", expected: "Recent warnings and errors can be correlated with the incident start time." },
+    { command: "ss -s; df -h; free -h", purpose: "Check basic socket, filesystem and memory pressure indicators.", expected: "A compact baseline helps rule out common host-level resource constraints." },
+  ];
+
+  if (lower.includes("kubernetes") || lower.includes("pod") || lower.includes("kube") || lower.includes("eks")) {
+    commands = [
+      { command: "kubectl get nodes -o wide", purpose: "Check node readiness and identify affected worker nodes.", expected: "Nodes show Ready status or expose the node with a scheduling or health issue." },
+      { command: "kubectl get pods -A -o wide", purpose: "Find affected workloads, restart counts, placement and current pod states.", expected: "The failing namespace, pod and node are visible without modifying the cluster." },
+      { command: "kubectl get events -A --sort-by=.lastTimestamp", purpose: "Read recent scheduler, kubelet, image, volume and networking events.", expected: "Events provide timestamped evidence such as FailedMount, BackOff or FailedScheduling." },
+      { command: "kubectl describe pod <pod> -n <namespace>", purpose: "Inspect conditions, container state, probes, mounts and recent events for the selected pod.", expected: "The describe output narrows the failure to a specific dependency or lifecycle stage." },
+      { command: "kubectl logs <pod> -n <namespace> --all-containers --tail=100", purpose: "Read recent application logs from the affected workload.", expected: "Logs show the application-side error or confirm that failure occurs before startup." },
+    ];
+  } else if (lower.includes("docker") || lower.includes("container") || lower.includes("image") || lower.includes("volume")) {
+    commands = [
+      { command: "docker ps -a --no-trunc", purpose: "Inspect container state, exit status and restart behavior.", expected: "The affected container and its current lifecycle state are identified." },
+      { command: "docker inspect <container>", purpose: "Read exit code, health status, mounts, network settings and configured limits.", expected: "Inspect metadata reveals the exact runtime configuration without changing it." },
+      { command: "docker logs --timestamps --tail 150 <container>", purpose: "Correlate container output with the incident start time.", expected: "Recent logs expose startup, dependency or runtime errors when the process emitted them." },
+      { command: "docker stats --no-stream", purpose: "Check current CPU and memory consumption across running containers.", expected: "Resource usage helps identify pressure or an outlier container." },
+    ];
+  } else if (lower.includes("database") || lower.includes("postgres") || lower.includes("mysql") || lower.includes("mongo") || lower.includes("sql") || lower.includes("replication")) {
+    commands = [
+      { command: "date -Is; uptime; df -h", purpose: "Record timing and check host load and storage capacity.", expected: "The baseline shows whether host pressure or a full filesystem may affect the database." },
+      { command: "ss -lntp", purpose: "Check whether the expected database listener is bound and accepting connections.", expected: "The listener state and port are visible; absence may indicate service or bind failure." },
+      { command: "systemctl status <database-service> --no-pager", purpose: "Inspect service state and recent failure reason.", expected: "The service manager reports active, failed or restarting state." },
+      { command: "journalctl -u <database-service> --since '-20 min' --no-pager", purpose: "Review database service logs around the failure window.", expected: "Database errors, resource warnings or recovery messages are available for analysis." },
+    ];
+  } else if (lower.includes("dns") || lower.includes("network") || lower.includes("routing") || lower.includes("tls") || lower.includes("certificate") || lower.includes("connection") || lower.includes("firewall") || lower.includes("port")) {
+    commands = [
+      { command: "ip route; ip addr", purpose: "Inspect local interfaces and route selection.", expected: "The source interface, address and expected next hop are visible." },
+      { command: "getent hosts <hostname>; dig <hostname>", purpose: "Compare system name resolution with DNS response details.", expected: "Resolved addresses and DNS status help isolate name-resolution failures." },
+      { command: "ss -lntup", purpose: "Inspect local listening sockets and transport endpoints.", expected: "The expected service port is listening or its absence is confirmed." },
+      { command: "curl -vk --connect-timeout 5 https://<endpoint>/health", purpose: "Test connection, TLS negotiation and HTTP response from the lab client.", expected: "The verbose trace separates DNS, TCP, TLS and application-layer failure." },
+    ];
+  } else if (lower.includes("aws") || lower.includes("ec2") || lower.includes("iam") || lower.includes("vpc") || lower.includes("s3") || lower.includes("load balancer") || lower.includes("cloud")) {
+    commands = [
+      { command: "aws sts get-caller-identity", purpose: "Confirm which AWS identity the diagnostic session is using.", expected: "Account and principal identity are known before interpreting access errors." },
+      { command: "aws ec2 describe-instance-status --include-all-instances", purpose: "Read EC2 instance and system status checks where applicable.", expected: "Status checks distinguish guest OS issues from underlying host or reachability problems." },
+      { command: "aws cloudwatch describe-alarms --state-value ALARM", purpose: "Review active CloudWatch alarms for related resources.", expected: "Alarm names and states help establish scope and incident timing." },
+      { command: "aws cloudtrail lookup-events --max-results 20", purpose: "Review recent control-plane activity for relevant changes.", expected: "Recent API events can identify a configuration or identity change; access depends on permissions." },
+    ];
+  } else if (lower.includes("prometheus") || lower.includes("grafana") || lower.includes("monitor") || lower.includes("alert") || lower.includes("logging") || lower.includes("trace")) {
+    commands = [
+      { command: "systemctl status prometheus --no-pager", purpose: "Check collector service state where Prometheus is self-managed.", expected: "Service status confirms whether the collector is running or failing." },
+      { command: "curl -fsS http://localhost:9090/-/ready", purpose: "Check the local Prometheus readiness endpoint in a lab environment.", expected: "A successful readiness response indicates the server is ready to serve requests." },
+      { command: "curl -fsS http://localhost:9090/api/v1/targets", purpose: "Inspect scrape target health and scrape error details.", expected: "Target health distinguishes collection failures from dashboard presentation issues." },
+      { command: "journalctl -u prometheus --since '-20 min' --no-pager", purpose: "Correlate collector logs with the alert or missing-metrics window.", expected: "Recent logs expose scrape, storage or configuration errors." },
+    ];
+  } else if (lower.includes("kafka") || lower.includes("rabbitmq") || lower.includes("redis") || lower.includes("queue") || lower.includes("message") || lower.includes("event") || lower.includes("webhook")) {
+    commands = [
+      { command: "ss -lntp", purpose: "Confirm the expected broker or cache listener is present.", expected: "The listener and configured port are visible for follow-up checks." },
+      { command: "systemctl status <broker-service> --no-pager", purpose: "Inspect broker service health where it is self-managed.", expected: "Service state and recent failure information are recorded." },
+      { command: "journalctl -u <broker-service> --since '-20 min' --no-pager", purpose: "Review broker logs for connection, disk, leader or queue errors.", expected: "Logs provide evidence for broker-side failure versus client-side problems." },
+      { command: "df -h; free -h; uptime", purpose: "Check broker host capacity and saturation.", expected: "Disk, memory and load constraints can be correlated with backlog or availability symptoms." },
+    ];
+  }
+
+  return lesson(
+    topic,
+    `A simulated ${topic} incident affecting the ${domain} domain. Work through detection, evidence collection, fault isolation and controlled recovery. Treat every command as a read-only diagnostic example unless the step explicitly says otherwise; replace placeholders with values from the disposable lab environment.`,
+    /down|unavailable|corruption|security|unauthorized|compromise|full|failure/i.test(topic) ? "SEV-2" : "SEV-3",
+    `Users or dependent services may experience degraded availability, failed operations, delayed processing or reduced reliability. Establish the affected scope, start time and business impact before selecting a severity; the suggested training severity is not a production classification.`,
+    `Disposable ${domain} training environment with synthetic workloads, sample telemetry and no connection to production credentials or infrastructure.`,
+    [`Monitoring or a user report indicates ${topic.toLowerCase()}.`, "The symptom is reproducible for at least one test request or synthetic workload.", "A dependent service or workflow reports errors, delays or degraded health."],
+    commands,
+    [`A recent configuration, release or infrastructure change affected ${topic.toLowerCase()}.`, "A dependency, identity, network path or external service became unavailable.", "Capacity, resource limits or workload growth exceeded the tested operating range.", "A transient platform fault or an incorrect health signal obscured the real failure."],
+    ["Declare the training incident, record the timestamp and identify the affected service boundary.","Preserve command output, relevant logs, metrics and recent change history before remediation.","Choose the narrowest reversible mitigation in the disposable lab; avoid broad restarts or destructive cleanup.","If the exercise models a bad release, use the documented rollback path and record the exact version change.","Escalate to the owning platform or service team when evidence points outside the current boundary."],
+    ["Repeat the original failing test and confirm the expected successful result.","Check service health, error rate, latency and dependent workflow completion.","Confirm no new critical events or resource saturation appear during the observation window.","Record the recovery timestamp and the evidence used to close the exercise."],
+    ["Add a detection signal tied to user impact and a clear runbook link.","Add regression, load or failure-mode tests for the identified trigger.","Document ownership, escalation boundaries, rollback criteria and recovery verification.","Review capacity, access, dependency and configuration drift on a regular schedule."],
+    [`In an isolated lab, introduce a reversible fault that reproduces ${topic.toLowerCase()} using synthetic data only.`, "Capture the initial symptom, execute the read-only investigation commands and identify the most likely failure boundary.","Apply one controlled remediation, rerun the same test and compare before/after evidence.","Write a concise incident timeline, root cause statement and one preventive action."],
+    [{ question: "Why do we collect evidence before remediation?", answer: "A restart or configuration change can erase the failure state and make the root cause harder to prove. Timestamped logs, metrics, events and command output preserve a defensible incident timeline." }, { question: "How do you know the incident is really resolved?", answer: "The original failing user journey must pass, service health and dependent workflows must recover, and telemetry must remain stable through an observation period. A green process status alone is not enough." }]
+  );
+}
