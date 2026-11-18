@@ -22,10 +22,10 @@ export function buildCommandGuide(topic:string,category:string,subcategory:strin
   if(existing) return {
     ...make(existing.base||"help",existing.args||"",existing.purpose||"Inspect and operate the selected tool.",existing.when||"Use this command during a controlled operational task.",(existing.examples||[])[0]?.command||"",(existing.output||"Command output."),(existing.next||[]),(existing.task||"Run the command in a disposable environment."),(existing.verify||"Verify the target state."),existing.flags||[]),
     ...existing,
-    safety:"Prefer read-only inspection first. Verify exact target and permissions before any state-changing operation.",
-    workflow:["Confirm target and context.","Inspect current state.","Capture logs/events and command output.","Make the smallest approved change.","Verify health and monitor."],
-    pitfalls:["Check tool version and platform differences.","Do not copy sample resource IDs or production targets."],
-    level:"Intermediate"
+    safety:existing.safety || "Use a disposable lab target first. Confirm the exact host, account, namespace, repository or resource before changing anything.",
+    workflow:existing.workflow || ["Open the correct lab terminal and confirm the target context.","Run the command with the sample target shown.","Read the output and identify the important field or status.","Change one argument or option and run it again.","Compare both outputs and record what changed."],
+    pitfalls:existing.pitfalls || ["Do not paste sample resource IDs into production.","Check the installed tool version when an option is unavailable."],
+    level:existing.level || "Practice"
   };
 
   const next=["Check tool version and active context.","Run the relevant read-only status/list/describe command.","Inspect logs, events or detailed resource metadata.","Verify the result with an independent health check."];
