@@ -82,7 +82,7 @@ export default function PortfolioStudio({slug=[]}:{slug?:string[]}) {
  const topic=category&&slug.length===3?category.topics.find(t=>slugify(t.name)===slug[2]):undefined;
  const total=categories.reduce((n,c)=>n+c.topics.length,0);
  const completion=useMemo(()=>Math.round(([data.fullName,data.role,data.summary,data.skills,data.project,data.github,data.achievement,data.caseStudy].filter(v=>v.trim()).length/8)*100),[data]);
- useEffect(()=>{try{const saved=localStorage.getItem("devmavox-portfolio-studio-v1");if(saved)const parsed=JSON.parse(saved);setData({...blank,...parsed,topicDrafts:parsed.topicDrafts||{}});}catch{setNotice("Saved draft could not be read");}setReady(true);},[]);
+ useEffect(()=>{try{const saved=localStorage.getItem("devmavox-portfolio-studio-v1");if(saved){const parsed=JSON.parse(saved);setData({...blank,...parsed,topicDrafts:parsed.topicDrafts||{}});}}catch{setNotice("Saved draft could not be read");}setReady(true);},[]);
  useEffect(()=>{if(ready){localStorage.setItem("devmavox-portfolio-studio-v1",JSON.stringify(data));setNotice("Auto-saved in this browser");}},[data,ready]);
  useEffect(()=>{if(topic&&category)setDraft(data.topicDrafts[topicKey(category.name,topic.name)]||"");},[topic?.name,category?.name,data.topicDrafts]);
  const update=(key:keyof Data,value:string)=>setData(old=>({...old,[key]:value}));
