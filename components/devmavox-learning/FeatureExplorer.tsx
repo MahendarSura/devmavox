@@ -1,6 +1,16 @@
 import CommandExplorerWorkspace from "./CommandExplorerWorkspace";
 import CommandExplorerBrowse from "./CommandExplorerBrowse";
 import YamlConfigWorkbench from "./YamlConfigWorkbench";
+import DevOpsKnowledgeHome from "./DevOpsKnowledgeHome";
+import DevOpsKnowledgeTopicPage from "./DevOpsKnowledgeTopicPage";
+import MonitoringPlaygroundHome from "./MonitoringPlaygroundHome";
+import MonitoringTopicPage from "./MonitoringTopicPage";
+import { getMonitoringLesson } from "./monitoring-topic-content";
+import CareerDashboard from "./CareerDashboard";
+import CareerTopicPage from "./CareerTopicPage";
+import { getCareerTopicContent } from "./career-topic-content";
+import DevOpsCopilotWorkspace from "./DevOpsCopilotWorkspace";
+import DailyChallengeWorkspace from "./DailyChallengeWorkspace";
 import CloudCostLabWorkspace from "./CloudCostLabWorkspace";
 import Link from "next/link";
 import ArchitectureTopicPage from "./ArchitectureTopicPage";
@@ -308,6 +318,22 @@ export default function FeatureExplorer({
     return <CloudCostLabWorkspace slug={slug} />;
   }
 
+  if (featureId === "devops-ai-assistant") {
+    return <DevOpsCopilotWorkspace feature={feature} slug={slug} />;
+  }
+
+  if (featureId === "monitoring-playground" && slug.length === 0) {
+    return <MonitoringPlaygroundHome feature={feature} />;
+  }
+
+  if (featureId === "devops-knowledge-base" && slug.length === 0) {
+    return <DevOpsKnowledgeHome feature={feature} />;
+  }
+
+  if (featureId === "devops-career-center" && slug.length === 0) {
+    return <CareerDashboard feature={feature} />;
+  }
+
   const theme = featureTheme(feature.style);
 
   if (slug.length === 0 && featureId === "incident-simulator") {
@@ -439,6 +465,33 @@ export default function FeatureExplorer({
 
     const topic = subcategory.topics.find((item) => slugify(item) === slug[2]);
     if (!topic) notFound();
+
+    if (featureId === "daily-devops-challenge") {
+      return <DailyChallengeWorkspace category={category.name} section={subcategory.name} topic={topic} categorySlug={slug[0]} sectionSlug={slug[1]} />;
+    }
+
+    if (featureId === "devops-career-center") {
+      return <CareerTopicPage topic={topic} category={category.name} section={subcategory.name} content={getCareerTopicContent(topic)} baseHref={`/${feature.id}/${slug[0]}/${slug[1]}`} />;
+    }
+
+    if (featureId === "monitoring-playground") {
+      const monitoringLesson = getMonitoringLesson(topic);
+      if (monitoringLesson) {
+        return <MonitoringTopicPage lesson={monitoringLesson} featureId={feature.id} categoryName={category.name} subcategoryName={subcategory.name} categorySlug={slug[0]} subcategorySlug={slug[1]} />;
+      }
+    }
+
+    if (featureId === "devops-knowledge-base") {
+      const allTopics = feature.categories.flatMap((item) =>
+        item.subcategories.flatMap((sub) => sub.topics.map((name) => ({
+          name, categorySlug: slugify(item.name), subcategorySlug: slugify(sub.name),
+        })))
+      );
+      const currentIndex = allTopics.findIndex((item) => item.name === topic);
+      const previousTopic = currentIndex > 0 ? allTopics[currentIndex - 1] : undefined;
+      const nextTopic = currentIndex >= 0 && currentIndex < allTopics.length - 1 ? allTopics[currentIndex + 1] : undefined;
+      return <DevOpsKnowledgeTopicPage featureId={feature.id} category={category.name} subcategory={subcategory.name} topic={topic} categorySlug={slug[0]} subcategorySlug={slug[1]} previousTopic={previousTopic} nextTopic={nextTopic} />;
+    }
 
     if (featureId === "architecture-diagram-library") {
       const architectureContent = getArchitectureTopic(topic);
