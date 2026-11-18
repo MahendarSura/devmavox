@@ -161,7 +161,25 @@ export default function CommandExplorerWorkspace({
   const matches = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return [];
-    return allTopics.filter((item) => `${item.name} ${item.category} ${item.subcategory}`.toLowerCase().includes(q)).slice(0,18);
+    return allTopics.filter((item) => {
+      const taskTerms = item.category === "Linux" || item.category === "Linux Administration" ? "disk full filesystem inode cpu memory process service logs permissions user package cron host down" :
+        item.category === "Networking" ? "dns resolution connection timeout port unreachable tls ssl certificate http https packet loss route latency" :
+        item.category === "Git" ? "merge conflict rollback lost commit branch push pull repository release" :
+        item.category === "Docker" ? "container crash image pull logs network volume disk build compose" :
+        item.category === "Kubernetes" || item.category === "Container Runtime and Platform Tools" ? "pod crashloopbackoff pending notready imagepullbackoff deployment rollout service ingress cni kubelet node" :
+        item.category === "AWS CLI" ? "ec2 s3 iam eks cloudwatch access denied region instance unhealthy cost" :
+        item.category === "Terraform" ? "state lock drift plan apply provider infrastructure destroy" :
+        item.category === "Ansible" ? "inventory ssh unreachable playbook failed privilege escalation" :
+        item.category === "Helm and Argo CD" ? "release rollback chart sync outofsync degraded gitops deployment" :
+        item.category === "CI/CD Platforms" ? "pipeline build failed runner agent job queue deployment" :
+        item.category === "Build and Artifact Tools" ? "maven gradle dependency build artifact nexus repository upload" :
+        item.category === "Monitoring and Observability" ? "prometheus grafana alert metrics dashboard logs jvm cpu latency" :
+        item.category === "DevSecOps and Security" ? "vulnerability secrets certificate tls scan image sbom signature" :
+        item.category === "Databases and Caching" ? "mysql postgres redis connection slow query backup restore cache" :
+        item.category === "Scripting and Automation" ? "bash powershell python json yaml automation script" :
+        item.category === "Java and Tomcat" ? "java jvm heap thread dump tomcat war deployment startup" : "container runtime cri kubeadm node";
+      return `${item.name} ${item.category} ${item.subcategory} ${taskTerms}`.toLowerCase().includes(q);
+    }).slice(0,18);
   }, [allTopics, search]);
 
   const selected = mode === "detail" && topic ? allTopics.find((item) => item.name === topic && item.category === category && item.subcategory === subcategory) : undefined;
@@ -267,7 +285,7 @@ export default function CommandExplorerWorkspace({
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3"><Link href="/command-explorer" className="text-sm text-slate-400 hover:text-white">← Command Explorer</Link><button onClick={()=>toggleFavorite(selected.name)} className={`rounded-full border px-3 py-2 text-xs ${favorite?"border-amber-400/40 bg-amber-400/10 text-amber-200":"border-slate-700 text-slate-300"}`}>{favorite?"★ Saved":"☆ Save command"}</button></div>
         <nav className="mb-5 flex flex-wrap gap-2 text-xs text-slate-500"><Link href="/command-explorer" className="hover:text-white">Explorer</Link><span>/</span><Link href={`/command-explorer/${slug(selected.category)}`} className="hover:text-white">{selected.category}</Link><span>/</span><Link href={`/command-explorer/${slug(selected.category)}/${slug(selected.subcategory)}`} className="hover:text-white">{selected.subcategory}</Link><span>/</span><span className="text-emerald-200">{selected.name}</span></nav>
-        <header className="mb-6 rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-[#0b211b] to-[#101a2a] p-6 sm:p-8"><p className="font-mono text-xs uppercase tracking-widest text-emerald-300">{selected.category} · {selected.subcategory}</p><h1 className="mt-2 font-mono text-3xl font-black text-white">{selected.name}</h1><p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">{profile.purpose}</p><p className="mt-3 text-xs text-slate-400">Practical command reference · options · examples · builder · verification</p></header>
+        <header className="mb-6 rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-[#0b211b] to-[#101a2a] p-6 sm:p-8"><p className="font-mono text-xs uppercase tracking-widest text-emerald-300">{selected.category} · {selected.subcategory}</p><h1 className="mt-2 font-mono text-3xl font-black text-white">{selected.name}</h1><p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">{profile.purpose}</p><div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-400"><span className="rounded-full border border-slate-700 px-2 py-1">{profile.level}</span><span>Practical command reference · options · examples · builder · verification</span></div></header>
 
         <section className="mb-5 rounded-2xl border border-emerald-500/25 bg-[#07140f] p-5">
           <div className="mb-3 flex items-center justify-between gap-3"><h2 className="font-mono text-sm font-bold text-emerald-200">01 / COMMAND BUILDER</h2><span className="text-xs text-slate-500">Build a command line</span></div>
