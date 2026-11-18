@@ -1,6 +1,8 @@
 import CommandExplorerWorkspace from "./CommandExplorerWorkspace";
 import CommandExplorerBrowse from "./CommandExplorerBrowse";
 import YamlConfigWorkbench from "./YamlConfigWorkbench";
+import IncidentTopicPage from "./IncidentTopicPage";
+import { incidentLessons } from "./incident-topic-content";
 import Link from "next/link";
 import ArchitectureTopicPage from "./ArchitectureTopicPage";
 import { getArchitectureTopic } from "./architecture-topic-content";
@@ -294,6 +296,26 @@ export default function FeatureExplorer({
 
   if (featureId === "yaml-config-playground") {
     return <YamlConfigWorkbench feature={feature} slug={slug} />;
+  }
+
+  if (featureId === "incident-simulator" && slug.length === 3) {
+    const incidentCategory = feature.categories.find((item) => slugify(item.name) === slug[0]);
+    const incidentSubcategory = incidentCategory?.subcategories.find((item) => slugify(item.name) === slug[1]);
+    const incidentTopic = incidentSubcategory?.topics.find((item) => slugify(item) === slug[2]);
+    const incidentContent = incidentTopic ? incidentLessons[slug[2]] : undefined;
+
+    if (!incidentCategory || !incidentSubcategory || !incidentTopic || !incidentContent) notFound();
+
+    return (
+      <IncidentTopicPage
+        content={incidentContent}
+        featureId={feature.id}
+        categoryName={incidentCategory.name}
+        subcategoryName={incidentSubcategory.name}
+        categorySlug={slug[0]}
+        subcategorySlug={slug[1]}
+      />
+    );
   }
 
   const theme = featureTheme(feature.style);
