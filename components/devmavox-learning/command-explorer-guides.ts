@@ -248,9 +248,19 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
   const categoryKey = category.toLowerCase();
   const alias = topicAliases[topic];
   const raw = alias || topic;
-  const first = raw.trim().split(/\s+/)[0] || "help";
-  let base = first;
-  let args = topicArgs[topic] ?? raw.slice(first.length).trim();
+  const first = raw.trim().split(/\\s+/)[0] || "help";
+  const categoryDefaults: Record<string,string> = {
+    "linux":"ls", "linux administration":"systemctl", "networking":"ip", "git":"git",
+    "docker":"docker", "kubernetes":"kubectl", "aws cli":"aws", "terraform":"terraform",
+    "ansible":"ansible-playbook", "helm and argo cd":"helm", "ci/cd platforms":"gh",
+    "build and artifact tools":"mvn", "monitoring and observability":"promtool",
+    "devsecops and security":"trivy", "databases and caching":"psql",
+    "scripting and automation":"bash", "java and tomcat":"java",
+    "container runtime and platform tools":"crictl"
+  };
+  const knownExecutables = /^(pwd|ls|cd|find|locate|tree|mkdir|touch|cp|mv|rm|ln|readlink|file|stat|cat|less|head|tail|grep|egrep|sed|awk|cut|sort|uniq|wc|tr|xargs|tee|diff|cmp|chmod|chown|chgrp|umask|getfacl|setfacl|namei|id|groups|sudo|tar|gzip|gunzip|zip|unzip|rsync|scp|sftp|ssh|sha256sum|ps|top|htop|pgrep|pkill|kill|killall|nice|renice|systemctl|service|journalctl|df|du|lsblk|blkid|mount|umount|free|vmstat|iostat|iotop|uptime|nproc|lscpu|dmesg|useradd|usermod|userdel|passwd|chage|getent|apt|apt-cache|dpkg|yum|dnf|rpm|crontab|at|timedatectl|ip|ss|netstat|ethtool|nmcli|route|arp|ping|traceroute|tracepath|mtr|tcpdump|tshark|nc|nmap|telnet|curl|wget|dig|nslookup|host|resolvectl|openssl|git|docker|kubectl|aws|terraform|ansible|ansible-playbook|ansible-inventory|ansible-doc|ansible-config|ansible-vault|ansible-galaxy|ansible-pull|ansible-lint|ansible-navigator|helm|argocd|jenkins|gh|glab|mvn|gradle|promtool|grafana-cli|amtool|trivy|grype|syft|checkov|tfsec|snyk|sonar-scanner|gitleaks|git-secrets|semgrep|cosign|mysql|mysqldump|mysqladmin|psql|pg_dump|pg_restore|pg_isready|redis-cli|bash|sh|source|export|env|printenv|read|getopts|trap|timeout|Get-Process|Get-Service|Get-ChildItem|Get-Content|Select-String|Test-NetConnection|Invoke-WebRequest|Invoke-RestMethod|Get-Command|Get-Help|python|pip|jq|yq|java|javac|jar|jps|jcmd|jstack|jmap|jstat|jinfo|catalina.sh|startup.sh|shutdown.sh|version.sh|crictl|ctr|kubeadm|kubelet)$/i;
+  let base = alias ? first : (knownExecutables.test(topic) ? topic : (categoryDefaults[categoryKey] || first));
+  let args = topicArgs[topic] ?? (alias ? raw.slice(first.length).trim() : (base === topic ? "" : "--help"));
   if (topic.startsWith("git ")) { base="git"; args=topic.slice(4)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
   else if (topic.startsWith("docker ")) { base="docker"; args=topic.slice(7)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
   else if (topic.startsWith("kubectl ")) { base="kubectl"; args=topic.slice(8)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
@@ -305,7 +315,7 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     "container runtime and platform tools":["crictl ps -a","crictl pods -a","journalctl -u kubelet -n 100 --no-pager"]
   };
   return { base, args, purpose, example:base+(args ? " "+args : ""),
-    output:"Illustrative output for "+topic+": inspect the command result, resource identifiers, status fields and exit code. Exact fields vary by tool version and environment; no live system was queried.",
+    output:"Example workflow for "+topic+": run the command against the intended target, capture standard output and standard error, record the exit code, then compare returned resource identifiers and status fields with the expected state. This is illustrative guidance only; exact output depends on tool version, permissions and environment. No live system was queried.",
     next:nextByCategory[categoryKey] || ["<tool> --help","<tool> --version"], safety, level:"Intermediate" };
 }
 
