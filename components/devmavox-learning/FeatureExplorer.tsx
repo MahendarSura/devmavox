@@ -1,5 +1,6 @@
 import YamlConfigWorkbench from "./YamlConfigWorkbench";
 import DevOpsCopilotWorkspace from "./DevOpsCopilotWorkspace";
+import DailyChallengeWorkspace from "./DailyChallengeWorkspace";
 import CareerDashboard from "./CareerDashboard";
 import CareerTopicPage from "./CareerTopicPage";
 import { getCareerTopicContent } from "./career-topic-content";
@@ -410,6 +411,10 @@ export default function FeatureExplorer({
 
     const topic = subcategory.topics.find((item) => slugify(item) === slug[2]);
     if (!topic) notFound();
+
+    if (featureId === "daily-devops-challenge") {
+      return <DailyChallengeWorkspace category={category.name} section={subcategory.name} topic={topic} categorySlug={slug[0]} sectionSlug={slug[1]} />;
+    }
 
     if (featureId === "devops-career-center") {
       return <CareerTopicPage topic={topic} category={category.name} section={subcategory.name} content={getCareerTopicContent(topic)} baseHref={`/${feature.id}/${slug[0]}/${slug[1]}`} />;
