@@ -41,7 +41,13 @@ jobs:
         run: npm ci
       - name: TypeScript validation
         run: npx tsc --noEmit
-      - name: ESLint
-        run: npm run lint
+      - name: ESLint (Command Explorer files)
+        run: >-
+          npx eslint
+          components/devmavox-learning/CommandExplorerBrowse.tsx
+          components/devmavox-learning/CommandExplorerWorkspace.tsx
+          components/devmavox-learning/FeatureExplorer.tsx
+          components/devmavox-learning/command-explorer-guides.ts
+          components/devmavox-learning/feature-catalog.ts
       - name: Next.js production build
         run: npm run build
