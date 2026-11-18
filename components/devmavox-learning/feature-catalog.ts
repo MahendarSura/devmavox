@@ -693,10 +693,10 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
     "title": "DevOps AI Assistant",
     "description": "An engineering command center for DevOps questions, command guidance, configuration reviews and production decision support.",
     "style": "assistant",
-    "label": "DevOps Copilot Command Center",
+    "label": "DevOps ChatGPT Command Center",
     "categories": [
       {
-        "name": "AI Learning Copilot",
+        "name": "AI Learning ChatGPT",
         "subcategories": [
           {
             "name": "Concept Coaching",
@@ -705,7 +705,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         ]
       },
       {
-        "name": "Command Copilot",
+        "name": "Command ChatGPT",
         "subcategories": [
           {
             "name": "Command Builder",
@@ -714,7 +714,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         ]
       },
       {
-        "name": "Configuration Copilot",
+        "name": "Configuration ChatGPT",
         "subcategories": [
           {
             "name": "Configuration Review",
@@ -723,7 +723,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         ]
       },
       {
-        "name": "Cloud & Infrastructure Copilot",
+        "name": "Cloud & Infrastructure ChatGPT",
         "subcategories": [
           {
             "name": "Cloud Engineering",
@@ -732,7 +732,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         ]
       },
       {
-        "name": "Kubernetes Copilot",
+        "name": "Kubernetes ChatGPT",
         "subcategories": [
           {
             "name": "Cluster Operations",
@@ -741,7 +741,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         ]
       },
       {
-        "name": "Troubleshooting Copilot",
+        "name": "Troubleshooting ChatGPT",
         "subcategories": [
           {
             "name": "Diagnostic Workbench",
@@ -750,7 +750,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         ]
       },
       {
-        "name": "CI/CD & GitOps Copilot",
+        "name": "CI/CD & GitOps ChatGPT",
         "subcategories": [
           {
             "name": "Delivery Engineering",
@@ -759,7 +759,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         ]
       },
       {
-        "name": "Architecture Copilot",
+        "name": "Architecture ChatGPT",
         "subcategories": [
           {
             "name": "System Design",
@@ -768,7 +768,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         ]
       },
       {
-        "name": "Interview Copilot",
+        "name": "Interview ChatGPT",
         "subcategories": [
           {
             "name": "Interview Practice",
@@ -777,7 +777,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         ]
       },
       {
-        "name": "Production Incident Copilot",
+        "name": "Production Incident ChatGPT",
         "subcategories": [
           {
             "name": "Incident Response",
