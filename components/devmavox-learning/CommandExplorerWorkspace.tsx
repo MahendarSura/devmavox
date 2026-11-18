@@ -217,8 +217,10 @@ export default function CommandExplorerWorkspace({
     let result = "";
     const mutationRules: { pattern: RegExp; reason: string }[] = [
       { pattern: /^kubectl\s+(apply|create|delete|replace|patch|scale|drain|cordon|uncordon|taint|label|annotate|set\s+|rollout\s+(restart|undo)\b)/, reason: "Kubernetes resources can be changed or removed." },
-      { pattern: /^docker\s+(run|rm|rmi|stop|start|restart|kill|push|build|exec|prune)\b|^docker\s+compose\s+(up|down|start|stop|restart|rm)\b|^docker\s+(volume|network|image|container|system)\s+(rm|prune)\b/, reason: "Docker containers, images or application stacks can be changed." },
-      { pattern: /^git\s+(add|commit|push|pull|merge|rebase|reset|restore|clean|switch|checkout|cherry-pick)\b|^git\s+tag\s+(?!(-l|--list)\b)|^git\s+branch\s+-[dD]\b|^git\s+remote\s+(add|remove|set-url)\b|^git\s+stash\s+(push|pop|drop|clear)\b/, reason: "Git repository or remote history can be changed." },
+      { pattern: /^docker\s+(run|create|rm|rmi|stop|start|restart|kill|push|build|exec|cp|tag|login|logout|prune)\b|^docker\s+compose\s+(up|down|start|stop|restart|rm|exec|cp)\b|^docker\s+(volume|network|image|container|system)\s+(create|connect|disconnect|rm|prune|tag)\b/, reason: "Docker containers, images, credentials, files or application stacks can be changed." },
+      { pattern: /^git\s+(init|clone|add|commit|push|pull|fetch|merge|rebase|reset|restore|clean|switch|checkout|cherry-pick|config)\b|^git\s+tag\s+(?!(-l|--list)\b)|^git\s+branch\s+(?!(-a|--all|-r|--remotes|-v|--verbose|--list)\b)|^git\s+worktree\s+(add|remove|prune|move)\b|^git\s+remote\s+(add|remove|set-url|rename)\b|^git\s+stash\s+(push|pop|drop|clear)\b/, reason: "Git repository, local refs or remote history can be changed." },
+      { pattern: /^kubectl\s+(cp|exec)\b/, reason: "This can write files to a container or run arbitrary commands inside a Pod." },
+      { pattern: /^(mkdir|touch|cp|mv|rm|rmdir|ln|tee|install)\s|^(gzip|gunzip|zip|tar)\s+(?!(-t|--test|-l|--list|-tf|--help)\b)|^(rsync|scp|sftp)\s/, reason: "This can create, overwrite, move, transfer or delete files." },
       { pattern: /^aws\s+(ec2\s+(run-instances|start-instances|stop-instances|terminate-instances|reboot-instances|modify-|create-|delete-)|s3\s+(cp|mv|rm|sync)\b|iam\s+(create-|delete-|attach-|detach-|put-|update-)|eks\s+(create-|delete-|update-))/, reason: "AWS resources or data can be changed." },
       { pattern: /^terraform\s+(apply|destroy|import|taint|untaint|force-unlock)\b|^terraform\s+state\s+(rm|mv|push)\b|^terraform\s+workspace\s+delete\b/, reason: "Terraform can modify infrastructure or state." },
       { pattern: /^ansible-playbook\s+(?!.*--(syntax-check|list-hosts|list-tasks|list-tags)\b)|^ansible\s+(?!.*(?:-m|--module-name)\s+ping\b)/, reason: "Ansible playbooks may change remote hosts, even when a task appears routine." },
@@ -231,7 +233,8 @@ export default function CommandExplorerWorkspace({
       { pattern: /^curl\b.*(?:--request\s+(POST|PUT|PATCH|DELETE)|-[X]\s*(POST|PUT|PATCH|DELETE))\b/i, reason: "This HTTP request may modify a remote service or upload data." },
       { pattern: /^cosign\s+sign\b|^certbot\s+(renew|delete)\b|^amtool\s+silence\s+add\b/i, reason: "This operation can publish signatures, renew/delete certificates or alter alert silences." },
     ];
-    const blockedMutation = mutationRules.find((rule) => rule.pattern.test(value));
+    const explicitDryRun = /(?:^|\s)--dry-run(?:=client|=server)?(?:\s|$)/.test(value);
+    const blockedMutation = explicitDryRun ? undefined : mutationRules.find((rule) => rule.pattern.test(value));
     if (blockedMutation) {
       result = "MUTATING COMMAND NOT SIMULATED\n" + blockedMutation.reason + "\n\nNo command was executed. Use a disposable lab, verify the target and impact, and obtain the required approval before running this command in a real environment.\n\nSIMULATOR LIMITATION — this workspace never connects to a shell, server, cloud account or cluster.";
     } else if (/^kubectl\s+get\s+pods/.test(normalized)) result = simulated("NAMESPACE   NAME             READY   STATUS    RESTARTS   AGE\nproduction  api-7d9f         1/1     Running   0          18m\nproduction  worker-5c8       0/1     Pending   0          4m");
