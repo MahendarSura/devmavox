@@ -1,6 +1,7 @@
  "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 
 type Topic = { name: string; purpose: string; checks: string[]; commands: string[]; remediation: string[] };
 type Domain = { name: string; code: string; color: string; description: string; topics: Topic[] };
@@ -101,7 +102,7 @@ export default function SecurityControlCenter() {
   return <main className="min-h-screen bg-[#080b14] text-slate-100">
     <div className="mx-auto max-w-[1440px] px-4 py-6 sm:px-7 lg:px-9">
       <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-5">
-        <div><a href="/" className="text-xs text-slate-400 hover:text-white">← DevMavox Home</a><div className="mt-3 flex items-center gap-3"><span className="grid h-11 w-11 place-items-center rounded-2xl border border-rose-400/30 bg-rose-400/10 text-2xl text-rose-300">⬡</span><div><p className="text-[10px] font-bold uppercase tracking-[.25em] text-rose-300">DevSecOps · Security Operations</p><h1 className="text-xl font-black tracking-tight sm:text-2xl">Security Control Center</h1></div></div></div>
+        <div><Link href="/" className="text-xs text-slate-400 hover:text-white">← DevMavox Home</Link><div className="mt-3 flex items-center gap-3"><span className="grid h-11 w-11 place-items-center rounded-2xl border border-rose-400/30 bg-rose-400/10 text-2xl text-rose-300">⬡</span><div><p className="text-[10px] font-bold uppercase tracking-[.25em] text-rose-300">DevSecOps · Security Operations</p><h1 className="text-xl font-black tracking-tight sm:text-2xl">Security Control Center</h1></div></div></div>
         <div className="flex items-center gap-2"><span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-xs text-emerald-200">● Training workspace</span><span className="rounded-full border border-white/10 px-3 py-1.5 text-xs text-slate-400">Defensive labs only</span></div>
       </header>
       <section className="relative mt-6 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#24172a] via-[#141b2d] to-[#102a30] p-6 sm:p-8">
