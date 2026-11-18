@@ -319,9 +319,9 @@ const topicAliases: Record<string,string> = {
   "Artifact checksum verification":"sha256sum <artifact-file>",
   "Prometheus targets API":"curl -fsS <prometheus-url>/api/v1/targets",
   "Prometheus TSDB commands":"promtool tsdb analyze <prometheus-data-directory>",
-  "PromQL selectors":"up{job=\"<job>\"}",
-  "PromQL rate and increase":"sum(rate(http_requests_total[5m]))",
-  "PromQL aggregation":"sum by (job) (rate(http_requests_total[5m]))",
+  "PromQL selectors":"curl -G <prometheus-url>/api/v1/query --data-urlencode \"query=up{job=\\\"<job>\\\"}\"",
+  "PromQL rate and increase":"curl -G <prometheus-url>/api/v1/query --data-urlencode \"query=sum(rate(http_requests_total[5m]))\"",
+  "PromQL aggregation":"curl -G <prometheus-url>/api/v1/query --data-urlencode \"query=sum by (job) (rate(http_requests_total[5m]))\"",
   "Grafana API dashboards":"curl -fsS <grafana-url>/api/search",
   "Grafana data source API":"curl -fsS <grafana-url>/api/datasources",
   "Alertmanager API":"curl -fsS <alertmanager-url>/api/v2/alerts",
@@ -412,9 +412,20 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
   const categoryKey = category.toLowerCase();
   const subcategoryKey = subcategory.toLowerCase();
   const alias = topicAliases[topic];
+  const known = /^(pwd|ls|cd|find|locate|tree|mkdir|touch|cp|mv|rm|ln|readlink|file|stat|cat|less|head|tail|grep|egrep|sed|awk|cut|sort|uniq|wc|tr|xargs|tee|diff|cmp|chmod|chown|chgrp|umask|getfacl|setfacl|namei|id|groups|sudo|tar|gzip|gunzip|zip|unzip|rsync|scp|sftp|ssh|sha256sum|ps|top|htop|pgrep|pkill|kill|killall|nice|renice|systemctl|service|journalctl|df|du|lsblk|blkid|mount|umount|free|vmstat|iostat|iotop|uptime|nproc|lscpu|dmesg|useradd|usermod|userdel|passwd|chage|getent|apt|apt-cache|dpkg|yum|dnf|rpm|crontab|at|timedatectl|ip|ss|netstat|ethtool|nmcli|route|arp|ping|traceroute|tracepath|mtr|tcpdump|tshark|nc|nmap|telnet|curl|wget|dig|nslookup|host|resolvectl|openssl|git|docker|kubectl|aws|terraform|ansible|ansible-playbook|ansible-inventory|ansible-doc|ansible-config|ansible-vault|ansible-galaxy|ansible-pull|ansible-lint|ansible-navigator|helm|argocd|jenkins|gh|glab|mvn|gradle|promtool|grafana-cli|amtool|trivy|grype|syft|checkov|tfsec|snyk|sonar-scanner|gitleaks|git-secrets|semgrep|cosign|mysql|mysqldump|mysqladmin|psql|pg_dump|pg_restore|pg_isready|redis-cli|bash|sh|source|export|env|printenv|read|getopts|trap|timeout|Get-Process|Get-Service|Get-ChildItem|Get-Content|Select-String|Test-NetConnection|Invoke-WebRequest|Invoke-RestMethod|Get-Command|Get-Help|python|pip|jq|yq|java|javac|jar|jps|jcmd|jstack|jmap|jstat|jinfo|catalina.sh|startup.sh|shutdown.sh|version.sh|crictl|ctr|kubeadm|kubelet)$/i;
+  const prefixes = ["git","docker","kubectl","terraform","helm","argocd","mvn","gradle","ip","aws","ansible","gh","glab","crictl","ctr","kubeadm","redis-cli","promtool","amtool","trivy","java","jcmd","jstack","jmap","jstat","openssl","curl","psql","mysql","systemctl","journalctl","jcmd"];
+  const executable = known.test(topic) ? topic : prefixes.find((candidate) => topic.toLowerCase().startsWith(candidate + " "));
+  const aliasIsArguments = Boolean(alias && executable && (known.test(topic) || !alias.trim().toLowerCase().startsWith(executable.toLowerCase() + " ")));
   const raw = alias || topic;
   const first = raw.trim().split(/\\s+/)[0] || "help";
-  const known = /^(pwd|ls|cd|find|locate|tree|mkdir|touch|cp|mv|rm|ln|readlink|file|stat|cat|less|head|tail|grep|egrep|sed|awk|cut|sort|uniq|wc|tr|xargs|tee|diff|cmp|chmod|chown|chgrp|umask|getfacl|setfacl|namei|id|groups|sudo|tar|gzip|gunzip|zip|unzip|rsync|scp|sftp|ssh|sha256sum|ps|top|htop|pgrep|pkill|kill|killall|nice|renice|systemctl|service|journalctl|df|du|lsblk|blkid|mount|umount|free|vmstat|iostat|iotop|uptime|nproc|lscpu|dmesg|useradd|usermod|userdel|passwd|chage|getent|apt|apt-cache|dpkg|yum|dnf|rpm|crontab|at|timedatectl|ip|ss|netstat|ethtool|nmcli|route|arp|ping|traceroute|tracepath|mtr|tcpdump|tshark|nc|nmap|telnet|curl|wget|dig|nslookup|host|resolvectl|openssl|git|docker|kubectl|aws|terraform|ansible|ansible-playbook|ansible-inventory|ansible-doc|ansible-config|ansible-vault|ansible-galaxy|ansible-pull|ansible-lint|ansible-navigator|helm|argocd|jenkins|gh|glab|mvn|gradle|promtool|grafana-cli|amtool|trivy|grype|syft|checkov|tfsec|snyk|sonar-scanner|gitleaks|git-secrets|semgrep|cosign|mysql|mysqldump|mysqladmin|psql|pg_dump|pg_restore|pg_isready|redis-cli|bash|sh|source|export|env|printenv|read|getopts|trap|timeout|Get-Process|Get-Service|Get-ChildItem|Get-Content|Select-String|Test-NetConnection|Invoke-WebRequest|Invoke-RestMethod|Get-Command|Get-Help|python|pip|jq|yq|java|javac|jar|jps|jcmd|jstack|jmap|jstat|jinfo|catalina.sh|startup.sh|shutdown.sh|version.sh|crictl|ctr|kubeadm|kubelet)$/i;
+
+  let base = aliasIsArguments ? executable! : (alias ? first : (executable || defaults[categoryKey] || first));
+  let args = topicArgs[topic] ?? (aliasIsArguments ? alias! : (alias ? raw.slice(first.length).trim() : (base === topic ? "" : "--help")));
+  if (!alias) {
+    const prefix = prefixes.find((candidate) => topic.toLowerCase().startsWith(candidate + " "));
+    if (prefix) { base = prefix; args = topic.slice(prefix.length).trim(); }
+  }
+
   const defaults: Record<string,string> = {
     "linux":"ls", "linux administration":"systemctl", "networking":"ip", "git":"git",
     "docker":"docker", "kubernetes":"kubectl", "aws cli":"aws", "terraform":"terraform",
