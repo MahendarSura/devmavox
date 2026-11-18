@@ -1935,7 +1935,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
   "cloud-cost-lab": {
     "id": "cloud-cost-lab",
     "title": "Cloud Cost Lab",
-    "description": "Explore cloud billing, cost drivers and FinOps optimization.",
+    "description": "Explore cloud billing, cost drivers and FinOps optimization through practical cloud scenarios.",
     "style": "finance",
     "label": "FinOps Workspace",
     "categories": [
@@ -1944,11 +1944,19 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "subcategories": [
           {
             "name": "Billing Fundamentals",
-            "topics": [
-              "Cloud Billing Models",
-              "Pricing Factors",
-              "Cost Allocation"
-            ]
+            "topics": ["Cloud Billing Models","Pricing Factors","Cost Allocation","Billing Dimensions"]
+          },
+          {
+            "name": "Billing Reports and Analysis",
+            "topics": ["AWS Cost Explorer","Cost and Usage Reports","Amortized vs Unblended Cost","Forecasting Cloud Spend"]
+          },
+          {
+            "name": "Budgets and Alerts",
+            "topics": ["Create Cost Budgets","Forecast Alerts","Anomaly Detection","Budget Threshold Response"]
+          },
+          {
+            "name": "Invoice Investigation",
+            "topics": ["Understand Line Items","Credits and Discounts","Tax and Support Charges","Investigate Unexpected Charges"]
           }
         ]
       },
@@ -1957,11 +1965,19 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "subcategories": [
           {
             "name": "Compute Services",
-            "topics": [
-              "EC2 Pricing",
-              "Instance Families",
-              "Auto Scaling Costs"
-            ]
+            "topics": ["EC2 Pricing","Instance Families","Auto Scaling Costs","Compute Purchase Options"]
+          },
+          {
+            "name": "Instance Rightsizing",
+            "topics": ["Analyze CPU Utilization","Memory and Network Metrics","Choose Instance Types","Validate Rightsizing Savings"]
+          },
+          {
+            "name": "Elastic and Serverless Compute",
+            "topics": ["Lambda Cost Drivers","Fargate Pricing","Spot Fleet Economics","Batch Compute Costs"]
+          },
+          {
+            "name": "Compute Optimization",
+            "topics": ["Idle Instance Detection","Scheduling Nonproduction EC2","Graviton Migration","Savings Plans Coverage"]
           }
         ]
       },
@@ -1970,12 +1986,19 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "subcategories": [
           {
             "name": "Storage Services",
-            "topics": [
-              "EBS Costs",
-              "S3 Storage Classes",
-              "Snapshot Costs",
-              "Lifecycle Policies"
-            ]
+            "topics": ["EBS Costs","S3 Storage Classes","Snapshot Costs","Lifecycle Policies"]
+          },
+          {
+            "name": "Block Storage Optimization",
+            "topics": ["Volume Type Selection","Provisioned IOPS Costs","Orphaned Volumes","Snapshot Retention"]
+          },
+          {
+            "name": "Object Storage Optimization",
+            "topics": ["S3 Intelligent-Tiering","Request and Retrieval Costs","Replication Costs","Archive Retrieval Planning"]
+          },
+          {
+            "name": "Backup and Retention",
+            "topics": ["Backup Vault Costs","Cross-Region Backup Costs","Retention Policy Design","Restore Cost Planning"]
           }
         ]
       },
@@ -1984,11 +2007,19 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "subcategories": [
           {
             "name": "Network Services",
-            "topics": [
-              "NAT Gateway Costs",
-              "Load Balancer Costs",
-              "Data Transfer Costs"
-            ]
+            "topics": ["NAT Gateway Costs","Load Balancer Costs","Data Transfer Costs","Public IPv4 Charges"]
+          },
+          {
+            "name": "Data Transfer Analysis",
+            "topics": ["Cross-AZ Transfer","Inter-Region Transfer","Internet Egress","VPC Endpoint Economics"]
+          },
+          {
+            "name": "Edge and Delivery",
+            "topics": ["CloudFront Pricing","Cache Hit Ratio Economics","Origin Shield Costs","Route 53 Query Costs"]
+          },
+          {
+            "name": "Network Architecture Optimization",
+            "topics": ["NAT Consolidation Risks","PrivateLink Cost Tradeoffs","Load Balancer Right-Sizing","Traffic Path Optimization"]
           }
         ]
       },
@@ -1997,11 +2028,19 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "subcategories": [
           {
             "name": "Container Platforms",
-            "topics": [
-              "EKS Costs",
-              "ECS Costs",
-              "Kubernetes Resource Costs"
-            ]
+            "topics": ["EKS Costs","ECS Costs","Kubernetes Resource Costs","Fargate Profiles"]
+          },
+          {
+            "name": "Kubernetes Cost Allocation",
+            "topics": ["Namespace Cost Allocation","Label-Based Allocation","Shared Cluster Costs","Idle Capacity Allocation"]
+          },
+          {
+            "name": "Workload Efficiency",
+            "topics": ["CPU Requests and Limits","Memory Requests and Limits","Bin Packing and Scheduling","Cluster Autoscaler Economics"]
+          },
+          {
+            "name": "Container Optimization",
+            "topics": ["Node Group Right-Sizing","Spot Node Pools","Karpenter Cost Controls","Control Plane and Add-on Costs"]
           }
         ]
       },
@@ -2010,11 +2049,19 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "subcategories": [
           {
             "name": "Database Services",
-            "topics": [
-              "RDS Costs",
-              "DynamoDB Costs",
-              "Database Backup Costs"
-            ]
+            "topics": ["RDS Costs","DynamoDB Costs","Database Backup Costs","Aurora Pricing"]
+          },
+          {
+            "name": "Database Capacity",
+            "topics": ["Instance Class Selection","Storage Autoscaling","IOPS and Throughput Costs","Read Replica Economics"]
+          },
+          {
+            "name": "Managed Database Optimization",
+            "topics": ["Reserved DB Instances","Serverless Database Scaling","DynamoDB Capacity Modes","Idle Database Detection"]
+          },
+          {
+            "name": "Data Protection and Retention",
+            "topics": ["Automated Backup Retention","Snapshot Lifecycle","Cross-Region Replication","Point-in-Time Recovery Costs"]
           }
         ]
       },
@@ -2023,12 +2070,19 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "subcategories": [
           {
             "name": "Optimization Methods",
-            "topics": [
-              "Right-Sizing",
-              "Spot Instances",
-              "Reserved Instances",
-              "Savings Plans"
-            ]
+            "topics": ["Right-Sizing","Spot Instances","Reserved Instances","Savings Plans"]
+          },
+          {
+            "name": "Utilization and Waste",
+            "topics": ["Idle Resource Detection","Underutilized Resources","Orphaned Resource Cleanup","Schedule-Based Shutdown"]
+          },
+          {
+            "name": "Optimization Planning",
+            "topics": ["Prioritize by Savings and Risk","Estimate Monthly Savings","Change Impact Assessment","Track Realized Savings"]
+          },
+          {
+            "name": "Continuous Optimization",
+            "topics": ["Cost Anomaly Response","Optimization Backlog","Unit Economics","FinOps Review Cadence"]
           }
         ]
       },
@@ -2037,12 +2091,19 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "subcategories": [
           {
             "name": "FinOps Controls",
-            "topics": [
-              "Budgets and Alerts",
-              "Cost Explorer",
-              "Cost Allocation Tags",
-              "FinOps Practices"
-            ]
+            "topics": ["Budgets and Alerts","Cost Explorer","Cost Allocation Tags","FinOps Practices"]
+          },
+          {
+            "name": "Allocation and Accountability",
+            "topics": ["Tagging Standards","Showback Reports","Chargeback Models","Shared Cost Allocation"]
+          },
+          {
+            "name": "Policy and Guardrails",
+            "topics": ["Service Quotas and Guardrails","Approved Instance Policies","Region Restrictions","Policy-as-Code for Cost"]
+          },
+          {
+            "name": "Reporting and KPIs",
+            "topics": ["Cost per Workload","Cloud Unit Economics","Forecast Accuracy","Savings Realization Rate"]
           }
         ]
       }
