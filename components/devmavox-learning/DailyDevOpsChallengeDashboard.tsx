@@ -17,6 +17,7 @@ const palette = [
   { icon: "⬡", tone: "from-rose-500/20 to-rose-950/70", border: "border-rose-400/25", accent: "text-rose-300", glow: "bg-rose-400" },
   { icon: "▦", tone: "from-fuchsia-500/20 to-fuchsia-950/70", border: "border-fuchsia-400/25", accent: "text-fuchsia-300", glow: "bg-fuchsia-400" },
   { icon: "✦", tone: "from-purple-500/20 to-purple-950/70", border: "border-purple-400/25", accent: "text-purple-300", glow: "bg-purple-400" },
+  { icon: "⚡", tone: "from-teal-500/20 to-teal-950/70", border: "border-teal-400/25", accent: "text-teal-300", glow: "bg-teal-400" },
 ];
 
 const topicCount = feature.categories.reduce(
@@ -90,13 +91,13 @@ export default function DailyDevOpsChallengeDashboard() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-2xl bg-gradient-to-br from-violet-500/20 to-violet-950/50 p-4"><p className="text-3xl font-black text-white">{feature.categories.length}</p><p className="mt-1 text-xs text-violet-200">Categories</p></div>
                 <div className="rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-950/50 p-4"><p className="text-3xl font-black text-white">{topicCount}</p><p className="mt-1 text-xs text-emerald-200">Learning topics</p></div>
-                <div className="rounded-2xl bg-gradient-to-br from-sky-500/20 to-sky-950/50 p-4"><p className="text-3xl font-black text-white">4</p><p className="mt-1 text-xs text-sky-200">Difficulty levels</p></div>
+                <div className="rounded-2xl bg-gradient-to-br from-sky-500/20 to-sky-950/50 p-4"><p className="text-3xl font-black text-white">3</p><p className="mt-1 text-xs text-sky-200">Difficulty tracks</p></div>
                 <div className="rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-950/50 p-4"><p className="text-3xl font-black text-white">3</p><p className="mt-1 text-xs text-amber-200">Navigation levels</p></div>
               </div>
             </div>
             <div id="today" className="rounded-[24px] border border-amber-400/20 bg-gradient-to-br from-[#211b18] to-[#111827] p-5">
-              <div className="flex items-center justify-between"><p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-300">Today&apos;s featured task</p><span className="rounded-full bg-amber-300/10 px-2.5 py-1 text-[10px] font-bold text-amber-200">BEGINNER</span></div>
-              <div className="mt-4 flex items-start gap-3"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-950/70 text-2xl">⌘</span><div><h3 className="font-bold text-white">Linux permissions rescue</h3><p className="mt-1 text-xs leading-5 text-slate-400">Fix a deployment user&apos;s access to an application directory.</p></div></div>
+              <div className="flex items-center justify-between"><p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-300">Today&apos;s featured task</p><span className="rounded-full bg-amber-300/10 px-2.5 py-1 text-[10px] font-bold text-amber-200">FOUNDATION</span></div>
+              <div className="mt-4 flex items-start gap-3"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-950/70 text-2xl">⌘</span><div><h3 className="font-bold text-white">Linux file operations</h3><p className="mt-1 text-xs leading-5 text-slate-400">Investigate file ownership, permissions and safe access for a deployment workspace.</p></div></div>
               <div className="mt-4 flex items-center justify-between text-xs text-slate-400"><span>◷ 15–20 min</span><span>Hands-on task</span></div>
               <Link href={featuredHref} className="mt-4 flex items-center justify-center rounded-xl bg-amber-300 px-4 py-2.5 text-sm font-extrabold text-slate-950 transition hover:bg-amber-200">Open challenge →</Link>
             </div>
