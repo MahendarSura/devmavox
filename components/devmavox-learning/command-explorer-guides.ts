@@ -395,7 +395,7 @@ const topicAliases: Record<string,string> = {
   "Test-NetConnection":"<host> -Port <port>", "Invoke-WebRequest":"-Uri <url> -Method Head",
   "java -version":"", javac:"-version", jps:"-lv", jcmd:"<pid> VM.version",
   "crictl ps":"-a", "crictl pods":"-a", "crictl images":"", "crictl logs":"<container-id>",
-  "ctr containers":"list", "ctr images":"list", "kubeadm certs":"check-expiration"
+  "ctr containers":"list", "ctr images":"list", "kubeadm certs":"check-expiration",
   "Jenkins build":"java -jar jenkins-cli.jar -s <jenkins-url> build <job> -s -v",
   "Jenkins console":"java -jar jenkins-cli.jar -s <jenkins-url> console <job> -n 100",
   "jenkins safe-restart":"java -jar jenkins-cli.jar -s <jenkins-url> safe-restart",
