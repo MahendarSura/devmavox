@@ -1,5 +1,5 @@
-import FeatureExplorer from "@/components/devmavox-learning/FeatureExplorer";
+import DailyDevOpsChallengeDashboard from "@/components/devmavox-learning/DailyDevOpsChallengeDashboard";
 
 export default function Page() {
-  return <FeatureExplorer featureId="daily-devops-challenge" />;
+  return <DailyDevOpsChallengeDashboard />;
 }
