@@ -4,6 +4,8 @@ import ArchitectureTopicPage from "./ArchitectureTopicPage";
 import { getArchitectureTopic } from "./architecture-topic-content";
 import IncidentTopicPage from "./IncidentTopicPage";
 import IncidentCategoryPage from "./IncidentCategoryPage";
+import IncidentDashboard from "./IncidentDashboard";
+import IncidentSubcategoryPage from "./IncidentSubcategoryPage";
 import { getIncidentLesson } from "./incident-topic-content";
 import { notFound } from "next/navigation";
 import {
@@ -268,6 +270,10 @@ export default function FeatureExplorer({
 
   const theme = featureTheme(feature.style);
 
+  if (slug.length === 0 && featureId === "incident-simulator") {
+    return <IncidentDashboard feature={feature} />;
+  }
+
   if (slug.length === 0) {
     const totalTopics = feature.categories.reduce((sum, category) => sum + topicCount(category), 0);
 
@@ -348,6 +354,10 @@ export default function FeatureExplorer({
 
   const subcategory = category.subcategories.find((item) => slugify(item.name) === slug[1]);
   if (!subcategory) notFound();
+
+  if (slug.length === 2 && featureId === "incident-simulator") {
+    return <IncidentSubcategoryPage feature={feature} category={category} subcategory={subcategory} />;
+  }
 
   if (slug.length === 2) {
     return (
