@@ -1405,7 +1405,7 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
   "command-explorer": {
     "id": "command-explorer",
     "title": "Command Explorer",
-    "description": "Browse practical commands, options and command families.",
+    "description": "A practical DevOps command library organized by technology, operational task and command family, with safe examples and production troubleshooting workflows.",
     "style": "terminal",
     "label": "Command Terminal",
     "categories": [
@@ -1413,36 +1413,75 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "name": "Linux",
         "subcategories": [
           {
-            "name": "File Operations",
+            "name": "Navigation and File Operations",
             "topics": [
               "pwd",
               "ls",
               "cd",
+              "find",
+              "locate",
+              "tree",
               "mkdir",
               "touch",
               "cp",
               "mv",
-              "rm"
+              "rm",
+              "ln",
+              "readlink",
+              "file",
+              "stat"
             ]
           },
           {
-            "name": "Permissions and Ownership",
+            "name": "Text Processing and Search",
+            "topics": [
+              "cat",
+              "less",
+              "head",
+              "tail",
+              "grep",
+              "egrep",
+              "sed",
+              "awk",
+              "cut",
+              "sort",
+              "uniq",
+              "wc",
+              "tr",
+              "xargs",
+              "tee",
+              "diff",
+              "cmp"
+            ]
+          },
+          {
+            "name": "Permissions and Access",
             "topics": [
               "chmod",
               "chown",
               "chgrp",
-              "umask"
+              "umask",
+              "getfacl",
+              "setfacl",
+              "namei",
+              "id",
+              "groups",
+              "sudo"
             ]
           },
           {
-            "name": "Processes and Services",
+            "name": "Archives and Transfers",
             "topics": [
-              "ps",
-              "top",
-              "htop",
-              "kill",
-              "systemctl",
-              "journalctl"
+              "tar",
+              "gzip",
+              "gunzip",
+              "zip",
+              "unzip",
+              "rsync",
+              "scp",
+              "sftp",
+              "ssh",
+              "sha256sum"
             ]
           }
         ]
@@ -1451,24 +1490,59 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "name": "Linux Administration",
         "subcategories": [
           {
-            "name": "System Resources",
+            "name": "Processes and Services",
             "topics": [
-              "df",
-              "du",
-              "free",
-              "uptime",
-              "vmstat"
+              "ps",
+              "top",
+              "htop",
+              "pgrep",
+              "pkill",
+              "kill",
+              "killall",
+              "nice",
+              "renice",
+              "systemctl",
+              "service",
+              "journalctl"
             ]
           },
           {
-            "name": "Users and Packages",
+            "name": "System Resources and Storage",
+            "topics": [
+              "df",
+              "du",
+              "lsblk",
+              "blkid",
+              "mount",
+              "umount",
+              "free",
+              "vmstat",
+              "iostat",
+              "iotop",
+              "uptime",
+              "nproc",
+              "lscpu",
+              "dmesg"
+            ]
+          },
+          {
+            "name": "Users, Packages and Scheduling",
             "topics": [
               "useradd",
               "usermod",
+              "userdel",
               "passwd",
+              "chage",
+              "getent",
               "apt",
+              "apt-cache",
+              "dpkg",
               "yum",
-              "dnf"
+              "dnf",
+              "rpm",
+              "crontab",
+              "at",
+              "timedatectl"
             ]
           }
         ]
@@ -1477,23 +1551,47 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "name": "Networking",
         "subcategories": [
           {
-            "name": "Network Diagnostics",
+            "name": "Interfaces, Routes and Sockets",
             "topics": [
-              "ip",
+              "ip addr",
+              "ip link",
+              "ip route",
+              "ip neigh",
               "ss",
-              "ping",
-              "traceroute",
-              "curl"
+              "netstat",
+              "ethtool",
+              "nmcli",
+              "route",
+              "arp"
             ]
           },
           {
-            "name": "DNS and Connectivity",
+            "name": "Connectivity and Packet Diagnostics",
+            "topics": [
+              "ping",
+              "traceroute",
+              "tracepath",
+              "mtr",
+              "tcpdump",
+              "tshark",
+              "nc",
+              "nmap",
+              "telnet",
+              "curl",
+              "wget"
+            ]
+          },
+          {
+            "name": "DNS, TLS and HTTP",
             "topics": [
               "dig",
               "nslookup",
               "host",
-              "nc",
-              "netstat"
+              "resolvectl",
+              "openssl s_client",
+              "curl HTTP checks",
+              "HTTP status diagnostics",
+              "TLS certificate checks"
             ]
           }
         ]
@@ -1502,27 +1600,47 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "name": "Git",
         "subcategories": [
           {
-            "name": "Daily Git Commands",
+            "name": "Daily Repository Workflow",
             "topics": [
-              "clone",
-              "status",
-              "add",
-              "commit",
-              "push",
-              "pull",
-              "fetch"
+              "git clone",
+              "git status",
+              "git add",
+              "git commit",
+              "git push",
+              "git pull",
+              "git fetch",
+              "git log",
+              "git diff",
+              "git show"
             ]
           },
           {
-            "name": "Branching and Recovery",
+            "name": "Branches, Tags and Collaboration",
             "topics": [
-              "branch",
-              "switch",
-              "merge",
-              "rebase",
-              "reset",
-              "revert",
-              "reflog"
+              "git branch",
+              "git switch",
+              "git checkout",
+              "git merge",
+              "git rebase",
+              "git tag",
+              "git stash",
+              "git cherry-pick",
+              "git remote",
+              "git worktree"
+            ]
+          },
+          {
+            "name": "Undo, Recovery and Inspection",
+            "topics": [
+              "git restore",
+              "git reset",
+              "git revert",
+              "git reflog",
+              "git bisect",
+              "git blame",
+              "git clean",
+              "git fsck",
+              "git reflog recovery"
             ]
           }
         ]
@@ -1531,22 +1649,51 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "name": "Docker",
         "subcategories": [
           {
-            "name": "Container Management",
+            "name": "Images and Containers",
             "topics": [
+              "docker pull",
+              "docker build",
               "docker images",
               "docker ps",
               "docker run",
+              "docker create",
+              "docker start",
+              "docker stop",
+              "docker restart",
+              "docker rm",
+              "docker rmi",
               "docker exec",
               "docker logs",
-              "docker inspect"
+              "docker inspect",
+              "docker stats"
             ]
           },
           {
-            "name": "Storage and Networking",
+            "name": "Networks, Volumes and Compose",
             "topics": [
-              "docker volume",
               "docker network",
-              "docker system"
+              "docker volume",
+              "docker compose up",
+              "docker compose down",
+              "docker compose logs",
+              "docker compose exec",
+              "docker compose config",
+              "docker port",
+              "docker cp"
+            ]
+          },
+          {
+            "name": "Registry, Build and Troubleshooting",
+            "topics": [
+              "docker login",
+              "docker push",
+              "docker tag",
+              "docker history",
+              "docker system df",
+              "docker system prune",
+              "docker events",
+              "docker save",
+              "docker load"
             ]
           }
         ]
@@ -1555,21 +1702,55 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "name": "Kubernetes",
         "subcategories": [
           {
-            "name": "Cluster Operations",
+            "name": "Cluster, Nodes and Namespaces",
             "topics": [
-              "kubectl get",
-              "kubectl describe",
+              "kubectl cluster-info",
+              "kubectl get nodes",
+              "kubectl get namespaces",
+              "kubectl config",
+              "kubectl version",
+              "kubectl api-resources",
+              "kubectl auth can-i"
+            ]
+          },
+          {
+            "name": "Workloads and Deployments",
+            "topics": [
+              "kubectl get pods",
+              "kubectl get deployments",
               "kubectl apply",
+              "kubectl create",
+              "kubectl rollout",
+              "kubectl scale",
+              "kubectl autoscale",
+              "kubectl set image",
               "kubectl delete"
             ]
           },
           {
-            "name": "Debugging Commands",
+            "name": "Debugging and Logs",
             "topics": [
+              "kubectl describe",
               "kubectl logs",
               "kubectl exec",
               "kubectl events",
-              "kubectl top"
+              "kubectl top",
+              "kubectl debug",
+              "kubectl port-forward",
+              "kubectl cp"
+            ]
+          },
+          {
+            "name": "Services, Storage and Configuration",
+            "topics": [
+              "kubectl get services",
+              "kubectl get ingress",
+              "kubectl get endpoints",
+              "kubectl get configmaps",
+              "kubectl get secrets",
+              "kubectl get pvc",
+              "kubectl get pv",
+              "kubectl get networkpolicies"
             ]
           }
         ]
@@ -1578,13 +1759,46 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "name": "AWS CLI",
         "subcategories": [
           {
-            "name": "AWS Services",
+            "name": "Identity, Profiles and Access",
             "topics": [
-              "EC2 CLI",
-              "S3 CLI",
-              "IAM CLI",
-              "EKS CLI",
-              "CloudWatch CLI"
+              "aws configure",
+              "aws sts get-caller-identity",
+              "aws configure list",
+              "AWS CLI profiles",
+              "IAM users and roles CLI",
+              "IAM policy inspection"
+            ]
+          },
+          {
+            "name": "Compute and Containers",
+            "topics": [
+              "EC2 instance commands",
+              "Auto Scaling commands",
+              "ELB and Target Group commands",
+              "EKS cluster commands",
+              "ECR repository commands",
+              "ECS service commands"
+            ]
+          },
+          {
+            "name": "Storage, Database and Networking",
+            "topics": [
+              "S3 bucket commands",
+              "EBS volume commands",
+              "RDS commands",
+              "VPC and subnet commands",
+              "Security Group commands",
+              "Route 53 commands"
+            ]
+          },
+          {
+            "name": "Logs, Monitoring and Operations",
+            "topics": [
+              "CloudWatch log commands",
+              "CloudWatch metrics commands",
+              "CloudWatch alarms commands",
+              "AWS CLI query and output",
+              "AWS CLI pagination and filters"
             ]
           }
         ]
@@ -1593,13 +1807,37 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "name": "Terraform",
         "subcategories": [
           {
-            "name": "Terraform Workflow",
+            "name": "Core Workflow and Planning",
             "topics": [
               "terraform init",
+              "terraform fmt",
+              "terraform validate",
               "terraform plan",
               "terraform apply",
               "terraform destroy",
-              "terraform state"
+              "terraform output"
+            ]
+          },
+          {
+            "name": "State, Modules and Workspaces",
+            "topics": [
+              "terraform state",
+              "terraform import",
+              "terraform workspace",
+              "terraform module commands",
+              "terraform providers",
+              "terraform graph"
+            ]
+          },
+          {
+            "name": "Debugging and Automation",
+            "topics": [
+              "terraform show",
+              "terraform refresh",
+              "terraform console",
+              "terraform force-unlock",
+              "terraform -chdir",
+              "Terraform logging and TRACE"
             ]
           }
         ]
@@ -1608,12 +1846,34 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "name": "Ansible",
         "subcategories": [
           {
-            "name": "Automation Commands",
+            "name": "Ad-hoc and Inventory",
             "topics": [
               "ansible",
-              "ansible-playbook",
               "ansible-inventory",
+              "ansible-doc",
+              "ansible-config",
               "ansible-vault"
+            ]
+          },
+          {
+            "name": "Playbooks, Roles and Collections",
+            "topics": [
+              "ansible-playbook",
+              "ansible-galaxy",
+              "ansible-pull",
+              "ansible-lint",
+              "ansible-navigator"
+            ]
+          },
+          {
+            "name": "Execution and Troubleshooting",
+            "topics": [
+              "Ansible check mode",
+              "Ansible diff mode",
+              "Ansible tags",
+              "Ansible limit",
+              "Ansible verbosity",
+              "Ansible connection diagnostics"
             ]
           }
         ]
@@ -1622,25 +1882,347 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
         "name": "Helm and Argo CD",
         "subcategories": [
           {
-            "name": "Deployment Commands",
+            "name": "Helm Chart Lifecycle",
             "topics": [
+              "helm repo",
+              "helm search",
+              "helm show",
+              "helm lint",
+              "helm template",
               "helm install",
               "helm upgrade",
               "helm rollback",
-              "argocd app sync"
+              "helm history",
+              "helm uninstall"
+            ]
+          },
+          {
+            "name": "Helm Debugging and Release Management",
+            "topics": [
+              "helm list",
+              "helm status",
+              "helm get values",
+              "helm get manifest",
+              "helm dependency",
+              "helm package",
+              "helm test"
+            ]
+          },
+          {
+            "name": "Argo CD Application Operations",
+            "topics": [
+              "argocd login",
+              "argocd app list",
+              "argocd app get",
+              "argocd app diff",
+              "argocd app sync",
+              "argocd app wait",
+              "argocd app history",
+              "argocd app rollback",
+              "argocd app terminate-op"
             ]
           }
         ]
       },
       {
-        "name": "Monitoring",
+        "name": "CI/CD Platforms",
         "subcategories": [
           {
-            "name": "Diagnostics and Queries",
+            "name": "Jenkins CLI and Pipeline Operations",
             "topics": [
-              "PromQL",
-              "curl API checks",
-              "HTTP diagnostics"
+              "jenkins CLI",
+              "jenkins build",
+              "jenkins console",
+              "jenkins safe-restart",
+              "jenkins reload-configuration",
+              "Jenkins agent diagnostics",
+              "Jenkins pipeline replay"
+            ]
+          },
+          {
+            "name": "GitHub Actions and GitHub CLI",
+            "topics": [
+              "gh auth",
+              "gh repo",
+              "gh workflow",
+              "gh run list",
+              "gh run view",
+              "gh run watch",
+              "gh run rerun",
+              "gh secret",
+              "gh variable"
+            ]
+          },
+          {
+            "name": "GitLab CI and Runner Operations",
+            "topics": [
+              "glab auth",
+              "glab pipeline",
+              "glab job",
+              "glab runner",
+              "GitLab CI lint",
+              "GitLab artifacts and trace"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Build and Artifact Tools",
+        "subcategories": [
+          {
+            "name": "Maven and Gradle",
+            "topics": [
+              "mvn clean",
+              "mvn compile",
+              "mvn test",
+              "mvn package",
+              "mvn install",
+              "mvn dependency:tree",
+              "mvn help:effective-pom",
+              "gradle tasks",
+              "gradle build",
+              "gradle test",
+              "gradle dependencies",
+              "gradle wrapper"
+            ]
+          },
+          {
+            "name": "Nexus and Artifact Repositories",
+            "topics": [
+              "Nexus repository inspection",
+              "Nexus component upload",
+              "Nexus component search",
+              "Nexus cleanup tasks",
+              "Nexus REST API",
+              "Artifact checksum verification"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Monitoring and Observability",
+        "subcategories": [
+          {
+            "name": "Prometheus and PromQL",
+            "topics": [
+              "promtool check config",
+              "promtool check rules",
+              "promtool query",
+              "PromQL selectors",
+              "PromQL rate and increase",
+              "PromQL aggregation",
+              "Prometheus targets API",
+              "Prometheus TSDB commands"
+            ]
+          },
+          {
+            "name": "Grafana and Alertmanager",
+            "topics": [
+              "grafana-cli",
+              "Grafana API dashboards",
+              "Grafana data source API",
+              "amtool check-config",
+              "amtool alert query",
+              "amtool silence add",
+              "Alertmanager API"
+            ]
+          },
+          {
+            "name": "Host and Application Observability",
+            "topics": [
+              "journal log filtering",
+              "process resource diagnostics",
+              "HTTP health checks",
+              "JVM diagnostics",
+              "jcmd",
+              "jstack",
+              "jmap",
+              "jstat"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "DevSecOps and Security",
+        "subcategories": [
+          {
+            "name": "SSH, Keys and Certificates",
+            "topics": [
+              "ssh-keygen",
+              "ssh-add",
+              "ssh-agent",
+              "ssh-keyscan",
+              "ssh config checks",
+              "openssl x509",
+              "openssl s_client",
+              "openssl req",
+              "certbot"
+            ]
+          },
+          {
+            "name": "Image, Dependency and IaC Scanning",
+            "topics": [
+              "trivy image",
+              "trivy fs",
+              "trivy config",
+              "grype",
+              "syft",
+              "checkov",
+              "tfsec",
+              "snyk CLI"
+            ]
+          },
+          {
+            "name": "Code Quality and Secret Detection",
+            "topics": [
+              "sonar-scanner",
+              "gitleaks",
+              "git-secrets",
+              "semgrep",
+              "cosign verify",
+              "cosign sign"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Databases and Caching",
+        "subcategories": [
+          {
+            "name": "MySQL and PostgreSQL",
+            "topics": [
+              "mysql client",
+              "mysqldump",
+              "mysqladmin",
+              "psql",
+              "pg_dump",
+              "pg_restore",
+              "pg_isready",
+              "PostgreSQL activity queries"
+            ]
+          },
+          {
+            "name": "Redis and Database Diagnostics",
+            "topics": [
+              "redis-cli ping",
+              "redis-cli info",
+              "redis-cli monitor",
+              "redis-cli scan",
+              "Redis memory diagnostics",
+              "Database connection checks",
+              "Database slow query checks"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Scripting and Automation",
+        "subcategories": [
+          {
+            "name": "Bash and Shell Utilities",
+            "topics": [
+              "bash",
+              "sh",
+              "bash -x",
+              "set -euo pipefail",
+              "source",
+              "export",
+              "env",
+              "printenv",
+              "read",
+              "getopts",
+              "trap",
+              "timeout"
+            ]
+          },
+          {
+            "name": "PowerShell for DevOps",
+            "topics": [
+              "Get-Process",
+              "Get-Service",
+              "Get-ChildItem",
+              "Get-Content",
+              "Select-String",
+              "Test-NetConnection",
+              "Invoke-WebRequest",
+              "Invoke-RestMethod",
+              "Get-Command",
+              "Get-Help"
+            ]
+          },
+          {
+            "name": "Python and JSON/YAML Utilities",
+            "topics": [
+              "python -m",
+              "pip",
+              "venv",
+              "jq",
+              "yq",
+              "yq eval",
+              "json.tool",
+              "YAML validation commands"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Java and Tomcat",
+        "subcategories": [
+          {
+            "name": "Java Runtime and Diagnostics",
+            "topics": [
+              "java -version",
+              "javac",
+              "jar",
+              "jps",
+              "jcmd",
+              "jstack",
+              "jmap",
+              "jstat",
+              "jinfo"
+            ]
+          },
+          {
+            "name": "Tomcat Service and Deployment",
+            "topics": [
+              "catalina.sh",
+              "startup.sh",
+              "shutdown.sh",
+              "version.sh",
+              "Tomcat service status",
+              "Tomcat logs",
+              "Tomcat thread dump",
+              "WAR deployment checks"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Container Runtime and Platform Tools",
+        "subcategories": [
+          {
+            "name": "containerd and CRI",
+            "topics": [
+              "crictl ps",
+              "crictl pods",
+              "crictl images",
+              "crictl logs",
+              "crictl inspect",
+              "ctr containers",
+              "ctr images",
+              "ctr tasks"
+            ]
+          },
+          {
+            "name": "Kubernetes Node and Bootstrap Tools",
+            "topics": [
+              "kubeadm init",
+              "kubeadm join",
+              "kubeadm token",
+              "kubeadm certs",
+              "kubelet status",
+              "kubelet logs",
+              "CNI diagnostics"
             ]
           }
         ]

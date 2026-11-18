@@ -1,0 +1,53 @@
+name: Command Explorer Build
+
+on:
+  push:
+    branches:
+      - fix/command-explorer-main-integration-20261118
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "app/command-explorer/**"
+      - "components/devmavox-learning/CommandExplorer*.tsx"
+      - "components/devmavox-learning/command-explorer-guides.ts"
+      - "components/devmavox-learning/FeatureExplorer.tsx"
+      - "components/devmavox-learning/feature-catalog.ts"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/command-explorer-build.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: command-explorer-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  production-build:
+    name: TypeScript, lint and Next.js production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: TypeScript validation
+        run: npx tsc --noEmit
+      - name: ESLint (Command Explorer files)
+        run: >-
+          npx eslint
+          components/devmavox-learning/CommandExplorerBrowse.tsx
+          components/devmavox-learning/CommandExplorerWorkspace.tsx
+          components/devmavox-learning/FeatureExplorer.tsx
+          components/devmavox-learning/command-explorer-guides.ts
+          components/devmavox-learning/feature-catalog.ts
+      - name: Next.js production build
+        run: npm run build

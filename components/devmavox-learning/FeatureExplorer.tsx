@@ -1,3 +1,5 @@
+import CommandExplorerWorkspace from "./CommandExplorerWorkspace";
+import CommandExplorerBrowse from "./CommandExplorerBrowse";
 import YamlConfigWorkbench from "./YamlConfigWorkbench";
 import Link from "next/link";
 import ArchitectureTopicPage from "./ArchitectureTopicPage";
@@ -273,6 +275,28 @@ export default function FeatureExplorer({
 }) {
   const feature = featureCatalog[featureId];
   if (!feature) notFound();
+
+  if (featureId === "command-explorer") {
+    if (slug.length === 0) return <CommandExplorerWorkspace mode="home" />;
+    if (slug.length === 1 || slug.length === 2) {
+      const commandCategory = feature.categories.find((item) => slugify(item.name) === slug[0]);
+      const commandSubcategory = slug.length === 2
+        ? commandCategory?.subcategories.find((item) => slugify(item.name) === slug[1])
+        : undefined;
+      if (commandCategory && (slug.length === 1 || commandSubcategory)) {
+        return <CommandExplorerBrowse category={commandCategory.name} subcategory={commandSubcategory?.name} />;
+      }
+    }
+    if (slug.length === 3) {
+      const commandCategory = feature.categories.find((item) => slugify(item.name) === slug[0]);
+      const commandSubcategory = commandCategory?.subcategories.find((item) => slugify(item.name) === slug[1]);
+      const commandTopic = commandSubcategory?.topics.find((item) => slugify(item) === slug[2]);
+      if (commandCategory && commandSubcategory && commandTopic) {
+        return <CommandExplorerWorkspace mode="detail" topic={commandTopic} category={commandCategory.name} subcategory={commandSubcategory.name} />;
+      }
+    }
+    notFound();
+  }
 
   if (featureId === "yaml-config-playground") {
     return <YamlConfigWorkbench feature={feature} slug={slug} />;
