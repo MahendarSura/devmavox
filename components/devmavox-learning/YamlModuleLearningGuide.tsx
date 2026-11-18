@@ -1140,7 +1140,7 @@ export default function YamlModuleLearningGuide({
                 Open in YAML Editor →
               </button>
             </div>
-            <pre className="mt-3 overflow-x-auto rounded-xl border border-slate-800 bg-[#070c14] p-4 text-xs leading-6 text-emerald-300">
+            <pre className="mt-3 overflow-x-auto whitespace-pre rounded-xl border border-slate-800 bg-[#070c14] p-4 text-xs leading-6 text-emerald-300">
               {lesson.example}
             </pre>
             <p className="mt-2 text-xs text-slate-500">
