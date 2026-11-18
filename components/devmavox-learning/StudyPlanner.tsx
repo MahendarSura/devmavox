@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { featureCatalog } from "./feature-catalog";
 
 type PlannerTask = { id: number; title: string; due: string; done: boolean };
@@ -81,7 +81,6 @@ export default function StudyPlanner({ slug = [] }: { slug?: string[] }) {
 
   const categories = feature.categories;
   const totalTopics = categories.reduce((n, c) => n + c.subcategories.reduce((m, s) => m + s.topics.length, 0), 0);
-  const allTopics = categories.flatMap(c => c.subcategories.flatMap(s => s.topics));
   const progress = Math.round((completed.length / totalTopics) * 100);
   const selectedCategory = slug[0] ? categories.find(c => slugify(c.name) === slug[0]) : undefined;
   const selectedSection = selectedCategory && slug[1] ? selectedCategory.subcategories.find(s => slugify(s.name) === slug[1]) : undefined;
