@@ -548,7 +548,6 @@ const topicAliases: Record<string,string> = {
   "PromQL selectors":"curl -G <prometheus-url>/api/v1/query --data-urlencode 'query=up{job=\"<job>\"}'",
   "PromQL rate and increase":"curl -G <prometheus-url>/api/v1/query --data-urlencode 'query=sum(rate(http_requests_total[5m]))'",
   "PromQL aggregation":"curl -G <prometheus-url>/api/v1/query --data-urlencode 'query=sum by (job) (rate(http_requests_total[5m]))'",
-  "bash -x":"bash -x <script.sh>",
   "json.tool":"python -m json.tool <file.json>",
   "venv":"python -m venv .venv",
   "getopts":"bash -c 'help getopts'",
