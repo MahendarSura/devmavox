@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { FeatureCategory, FeatureDefinition, FeatureSubcategory } from "./feature-catalog";
 
 function slugify(value: string) {
-  return value.toLowerCase().normalize("NFKD").replace(/[\\u0300-\\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
 export default function IncidentSubcategoryPage({ feature, category, subcategory }: { feature: FeatureDefinition; category: FeatureCategory; subcategory: FeatureSubcategory }) {
