@@ -234,7 +234,7 @@ export default function CommandExplorerWorkspace({
             <h1 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">Command Explorer</h1>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">Find the right command by technology or real-world problem. Learn what it does, when to use it, how to verify results and what to investigate next.</p>
             <div className="mt-6 flex flex-wrap gap-2 text-xs text-emerald-100/80">
-              <span className="rounded-lg border border-emerald-400/20 bg-black/20 px-3 py-2">18 technology areas</span>
+              <span className="rounded-lg border border-emerald-400/20 bg-black/20 px-3 py-2">{categories.length} technology areas</span>
               <span className="rounded-lg border border-emerald-400/20 bg-black/20 px-3 py-2">{allTopics.length} command topics</span>
               <span className="rounded-lg border border-emerald-400/20 bg-black/20 px-3 py-2">Search · Build · Copy · Practise</span>
             </div>
