@@ -166,119 +166,84 @@ export const featureCatalog: Record<string, FeatureDefinition> = {
   "incident-simulator": {
     "id": "incident-simulator",
     "title": "Incident Simulator",
-    "description": "Explore production incident scenarios and response workflows.",
+    "description": "Practice realistic production incident response across infrastructure, platforms, applications and security.",
     "style": "incident",
     "label": "Incident Response Center",
     "categories": [
-      {
-        "name": "Linux Incidents",
-        "subcategories": [
-          {
-            "name": "System Resource Incidents",
-            "topics": [
-              "High CPU Usage",
-              "Memory Exhaustion",
-              "Disk Full",
-              "Service Down"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Docker Incidents",
-        "subcategories": [
-          {
-            "name": "Container Incidents",
-            "topics": [
-              "Container Exited",
-              "OOMKilled",
-              "Container Network Failure"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Kubernetes Incidents",
-        "subcategories": [
-          {
-            "name": "Workload Incidents",
-            "topics": [
-              "CrashLoopBackOff",
-              "ImagePullBackOff",
-              "Pending Pods",
-              "Node NotReady"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "CI/CD Incidents",
-        "subcategories": [
-          {
-            "name": "Pipeline Incidents",
-            "topics": [
-              "Jenkins Build Failure",
-              "Agent Offline",
-              "Deployment Failure"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "AWS Incidents",
-        "subcategories": [
-          {
-            "name": "Cloud Infrastructure Incidents",
-            "topics": [
-              "EC2 Unreachable",
-              "EKS Cluster Failure",
-              "IAM Access Denied"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Networking Incidents",
-        "subcategories": [
-          {
-            "name": "Connectivity Incidents",
-            "topics": [
-              "DNS Failure",
-              "Connection Timeout",
-              "Port Unreachable"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Application Incidents",
-        "subcategories": [
-          {
-            "name": "Application Availability",
-            "topics": [
-              "HTTP 500",
-              "HTTP 502",
-              "HTTP 503",
-              "Database Connectivity Failure"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Security Incidents",
-        "subcategories": [
-          {
-            "name": "Security Response",
-            "topics": [
-              "Exposed Secrets",
-              "Unauthorized Access",
-              "Suspicious Activity"
-            ]
-          }
-        ]
-      }
+      { "name": "Linux Incidents", "subcategories": [
+        { "name": "System Resource Incidents", "topics": ["High CPU Usage", "Memory Exhaustion", "Disk Full", "Swap Thrashing"] },
+        { "name": "Service & Process Incidents", "topics": ["Service Down", "Systemd Unit Failure", "Zombie Process Accumulation", "Runaway Process"] },
+        { "name": "Filesystem & Kernel Incidents", "topics": ["Filesystem Read-Only", "Inode Exhaustion", "Kernel Panic", "File Descriptor Exhaustion"] },
+        { "name": "Host Access Incidents", "topics": ["SSH Login Failure", " sudo Permission Failure", "Boot Failure", "Host Unreachable"] }
+      ]},
+      { "name": "Docker Incidents", "subcategories": [
+        { "name": "Container Lifecycle Incidents", "topics": ["Container Exited", "OOMKilled", "Restart Loop", "Container Health Check Failure"] },
+        { "name": "Image & Registry Incidents", "topics": ["ImagePull Failure", "Registry Authentication Failure", "Image Build Failure", "Invalid Image Entrypoint"] },
+        { "name": "Container Networking Incidents", "topics": ["Container Network Failure", "Port Mapping Failure", "DNS Resolution Failure in Container", "Bridge Network Conflict"] },
+        { "name": "Container Storage Incidents", "topics": ["Volume Mount Failure", "Overlay Filesystem Full", "Permission Denied on Volume", "Container Log Growth"] }
+      ]},
+      { "name": "Kubernetes Incidents", "subcategories": [
+        { "name": "Workload Incidents", "topics": ["CrashLoopBackOff", "ImagePullBackOff", "Pending Pods", "Deployment Unavailable"] },
+        { "name": "Node & Scheduling Incidents", "topics": ["Node NotReady", "Insufficient CPU or Memory", "Taints and Tolerations Mismatch", " kubelet NotReady"] },
+        { "name": "Networking & Service Incidents", "topics": ["CoreDNS Failure", "Service Endpoint Missing", "Ingress Routing Failure", "NetworkPolicy Blocking Traffic"] },
+        { "name": "Storage & Configuration Incidents", "topics": ["PVC Pending", "Volume Mount Failure", "ConfigMap Not Updated", "Secret Mount Failure"] }
+      ]},
+      { "name": "CI/CD Incidents", "subcategories": [
+        { "name": "Jenkins Platform Incidents", "topics": ["Jenkins Build Failure", "Agent Offline", "Controller Unavailable", "Plugin Compatibility Failure"] },
+        { "name": "Build & Artifact Incidents", "topics": ["Dependency Download Failure", "Maven Build Failure", "Nexus Artifact Upload Failure", "Build Cache Corruption"] },
+        { "name": "Pipeline & Deployment Incidents", "topics": ["Pipeline Stuck", "Deployment Failure", "Rollback Failure", "Approval Gate Blocked"] },
+        { "name": "GitOps & Release Incidents", "topics": ["Argo CD Sync Failure", "Helm Upgrade Failure", "Git Webhook Delivery Failure", "Release Configuration Drift"] }
+      ]},
+      { "name": "AWS Incidents", "subcategories": [
+        { "name": "Compute & Scaling Incidents", "topics": ["EC2 Unreachable", "EC2 Status Check Failed", "Auto Scaling Not Launching Instances", "Instance Capacity Exhausted"] },
+        { "name": "Identity & Access Incidents", "topics": ["IAM Access Denied", "AssumeRole Failure", "Expired Session Credentials", "Instance Profile Missing"] },
+        { "name": "VPC & Load Balancing Incidents", "topics": ["VPC Route Failure", "Security Group Blocking Traffic", "ALB Unhealthy Targets", "NAT Gateway Connectivity Failure"] },
+        { "name": "Managed Kubernetes & Cloud Services", "topics": ["EKS Cluster Failure", "EKS Node Group Degraded", "ECR Image Pull Denied", "CloudWatch Metrics Missing"] }
+      ]},
+      { "name": "Networking Incidents", "subcategories": [
+        { "name": "DNS Incidents", "topics": ["DNS Failure", "DNS Propagation Issue", "Incorrect DNS Record", "Split-Horizon DNS Misconfiguration"] },
+        { "name": "Connectivity & Routing Incidents", "topics": ["Connection Timeout", "Port Unreachable", "Packet Loss", "Asymmetric Routing"] },
+        { "name": "TLS & Certificate Incidents", "topics": ["SSL Certificate Expired", "TLS Handshake Failure", "Certificate Chain Invalid", "Mutual TLS Authentication Failure"] },
+        { "name": "Load Balancing & Firewall Incidents", "topics": ["Load Balancer Unhealthy Targets", "Firewall Rule Blocking Traffic", "Ingress Routing Failure", "Uneven Traffic Distribution"] }
+      ]},
+      { "name": "Application Incidents", "subcategories": [
+        { "name": "HTTP & API Availability", "topics": ["HTTP 500", "HTTP 502", "HTTP 503", "API Gateway Timeout"] },
+        { "name": "Application Runtime Incidents", "topics": ["Application Crash", "Thread Pool Exhaustion", "Memory Leak", "High Application Latency"] },
+        { "name": "Dependency & Integration Incidents", "topics": ["Database Connectivity Failure", "Third-Party API Failure", "Connection Pool Exhaustion", "Message Broker Unavailable"] },
+        { "name": "Release & Configuration Incidents", "topics": ["Bad Configuration Deployment", "Feature Flag Misconfiguration", "Regression After Release", "Health Check Failure"] }
+      ]},
+      { "name": "Security Incidents", "subcategories": [
+        { "name": "Credential & Secret Incidents", "topics": ["Exposed Secrets", "Leaked API Token", "Compromised Service Account", "Secret Rotation Failure"] },
+        { "name": "Identity & Access Incidents", "topics": ["Unauthorized Access", "Privilege Escalation Alert", "Suspicious IAM Policy Change", "MFA Bypass Attempt"] },
+        { "name": "Threat Detection Incidents", "topics": ["Suspicious Activity", "Brute Force Login Attempt", "Unexpected Outbound Traffic", "Cryptomining Workload Detected"] },
+        { "name": "Vulnerability & Workload Incidents", "topics": ["Critical Container Vulnerability", "Malicious Image Detected", "Unexpected Privileged Container", "Unpatched Internet-Facing Service"] }
+      ]},
+      { "name": "Database Incidents", "subcategories": [
+        { "name": "Database Availability Incidents", "topics": ["Database Connection Failure", "Database Server Down", "Too Many Connections", "Database Authentication Failure"] },
+        { "name": "Database Performance Incidents", "topics": ["Slow SQL Queries", "High Database CPU", "Lock Contention", "Deadlocks"] },
+        { "name": "Replication & Recovery Incidents", "topics": ["Replication Lag", "Replica Failure", "Database Corruption", "Point-in-Time Recovery Failure"] },
+        { "name": "Database Capacity & Storage Incidents", "topics": ["Database Storage Full", "Connection Pool Exhaustion", "Transaction Log Full", "Backup Job Failure"] }
+      ]},
+      { "name": "Storage & Backup Incidents", "subcategories": [
+        { "name": "Block & File Storage Incidents", "topics": ["EBS Volume Full", "EBS Attachment Failure", "EFS Mount Timeout", "Persistent Volume Unavailable"] },
+        { "name": "Object Storage Incidents", "topics": ["S3 Access Denied", "S3 Upload Failure", "Object Lifecycle Misconfiguration", "Bucket Policy Blocks Application"] },
+        { "name": "Backup & Restore Incidents", "topics": ["Backup Job Failed", "Snapshot Creation Failure", "Restore Validation Failure", "Backup Retention Misconfiguration"] },
+        { "name": "Storage Performance & Integrity", "topics": ["High Disk Latency", "IOPS Throttling", "Filesystem Corruption", "Storage Capacity Exhaustion"] }
+      ]},
+      { "name": "Monitoring & Observability Incidents", "subcategories": [
+        { "name": "Prometheus Incidents", "topics": ["Prometheus Target Down", "Scrape Failure", "High Cardinality", "TSDB Storage Full"] },
+        { "name": "Grafana Incidents", "topics": ["Dashboard Not Loading", "Data Source Connection Failure", "Missing Metrics", "Dashboard Query Timeout"] },
+        { "name": "Alerting Incidents", "topics": ["Alert Rule Evaluation Failure", "Alertmanager Notification Failure", "Duplicate Alert Storm", "Silenced Critical Alert"] },
+        { "name": "Logging & Tracing Incidents", "topics": ["Log Ingestion Failure", "Elasticsearch Cluster Red", "Missing Application Logs", "Distributed Trace Gaps"] }
+      ]},
+      { "name": "Messaging & Integration Incidents", "subcategories": [
+        { "name": "Kafka Incidents", "topics": ["Kafka Broker Unavailable", "Consumer Lag Increasing", "Under-Replicated Partitions", "Producer Publish Failure"] },
+        { "name": "RabbitMQ Incidents", "topics": ["RabbitMQ Node Down", "Queue Backlog Growing", "Unacked Messages Accumulating", "Publisher Confirm Failure"] },
+        { "name": "Redis Incidents", "topics": ["Redis Connection Failure", "Redis Memory Limit Reached", "Cache Eviction Storm", "Redis Replication Failure"] },
+        { "name": "Event & Integration Incidents", "topics": ["Webhook Delivery Failure", "Event Processing Stalled", "Dead-Letter Queue Growth", "Message Schema Mismatch"] }
+      ]}
     ]
-  },
+  }
   "monitoring-playground": {
     "id": "monitoring-playground",
     "title": "Monitoring Playground",
