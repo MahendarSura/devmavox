@@ -584,16 +584,20 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
   }
 
 
-  if (topic.startsWith("git ")) { base="git"; args=topic.slice(4)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
-  else if (topic.startsWith("docker ")) { base="docker"; args=topic.slice(7)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
-  else if (topic.startsWith("kubectl ")) { base="kubectl"; args=topic.slice(8)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
-  else if (topic.startsWith("terraform ")) { base="terraform"; args=topic.slice(10)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
-  else if (topic.startsWith("helm ")) { base="helm"; args=topic.slice(5)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
-  else if (topic.startsWith("argocd ")) { base="argocd"; args=topic.slice(7)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
-  else if (topic.startsWith("mvn ")) { base="mvn"; args=topic.slice(4); }
-  else if (topic.startsWith("gradle ")) { base="gradle"; args=topic.slice(7); }
-  else if (topic.startsWith("ip ")) { base="ip"; args=topic.slice(3); }
-  if (topicArgs[topic]) args = topicArgs[topic];
+  const commandPrefixes = ["git","docker","kubectl","terraform","helm","argocd","mvn","gradle","ip","aws","ansible-playbook","ansible-inventory","ansible","gh","glab","crictl","ctr","kubeadm","redis-cli","promtool","amtool","trivy","java","jcmd","jstack","jmap","jstat","openssl","curl","psql","mysql","systemctl","journalctl","bash","sh","python","pip","jq","yq","ssh-keygen","ssh-add","ssh-agent","ssh-keyscan","certbot","cosign","grype","syft","checkov","tfsec","snyk","sonar-scanner","gitleaks","git-secrets","semgrep","mysqladmin","mysqldump","pg_dump","pg_restore","pg_isready"];
+  const matchedPrefix = commandPrefixes.find((candidate) => topic.toLowerCase().startsWith(candidate + " "));
+  if (matchedPrefix) {
+    base = matchedPrefix;
+    const topicSubcommand = topic.slice(matchedPrefix.length).trim();
+    const mappedArgs = topicArgs[topic];
+    // A mapping may contain a complete subcommand or only its required target.
+    // Preserve the topic's command verb in either case.
+    args = mappedArgs
+      ? (mappedArgs.toLowerCase().startsWith(topicSubcommand.toLowerCase()) ? mappedArgs : topicSubcommand + " " + mappedArgs).trim()
+      : topicSubcommand;
+  } else if (topicArgs[topic]) {
+    args = topicArgs[topic];
+  }
   const noArgumentCommands = new Set(["pwd", "cd", "mount", "uptime", "nproc", "lscpu", "startup.sh", "shutdown.sh", "version.sh"]);
   if (!args && !noArgumentCommands.has(base)) args="--help";
 
@@ -610,7 +614,7 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     "daily repository workflow":"inspect repository state, stage changes, create commits and synchronize with remotes",
     "branches, tags and collaboration":"create, switch, merge, rebase and share branches and tags with remote repositories",
     "undo, recovery and inspection":"trace authorship and history, compare revisions, and recover commits or file changes safely",
-    "images and containers":"build, pull, create, start, stop and inspect Docker images and container lifecycle state",
+    "images and containers":"inspect image metadata, download image layers from registries, and inspect container lifecycle state; the exact operation depends on the selected Docker subcommand",
     "networks, volumes and compose":"inspect container ports, networks and volumes, and validate or operate Compose application stacks",
     "registry, build and troubleshooting":"authenticate to registries, tag and transfer images, inspect storage usage and review daemon events",
     "cluster, nodes and namespaces":"inspect Kubernetes contexts, API resources, namespaces, permissions and node health",
@@ -671,7 +675,7 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     "linux administration":["systemctl status <service> --no-pager","journalctl -u <service> -n 100 --no-pager","df -hT"],
     "networking":["ip route","ss -lntup","dig <hostname>"],
     "git":["git status --short --branch","git diff","git log --oneline --decorate -10"],
-    "docker":["docker ps -a","docker inspect <container>","docker logs --tail=100 <container>"],
+    "docker":["docker image ls","docker image inspect <image:tag>","docker ps -a"],
     "kubernetes":["kubectl get events -A --sort-by=.lastTimestamp","kubectl describe <resource> <name> -n <namespace>","kubectl logs <pod> -n <namespace> --all-containers"],
     "aws cli":["aws sts get-caller-identity","aws configure list","aws <service> help"],
     "terraform":["terraform workspace show","terraform validate","terraform plan"],
@@ -701,7 +705,8 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     ssh:[{flag:"-G",meaning:"Print evaluated client configuration without connecting."},{flag:"-vvv",meaning:"Show detailed connection diagnostics."}],
     openssl:[{flag:"-servername <name>",meaning:"Send SNI for the intended TLS virtual host."},{flag:"-showcerts",meaning:"Display certificates sent by the peer."}]
   };
-  const safeFlags = flagsByBase[base] || [{flag:"--help",meaning:"Display supported options for this command or subcommand."}];
+  // Do not apply executable-wide flags to every subcommand. Only curated topic/seed flags are safe to display.
+  const safeFlags = [];
   const example = base + (args ? " " + args : "");
   const outputBySubcategory: Record<string,string> = {
     "navigation and file operations":"Expect the current path, directory entries, file type, permissions, timestamps, inode details or the result of a file operation. Confirm the resolved path before modifying or deleting anything.",
@@ -717,7 +722,7 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     "daily repository workflow":"Expect branch name, staged and unstaged paths, untracked files, commit IDs and remote synchronization state. Review the diff before committing or pushing.",
     "branches, tags and collaboration":"Expect local and remote refs, tracking relationships, commit ancestry, merge conflicts or worktree paths. Verify the destination branch before integrating changes.",
     "undo, recovery and inspection":"Expect commit history, reflog references, file diffs, object integrity or a proposed recovery target. Preserve a backup and inspect the exact revision before reset or cleanup.",
-    "images and containers":"Expect image tags and digests, container IDs, lifecycle state, exit codes, ports and health metadata. Correlate image identity with the container that actually failed.",
+    "images and containers":"For image pull/list/inspect commands, expect repository, tag, image ID, digest, size or layer-download status. For container commands, expect container IDs, lifecycle state, exit codes, ports and health metadata. Do not interpret image-download output as container health.",
     "networks, volumes and compose":"Expect network endpoints, attached containers, volume mounts, Compose service configuration and port mappings. Verify persistent data and dependencies before taking a stack down.",
     "registry, build and troubleshooting":"Expect image tags, registry authentication status, pushed digests, layer history, storage usage and daemon events. Verify the destination repository and immutable digest.",
     "cluster, nodes and namespaces":"Expect cluster endpoint and version, current context, namespace names, RBAC authorization and node readiness conditions. Confirm that the selected context is the intended cluster.",
@@ -814,7 +819,7 @@ export function buildCommandGuide(
     args,
     purpose: existing?.purpose || seed.purpose,
     when: existing?.when || seed.when || `Use this guide when investigating "${topic}" in the ${category} / ${subcategory} workflow.`,
-    flags: existing?.flags || seed.flags || commonFlags,
+    flags: existing?.flags || seed.flags || [],
     examples: existing?.examples || seed.examples || [
       { label: "Operational example", command: example },
       { label: "Show supported options", command: base + " --help" },
