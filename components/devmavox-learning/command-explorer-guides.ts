@@ -398,9 +398,9 @@ const seeds: Record<string, GuideSeed> = {
   },
   "helm upgrade": {
     base: "helm",
-    args: "diff upgrade <release> <chart> -n <namespace>",
+    args: "upgrade <release> <chart> -n <namespace> --install --dry-run --debug",
     purpose: "Review the proposed Helm release changes before upgrading.",
-    example: "helm diff upgrade web ./chart -n staging",
+    example: "helm upgrade web ./chart -n staging --install --dry-run --debug",
     output: "A rendered manifest diff showing additions, modifications and removals.",
     next: ["helm lint ./chart", "helm template web ./chart -n staging", "helm history web -n staging"],
     safety: "Confirm release, namespace, values files and rendered diff. A Helm upgrade can change or remove live resources.",
@@ -446,7 +446,7 @@ const topicAliases: Record<string,string> = {
   "CloudWatch log commands":"aws logs describe-log-groups --region <region>",
   "CloudWatch metrics commands":"aws cloudwatch list-metrics --region <region>",
   "CloudWatch alarms commands":"aws cloudwatch describe-alarms --region <region>",
-  "AWS CLI query and output":"aws ec2 describe-instances --query Reservations[].Instances[].InstanceId --output table",
+  "AWS CLI query and output":"aws ec2 describe-instances --query 'Reservations[].Instances[].InstanceId' --output table --region <region>",
   "AWS CLI pagination and filters":"aws ec2 describe-instances --max-items 20 --region <region>",
   "Nexus repository inspection":"curl -fsS <nexus-url>/service/rest/v1/repositories",
   "Nexus component search":"curl -fsS '<nexus-url>/service/rest/v1/search?repository=<repo>&name=<name>'",
@@ -549,10 +549,11 @@ const topicAliases: Record<string,string> = {
   "PromQL rate and increase":"curl -G <prometheus-url>/api/v1/query --data-urlencode 'query=sum(rate(http_requests_total[5m]))'",
   "PromQL aggregation":"curl -G <prometheus-url>/api/v1/query --data-urlencode 'query=sum by (job) (rate(http_requests_total[5m]))'",
   "bash -x":"bash -x <script.sh>",
-  "kubelet status":"systemctl status kubelet --no-pager",
-  "kubelet logs":"journalctl -u kubelet -n 100 --no-pager",
   "json.tool":"python -m json.tool <file.json>",
   "venv":"python -m venv .venv",
+  "getopts":"bash -c 'help getopts'",
+  "kubelet status":"systemctl status kubelet --no-pager",
+  "kubelet logs":"journalctl -u kubelet -n 100 --no-pager",
 };
 function inferSeed(topic: string, category: string, subcategory: string): GuideSeed {
   const categoryKey = category.toLowerCase();
@@ -645,6 +646,11 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     : categoryKey.includes("kubernetes") || categoryKey.includes("container runtime") ? "Verify kubectl current-context, namespace and target. Collect evidence before rollout, delete, scale, exec or node-level changes."
     : categoryKey.includes("terraform") ? "Confirm workspace, backend and state lock. Review a saved plan before apply; never destroy or force-unlock state without explicit approval."
     : categoryKey.includes("database") ? "Use least-privilege credentials and read-only queries. Verify host and database; avoid production writes, broad scans and unbounded queries."
+    : categoryKey.includes("ci/cd") ? "Verify the exact controller, project, job and authenticated identity. Build, replay, restart, rerun and pipeline changes can trigger deployments; review parameters and approvals first."
+    : categoryKey.includes("helm") ? "Verify cluster context, namespace, release and values. Review rendered manifests and revision history before install, upgrade, rollback, sync or uninstall."
+    : categoryKey.includes("ansible") ? "Verify inventory, host limits, become privileges and variable sources. Prefer syntax-check and check mode; check-mode support varies by module."
+    : categoryKey.includes("monitoring") ? "Confirm endpoint, tenant, time range and metric labels. Avoid broad high-cardinality queries or high-volume debug logging in production."
+    : categoryKey.includes("java") ? "Confirm the correct JVM PID and service instance. Thread and heap diagnostics may expose application details; protect dumps and avoid restarting production services without approval."
     : /security|devsecops/.test(categoryKey) ? "Protect private keys and tokens. Verify target ownership before scanning; do not expose secrets in command history or logs."
     : /docker/.test(categoryKey) ? "Confirm Docker context and target container. Avoid prune, rm, push or volume changes until dependencies and backups are verified."
     : "Confirm host, identity, working directory and target. Prefer read-only inspection; test changes in a disposable lab and capture a rollback path.";
