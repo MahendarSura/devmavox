@@ -30,8 +30,9 @@ Add these to the DevMavox Vercel project for the environments that should displa
 - `AWS_SECRET_ACCESS_KEY` — matching secret access key
 - `AWS_SESSION_TOKEN` — only when using temporary STS credentials
 - `AWS_COST_EXPLORER_REGION` — optional; defaults to `us-east-1`
+- `CLOUD_COST_LAB_BILLING_ACCESS_KEY` — required separate access key used to authorize the billing view
 
-Never commit credentials, place them in `NEXT_PUBLIC_*` variables, paste them into source code, or send them in chat. After saving variables, redeploy the relevant environment so the server route receives them.
+Never commit credentials, place them in `NEXT_PUBLIC_*` variables, paste them into source code, or send them in chat. After saving variables, redeploy the relevant environment so the server route receives them. Give the separate billing access key only to authorized finance/platform users; they enter it in the Cloud Cost Lab panel. Do not use the AWS secret access key as this application access key.
 
 ## 3. Endpoint
 
@@ -41,7 +42,7 @@ Never commit credentials, place them in `NEXT_PUBLIC_*` variables, paste them in
 - Returns monthly unblended cost grouped by AWS service.
 - Accepts a 7–90 day window; defaults to 30.
 - Uses private, no-store response caching.
-- Returns an explicit not-configured state when credentials are absent.
+- Requires a separate `CLOUD_COST_LAB_BILLING_ACCESS_KEY` bearer token before it can query AWS. Returns an explicit not-configured state when AWS credentials are absent.
 - The browser never receives AWS credentials.
 
 Billing data can be delayed by AWS and can include credits, discounts, taxes or support charges differently depending on the selected metric. Reconcile results against the AWS Billing console and invoice before financial reporting.
@@ -56,4 +57,4 @@ Billing data can be delayed by AWS and can include credits, discounts, taxes or 
 
 ## 5. Security and operational notes
 
-The endpoint is a read-only billing view. Before exposing it to a multi-tenant or public production audience, add application-level authorization and account/tenant scoping so only approved users can view the organization's billing data. Do not rely on an unguessable URL as access control.
+The endpoint requires a separate shared access key and uses constant-time comparison for the configured token. The UI keeps the entered key in component memory only; it is not stored in local storage or exposed as a public environment variable. Rotate the access key if it is shared outside the approved group. For multi-tenant use, replace the shared-key gate with authenticated user identity and account/tenant-level authorization before enabling access across organizations. Do not rely on an unguessable URL as access control.
