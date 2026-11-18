@@ -1,0 +1,66 @@
+name: Cloud Cost Lab Build
+
+on:
+  push:
+    branches:
+      - feature/cloud-cost-lab-finops-workspace-20261118
+    paths:
+      - "app/api/cloud-cost-lab/billing/route.ts"
+      - "components/devmavox-learning/CloudBillingLivePanel.tsx"
+      - "components/devmavox-learning/CloudCostLabWorkspace.tsx"
+      - "components/devmavox-learning/FeatureExplorer.tsx"
+      - "components/devmavox-learning/feature-catalog.ts"
+      - "components/devmavox-learning/finops-topic-content.ts"
+      - ".github/workflows/cloud-cost-lab-build.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "app/api/cloud-cost-lab/billing/route.ts"
+      - "components/devmavox-learning/CloudBillingLivePanel.tsx"
+      - "components/devmavox-learning/CloudCostLabWorkspace.tsx"
+      - "components/devmavox-learning/FeatureExplorer.tsx"
+      - "components/devmavox-learning/feature-catalog.ts"
+      - "components/devmavox-learning/finops-topic-content.ts"
+      - ".github/workflows/cloud-cost-lab-build.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloud-cost-lab-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: TypeScript, feature lint and Next.js production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript validation
+        run: npx tsc --noEmit
+
+      - name: ESLint Cloud Cost Lab files
+        run: >-
+          npx eslint
+          app/api/cloud-cost-lab/billing/route.ts
+          components/devmavox-learning/CloudBillingLivePanel.tsx
+          components/devmavox-learning/CloudCostLabWorkspace.tsx
+          components/devmavox-learning/FeatureExplorer.tsx
+          components/devmavox-learning/feature-catalog.ts
+          components/devmavox-learning/finops-topic-content.ts
+
+      - name: Next.js production build
+        run: npm run build

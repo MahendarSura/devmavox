@@ -1,6 +1,7 @@
 import CommandExplorerWorkspace from "./CommandExplorerWorkspace";
 import CommandExplorerBrowse from "./CommandExplorerBrowse";
 import YamlConfigWorkbench from "./YamlConfigWorkbench";
+import CloudCostLabWorkspace from "./CloudCostLabWorkspace";
 import Link from "next/link";
 import ArchitectureTopicPage from "./ArchitectureTopicPage";
 import { getArchitectureTopic } from "./architecture-topic-content";
@@ -301,6 +302,10 @@ export default function FeatureExplorer({
 
   if (featureId === "yaml-config-playground") {
     return <YamlConfigWorkbench feature={feature} slug={slug} />;
+  }
+
+  if (featureId === "cloud-cost-lab") {
+    return <CloudCostLabWorkspace slug={slug} />;
   }
 
   const theme = featureTheme(feature.style);
