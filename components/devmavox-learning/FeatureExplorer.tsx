@@ -2,6 +2,8 @@ import YamlConfigWorkbench from "./YamlConfigWorkbench";
 import Link from "next/link";
 import ArchitectureTopicPage from "./ArchitectureTopicPage";
 import { getArchitectureTopic } from "./architecture-topic-content";
+import IncidentTopicPage from "./IncidentTopicPage";
+import { incidentLessons } from "./incident-topic-content";
 import { notFound } from "next/navigation";
 import {
   featureCatalog,
@@ -385,6 +387,22 @@ export default function FeatureExplorer({
           />
         );
       }
+    }
+
+    if (featureId === "incident-simulator") {
+      const incidentContent = incidentLessons[slug[2]];
+      if (!incidentContent) notFound();
+
+      return (
+        <IncidentTopicPage
+          content={incidentContent}
+          featureId={feature.id}
+          categoryName={category.name}
+          subcategoryName={subcategory.name}
+          categorySlug={slug[0]}
+          subcategorySlug={slug[1]}
+        />
+      );
     }
 
     return (
