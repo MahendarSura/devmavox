@@ -1,0 +1,52 @@
+name: Tech Version Compatibility CI
+
+on:
+  pull_request:
+    branches: [feature/devops-ai-assistant-command-center-20261118]
+    paths:
+      - "app/tech-version-compatibility/**"
+      - "components/devmavox-learning/TechVersionCompatibilityCenter.tsx"
+      - "components/devmavox-learning/tech-version-compatibility-data.ts"
+      - ".github/workflows/tech-version-compatibility-ci.yml"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig.json"
+  push:
+    branches: [feature/devops-ai-assistant-command-center-20261118]
+    paths:
+      - "app/tech-version-compatibility/**"
+      - "components/devmavox-learning/TechVersionCompatibilityCenter.tsx"
+      - ".github/workflows/tech-version-compatibility-ci.yml"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tech-version-compatibility-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Typecheck and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: TypeScript validation
+        run: npx tsc --noEmit
+      - name: ESLint changed compatibility-center files
+        run: npx eslint app/tech-version-compatibility/page.tsx components/devmavox-learning/TechVersionCompatibilityCenter.tsx components/devmavox-learning/tech-version-compatibility-data.ts
+      - name: Next.js production build
+        run: npm run build
