@@ -1,5 +1,5 @@
-import FeatureExplorer from "@/components/devmavox-learning/FeatureExplorer";
+import StudyPlanner from "@/components/devmavox-learning/StudyPlanner";
 
 export default function Page() {
-  return <FeatureExplorer featureId="study-planner" />;
+  return <StudyPlanner />;
 }
