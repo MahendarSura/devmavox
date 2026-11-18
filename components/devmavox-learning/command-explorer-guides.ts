@@ -563,7 +563,8 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
   const prefixes = ["git","docker","kubectl","terraform","helm","argocd","mvn","gradle","ip","aws","ansible","gh","glab","crictl","ctr","kubeadm","redis-cli","promtool","amtool","trivy","java","jcmd","jstack","jmap","jstat","openssl","curl","psql","mysql","systemctl","journalctl","bash","sh","python","pip","jq","yq","ssh-keygen","ssh-add","ssh-agent","ssh-keyscan","certbot","cosign","grype","syft","checkov","tfsec","snyk","sonar-scanner","gitleaks","git-secrets","semgrep","mysqladmin","mysqldump","pg_dump","pg_restore","pg_isready","jcmd"];
   const executable = known.test(topic) ? topic : prefixes.find((candidate) => topic.toLowerCase().startsWith(candidate + " "));
   const aliasFirst = alias?.trim().split(/\s+/)[0];
-  const aliasFirstIsCommand = Boolean(aliasFirst && (known.test(aliasFirst) || prefixes.includes(aliasFirst)));\n  const aliasIsArguments = Boolean(alias && executable && !aliasFirstIsCommand);
+  const aliasFirstIsCommand = Boolean(aliasFirst && (known.test(aliasFirst) || prefixes.includes(aliasFirst)));
+  const aliasIsArguments = Boolean(alias && executable && !aliasFirstIsCommand);
   const raw = alias || topic;
   const first = raw.trim().split(/\\s+/)[0] || "help";
 
