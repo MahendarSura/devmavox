@@ -11,10 +11,9 @@ type Props = {
   subcategoryName: string;
   categorySlug: string;
   subcategorySlug: string;
-  topicSlug: string;
 };
 
-export default function MonitoringTopicPage({ lesson, featureId, categoryName, subcategoryName, categorySlug, subcategorySlug, topicSlug }: Props) {
+export default function MonitoringTopicPage({ lesson, featureId, categoryName, subcategoryName, categorySlug, subcategorySlug }: Props) {
   const [completed, setCompleted] = useState<string[]>([]);
   const [revealed, setRevealed] = useState<number[]>([]);
   const toggle = (step: string) => setCompleted((current) => current.includes(step) ? current.filter((item) => item !== step) : [...current, step]);
