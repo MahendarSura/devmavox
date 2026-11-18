@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { featureCatalog } from "./feature-catalog";
+import { buildCommandGuide } from "./command-explorer-guides";
 
 type CommandProfile = {
   base: string;
@@ -15,6 +16,10 @@ type CommandProfile = {
   next: string[];
   task: string;
   verify: string;
+  safety: string;
+  workflow: string[];
+  pitfalls: string[];
+  level: string;
 };
 
 const PROFILES: Record<string, CommandProfile> = {
@@ -112,20 +117,9 @@ const PROFILES: Record<string, CommandProfile> = {
 };
 
 function profileFor(topic: string, category: string, subcategory: string): CommandProfile {
-  const found = PROFILES[topic];
-  if (found) return found;
-  const safe = topic.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  const base = topic.startsWith("kubectl") ? "kubectl" : topic.toLowerCase().includes("docker") ? "docker" : topic.toLowerCase().includes("terraform") ? "terraform" : topic.toLowerCase().includes("helm") ? "helm" : topic.toLowerCase().includes("argocd") ? "argocd" : topic.toLowerCase().includes("aws") || topic.toLowerCase().includes("cli") ? "aws" : safe;
-  return {
-    base, args:"--help", purpose:`Use ${topic} as part of the ${category} command workflow.`,
-    when:`Use this command when working in ${subcategory}. Check the target environment and permissions before running commands that change state.`,
-    flags:[{flag:"--help",meaning:"Show supported subcommands and options."},{flag:"--version",meaning:"Show installed tool version where supported."}],
-    examples:[{label:"Show command help",command:`${base} --help`},{label:"Check installed version",command:`${base} --version`}],
-    output:`Help text for ${topic}; available options depend on the installed tool version.`,
-    next:[`${base} --help`,"Check the tool's current context and target environment."],
-    task:`Open help for ${topic}, identify the read-only inspection option, and record the expected target environment.`,
-    verify:"Confirm the command target, context, account/cluster and expected output before making changes."
-  };
+  const legacyKey = topic.startsWith("git ") ? topic.slice(4) : topic.startsWith("kubectl get") ? "kubectl get" : topic;
+  const found = PROFILES[topic] || PROFILES[legacyKey];
+  return buildCommandGuide(topic, category, subcategory, found) as CommandProfile;
 }
 
 function slug(value: string) {
@@ -220,9 +214,9 @@ export default function CommandExplorerWorkspace({
             <div className="absolute -right-10 -top-16 h-64 w-64 rounded-full bg-emerald-400/10 blur-3xl"/>
             <p className="font-mono text-xs font-bold uppercase tracking-[.24em] text-emerald-300">DEVMAVOX · COMMAND WORKSPACE</p>
             <h1 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">Command Explorer</h1>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">Search real DevOps commands, build command lines, copy practical examples and practise common diagnostic workflows.</p>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">Find the right command by technology or real-world problem. Learn what it does, when to use it, how to verify results and what to investigate next.</p>
             <div className="mt-6 flex flex-wrap gap-2 text-xs text-emerald-100/80">
-              <span className="rounded-lg border border-emerald-400/20 bg-black/20 px-3 py-2">11 command categories</span>
+              <span className="rounded-lg border border-emerald-400/20 bg-black/20 px-3 py-2">18 technology areas</span>
               <span className="rounded-lg border border-emerald-400/20 bg-black/20 px-3 py-2">{allTopics.length} command topics</span>
               <span className="rounded-lg border border-emerald-400/20 bg-black/20 px-3 py-2">Search · Build · Copy · Practise</span>
             </div>
@@ -238,7 +232,7 @@ export default function CommandExplorerWorkspace({
           </section>
 
           <section className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4"><p className="text-2xl font-black text-white">{categories.length}</p><p className="text-xs text-slate-400">Existing categories</p></div>
+            <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4"><p className="text-2xl font-black text-white">{categories.length}</p><p className="text-xs text-slate-400">Technology areas</p></div>
             <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4"><p className="text-2xl font-black text-white">{allTopics.length}</p><p className="text-xs text-slate-400">Existing command topics</p></div>
             <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4"><p className="text-2xl font-black text-white">{favorites.length}</p><p className="text-xs text-slate-400">Saved favourites</p></div>
             <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4"><p className="text-2xl font-black text-white">{history.length}</p><p className="text-xs text-slate-400">Recent commands</p></div>
@@ -249,7 +243,7 @@ export default function CommandExplorerWorkspace({
             <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><h2 className="font-bold text-white">Recent command activity</h2>{history.length ? <div className="mt-3 space-y-2">{history.slice(0,5).map((item) => <button key={item} onClick={() => setSimCommand(item)} className="block w-full truncate rounded-lg bg-slate-950 px-3 py-2 text-left font-mono text-xs text-slate-300">{item}</button>)}</div> : <p className="mt-2 text-xs text-slate-500">Copied and simulated commands appear here.</p>}</div>
           </section>}
 
-          <div className="mb-4 flex items-end justify-between gap-3"><div><p className="font-mono text-xs uppercase tracking-widest text-emerald-300">Command catalog</p><h2 className="mt-1 text-xl font-bold text-white">Explore by technology</h2></div><span className="text-xs text-slate-500">Original navigation preserved</span></div>
+          <div className="mb-4 flex items-end justify-between gap-3"><div><p className="font-mono text-xs uppercase tracking-widest text-emerald-300">Command catalog</p><h2 className="mt-1 text-xl font-bold text-white">Choose a technology, then a task</h2></div><span className="text-xs text-slate-500">Original navigation preserved</span></div>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {categories.map((group,index) => {
               const count = group.subcategories.reduce((n,sub)=>n+sub.topics.length,0);
@@ -289,9 +283,11 @@ export default function CommandExplorerWorkspace({
 
         <section className="mb-5 grid gap-5 lg:grid-cols-2"><div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><h2 className="font-mono text-sm font-bold text-emerald-200">04 / EXPECTED OUTPUT</h2><pre className="mt-3 overflow-x-auto rounded-xl bg-black p-4 text-xs leading-6 text-emerald-300">{profile.output}</pre><p className="mt-2 text-[11px] text-slate-500">Illustrative output; exact text varies by OS, tool version and environment.</p></div><div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><h2 className="font-mono text-sm font-bold text-emerald-200">05 / NEXT DIAGNOSTIC COMMANDS</h2><div className="mt-3 space-y-2">{profile.next.map((item)=><div key={item} className="flex items-center justify-between gap-2 rounded-lg bg-slate-950 p-3"><code className="break-all text-xs text-slate-200">{item}</code><button onClick={()=>copyCommand(item)} className="shrink-0 text-xs text-emerald-300">Copy</button></div>)}</div></div></section>
 
-        <section className="mb-5 rounded-2xl border border-cyan-500/20 bg-cyan-950/10 p-5"><h2 className="font-mono text-sm font-bold text-cyan-200">06 / HANDS-ON TASK</h2><p className="mt-3 text-sm leading-7 text-slate-200">{profile.task}</p><div className="mt-4 rounded-lg border border-cyan-500/20 bg-slate-950/70 p-4"><p className="text-xs font-bold uppercase tracking-wider text-cyan-300">Verification checklist</p><p className="mt-2 text-sm text-slate-300">{profile.verify}</p></div></section>
+        <section className="mb-5 rounded-2xl border border-amber-500/20 bg-amber-950/10 p-5"><h2 className="font-mono text-sm font-bold text-amber-200">06 / SAFETY BEFORE EXECUTION</h2><p className="mt-3 text-sm leading-7 text-slate-200">{profile.safety}</p><div className="mt-4 grid gap-2 sm:grid-cols-2">{profile.pitfalls.map((item,index)=><div key={index} className="rounded-lg border border-amber-500/15 bg-slate-950/60 p-3 text-xs leading-6 text-slate-300">{item}</div>)}</div></section>
+        <section className="mb-5 rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><h2 className="font-mono text-sm font-bold text-emerald-200">07 / REAL-WORLD INVESTIGATION FLOW</h2><ol className="mt-3 space-y-3">{profile.workflow.map((item,index)=><li key={index} className="flex gap-3 text-sm text-slate-300"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-400/10 font-mono text-xs text-emerald-200">{index+1}</span><span>{item}</span></li>)}</ol></section>
+        <section className="mb-5 rounded-2xl border border-cyan-500/20 bg-cyan-950/10 p-5"><h2 className="font-mono text-sm font-bold text-cyan-200">08 / HANDS-ON TASK</h2><p className="mt-3 text-sm leading-7 text-slate-200">{profile.task}</p><div className="mt-4 rounded-lg border border-cyan-500/20 bg-slate-950/70 p-4"><p className="text-xs font-bold uppercase tracking-wider text-cyan-300">Verification checklist</p><p className="mt-2 text-sm text-slate-300">{profile.verify}</p></div></section>
 
-        <section className="mb-5 rounded-2xl border border-emerald-500/20 bg-[#07140f] p-5"><h2 className="font-mono text-sm font-bold text-emerald-200">07 / SAFE PRACTICE TERMINAL</h2><p className="mt-2 text-xs leading-5 text-slate-400">This is a simulator with predefined sample responses, not a real shell. It does not execute commands on your computer, server, AWS account or Kubernetes cluster.</p><div className="mt-4 flex flex-col gap-2 sm:flex-row"><input value={simCommand} onChange={(event)=>setSimCommand(event.target.value)} placeholder="Try: kubectl get pods -n production" className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-black px-3 py-3 font-mono text-xs text-white outline-none focus:border-emerald-400"/><button onClick={runSimulation} className="rounded-lg bg-emerald-400 px-5 py-3 text-xs font-bold text-slate-950">Run simulation</button></div>{simOutput&&<pre className="mt-3 overflow-x-auto rounded-xl border border-slate-800 bg-black p-4 text-xs leading-6 text-emerald-300">{simOutput}</pre>}</section>
+        <section className="mb-5 rounded-2xl border border-emerald-500/20 bg-[#07140f] p-5"><h2 className="font-mono text-sm font-bold text-emerald-200">09 / SAFE PRACTICE TERMINAL</h2><p className="mt-2 text-xs leading-5 text-slate-400">This is a simulator with predefined sample responses, not a real shell. It does not execute commands on your computer, server, AWS account or Kubernetes cluster.</p><div className="mt-4 flex flex-col gap-2 sm:flex-row"><input value={simCommand} onChange={(event)=>setSimCommand(event.target.value)} placeholder="Try: kubectl get pods -n production" className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-black px-3 py-3 font-mono text-xs text-white outline-none focus:border-emerald-400"/><button onClick={runSimulation} className="rounded-lg bg-emerald-400 px-5 py-3 text-xs font-bold text-slate-950">Run simulation</button></div>{simOutput&&<pre className="mt-3 overflow-x-auto rounded-xl border border-slate-800 bg-black p-4 text-xs leading-6 text-emerald-300">{simOutput}</pre>}</section>
 
         <div className="flex flex-wrap justify-between gap-3 border-t border-slate-800 pt-5"><Link href={`/command-explorer/${slug(selected.category)}`} className="text-sm text-slate-400 hover:text-white">← Back to {selected.category}</Link><Link href="/command-explorer" className="text-sm font-semibold text-emerald-300 hover:text-white">Explore more commands →</Link></div>
       </div>
