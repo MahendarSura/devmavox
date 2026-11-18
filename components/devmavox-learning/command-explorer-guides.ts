@@ -24,6 +24,13 @@ type GuideSeed = {
   next: string[];
   safety?: string;
   level?: string;
+  when?: string;
+  flags?: { flag: string; meaning: string }[];
+  examples?: { label: string; command: string }[];
+  task?: string;
+  verify?: string;
+  workflow?: string[];
+  pitfalls?: string[];
 };
 
 const commonFlags = [
@@ -197,6 +204,21 @@ const topicAliases: Record<string,string> = {
   "HTTP health checks":"curl -fsS -i <health-url>",
   "HTTP status diagnostics":"curl -sS -D - -o /dev/null <url>",
   "TLS certificate checks":"openssl s_client -connect <host>:443 -servername <host>",
+  "curl HTTP checks":"curl -sS -D - -o /dev/null <url>",
+  "Jenkins agent diagnostics":"curl -fsS <jenkins-url>/computer/api/json",
+  "Jenkins pipeline replay":"Use Jenkins UI Replay only after reviewing the original build and pipeline changes",
+  "jenkins CLI":"java -jar jenkins-cli.jar -s <jenkins-url> help",
+  "journal log filtering":"journalctl -p warning..alert --since '1 hour ago' --no-pager",
+  "process resource diagnostics":"ps -eo pid,ppid,%cpu,%mem,stat,etime,cmd --sort=-%cpu | head",
+  "JVM diagnostics":"jcmd <java-pid> VM.info",
+  "snyk CLI":"snyk test",
+  "YAML validation commands":"python -c \"import yaml; yaml.safe_load(open('<file.yaml>'))\"",
+  "Terraform logging and TRACE":"TF_LOG=TRACE terraform plan",
+  "Nexus component upload":"curl -u <user>:<token> -X POST <nexus-url>/service/rest/v1/components",
+  "Nexus cleanup tasks":"curl -fsS <nexus-url>/service/rest/v1/tasks",
+  "Tomcat thread dump":"jcmd <java-pid> Thread.print",
+  "WAR deployment checks":"curl -fsS -I <application-url>/health",
+  "CNI diagnostics":"kubectl get pods -n kube-system -o wide",
   "Ansible check mode":"ansible-playbook -i <inventory> <playbook.yml> --check",
   "Ansible diff mode":"ansible-playbook -i <inventory> <playbook.yml> --check --diff",
   "Ansible tags":"ansible-playbook -i <inventory> <playbook.yml> --list-tags",
@@ -258,10 +280,12 @@ const topicAliases: Record<string,string> = {
 };
 function inferSeed(topic: string, category: string, subcategory: string): GuideSeed {
   const categoryKey = category.toLowerCase();
+  const subcategoryKey = subcategory.toLowerCase();
   const alias = topicAliases[topic];
   const raw = alias || topic;
-  const first = raw.trim().split(/\s+/)[0] || "help";
-  const categoryDefaults: Record<string,string> = {
+  const first = raw.trim().split(/\\s+/)[0] || "help";
+  const known = /^(pwd|ls|cd|find|locate|tree|mkdir|touch|cp|mv|rm|ln|readlink|file|stat|cat|less|head|tail|grep|egrep|sed|awk|cut|sort|uniq|wc|tr|xargs|tee|diff|cmp|chmod|chown|chgrp|umask|getfacl|setfacl|namei|id|groups|sudo|tar|gzip|gunzip|zip|unzip|rsync|scp|sftp|ssh|sha256sum|ps|top|htop|pgrep|pkill|kill|killall|nice|renice|systemctl|service|journalctl|df|du|lsblk|blkid|mount|umount|free|vmstat|iostat|iotop|uptime|nproc|lscpu|dmesg|useradd|usermod|userdel|passwd|chage|getent|apt|apt-cache|dpkg|yum|dnf|rpm|crontab|at|timedatectl|ip|ss|netstat|ethtool|nmcli|route|arp|ping|traceroute|tracepath|mtr|tcpdump|tshark|nc|nmap|telnet|curl|wget|dig|nslookup|host|resolvectl|openssl|git|docker|kubectl|aws|terraform|ansible|ansible-playbook|ansible-inventory|ansible-doc|ansible-config|ansible-vault|ansible-galaxy|ansible-pull|ansible-lint|ansible-navigator|helm|argocd|jenkins|gh|glab|mvn|gradle|promtool|grafana-cli|amtool|trivy|grype|syft|checkov|tfsec|snyk|sonar-scanner|gitleaks|git-secrets|semgrep|cosign|mysql|mysqldump|mysqladmin|psql|pg_dump|pg_restore|pg_isready|redis-cli|bash|sh|source|export|env|printenv|read|getopts|trap|timeout|Get-Process|Get-Service|Get-ChildItem|Get-Content|Select-String|Test-NetConnection|Invoke-WebRequest|Invoke-RestMethod|Get-Command|Get-Help|python|pip|jq|yq|java|javac|jar|jps|jcmd|jstack|jmap|jstat|jinfo|catalina.sh|startup.sh|shutdown.sh|version.sh|crictl|ctr|kubeadm|kubelet)$/i;
+  const defaults: Record<string,string> = {
     "linux":"ls", "linux administration":"systemctl", "networking":"ip", "git":"git",
     "docker":"docker", "kubernetes":"kubectl", "aws cli":"aws", "terraform":"terraform",
     "ansible":"ansible-playbook", "helm and argo cd":"helm", "ci/cd platforms":"gh",
@@ -270,43 +294,73 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     "scripting and automation":"bash", "java and tomcat":"java",
     "container runtime and platform tools":"crictl"
   };
-  const knownExecutables = /^(pwd|ls|cd|find|locate|tree|mkdir|touch|cp|mv|rm|ln|readlink|file|stat|cat|less|head|tail|grep|egrep|sed|awk|cut|sort|uniq|wc|tr|xargs|tee|diff|cmp|chmod|chown|chgrp|umask|getfacl|setfacl|namei|id|groups|sudo|tar|gzip|gunzip|zip|unzip|rsync|scp|sftp|ssh|sha256sum|ps|top|htop|pgrep|pkill|kill|killall|nice|renice|systemctl|service|journalctl|df|du|lsblk|blkid|mount|umount|free|vmstat|iostat|iotop|uptime|nproc|lscpu|dmesg|useradd|usermod|userdel|passwd|chage|getent|apt|apt-cache|dpkg|yum|dnf|rpm|crontab|at|timedatectl|ip|ss|netstat|ethtool|nmcli|route|arp|ping|traceroute|tracepath|mtr|tcpdump|tshark|nc|nmap|telnet|curl|wget|dig|nslookup|host|resolvectl|openssl|git|docker|kubectl|aws|terraform|ansible|ansible-playbook|ansible-inventory|ansible-doc|ansible-config|ansible-vault|ansible-galaxy|ansible-pull|ansible-lint|ansible-navigator|helm|argocd|jenkins|gh|glab|mvn|gradle|promtool|grafana-cli|amtool|trivy|grype|syft|checkov|tfsec|snyk|sonar-scanner|gitleaks|git-secrets|semgrep|cosign|mysql|mysqldump|mysqladmin|psql|pg_dump|pg_restore|pg_isready|redis-cli|bash|sh|source|export|env|printenv|read|getopts|trap|timeout|Get-Process|Get-Service|Get-ChildItem|Get-Content|Select-String|Test-NetConnection|Invoke-WebRequest|Invoke-RestMethod|Get-Command|Get-Help|python|pip|jq|yq|java|javac|jar|jps|jcmd|jstack|jmap|jstat|jinfo|catalina.sh|startup.sh|shutdown.sh|version.sh|crictl|ctr|kubeadm|kubelet)$/i;
-  let base = alias ? first : (knownExecutables.test(topic) ? topic : (categoryDefaults[categoryKey] || first));
+  let base = alias ? first : (known.test(topic) ? topic : (defaults[categoryKey] || first));
   let args = topicArgs[topic] ?? (alias ? raw.slice(first.length).trim() : (base === topic ? "" : "--help"));
-  if (!alias && topic.toLowerCase().startsWith(base.toLowerCase() + " ")) args = topic.slice(base.length).trim() || args;
-  if (topic.startsWith("git ")) { base="git"; args=topic.slice(4)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
-  else if (topic.startsWith("docker ")) { base="docker"; args=topic.slice(7)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
-  else if (topic.startsWith("kubectl ")) { base="kubectl"; args=topic.slice(8)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
-  else if (topic.startsWith("terraform ")) { base="terraform"; args=topic.slice(10)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
-  else if (topic.startsWith("helm ")) { base="helm"; args=topic.slice(5)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
-  else if (topic.startsWith("argocd ")) { base="argocd"; args=topic.slice(7)+(topicArgs[topic] ? " "+topicArgs[topic] : " --help"); }
+  const prefixes = ["git","docker","kubectl","terraform","helm","argocd","mvn","gradle","ip","aws","ansible","gh","glab","crictl","ctr","kubeadm","redis-cli","promtool","amtool","trivy","java","jcmd","jstack","jmap","jstat","openssl","curl","psql","mysql"];
+  if (!alias) {
+    const prefix = prefixes.find((candidate) => topic.toLowerCase().startsWith(candidate + " "));
+    if (prefix) { base = prefix; args = topic.slice(prefix.length).trim(); }
+  }
+  if (topic.startsWith("git ")) { base="git"; args=topic.slice(4)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
+  else if (topic.startsWith("docker ")) { base="docker"; args=topic.slice(7)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
+  else if (topic.startsWith("kubectl ")) { base="kubectl"; args=topic.slice(8)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
+  else if (topic.startsWith("terraform ")) { base="terraform"; args=topic.slice(10)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
+  else if (topic.startsWith("helm ")) { base="helm"; args=topic.slice(5)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
+  else if (topic.startsWith("argocd ")) { base="argocd"; args=topic.slice(7)+(topicArgs[topic] ? " "+topicArgs[topic] : ""); }
   else if (topic.startsWith("mvn ")) { base="mvn"; args=topic.slice(4); }
   else if (topic.startsWith("gradle ")) { base="gradle"; args=topic.slice(7); }
-  else if (topic.startsWith("ip ")) { base="ip"; args=topic.slice(3)+" "+(topicArgs[topic] || "show"); }
-  if (!args && base !== "pwd") args="--help";
-  const purpose = categoryKey.includes("linux") ? "Use "+topic+" to inspect or manage Linux files, processes, services, storage, permissions or system configuration."
-    : categoryKey.includes("network") ? "Use "+topic+" to diagnose network interfaces, routing, connectivity, DNS, TLS, HTTP or packet behavior."
-    : categoryKey.includes("git") ? "Use "+topic+" to inspect or manage repository state, history, branches and collaboration safely."
-    : categoryKey.includes("docker") ? "Use "+topic+" to inspect or manage Docker images, containers, networks, volumes, builds or registries."
-    : categoryKey.includes("kubernetes") ? "Use "+topic+" to inspect or manage Kubernetes resources, workloads, scheduling, networking or configuration."
-    : categoryKey.includes("aws") ? "Use "+topic+" to query AWS resources. Confirm the active account, role, profile and region before use."
-    : categoryKey.includes("terraform") ? "Use "+topic+" to validate, plan, inspect or manage Terraform configuration, providers, modules and state."
-    : categoryKey.includes("ansible") ? "Use "+topic+" to inspect inventory, validate automation or troubleshoot controlled Ansible execution."
-    : categoryKey.includes("helm") ? "Use "+topic+" to inspect Helm releases/charts or Argo CD GitOps application state."
-    : categoryKey.includes("ci/cd") ? "Use "+topic+" to inspect CI/CD authentication, pipelines, jobs, agents, logs and deployments."
-    : categoryKey.includes("build") ? "Use "+topic+" to build, test, resolve dependencies or verify application artifacts."
-    : categoryKey.includes("monitoring") ? "Use "+topic+" to validate monitoring, query metrics, inspect alerts or diagnose service health."
-    : categoryKey.includes("security") ? "Use "+topic+" to inspect credentials, certificates, vulnerabilities or software supply-chain security."
-    : categoryKey.includes("database") ? "Use "+topic+" to inspect database connectivity, sessions, backups, queries or cache behavior."
-    : categoryKey.includes("scripting") ? "Use "+topic+" to write, validate, debug or automate repeatable DevOps tasks."
-    : categoryKey.includes("java") ? "Use "+topic+" to inspect Java runtime, JVM diagnostics, Tomcat services, logs or deployments."
-    : "Use "+topic+" to inspect container runtime, CRI, kubelet or Kubernetes node health.";
-  const safety = categoryKey.includes("git") ? "Check git status and preserve uncommitted work. Back up before reset, clean, rebase or force-push."
-    : categoryKey.includes("aws") ? "Verify aws sts get-caller-identity, profile and region. Never expose access keys or session tokens."
-    : categoryKey.includes("kubernetes") || categoryKey.includes("container runtime") ? "Verify kubectl current-context, namespace and target. Start read-only; review impact before changing live resources."
-    : categoryKey.includes("terraform") ? "Confirm workspace, backend and state lock. Review a saved plan before apply; avoid destroy or force-unlock without approval."
-    : categoryKey.includes("database") ? "Use least-privilege credentials and read-only queries for diagnosis. Verify host and database; avoid production writes."
-    : "Confirm host, identity, working directory and target. Prefer read-only inspection and use a disposable lab for changes.";
+  else if (topic.startsWith("ip ")) { base="ip"; args=topic.slice(3); }
+  if (!args && base !== "pwd" && base !== "cd") args="--help";
+
+  const purposeBySubcategory: Record<string,string> = {
+    "navigation and file operations":"navigate directories and inspect file metadata or filesystem paths",
+    "text processing and search":"filter, transform, compare and summarize text streams or files",
+    "permissions and access":"inspect identity, ownership, mode bits and access-control rules",
+    "archives and transfers":"package, transfer and verify files between systems",
+    "processes and services":"inspect process state, service health, resource usage and system logs",
+    "system resources and storage":"measure CPU, memory, disk, block-device and kernel resource state",
+    "users, packages and scheduling":"manage local identities, installed packages and scheduled jobs",
+    "interfaces, routes and sockets":"inspect interfaces, neighbors, routing tables and listening sockets",
+    "dns, tls and http":"diagnose name resolution, certificate negotiation and HTTP response behavior",
+    "daily repository workflow":"inspect and safely update Git working-tree and commit state",
+    "branches, tags and collaboration":"manage branch history and coordinate changes with remotes",
+    "undo, recovery and inspection":"inspect history and recover changes without losing uncommitted work",
+    "images and containers":"build, create, run and inspect container images and lifecycle state",
+    "networks, volumes and compose":"inspect container connectivity, persistent storage and Compose services",
+    "registry, build and troubleshooting":"authenticate to registries, tag/publish images and diagnose Docker storage",
+    "cluster, nodes and namespaces":"inspect Kubernetes API access, cluster identity and node readiness",
+    "workloads and deployments":"inspect and manage workload rollout, replica and image state",
+    "debugging and logs":"collect container logs, events and ephemeral debugging evidence",
+    "services, storage and configuration":"inspect service routing, ingress, persistent volumes and configuration objects",
+    "identity, profiles and access":"verify AWS identity, credentials, profiles and IAM access",
+    "core workflow and planning":"format, initialize, validate and preview Terraform configuration changes",
+    "state, modules and workspaces":"inspect Terraform state, modules, provider selections and workspace isolation",
+    "debugging and automation":"diagnose Terraform evaluation, provider and automation behavior",
+    "jenkins cli and pipeline operations":"inspect Jenkins controller, agents, jobs and pipeline execution",
+    "github actions and github cli":"inspect GitHub authentication, repositories, workflows and run status",
+    "gitlab ci and runner operations":"inspect GitLab authentication, pipelines, jobs and runners",
+    "maven and gradle":"compile, test, resolve dependencies and package application artifacts",
+    "prometheus and promql":"validate Prometheus configuration and query time-series metrics",
+    "grafana and alertmanager":"inspect dashboards, data sources, alert routes and active alerts",
+    "host and application observability":"correlate host logs, process resources, HTTP health and JVM telemetry",
+    "ssh, keys and certificates":"inspect SSH identity and validate TLS certificate chains and expiry",
+    "image, dependency and iac scanning":"scan container images, source dependencies and infrastructure configuration",
+    "code quality and secret detection":"identify code-quality issues, exposed secrets and artifact-signature trust",
+    "redis and database diagnostics":"inspect database connectivity, PostgreSQL sessions and Redis health",
+    "bash and shell utilities":"write and debug safe shell automation with predictable error handling",
+    "python and json/yaml utilities":"validate structured data and execute repeatable Python or YAML tooling",
+    "containerd and cri":"inspect CRI pods, containers, images and runtime task state",
+    "kubernetes node and bootstrap tools":"inspect kubeadm bootstrap, kubelet health, certificates and node networking"
+  };
+  const purpose = "Use "+topic+" to "+(purposeBySubcategory[subcategoryKey] || "inspect and troubleshoot "+subcategory.toLowerCase())+".";
+  const safety = categoryKey.includes("git") ? "Check git status first. Preserve uncommitted work; review the exact target before reset, clean, rebase, cherry-pick or force-push."
+    : categoryKey.includes("aws") ? "Verify aws sts get-caller-identity, profile and region. Use least-privilege read-only credentials; never paste access keys or session tokens."
+    : categoryKey.includes("kubernetes") || categoryKey.includes("container runtime") ? "Verify kubectl current-context, namespace and target. Collect evidence before rollout, delete, scale, exec or node-level changes."
+    : categoryKey.includes("terraform") ? "Confirm workspace, backend and state lock. Review a saved plan before apply; never destroy or force-unlock state without explicit approval."
+    : categoryKey.includes("database") ? "Use least-privilege credentials and read-only queries. Verify host and database; avoid production writes, broad scans and unbounded queries."
+    : /security|devsecops/.test(categoryKey) ? "Protect private keys and tokens. Verify target ownership before scanning; do not expose secrets in command history or logs."
+    : /docker/.test(categoryKey) ? "Confirm Docker context and target container. Avoid prune, rm, push or volume changes until dependencies and backups are verified."
+    : "Confirm host, identity, working directory and target. Prefer read-only inspection; test changes in a disposable lab and capture a rollback path.";
   const nextByCategory: Record<string,string[]> = {
     "linux":["stat <path>","find <path> -maxdepth 2 -type f","journalctl -n 50 --no-pager"],
     "linux administration":["systemctl status <service> --no-pager","journalctl -u <service> -n 100 --no-pager","df -hT"],
@@ -327,11 +381,60 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     "java and tomcat":["java -version","jcmd <pid> VM.version","journalctl -u tomcat -n 100 --no-pager"],
     "container runtime and platform tools":["crictl ps -a","crictl pods -a","journalctl -u kubelet -n 100 --no-pager"]
   };
-  return { base, args, purpose, example:base+(args ? " "+args : ""),
-    output:"Example workflow for "+topic+": run the command against the intended target, capture standard output and standard error, record the exit code, then compare returned resource identifiers and status fields with the expected state. This is illustrative guidance only; exact output depends on tool version, permissions and environment. No live system was queried.",
-    next:nextByCategory[categoryKey] || ["<tool> --help","<tool> --version"], safety, level:"Intermediate" };
+  const flagsByBase: Record<string,{flag:string;meaning:string}[]> = {
+    git:[{flag:"--help",meaning:"Show help for the selected Git subcommand."},{flag:"--no-pager",meaning:"Keep output in the terminal stream for easier capture."}],
+    docker:[{flag:"--format",meaning:"Format list or inspect output using Go templates where supported."},{flag:"--filter",meaning:"Restrict results to matching labels, names or status."}],
+    kubectl:[{flag:"-n <namespace>",meaning:"Target a specific namespace."},{flag:"-o wide",meaning:"Include additional resource columns."},{flag:"--context <context>",meaning:"Select an explicit kubeconfig context."}],
+    aws:[{flag:"--region <region>",meaning:"Select the AWS Region for the API request."},{flag:"--profile <profile>",meaning:"Use a named local AWS CLI profile."},{flag:"--output json",meaning:"Return structured JSON output."}],
+    terraform:[{flag:"-chdir=<directory>",meaning:"Run Terraform from the specified working directory."},{flag:"-var-file=<file>",meaning:"Load variables from an explicit file."},{flag:"-out=<plan-file>",meaning:"Save a generated plan for later review."}],
+    ansible:[{flag:"-i <inventory>",meaning:"Select the inventory source."},{flag:"--limit <pattern>",meaning:"Restrict the play to selected hosts."},{flag:"-vvv",meaning:"Increase diagnostic verbosity."}],
+    helm:[{flag:"-n <namespace>",meaning:"Select the release namespace."},{flag:"-f <values.yaml>",meaning:"Load an explicit values file."},{flag:"--dry-run --debug",meaning:"Render and inspect without applying a release."}],
+    argocd:[{flag:"--app-namespace <namespace>",meaning:"Select the namespace containing the Argo CD Application."},{flag:"--grpc-web",meaning:"Use gRPC-Web for compatible ingress/proxy setups."}],
+    curl:[{flag:"-I",meaning:"Fetch response headers only."},{flag:"-sS",meaning:"Suppress progress while retaining error messages."},{flag:"-v",meaning:"Show connection and TLS diagnostic details."}],
+    journalctl:[{flag:"-u <service>",meaning:"Filter logs to a systemd unit."},{flag:"--since <time>",meaning:"Restrict logs to a time window."},{flag:"-p warning",meaning:"Filter by warning priority and more severe messages."}],
+    systemctl:[{flag:"--no-pager",meaning:"Print output directly without an interactive pager."},{flag:"--type=service",meaning:"Limit unit listings to services."}],
+    ssh:[{flag:"-G",meaning:"Print evaluated client configuration without connecting."},{flag:"-vvv",meaning:"Show detailed connection diagnostics."}],
+    openssl:[{flag:"-servername <name>",meaning:"Send SNI for the intended TLS virtual host."},{flag:"-showcerts",meaning:"Display certificates sent by the peer."}]
+  };
+  const safeFlags = flagsByBase[base] || [{flag:"--help",meaning:"Display supported options for this command or subcommand."}];
+  const example = base + (args ? " " + args : "");
+  const outputByCategory: Record<string,string> = {
+    "linux":"Expect paths, permissions, timestamps, process details or file contents depending on the command. Check ownership, exit status and whether output was truncated.",
+    "linux administration":"Expect process, service, resource or kernel data. Correlate timestamps and compare CPU, memory, disk and service state.",
+    "networking":"Expect interface, route, DNS, TCP, TLS or HTTP evidence. Separate name-resolution, connection, handshake and application response failures.",
+    "git":"Expect repository state, commit IDs, refs or file differences. Check staged versus unstaged changes and verify the current branch before mutation.",
+    "docker":"Expect container/image IDs, lifecycle state, ports, mounts or daemon events. Correlate container status with logs and inspect metadata.",
+    "kubernetes":"Expect API resource rows, conditions, events or container logs. Check namespace, context, readiness, restart counts and owner references.",
+    "aws cli":"Expect AWS API JSON containing resource IDs, states, tags or account metadata. Check account, region, pagination and IAM authorization.",
+    "terraform":"Expect formatting/validation diagnostics, state data or a proposed resource plan. Distinguish planned changes from changes actually applied.",
+    "ansible":"Expect inventory, syntax or per-host task results. Review unreachable/failed hosts, changed status and module-specific check-mode support.",
+    "helm and argo cd":"Expect chart rendering, release revisions, manifests or application sync/health status. Compare desired Git state with live state.",
+    "ci/cd platforms":"Expect job, pipeline, agent or build metadata. Correlate queue time, runner availability, stage logs and artifact publication.",
+    "build and artifact tools":"Expect compile/test results, dependency trees, artifact coordinates or repository API data. Verify exit code, artifact checksum and repository target.",
+    "monitoring and observability":"Expect metric samples, target health, alert labels or diagnostic telemetry. Confirm time range, labels, scrape status and alert evaluation.",
+    "devsecops and security":"Expect certificate metadata, scanner findings, signature verification or policy results. Validate severity, evidence and false-positive context.",
+    "databases and caching":"Expect connection state, session/query metadata or Redis INFO fields. Confirm the correct database and use bounded, read-only inspection.",
+    "scripting and automation":"Expect parsed data, script diagnostics, process output or structured values. Check quoting, exit code, input encoding and error handling.",
+    "java and tomcat":"Expect JVM version/process/thread information or service/deployment status. Correlate heap, thread, GC, connector and application logs.",
+    "container runtime and platform tools":"Expect CRI containers, pods, images, tasks, kubelet or certificate state. Correlate runtime output with node Events and kubelet logs."
+  };
+  const next = nextByCategory[categoryKey] || ["<tool> --help","<tool> --version"];
+  return {
+    base,args,purpose,
+    when:"Use this command when working in "+subcategory+" for "+category+". Confirm the target and collect a baseline before making changes.",
+    flags:safeFlags,
+    examples:[{label:"Primary inspection",command:example},{label:"Follow-up evidence",command:next[0]}],
+    example,
+    output:outputByCategory[categoryKey] || "Inspect the command-specific status, identifiers, diagnostics and exit code. Exact output depends on version and environment.",
+    next,
+    task:"In a disposable lab, use "+example+" with a valid test target. Record the exact command, target, output, exit code and what the result proves. Do not run destructive options on production.",
+    verify:"Repeat the primary check and one independent health check. Confirm the expected resource state, target identity and exit code; record evidence and timestamp.",
+    safety,
+    workflow:["Confirm identity, environment, context, namespace/region and target resource.","Capture baseline state and relevant timestamps before changing anything.","Run the read-only primary command and save stdout, stderr and exit code.","Use the follow-up command to correlate logs, events, metadata or resource state.","State the evidence-supported diagnosis; distinguish symptoms from root cause.","If a change is required, test a reversible fix in a lab and obtain approval for production.","Repeat the original check and verify end-to-end application health."],
+    pitfalls:["Using the wrong account, cluster context, namespace, region, host or repository.","Treating a successful command exit code as proof that the application is healthy.","Copying placeholder values literally instead of replacing them with real identifiers.","Applying destructive or mutating flags before capturing evidence and confirming rollback.","Assuming sample output is live data; output varies with tool version, permissions and environment."],
+    level:"Intermediate"
+  };
 }
-
 
 export function buildCommandGuide(
   topic: string,
@@ -350,18 +453,18 @@ export function buildCommandGuide(
     base,
     args,
     purpose: existing?.purpose || seed.purpose,
-    when: existing?.when || `Use this guide when investigating "${topic}" in the ${category} / ${subcategory} workflow.`,
-    flags: existing?.flags || commonFlags,
-    examples: existing?.examples || [
+    when: existing?.when || seed.when || `Use this guide when investigating "${topic}" in the ${category} / ${subcategory} workflow.`,
+    flags: existing?.flags || seed.flags || commonFlags,
+    examples: existing?.examples || seed.examples || [
       { label: "Operational example", command: example },
       { label: "Show supported options", command: base + " --help" },
     ],
     output: (existing?.output || seed.output) + "\n\nIllustrative output only. Exact values vary by tool version and environment.",
     next,
-    task: existing?.task || `In a disposable lab, investigate "${topic}" and record the command, output, exit code and evidence.`,
-    verify: existing?.verify || "Verify the target context, expected resource state, command exit code and application-level health independently.",
+    task: existing?.task || seed.task || `In a disposable lab, investigate "${topic}" and record the command, output, exit code and evidence.`,
+    verify: existing?.verify || seed.verify || "Verify the target context, expected resource state, command exit code and application-level health independently.",
     safety: existing?.safety || seed.safety || "Start with read-only inspection. Confirm host, identity, context, namespace, region and target before changing state.",
-    workflow: existing?.workflow || [
+    workflow: existing?.workflow || seed.workflow || [
       "Confirm the correct environment, identity and target resource.",
       "Run the read-only inspection command and capture its output.",
       "Inspect logs, events or detailed resource metadata.",
@@ -369,7 +472,7 @@ export function buildCommandGuide(
       "Apply one approved, reversible change in a test environment first.",
       "Repeat the original check and verify application health.",
     ],
-    pitfalls: existing?.pitfalls || [
+    pitfalls: existing?.pitfalls || seed.pitfalls || [
       "A successful command exit code does not guarantee application-level health.",
       "Sample resource names and identifiers must be replaced with real values.",
       "Options and output can vary by installed tool version.",
