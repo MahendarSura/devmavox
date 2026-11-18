@@ -1,4 +1,5 @@
 import YamlConfigWorkbench from "./YamlConfigWorkbench";
+import DevOpsCopilotWorkspace from "./DevOpsCopilotWorkspace";
 import CareerDashboard from "./CareerDashboard";
 import CareerTopicPage from "./CareerTopicPage";
 import { getCareerTopicContent } from "./career-topic-content";
@@ -279,6 +280,10 @@ export default function FeatureExplorer({
 
   if (featureId === "yaml-config-playground") {
     return <YamlConfigWorkbench feature={feature} slug={slug} />;
+  }
+
+  if (featureId === "devops-ai-assistant") {
+    return <DevOpsCopilotWorkspace feature={feature} slug={slug} />;
   }
 
   const theme = featureTheme(feature.style);
