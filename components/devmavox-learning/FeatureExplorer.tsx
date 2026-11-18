@@ -1,4 +1,6 @@
 import YamlConfigWorkbench from "./YamlConfigWorkbench";
+import DevOpsKnowledgeHome from "./DevOpsKnowledgeHome";
+import DevOpsKnowledgeTopicPage from "./DevOpsKnowledgeTopicPage";
 import Link from "next/link";
 import ArchitectureTopicPage from "./ArchitectureTopicPage";
 import { getArchitectureTopic } from "./architecture-topic-content";
@@ -284,6 +286,10 @@ export default function FeatureExplorer({
     return <IncidentDashboard feature={feature} />;
   }
 
+  if (slug.length === 0 && featureId === "devops-knowledge-base") {
+    return <DevOpsKnowledgeHome feature={feature} />;
+  }
+
   if (slug.length === 0) {
     const totalTopics = feature.categories.reduce((sum, category) => sum + topicCount(category), 0);
 
@@ -413,6 +419,34 @@ export default function FeatureExplorer({
           />
         );
       }
+    }
+
+    if (featureId === "devops-knowledge-base") {
+      const allTopics = feature.categories.flatMap((item) =>
+        item.subcategories.flatMap((sub) =>
+          sub.topics.map((name) => ({
+            name,
+            categorySlug: slugify(item.name),
+            subcategorySlug: slugify(sub.name),
+          }))
+        )
+      );
+      const currentIndex = allTopics.findIndex((item) => item.name === topic);
+      const previousTopic = currentIndex > 0 ? allTopics[currentIndex - 1] : undefined;
+      const nextTopic = currentIndex >= 0 && currentIndex < allTopics.length - 1 ? allTopics[currentIndex + 1] : undefined;
+
+      return (
+        <DevOpsKnowledgeTopicPage
+          featureId={feature.id}
+          category={category.name}
+          subcategory={subcategory.name}
+          topic={topic}
+          categorySlug={slug[0]}
+          subcategorySlug={slug[1]}
+          previousTopic={previousTopic}
+          nextTopic={nextTopic}
+        />
+      );
     }
 
     if (featureId === "incident-simulator") {
