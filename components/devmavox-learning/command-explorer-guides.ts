@@ -643,7 +643,22 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     "python and json/yaml utilities":"run Python modules and validate or transform JSON and YAML data safely",
     "containerd and cri":"inspect CRI pods, containers, images and runtime tasks on containerd-backed nodes",
     "kubernetes node and bootstrap tools":"inspect kubeadm bootstrap state, kubelet service health, certificates and CNI networking"
-  };
+      "connectivity and packet diagnostics":"trace routes and packet paths, inspect transport reachability and capture traffic for an authorized target",
+    "compute and containers":"query EC2, Auto Scaling, load balancers, EKS, ECR and ECS resources in the verified AWS account and region",
+    "storage, database and networking":"inspect S3, EBS, RDS, VPC, subnet, security group and Route 53 resources",
+    "logs, monitoring and operations":"query CloudWatch log groups, metrics and alarms, and shape AWS CLI output with filters",
+    "ad-hoc and inventory":"inspect Ansible inventory, host connectivity, configuration and module documentation",
+    "playbooks, roles and collections":"validate and manage Ansible playbooks, roles, collections and reusable automation content",
+    "execution and troubleshooting":"control Ansible execution scope, inspect diffs and verbosity, and diagnose connection or task failures",
+    "helm chart lifecycle":"inspect chart repositories and metadata, lint and render templates, and package or test charts",
+    "helm debugging and release management":"inspect Helm releases, revisions, rendered values and manifests before lifecycle changes",
+    "argo cd application operations":"authenticate to Argo CD and inspect, diff, synchronize, wait for or review application revisions",
+    "nexus and artifact repositories":"inspect Nexus repositories and components, upload artifacts through approved endpoints and verify repository metadata",
+    "mysql and postgresql":"connect to MySQL or PostgreSQL, inspect sessions and backups, and review query performance using read-only queries",
+    "powershell for devops":"inspect Windows processes, services, files and HTTP connectivity with PowerShell cmdlets",
+    "java runtime and diagnostics":"inspect Java versions, JVM processes, heap and garbage-collection state, thread dumps and runtime flags",
+    "tomcat service and deployment":"inspect Tomcat service state, logs, startup scripts, thread dumps and deployed application health",
+};
   const purpose = "Use "+topic+" to "+(purposeBySubcategory[subcategoryKey] || "inspect and troubleshoot "+subcategory.toLowerCase())+".";
   const safety = categoryKey.includes("git") ? "Check git status first. Preserve uncommitted work; review the exact target before reset, clean, rebase, cherry-pick or force-push."
     : categoryKey.includes("aws") ? "Verify aws sts get-caller-identity, profile and region. Use least-privilege read-only credentials; never paste access keys or session tokens."
