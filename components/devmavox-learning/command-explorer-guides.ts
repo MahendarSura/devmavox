@@ -642,8 +642,8 @@ function inferSeed(topic: string, category: string, subcategory: string): GuideS
     "bash and shell utilities":"inspect shell environments, validate scripts, parse structured data and automate repeatable operations",
     "python and json/yaml utilities":"run Python modules and validate or transform JSON and YAML data safely",
     "containerd and cri":"inspect CRI pods, containers, images and runtime tasks on containerd-backed nodes",
-    "kubernetes node and bootstrap tools":"inspect kubeadm bootstrap state, kubelet service health, certificates and CNI networking"
-      "connectivity and packet diagnostics":"trace routes and packet paths, inspect transport reachability and capture traffic for an authorized target",
+    "kubernetes node and bootstrap tools":"inspect kubeadm bootstrap state, kubelet service health, certificates and CNI networking",
+    "connectivity and packet diagnostics":"trace routes and packet paths, inspect transport reachability and capture traffic for an authorized target",
     "compute and containers":"query EC2, Auto Scaling, load balancers, EKS, ECR and ECS resources in the verified AWS account and region",
     "storage, database and networking":"inspect S3, EBS, RDS, VPC, subnet, security group and Route 53 resources",
     "logs, monitoring and operations":"query CloudWatch log groups, metrics and alarms, and shape AWS CLI output with filters",
