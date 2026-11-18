@@ -385,6 +385,15 @@ const topicArgs: Record<string, string> = {
   "Get-ChildItem": "-Path . -Force | Select-Object -First 20",
   "Get-Content": "-Path <file> -Tail 50",
   "Invoke-WebRequest": "-Uri <url> -Method Head",
+  "docker images": "image ls",
+  "docker exec": "exec <container-name> id",
+  "docker network": "network ls",
+  "docker volume": "volume ls",
+  "kubectl logs": "logs <pod> -n <namespace> --all-containers --tail=100",
+  "terraform state": "state list",
+  "ansible-inventory": "--list -i <inventory>",
+  "helm rollback": "rollback --help",
+  "argocd app sync": "app sync --help",
 
   "kubelet logs": "-u kubelet -n 100 --no-pager",
 };
