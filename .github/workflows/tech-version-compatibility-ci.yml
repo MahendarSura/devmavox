@@ -2,7 +2,7 @@ name: Tech Version Compatibility CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [feature/devops-ai-assistant-command-center-20261118]
     paths:
       - "app/tech-version-compatibility/**"
       - "components/devmavox-learning/TechVersionCompatibilityCenter.tsx"
@@ -12,7 +12,7 @@ on:
       - "package-lock.json"
       - "tsconfig.json"
   push:
-    branches: [main]
+    branches: [feature/devops-ai-assistant-command-center-20261118]
     paths:
       - "app/tech-version-compatibility/**"
       - "components/devmavox-learning/TechVersionCompatibilityCenter.tsx"
