@@ -1,5 +1,6 @@
 import YamlConfigWorkbench from "./YamlConfigWorkbench";
 import DevOpsKnowledgeHome from "./DevOpsKnowledgeHome";
+import DevOpsKnowledgeTopicPage from "./DevOpsKnowledgeTopicPage";
 import Link from "next/link";
 import ArchitectureTopicPage from "./ArchitectureTopicPage";
 import { getArchitectureTopic } from "./architecture-topic-content";
@@ -418,6 +419,19 @@ export default function FeatureExplorer({
           />
         );
       }
+    }
+
+    if (featureId === "devops-knowledge-base") {
+      return (
+        <DevOpsKnowledgeTopicPage
+          featureId={feature.id}
+          category={category.name}
+          subcategory={subcategory.name}
+          topic={topic}
+          categorySlug={slug[0]}
+          subcategorySlug={slug[1]}
+        />
+      );
     }
 
     if (featureId === "incident-simulator") {
