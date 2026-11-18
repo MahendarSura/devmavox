@@ -1,0 +1,55 @@
+name: Portfolio Builder Build
+
+on:
+  push:
+    branches:
+      - feature/portfolio-studio-colorful-workspace-20261118
+    paths:
+      - ".github/workflows/portfolio-builder-build.yml"
+      - "app/portfolio-builder/**"
+      - "components/devmavox-learning/PortfolioStudio.tsx"
+      - "package.json"
+      - "package-lock.json"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/portfolio-builder-build.yml"
+      - "app/portfolio-builder/**"
+      - "components/devmavox-learning/PortfolioStudio.tsx"
+      - "package.json"
+      - "package-lock.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: portfolio-builder-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: TypeScript, Portfolio Builder lint and Next.js production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript validation
+        run: npx tsc --noEmit
+
+      - name: ESLint Portfolio Builder files
+        run: npx eslint "app/portfolio-builder/**/*.tsx" components/devmavox-learning/PortfolioStudio.tsx
+
+      - name: Next.js production build
+        run: npm run build
