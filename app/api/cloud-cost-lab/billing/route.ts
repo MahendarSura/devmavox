@@ -32,7 +32,7 @@ function serviceKey(block: string) {
 
 export async function GET(request: Request) {
   const billingAccessKey = process.env.CLOUD_COST_LAB_BILLING_ACCESS_KEY;
-  const suppliedToken = request.headers.get("authorization")?.replace(/^Bearer\\s+/i, "") || "";
+  const suppliedToken = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") || "";
   const suppliedBytes = Buffer.from(suppliedToken);
   const expectedBytes = Buffer.from(billingAccessKey || "");
 
@@ -70,7 +70,7 @@ export async function GET(request: Request) {
   start.setUTCDate(start.getUTCDate() - days);
 
   const date = new Date();
-  const amzDate = date.toISOString().replace(/[:-]|\\.\\d{3}/g, "");
+  const amzDate = date.toISOString().replace(/[:-]|\.\d{3}/g, "");
   const shortDate = amzDate.slice(0, 8);
 
   const params = new URLSearchParams();
@@ -98,11 +98,11 @@ export async function GET(request: Request) {
   const signedHeaders = Object.keys(headers).sort().join(";");
   const canonicalHeaders = Object.keys(headers)
     .sort()
-    .map(key => key + ":" + headers[key].trim() + "\\n")
+    .map(key => key + ":" + headers[key].trim() + "\n")
     .join("");
-  const canonicalRequest = ["POST", "/", "", canonicalHeaders, signedHeaders, payloadHash].join("\\n");
+  const canonicalRequest = ["POST", "/", "", canonicalHeaders, signedHeaders, payloadHash].join("\n");
   const scope = shortDate + "/" + REGION + "/ce/aws4_request";
-  const stringToSign = ["AWS4-HMAC-SHA256", amzDate, scope, hash(canonicalRequest)].join("\\n");
+  const stringToSign = ["AWS4-HMAC-SHA256", amzDate, scope, hash(canonicalRequest)].join("\n");
 
   const dateKey = hmac("AWS4" + secretKey, shortDate);
   const regionKey = hmac(dateKey, REGION);
@@ -137,7 +137,7 @@ export async function GET(request: Request) {
     }
 
     const totalBlock = xml(responseText, "Total");
-    const groups = Array.from(responseText.matchAll(/<Groups>([\\s\\S]*?)<\\/Groups>/g))
+    const groups = Array.from(responseText.matchAll(/<Groups>([\s\S]*?)<\/Groups>/g))
       .map(match => {
         const block = match[1];
         return {
@@ -148,7 +148,7 @@ export async function GET(request: Request) {
       })
       .sort((a, b) => b.amount - a.amount);
 
-    const periods = Array.from(responseText.matchAll(/<ResultsByTime>([\\s\\S]*?)<\\/ResultsByTime>/g))
+    const periods = Array.from(responseText.matchAll(/<ResultsByTime>([\s\S]*?)<\/ResultsByTime>/g))
       .map(match => {
         const block = match[1];
         const time = xml(block, "TimePeriod");
