@@ -7,6 +7,9 @@ import IncidentCategoryPage from "./IncidentCategoryPage";
 import IncidentDashboard from "./IncidentDashboard";
 import IncidentSubcategoryPage from "./IncidentSubcategoryPage";
 import { getIncidentLesson } from "./incident-topic-content";
+import MonitoringPlaygroundHome from "./MonitoringPlaygroundHome";
+import MonitoringTopicPage from "./MonitoringTopicPage";
+import { getMonitoringLesson } from "./monitoring-topic-content";
 import { notFound } from "next/navigation";
 import {
   featureCatalog,
@@ -278,6 +281,10 @@ export default function FeatureExplorer({
     return <YamlConfigWorkbench feature={feature} slug={slug} />;
   }
 
+  if (featureId === "monitoring-playground" && slug.length === 0) {
+    return <MonitoringPlaygroundHome feature={feature} />;
+  }
+
   const theme = featureTheme(feature.style);
 
   if (slug.length === 0 && featureId === "incident-simulator") {
@@ -398,6 +405,22 @@ export default function FeatureExplorer({
 
     const topic = subcategory.topics.find((item) => slugify(item) === slug[2]);
     if (!topic) notFound();
+
+    if (featureId === "monitoring-playground") {
+      const monitoringLesson = getMonitoringLesson(topic);
+      if (monitoringLesson) {
+        return (
+          <MonitoringTopicPage
+            lesson={monitoringLesson}
+            featureId={feature.id}
+            categoryName={category.name}
+            subcategoryName={subcategory.name}
+            categorySlug={slug[0]}
+            subcategorySlug={slug[1]}
+          />
+        );
+      }
+    }
 
     if (featureId === "architecture-diagram-library") {
       const architectureContent = getArchitectureTopic(topic);
