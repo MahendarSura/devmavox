@@ -222,56 +222,47 @@ export default function CommandExplorerWorkspace({
 
   if (mode === "home") {
     return (
-      <main className="min-h-screen bg-[#060d18] px-4 py-8 text-slate-100 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-            <Link href="/" className="text-sm text-slate-400 hover:text-white">← DevMavox Home</Link>
-            <span className="rounded-full border border-emerald-500/30 bg-emerald-400/10 px-3 py-1 font-mono text-xs text-emerald-200">⌨ Command Terminal</span>
+      <main className="min-h-screen bg-[#070d16] text-slate-100">
+        <div className="mx-auto max-w-[1600px] px-4 py-5 sm:px-6 lg:px-8">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <Link href="/" className="text-sm text-slate-400 transition hover:text-white">← DevMavox Home</Link>
+            <span className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-emerald-200">DevOps command workbench</span>
           </div>
-          <header className="relative mb-7 overflow-hidden rounded-3xl border border-emerald-500/30 bg-gradient-to-br from-[#0b211b] via-[#101d2c] to-[#0b1220] p-6 sm:p-9">
-            <div className="absolute -right-10 -top-16 h-64 w-64 rounded-full bg-emerald-400/10 blur-3xl"/>
-            <p className="font-mono text-xs font-bold uppercase tracking-[.24em] text-emerald-300">DEVMAVOX · COMMAND WORKSPACE</p>
-            <h1 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">Command Explorer</h1>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">Choose a real DevOps task, build the command, practise with sample output, verify the result and follow the next diagnostic step. Theory stays in Notes & Cheat Sheets.</p>
-            <div className="mt-6 flex flex-wrap gap-2 text-xs text-emerald-100/80">
-              <span className="rounded-lg border border-emerald-400/20 bg-black/20 px-3 py-2">{categories.length} technology areas</span>
-              <span className="rounded-lg border border-emerald-400/20 bg-black/20 px-3 py-2">{allTopics.length} command topics</span>
-              <span className="rounded-lg border border-emerald-400/20 bg-black/20 px-3 py-2">Search · Build · Copy · Practise</span>
+          <header className="mb-5 grid gap-5 rounded-2xl border border-slate-800 bg-gradient-to-br from-[#132432] via-[#101d2a] to-[#0b1420] p-5 sm:p-7 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+            <div>
+              <p className="font-mono text-[11px] font-bold uppercase tracking-[.22em] text-emerald-300">Find · Build · Investigate · Verify</p>
+              <h1 className="mt-2 text-3xl font-black tracking-tight text-white sm:text-4xl">Command Explorer</h1>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">A practical command reference for everyday DevOps operations. Find the right command, adapt its options, inspect example output and follow a safe diagnostic workflow.</p>
+            </div>
+            <div className="flex flex-wrap gap-2 text-xs">
+              <span className="rounded-lg border border-slate-700 bg-black/20 px-3 py-2 text-slate-200">{categories.length} technologies</span>
+              <span className="rounded-lg border border-slate-700 bg-black/20 px-3 py-2 text-slate-200">{allTopics.length} command topics</span>
             </div>
           </header>
-
-          <section className="mb-7 rounded-2xl border border-emerald-500/25 bg-[#081711] p-5">
-            <label htmlFor="command-search" className="mb-2 block text-xs font-bold uppercase tracking-wider text-emerald-300">Search commands, tools or tasks</label>
-            <input id="command-search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Try: kubectl logs, disk usage, git rollback, DNS..." className="w-full rounded-xl border border-emerald-500/30 bg-slate-950 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-emerald-300"/>
-            {search && <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {matches.map((item) => <Link key={item.href} href={item.href} className="rounded-lg border border-slate-700 bg-slate-900 p-3 hover:border-emerald-400/50"><span className="font-mono text-sm text-emerald-200">{item.name}</span><span className="mt-1 block text-xs text-slate-500">{item.category} / {item.subcategory}</span></Link>)}
-              {matches.length === 0 && <p className="text-sm text-slate-400">No matching command topic. Try a tool name or command.</p>}
-            </div>}
-          </section>
-
-          <section className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4"><p className="text-2xl font-black text-white">{categories.length}</p><p className="text-xs text-slate-400">Technology areas</p></div>
-            <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4"><p className="text-2xl font-black text-white">{allTopics.length}</p><p className="text-xs text-slate-400">Existing command topics</p></div>
-            <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4"><p className="text-2xl font-black text-white">{favorites.length}</p><p className="text-xs text-slate-400">Saved favourites</p></div>
-            <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4"><p className="text-2xl font-black text-white">{history.length}</p><p className="text-xs text-slate-400">Recent commands</p></div>
-          </section>
-
-          {(favorites.length > 0 || history.length > 0) && <section className="mb-8 grid gap-4 lg:grid-cols-2">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><h2 className="font-bold text-white">★ Favourite commands</h2>{favorites.length ? <div className="mt-3 flex flex-wrap gap-2">{favorites.map((item) => <button key={item} onClick={() => setSearch(item)} className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2 font-mono text-xs text-amber-200">{item}</button>)}</div> : <p className="mt-2 text-xs text-slate-500">Save commands from their detail pages.</p>}</div>
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><h2 className="font-bold text-white">Recent command activity</h2>{history.length ? <div className="mt-3 space-y-2">{history.slice(0,5).map((item) => <button key={item} onClick={() => setSimCommand(item)} className="block w-full truncate rounded-lg bg-slate-950 px-3 py-2 text-left font-mono text-xs text-slate-300">{item}</button>)}</div> : <p className="mt-2 text-xs text-slate-500">Copied and simulated commands appear here.</p>}</div>
-          </section>}
-
-          <div className="mb-4 flex items-end justify-between gap-3"><div><p className="font-mono text-xs uppercase tracking-widest text-emerald-300">Command catalog</p><h2 className="mt-1 text-xl font-bold text-white">Choose a technology, then a task</h2></div><span className="text-xs text-slate-500">Original navigation preserved</span></div>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {categories.map((group,index) => {
-              const count = group.subcategories.reduce((n,sub)=>n+sub.topics.length,0);
-              return <Link key={group.name} href={`/command-explorer/${slug(group.name)}`} className="group rounded-2xl border border-emerald-500/20 bg-[#081711] p-5 transition hover:-translate-y-1 hover:border-emerald-400/50 hover:bg-[#0b2119]">
-                <div className="mb-4 flex items-center justify-between"><span className="font-mono text-xs text-emerald-400">[{String(index+1).padStart(2,"0")}] COMMAND GROUP</span><span className="rounded-lg bg-emerald-400/10 px-3 py-2 text-xs text-emerald-200">{count} topics</span></div>
-                <h3 className="font-mono text-lg font-bold text-emerald-100">{group.name}</h3><p className="mt-2 text-xs text-slate-400">{group.subcategories.length} command groups</p><p className="mt-5 text-sm font-semibold text-emerald-300">Open command group →</p>
-              </Link>;
-            })}
+          <div className="grid items-start gap-5 lg:grid-cols-[260px_minmax(0,1fr)]">
+            <aside className="rounded-2xl border border-slate-800 bg-[#101a26] p-4 lg:sticky lg:top-5">
+              <div className="mb-3 flex items-center justify-between"><h2 className="font-mono text-xs font-bold uppercase tracking-widest text-slate-300">Technology library</h2><span className="text-[10px] text-slate-500">{categories.length} areas</span></div>
+              <nav className="grid grid-cols-2 gap-1.5 lg:grid-cols-1">
+                {categories.map((group,index) => <Link key={group.name} href={`/command-explorer/${slug(group.name)}`} className="flex min-w-0 items-center justify-between gap-2 rounded-lg border border-transparent px-2.5 py-2 text-xs text-slate-300 transition hover:border-emerald-400/20 hover:bg-emerald-400/5 hover:text-emerald-100"><span className="truncate">{group.name}</span><span className="shrink-0 font-mono text-[10px] text-slate-500">{String(index+1).padStart(2,"0")}</span></Link>)}
+              </nav>
+              <div className="mt-4 border-t border-slate-800 pt-3"><p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Practice workspace</p><p className="mt-1 text-xs leading-5 text-slate-400">Command simulations use controlled examples. They do not execute on a real server or cluster.</p></div>
+            </aside>
+            <div className="min-w-0">
+              <section className="mb-5 rounded-2xl border border-emerald-400/20 bg-[#0c1b1a] p-4 sm:p-5">
+                <label htmlFor="command-search" className="mb-2 block text-xs font-bold uppercase tracking-wider text-emerald-200">Search the command library</label>
+                <div className="flex flex-col gap-2 sm:flex-row"><input id="command-search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search a command, tool, task or error — e.g. kubectl logs, disk full, DNS..." className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-[#070e17] px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-emerald-300"/><span className="flex items-center justify-center rounded-xl border border-slate-700 bg-[#101a26] px-4 py-3 text-xs text-slate-400">{matches.length} matches</span></div>
+                {search && <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">{matches.map((item) => <Link key={item.href} href={item.href} className="rounded-lg border border-slate-700 bg-[#101a26] p-3 transition hover:border-emerald-400/50"><span className="font-mono text-sm text-emerald-200">{item.name}</span><span className="mt-1 block text-[11px] text-slate-500">{item.category} / {item.subcategory}</span></Link>)}{matches.length === 0 && <p className="rounded-lg bg-[#101a26] p-3 text-sm text-slate-400">No matching topic found. Try a technology name or a related operational task.</p>}</div>}
+              </section>
+              <section className="mb-5">
+                <div className="mb-3 flex flex-wrap items-end justify-between gap-2"><div><p className="font-mono text-[10px] uppercase tracking-[.2em] text-emerald-300">Browse by technology</p><h2 className="mt-1 text-lg font-bold text-white">Choose a tool to explore its commands</h2></div><span className="text-[11px] text-slate-500">Existing catalog preserved</span></div>
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                  {categories.map((group,index) => { const count=group.subcategories.reduce((n,sub)=>n+sub.topics.length,0); return <Link key={group.name} href={`/command-explorer/${slug(group.name)}`} className="group rounded-xl border border-slate-800 bg-[#111d2a] p-4 transition hover:-translate-y-0.5 hover:border-emerald-400/40 hover:bg-[#142535]"><div className="mb-3 flex items-center justify-between"><span className="font-mono text-[10px] text-emerald-300">AREA {String(index+1).padStart(2,"0")}</span><span className="rounded-md bg-slate-800 px-2 py-1 text-[10px] text-slate-300">{count} topics</span></div><h3 className="text-sm font-semibold text-slate-100 group-hover:text-emerald-200">{group.name}</h3><p className="mt-1 text-[11px] text-slate-500">{group.subcategories.length} command groups</p><p className="mt-4 text-xs font-semibold text-emerald-300">Explore commands →</p></Link>; })}
+                </div>
+              </section>
+              {(favorites.length>0||history.length>0) && <section className="grid gap-3 xl:grid-cols-2"><div className="rounded-xl border border-slate-800 bg-[#101a26] p-4"><h2 className="text-xs font-bold text-amber-200">★ Saved commands</h2>{favorites.length?<div className="mt-3 flex flex-wrap gap-2">{favorites.map((item)=><button key={item} onClick={()=>setSearch(item)} className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2 font-mono text-[11px] text-amber-100">{item}</button>)}</div>:<p className="mt-2 text-xs text-slate-500">Save useful commands from a topic.</p>}</div><div className="rounded-xl border border-slate-800 bg-[#101a26] p-4"><h2 className="text-xs font-bold text-slate-200">Recent command activity</h2>{history.length?<div className="mt-3 space-y-2">{history.slice(0,5).map((item)=><button key={item} onClick={()=>setSimCommand(item)} className="block w-full truncate rounded-lg bg-[#070e17] px-3 py-2 text-left font-mono text-[11px] text-slate-300">{item}</button>)}</div>:<p className="mt-2 text-xs text-slate-500">Copied and practised commands appear here.</p>}</div></section>}
+            </div>
           </div>
-          <footer className="mt-10 border-t border-slate-800 pt-5 text-xs text-slate-500">DevMavox · Command reference and safe practice workspace</footer>
+          <footer className="mt-8 border-t border-slate-800 pt-4 text-[11px] text-slate-500">DevMavox · Command reference and safe practice workspace</footer>
         </div>
       </main>
     );
@@ -285,9 +276,9 @@ export default function CommandExplorerWorkspace({
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3"><Link href="/command-explorer" className="text-sm text-slate-400 hover:text-white">← Command Explorer</Link><button onClick={()=>toggleFavorite(selected.name)} className={`rounded-full border px-3 py-2 text-xs ${favorite?"border-amber-400/40 bg-amber-400/10 text-amber-200":"border-slate-700 text-slate-300"}`}>{favorite?"★ Saved":"☆ Save command"}</button></div>
         <nav className="mb-5 flex flex-wrap gap-2 text-xs text-slate-500"><Link href="/command-explorer" className="hover:text-white">Explorer</Link><span>/</span><Link href={`/command-explorer/${slug(selected.category)}`} className="hover:text-white">{selected.category}</Link><span>/</span><Link href={`/command-explorer/${slug(selected.category)}/${slug(selected.subcategory)}`} className="hover:text-white">{selected.subcategory}</Link><span>/</span><span className="text-emerald-200">{selected.name}</span></nav>
-        <header className="mb-6 rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-[#0b211b] to-[#101a2a] p-6 sm:p-8"><p className="font-mono text-xs uppercase tracking-widest text-emerald-300">{selected.category} · {selected.subcategory}</p><h1 className="mt-2 font-mono text-3xl font-black text-white">{selected.name}</h1><p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">Hands-on command practice: build the line, run the supported lab simulation, inspect the output and complete the verification task.</p><div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-400"><span className="rounded-full border border-slate-700 px-2 py-1">{profile.level} practice</span><span>Command line · sample output · task · verification</span></div></header>
+        <header className="mb-5 rounded-2xl border border-slate-700 bg-gradient-to-r from-[#142633] to-[#101a26] p-5 sm:p-7"><p className="font-mono text-xs uppercase tracking-widest text-emerald-300">{selected.category} · {selected.subcategory}</p><h1 className="mt-2 font-mono text-3xl font-black text-white">{selected.name}</h1><p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">Hands-on command practice: build the line, run the supported lab simulation, inspect the output and complete the verification task.</p><div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-400"><span className="rounded-full border border-slate-700 px-2 py-1">{profile.level} practice</span><span>Command line · sample output · task · verification</span></div></header>
 
-        <section className="mb-5 rounded-2xl border border-emerald-500/25 bg-[#07140f] p-5">
+        <section className="mb-5 rounded-2xl border border-emerald-400/25 bg-[#0b1919] p-5 shadow-lg shadow-black/10">
           <div className="mb-3 flex items-center justify-between gap-3"><h2 className="font-mono text-sm font-bold text-emerald-200">01 / BUILD YOUR COMMAND</h2><span className="text-xs text-slate-500">Edit arguments and options</span></div>
           <p className="mb-4 text-sm text-slate-300">Start with the sample command. Change the target or argument, select only the options you need, then send it to the practice terminal.</p>
           <label className="mb-2 block text-xs text-slate-400">Arguments and target</label><input value={argument} onChange={(event)=>setArgument(event.target.value)} placeholder={profile.args || "No arguments required"} className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-3 font-mono text-sm text-white outline-none focus:border-emerald-400"/>
@@ -305,7 +296,7 @@ export default function CommandExplorerWorkspace({
         <section className="mb-5 rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><h2 className="font-mono text-sm font-bold text-emerald-200">07 / PRACTICE SEQUENCE</h2><ol className="mt-3 space-y-3">{profile.workflow.map((item,index)=><li key={index} className="flex gap-3 text-sm text-slate-300"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-400/10 font-mono text-xs text-emerald-200">{index+1}</span><span>{item}</span></li>)}</ol></section>
         <section className="mb-5 rounded-2xl border border-cyan-500/20 bg-cyan-950/10 p-5"><h2 className="font-mono text-sm font-bold text-cyan-200">08 / YOUR PRACTICE CHALLENGE</h2><p className="mt-3 text-sm leading-7 text-slate-200">{profile.task}</p><div className="mt-4 rounded-lg border border-cyan-500/20 bg-slate-950/70 p-4"><p className="text-xs font-bold uppercase tracking-wider text-cyan-300">Verification checklist</p><p className="mt-2 text-sm text-slate-300">{profile.verify}</p></div></section>
 
-        <section className="mb-5 rounded-2xl border border-emerald-500/20 bg-[#07140f] p-5"><h2 className="font-mono text-sm font-bold text-emerald-200">09 / COMMAND-LINE PRACTICE TERMINAL</h2><p className="mt-2 text-xs leading-5 text-slate-400">Practise with controlled sample scenarios and inspect realistic example output. This terminal is a simulator, not a real shell: it never executes on your computer, server, AWS account or Kubernetes cluster. Unsupported commands are clearly identified instead of pretending they ran.</p><div className="mt-4 flex flex-col gap-2 sm:flex-row"><input value={simCommand} onChange={(event)=>setSimCommand(event.target.value)} placeholder="Try: kubectl get pods -n production" className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-black px-3 py-3 font-mono text-xs text-white outline-none focus:border-emerald-400"/><button onClick={runSimulation} className="rounded-lg bg-emerald-400 px-5 py-3 text-xs font-bold text-slate-950">Run simulation</button></div>{simOutput&&<pre className="mt-3 overflow-x-auto rounded-xl border border-slate-800 bg-black p-4 text-xs leading-6 text-emerald-300">{simOutput}</pre>}</section>
+        <section className="mb-5 rounded-2xl border border-emerald-400/20 bg-[#0b1919] p-5"><h2 className="font-mono text-sm font-bold text-emerald-200">09 / COMMAND-LINE PRACTICE TERMINAL</h2><p className="mt-2 text-xs leading-5 text-slate-400">Practise with controlled sample scenarios and inspect realistic example output. This terminal is a simulator, not a real shell: it never executes on your computer, server, AWS account or Kubernetes cluster. Unsupported commands are clearly identified instead of pretending they ran.</p><div className="mt-4 flex flex-col gap-2 sm:flex-row"><input value={simCommand} onChange={(event)=>setSimCommand(event.target.value)} placeholder="Try: kubectl get pods -n production" className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-black px-3 py-3 font-mono text-xs text-white outline-none focus:border-emerald-400"/><button onClick={runSimulation} className="rounded-lg bg-emerald-400 px-5 py-3 text-xs font-bold text-slate-950">Run simulation</button></div>{simOutput&&<pre className="mt-3 overflow-x-auto rounded-xl border border-slate-800 bg-black p-4 text-xs leading-6 text-emerald-300">{simOutput}</pre>}</section>
 
         <div className="flex flex-wrap justify-between gap-3 border-t border-slate-800 pt-5"><Link href={`/command-explorer/${slug(selected.category)}`} className="text-sm text-slate-400 hover:text-white">← Back to {selected.category}</Link><Link href="/command-explorer" className="text-sm font-semibold text-emerald-300 hover:text-white">Explore more commands →</Link></div>
       </div>
