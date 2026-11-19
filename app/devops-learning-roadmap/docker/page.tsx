@@ -55,13 +55,29 @@ function getDockerTopicGuide(topic: string, lessonTitle: string): TopicGuide {
     troubleshooting: "Check the main process, exit code, entrypoint/CMD, required environment, mounted files, memory limits and health-check command. A running container is not necessarily a healthy application.",
     lab: "Run a test container with a deliberately invalid startup argument, inspect its exit code and logs, correct the command and confirm healthy startup."
   };
+  if (/architect|daemon|engine|client|api|containerd|runtime|oci/.test(t)) return {
+    explanation: topic + " describes the Docker control and execution path. The Docker CLI sends requests to the Engine API; the daemon coordinates image, network and container operations, while containerd and an OCI runtime handle container lifecycle work.",
+    example: "An engineer runs docker run from a workstation context. The CLI sends the request to the selected Docker endpoint, the daemon obtains the image if needed, creates a container and starts its configured process.",
+    commands: ["docker context show", "docker version", "docker info", "docker system events --since 10m"],
+    expected: "The context identifies the selected endpoint; version separates client and server versions; info reports daemon details; events show recent lifecycle operations.",
+    troubleshooting: "If the CLI cannot reach the daemon, verify the selected context, socket or endpoint, daemon service state and user permissions. A client/server version mismatch may also affect API compatibility.",
+    lab: "Inspect the active context and client/server versions, run a disposable container, follow Docker events and map each event to the container lifecycle."
+  };
+  if (/desktop|context|credential|config|proxy/.test(t)) return {
+    explanation: topic + " concerns the local Docker environment used by developers. Docker contexts select endpoints, Desktop provides a managed local engine on supported systems, and proxy or credential settings affect registry and daemon access.",
+    example: "A developer switches from the local Desktop engine to a remote test host using a named context, checks the endpoint before running commands and switches back after the task.",
+    commands: ["docker context ls", "docker context inspect <context>", "docker context use <context>", "docker login <registry>"],
+    expected: "The context list shows available endpoints and the active marker; inspect reveals endpoint details; login reports registry authentication status without displaying the password.",
+    troubleshooting: "Confirm the active context before every operation, check Desktop/daemon health, proxy variables, certificate trust and credential-helper configuration. Never copy credentials into shell history.",
+    lab: "Create or inspect a disposable context, verify its endpoint, switch to the intended local context and confirm docker info targets the expected engine."
+  };
   return {
-    explanation: topic + " is a core concept in " + lessonTitle + ". Understand how Docker implements it, which daemon/image/container/network/storage component is involved, and what changes across build time and runtime.",
-    example: "A DevOps engineer applies this concept while packaging and running a service, validates the result locally, then uses the same image in CI and a deployment environment.",
-    commands: ["docker version", "docker info", "docker ps -a", "docker inspect <container>"],
-    expected: "The commands report Docker client/engine versions, daemon configuration, container states and detailed runtime configuration. Compare the output with the expected application state.",
-    troubleshooting: "Collect the exact Docker error, inspect daemon availability, image reference, container state, logs, permissions and host resource limits before changing configuration.",
-    lab: "Reproduce the concept with a disposable container, record the commands and output, introduce one safe failure, diagnose it and document the correction."
+    explanation: topic + " is part of " + lessonTitle + ". Identify the Docker object or setting it changes, the lifecycle phase where it applies, and the observable state that proves it is configured correctly.",
+    example: "For this lesson, the engineer changes only the named Docker setting on a disposable service, inspects the resulting container configuration and verifies the application behavior before using the same reviewed change in CI.",
+    commands: ["docker inspect <container>", "docker ps -a --no-trunc", "docker events --since 10m", "docker logs --tail 50 <container>"],
+    expected: "Inspect shows the configured runtime values, ps reports container state and exit information, events show lifecycle changes and logs expose application output.",
+    troubleshooting: "Compare the intended setting with docker inspect output, then check daemon events, application logs, permissions and resource limits. Change one variable at a time and retain the previous configuration for rollback.",
+    lab: "Apply the lesson setting to a disposable container, capture before/after inspect output, verify the effect, then revert and confirm the original behavior."
   };
 }
 
