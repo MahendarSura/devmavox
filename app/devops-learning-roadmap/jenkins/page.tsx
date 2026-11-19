@@ -3,6 +3,93 @@
 
 import { useMemo, useState } from "react";
 
+
+type JenkinsTopicGuide = { explanation: string; example: string; commands: string[]; expected: string; troubleshooting: string; lab: string };
+function getJenkinsTopicGuide(topic: string, lessonTitle: string): JenkinsTopicGuide {
+  const t = topic.toLowerCase();
+  if (/pipeline|jenkinsfile|declarative|scripted|stage|step|post|shared library/.test(t)) return {
+    explanation: topic + " is part of Jenkins Pipeline as Code. A Jenkinsfile defines stages and steps, while the controller schedules work and agents execute the commands. Declarative syntax adds structured validation and common pipeline controls.",
+    example: "A multibranch pipeline checks out a pull request, runs unit tests, builds a Docker image and deploys to staging only after quality checks pass.",
+    commands: ["git checkout -b feature/ci-demo", "git add Jenkinsfile && git commit -m 'Add pipeline'", "jenkins-cli -s <jenkins-url> list-jobs"],
+    expected: "The Jenkins build page shows each stage, its duration and result. A successful run ends in SUCCESS; failed stages expose console output and the failing step.",
+    troubleshooting: "Validate Jenkinsfile syntax, agent availability, tool installations, credentials IDs and workspace paths. Use timestamps and stage-level logs; do not print credentials in shell output.",
+    lab: "Create a Jenkinsfile with Checkout, Test and Package stages. Commit it to a test repository, run the pipeline and deliberately fail one test to inspect stage reporting."
+  };
+  if (/agent|runner|controller|executor|node|distributed build|label/.test(t)) return {
+    explanation: topic + " describes Jenkins build execution architecture. The controller stores configuration and schedules jobs; agents provide isolated execution environments, and labels route workloads to compatible nodes.",
+    example: "A Java build runs on a Linux agent with JDK and Maven, while a Docker build runs on a separate agent that has the required container tooling.",
+    commands: ["java -version", "mvn -version", "docker version", "hostname && whoami", "df -h"],
+    expected: "The output confirms agent OS, identity, tool versions and available disk. Jenkins node details show online state, labels and executor capacity.",
+    troubleshooting: "For offline agents inspect inbound/SSH connectivity, Java compatibility, agent logs, credentials, firewall and disk space. Avoid running untrusted pull-request builds on the controller.",
+    lab: "Create or use a disposable agent, assign a label, route a test job to it and verify the build ran on the expected hostname."
+  };
+  if (/git|github|webhook|source control|branch|pull request|checkout|scm/.test(t)) return {
+    explanation: topic + " connects Jenkins to source control. Jenkins checks out a specific revision, uses webhooks or polling to detect changes and can discover branches or pull requests through multibranch jobs.",
+    example: "A GitHub push triggers a multibranch pipeline. The build records the commit SHA so the team can trace an artifact to the exact source revision.",
+    commands: ["git status --short", "git rev-parse HEAD", "git log -1 --oneline", "git ls-remote <repository-url>"],
+    expected: "The commands show working-tree state, exact commit and remote refs. Jenkins checkout logs should identify the selected branch and revision.",
+    troubleshooting: "Check repository URL, credential scope, webhook delivery, branch filters, host-key verification and network access. A webhook can arrive successfully while the Jenkins job filter still ignores the branch.",
+    lab: "Connect a test repository to a multibranch pipeline, push a harmless change, confirm webhook-triggered execution and verify the checked-out SHA."
+  };
+  if (/credential|secret|token|password|ssh key|security|permission|authorization/.test(t)) return {
+    explanation: topic + " covers Jenkins credential and security management. Credentials should be stored in Jenkins Credentials or a supported secret manager and injected only into the stage that needs them.",
+    example: "A deployment stage binds a short-lived cloud credential, publishes an artifact, then releases the credential scope. Logs never echo the token.",
+    commands: ["# In a Pipeline, use withCredentials with a credentialsId", "curl -sS -o /dev/null -w '%{http_code}\\n' <health-url>", "grep -R \"password\\|token\\|secret\" Jenkinsfile"],
+    expected: "The pipeline can authenticate to the intended service while logs mask bound secret values. A health check returns the expected HTTP status.",
+    troubleshooting: "Verify credential ID, type, scope, permissions and expiry. Rotate exposed credentials immediately. Never hardcode secrets in Jenkinsfiles, repository files or shell command arguments.",
+    lab: "Create a dummy credential in a test folder, bind it to one pipeline stage, verify masking and confirm the job cannot access unrelated credentials."
+  };
+  if (/maven|gradle|npm|node|python|docker|build tool|dependency|artifact|package/.test(t)) return {
+    explanation: topic + " integrates an application build tool into Jenkins. Tool versions and dependency resolution must be repeatable; build outputs should be archived or published to a controlled artifact repository.",
+    example: "A Java pipeline runs mvn clean verify, archives the JAR and publishes a versioned artifact only after tests pass.",
+    commands: ["mvn -version", "mvn clean verify", "npm ci", "npm test", "docker build -t app:<commit-sha> ."],
+    expected: "Tool version output confirms the configured runtime. Build commands return exit code 0 when successful and produce test reports or artifacts in the workspace.",
+    troubleshooting: "Check JDK/tool version, dependency repository access, proxy configuration, lockfiles, workspace permissions and disk. Avoid using mutable dependencies or silently skipping tests.",
+    lab: "Configure a test job with a pinned build tool, run a clean build and tests, archive the artifact and verify the build can be repeated on a clean agent."
+  };
+  if (/trigger|cron|poll|parameter|schedule|webhook|build cause/.test(t)) return {
+    explanation: topic + " controls when a Jenkins job starts and which inputs it receives. Webhooks provide event-driven execution, while cron or polling schedules can be used when event delivery is unavailable.",
+    example: "A repository webhook starts CI for each push; a nightly scheduled job runs a longer integration test suite using a named parameter set.",
+    commands: ["# Declarative Pipeline trigger example: cron('H 2 * * 1-5')", "date -u", "git rev-parse --short HEAD"],
+    expected: "The build details show the trigger cause, start time and parameter values. Jenkins H syntax distributes scheduled load instead of every job running at the exact same minute.",
+    troubleshooting: "Check webhook delivery, job trigger configuration, timezone, branch filters, quiet period and parameter defaults. Avoid overlapping scheduled jobs when the workload is not concurrency-safe.",
+    lab: "Configure a test job with a harmless string parameter and a scheduled trigger, then verify build cause and parameter display."
+  };
+  if (/test|quality|sonar|coverage|security scan|quality gate|report/.test(t)) return {
+    explanation: topic + " adds automated quality and security feedback to a Jenkins pipeline. Tests and scanners should produce machine-readable reports, and quality gates should stop promotion when agreed thresholds fail.",
+    example: "A pipeline runs unit tests and a static-analysis scan. The release stage waits for the quality gate before publishing the production artifact.",
+    commands: ["mvn test", "mvn verify", "npm test", "git diff --check"],
+    expected: "Test reports show executed, passed and failed tests. The pipeline stage fails with a non-zero exit code when a required check fails.",
+    troubleshooting: "Confirm report paths, scanner credentials, server reachability, project key and gate timeout. Do not mark a failed quality gate as successful just to unblock a release.",
+    lab: "Add a unit-test stage to a test pipeline, introduce one failing assertion, verify the pipeline stops, fix the test and rerun."
+  };
+  if (/deploy|release|rollback|environment|approval|blue.green|canary/.test(t)) return {
+    explanation: topic + " is part of controlled application release. Jenkins should promote immutable artifacts through environments, apply approvals where required and verify health after deployment; rollback should restore a known-good version.",
+    example: "A pipeline deploys a tested image to staging, runs smoke tests, waits for production approval and then updates the service using the same image digest.",
+    commands: ["git rev-parse HEAD", "docker image inspect <image>", "curl -fsS <health-url>", "kubectl rollout status deployment/<name> -n <namespace>"],
+    expected: "The pipeline records the source revision and artifact identity, smoke tests return success and the deployment system reports the desired version available.",
+    troubleshooting: "Check target environment, credentials, artifact digest, deployment events, health endpoint and rollback target. Keep deployment steps idempotent and avoid rebuilding a different artifact for production.",
+    lab: "Deploy a sample application to a disposable environment, run a health check, deploy a deliberately broken version and practice rollback to the previous known-good artifact."
+  };
+  if (/plugin|update center|manage jenkins|system log|backup|restore|configuration|home directory/.test(t)) return {
+    explanation: topic + " is part of Jenkins administration. Controller configuration, plugin versions, home-directory data and system logs affect availability and recoverability.",
+    example: "An administrator tests plugin updates in a staging controller, backs up JENKINS_HOME and then applies approved changes during a maintenance window.",
+    commands: ["df -h", "du -sh \"$JENKINS_HOME\"", "java -version", "curl -I <jenkins-url>/login"],
+    expected: "Disk usage identifies capacity pressure, JENKINS_HOME size helps estimate backup needs, Java output confirms runtime and HTTP headers confirm endpoint response.",
+    troubleshooting: "Check controller logs, disk and inode usage, Java compatibility, plugin dependency errors and backup integrity. Restore tests should use an isolated controller version-compatible with the backup.",
+    lab: "On a disposable Jenkins instance, record plugin versions, create a backup of test configuration and verify that it can be restored in an isolated instance."
+  };
+  return {
+    explanation: topic + " is a core concept in " + lessonTitle + ". Understand which Jenkins object, controller service, agent capability or pipeline stage is responsible and how it affects build traceability.",
+    example: "A DevOps team applies this practice to a test pipeline, records the build number and source revision, and verifies the result before promoting an artifact.",
+    commands: ["java -version", "jenkins-cli -s <jenkins-url> list-jobs", "git rev-parse HEAD"],
+    expected: "The commands confirm runtime version, available jobs and exact source revision. Jenkins build history should link the run to its parameters and console output.",
+    troubleshooting: "Check job configuration, controller and agent logs, permissions, network connectivity, plugin compatibility and workspace state before changing global settings.",
+    lab: "Apply the concept to a disposable job, capture its configuration and console output, introduce one safe failure, diagnose it and document the fix."
+  };
+}
+
+
 type Lesson = {
   title: string;
   purpose: string;
@@ -1169,15 +1256,21 @@ export default function JenkinsRoadmapPage() {
                               </h3>
 
                               <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-                                {lesson.topics.map((topic) => (
-                                  <li
-                                    key={topic}
-                                    className="flex items-start gap-2 text-sm leading-6 text-slate-600"
-                                  >
-                                    <span className="mt-0.5 text-blue-600">•</span>
-                                    <span>{topic}</span>
-                                  </li>
-                                ))}
+                                {lesson.topics.map((topic) => {
+                                  const guide = getJenkinsTopicGuide(topic, lesson.title);
+                                  return (
+                                    <li key={topic} className="rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-800">
+                                      <p className="font-bold text-slate-900">{topic}</p>
+                                      <div className="mt-3 grid gap-3 md:grid-cols-2">
+                                        <div><p className="font-semibold text-blue-700">Explanation</p><p>{guide.explanation}</p></div>
+                                        <div><p className="font-semibold text-blue-700">Practical example</p><p>{guide.example}</p></div>
+                                        <div className="md:col-span-2"><p className="font-semibold text-emerald-700">Commands and expected output</p>{guide.commands.map((command) => <pre key={command} className="mt-1 overflow-x-auto rounded bg-slate-950 p-2 text-xs text-emerald-300"><code>{command}</code></pre>)}<p className="mt-2 text-slate-600">{guide.expected}</p></div>
+                                        <div><p className="font-semibold text-rose-700">Troubleshooting</p><p>{guide.troubleshooting}</p></div>
+                                        <div><p className="font-semibold text-amber-700">Hands-on task</p><p>{guide.lab}</p></div>
+                                      </div>
+                                    </li>
+                                  );
+                                })}
                               </ul>
                             </div>
                           </section>
