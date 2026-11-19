@@ -3,24 +3,19 @@ import { notFound } from "next/navigation";
 import { findAtoZCategory, findAtoZTopic, slugifyAtoZ } from "../../data";
 import { atoZLessons } from "../../lessons";
 
-function ArchitectureDiagram({ category, topic }: { category: string; topic: string }) {
-  const labels = category.toLowerCase() === "docker"
-    ? ["compose.yaml / Docker CLI", "Docker Compose", "Frontend · Backend · Database containers", "Docker network · volumes · images", "Linux host · Docker Engine"]
-    : category.toLowerCase().includes("kubernetes") || category.toLowerCase().includes("eks")
-    ? ["kubectl / CI/CD pipeline", "Kubernetes API Server", "Control Plane · Scheduler · Controllers", "Worker Nodes · Pods · Services", "Container Runtime · Linux · Cloud Infrastructure"]
-    : category.toLowerCase() === "aws"
-    ? ["Users · CLI · SDK · Console", "AWS API / Identity and Access", "Compute · Network · Storage Services", "Monitoring · Security · Automation", "AWS Global Infrastructure"]
-    : ["User / DevOps Engineer / Automation", "CLI · Shell · API · Configuration", "Core Tool / Control Components", "Managed Resources · Services · Workloads", "Operating System · Network · Infrastructure"];
-  return <div className="mt-6 rounded-2xl border border-cyan-500/20 bg-slate-950 p-5">
-    <p className="mb-4 text-sm font-bold uppercase tracking-wider text-cyan-300">Architecture / workflow view</p>
+function ArchitectureDiagram({ diagram, topic }: { diagram?: { title: string; nodes: string[]; explanation: string }; topic: string }) {
+  if (!diagram) return <div className="mt-6 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5 text-sm leading-6 text-amber-100">Topic-specific architecture diagram is pending for this lesson; generic diagrams are not shown as a substitute.</div>;
+  return <figure className="mt-6 rounded-2xl border border-cyan-500/20 bg-slate-950 p-5">
+    <figcaption className="mb-4 text-sm font-bold uppercase tracking-wider text-cyan-300">{diagram.title}</figcaption>
     <div className="mx-auto max-w-2xl space-y-2">
-      {labels.map((label, index) => <div key={label} className="flex flex-col items-center">
-        <div className="w-full rounded-xl border border-cyan-500/30 bg-slate-900 px-4 py-3 text-center text-sm font-semibold text-slate-100">{label}</div>
-        {index < labels.length - 1 && <span className="py-1 text-cyan-400">↓</span>}
+      {diagram.nodes.map((node, index) => <div key={node} className="flex flex-col items-center">
+        <div className="w-full rounded-xl border border-cyan-500/30 bg-slate-900 px-4 py-3 text-center text-sm font-semibold text-slate-100">{node}</div>
+        {index < diagram.nodes.length - 1 && <span className="py-1 text-cyan-400" aria-hidden="true">↓</span>}
       </div>)}
     </div>
-    <p className="mt-4 text-xs leading-5 text-slate-400">Conceptual layered view for {topic}. Actual components and request flow depend on the specific feature and deployment design.</p>
-  </div>;
+    <p className="mt-4 text-sm leading-7 text-slate-300">{diagram.explanation}</p>
+    <p className="mt-2 text-xs text-slate-500">Topic-specific architecture / workflow for {topic}.</p>
+  </figure>;
 }
 
 export default async function DevOpsAtoZTopicPage({ params }: { params: Promise<{ category: string; topic: string }> }) {
@@ -42,7 +37,7 @@ export default async function DevOpsAtoZTopicPage({ params }: { params: Promise<
           <h1 className="mt-3 text-3xl font-black sm:text-4xl">{topic}</h1>
           {lesson ? <>
             <p className="mt-5 text-base leading-8 text-slate-300">{lesson.summary}</p>
-            <ArchitectureDiagram category={category.name} topic={topic} />
+            <ArchitectureDiagram diagram={lesson.diagram} topic={topic} />
             {lesson.sections.map((section, index) => <section key={section.heading} className="mt-9">
               <h2 className="text-xl font-extrabold text-cyan-300">{section.heading}</h2>
               {section.paragraphs.map((paragraph, paragraphIndex) => <p key={paragraphIndex} className="mt-3 leading-8 text-slate-300">{paragraph}</p>)}
