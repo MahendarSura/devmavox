@@ -11,6 +11,7 @@ type RoadmapCard = {
 };
 
 const visualMeta: Record<string, { icon: string; category: string; level: string; description: string }> = {
+  aws: { icon: '☁️', category: 'Cloud Computing', level: 'Foundation → Advanced', description: 'Learn IAM, EC2, S3, VPC, load balancing, autoscaling, monitoring and secure production cloud architecture.' },
   linux: { icon: '🐧', category: 'Operating Systems', level: 'Foundation', description: 'Linux commands, processes, permissions, services and practical system troubleshooting.' },
   git: { icon: '🔀', category: 'Version Control', level: 'Foundation', description: 'Build confidence with commits, branches, merges, pull requests and conflict resolution.' },
   docker: { icon: '🐳', category: 'Containers', level: 'Foundation → Advanced', description: 'Build optimized images, run containers, configure networks and storage, secure workloads and practice production operations.' },
@@ -78,7 +79,7 @@ export default function RoadmapMainPage() {
           <h1 className="mt-5 max-w-4xl text-3xl font-black tracking-tight sm:text-5xl">DevOps Learning Roadmap</h1>
           <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300 sm:text-lg">Go from fundamentals to production-minded DevOps engineering. Learn one tool at a time, understand why it is used, practise real workflows, troubleshoot failures and build evidence of your skills.</p>
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {[['17', 'Tool roadmaps'], ['5 stages', 'Suggested journey'], ['Learn', 'Concepts + examples'], ['Practise', 'Hands-on validation']].map(([value, label]) => <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.06] p-4"><div className="text-xl font-black text-white">{value}</div><div className="mt-1 text-xs text-slate-400">{label}</div></div>)}
+            {[['18', 'Tool roadmaps'], ['5 stages', 'Suggested journey'], ['Learn', 'Concepts + examples'], ['Practise', 'Hands-on validation']].map(([value, label]) => <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.06] p-4"><div className="text-xl font-black text-white">{value}</div><div className="mt-1 text-xs text-slate-400">{label}</div></div>)}
           </div>
           <div className="mt-8 flex flex-wrap gap-3"><a href="#learning-path" className="rounded-xl bg-blue-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-400">Explore the learning path ↓</a><a href="#tool-roadmaps" className="rounded-xl border border-white/20 bg-white/5 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/10">Browse all tools</a></div>
         </section>
