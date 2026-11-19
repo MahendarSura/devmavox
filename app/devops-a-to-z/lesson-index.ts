@@ -8,5 +8,6 @@ import { argocdAtoZLessons } from "./lessons-extra/argocd";
 import { helmAtoZLessons } from "./lessons-extra/helm";
 import { prometheusAtoZLessons } from "./lessons-extra/prometheus";
 import { grafanaAtoZLessons } from "./lessons-extra/grafana";
+import { eksAtoZLessons } from "./lessons-extra/eks";
 
-export const atoZLessons = { ...baseLessons, ...kubernetesAtoZLessons, ...jenkinsAtoZLessons, ...terraformAtoZLessons, ...ansibleAtoZLessons, ...cicdAtoZLessons, ...argocdAtoZLessons, ...helmAtoZLessons, ...prometheusAtoZLessons, ...grafanaAtoZLessons };
+export const atoZLessons = { ...baseLessons, ...kubernetesAtoZLessons, ...jenkinsAtoZLessons, ...terraformAtoZLessons, ...ansibleAtoZLessons, ...cicdAtoZLessons, ...argocdAtoZLessons, ...helmAtoZLessons, ...prometheusAtoZLessons, ...grafanaAtoZLessons, ...eksAtoZLessons };
