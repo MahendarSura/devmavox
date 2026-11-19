@@ -3,6 +3,85 @@
 
 import { useMemo, useState } from "react";
 
+
+type TopicGuide = { explanation: string; example: string; commands: string[]; expected: string; troubleshooting: string; lab: string };
+function getDockerTopicGuide(topic: string, lessonTitle: string): TopicGuide {
+  const t = topic.toLowerCase();
+  if (/network|port|bridge|host|overlay|dns/.test(t)) return {
+    explanation: topic + " explains how Docker containers communicate with each other and with external clients. Docker networks provide isolated connectivity; published ports map a host port to a container port.",
+    example: "A web container reaches an API container by its Compose service name on a shared user-defined bridge network. Only the web port is published to the host.",
+    commands: ["docker network ls", "docker network inspect <network>", "docker port <container>", "docker exec <container> getent hosts <service-name>"],
+    expected: "Network inspection shows connected containers and IPAM configuration. docker port displays host-to-container mappings; service DNS resolves only on a shared Docker network.",
+    troubleshooting: "Check whether both containers share a network, the process listens on 0.0.0.0 inside the container, the correct port is published, and host firewall rules allow traffic. EXPOSE alone does not publish a port.",
+    lab: "Create an isolated user-defined bridge, attach an NGINX container and a small API container, resolve the API by service/container name, then remove the test network."
+  };
+  if (/volume|bind mount|storage|persist|data/.test(t)) return {
+    explanation: topic + " covers Docker data persistence. A container writable layer is temporary and tied to the container lifecycle; named volumes and bind mounts keep data outside that layer.",
+    example: "A database container stores its data in a named volume so replacing the container does not erase the database files.",
+    commands: ["docker volume ls", "docker volume inspect <volume>", "docker inspect <container> --format '{{json .Mounts}}'", "docker run --rm -v <volume>:/data alpine ls -la /data"],
+    expected: "Volume inspection shows the mountpoint and driver. Container Mounts shows source, destination and mount type.",
+    troubleshooting: "Check mount source/destination, host directory ownership, read-only flags and application UID/GID. Do not delete a volume until its data retention requirement and backup are confirmed.",
+    lab: "Write a file to a named volume, remove the container, start a replacement using the same volume and verify the file remains."
+  };
+  if (/image|dockerfile|build|layer|cache|tag|digest|registry|hub|ecr/.test(t)) return {
+    explanation: topic + " is part of Docker image creation and distribution. A Dockerfile describes reproducible build steps; image layers are cached, tags are mutable names and digests identify immutable image content.",
+    example: "CI builds an application image, tags it with the Git commit SHA, scans it and pushes it to a private registry. Production deploys the tested digest rather than an unpinned latest tag.",
+    commands: ["docker build -t app:dev .", "docker image ls", "docker history app:dev", "docker image inspect app:dev", "docker push <registry>/<image>:<tag>"],
+    expected: "Build output shows each Dockerfile step and cache use. image inspect shows image ID, architecture, entrypoint and exposed metadata.",
+    troubleshooting: "Check build context, .dockerignore, registry authentication, tag spelling, architecture, base-image availability and layer cache. Rebuild without cache only after identifying why cached inputs are stale.",
+    lab: "Build a small app image, inspect its layers and metadata, tag it with a version and commit identifier, then push to a sandbox registry."
+  };
+  if (/compose|multi-container|service dependency|depends_on/.test(t)) return {
+    explanation: topic + " is part of Docker Compose, which describes a multi-container application using services, networks, volumes and environment configuration in a YAML file.",
+    example: "A local stack runs a frontend, API and database. The API uses the database service name for DNS and a health check before application readiness is declared.",
+    commands: ["docker compose config", "docker compose up -d", "docker compose ps", "docker compose logs -f", "docker compose down"],
+    expected: "config renders the merged Compose model; ps shows service state and published ports; logs show each service output.",
+    troubleshooting: "Validate YAML and variable substitution, check service health and logs, confirm shared networks and volume permissions. depends_on ordering alone does not guarantee an application dependency is ready.",
+    lab: "Create a Compose stack with a web service and a database, add a persistent volume and health check, test it, then stop the stack without deleting the volume."
+  };
+  if (/security|secret|root|user|capabilit|privilege|scan|vulnerab/.test(t)) return {
+    explanation: topic + " covers container security. Containers share the host kernel, so least privilege, trusted images, patching, secret handling and runtime restrictions are essential.",
+    example: "A production service runs as a non-root UID, drops unnecessary Linux capabilities, uses a read-only root filesystem and receives secrets at runtime rather than baking them into the image.",
+    commands: ["docker inspect <container> --format '{{.Config.User}}'", "docker image inspect <image>", "docker scout quickview <image>", "docker exec <container> id"],
+    expected: "Inspection reveals configured user and image metadata. Security scan output identifies known vulnerabilities and severity; findings require triage against the deployed digest.",
+    troubleshooting: "If a container fails after dropping privileges, inspect file ownership, writable paths and required capabilities. Never put passwords in Dockerfile ENV or build arguments.",
+    lab: "Rebuild a sample image with a non-root user, verify its UID at runtime, remove unnecessary privileges and scan the resulting image."
+  };
+  if (/log|debug|inspect|exit|restart|health|resource|cpu|memory|process/.test(t)) return {
+    explanation: topic + " is an operational diagnostic for container lifecycle and runtime behavior. Container state, exit code, logs, health status and resource usage provide evidence about why an application is failing.",
+    example: "A container repeatedly restarts because its process exits with code 1 after failing to read a required environment variable. Logs and inspect output expose the failure.",
+    commands: ["docker ps -a", "docker logs --tail 100 <container>", "docker inspect <container>", "docker stats --no-stream", "docker top <container>"],
+    expected: "ps shows status and exit state, logs show stdout/stderr, inspect exposes exit code and health state, stats reports CPU and memory usage.",
+    troubleshooting: "Check the main process, exit code, entrypoint/CMD, required environment, mounted files, memory limits and health-check command. A running container is not necessarily a healthy application.",
+    lab: "Run a test container with a deliberately invalid startup argument, inspect its exit code and logs, correct the command and confirm healthy startup."
+  };
+  if (/architect|daemon|engine|client|api|containerd|runtime|oci/.test(t)) return {
+    explanation: topic + " describes the Docker control and execution path. The Docker CLI sends requests to the Engine API; the daemon coordinates image, network and container operations, while containerd and an OCI runtime handle container lifecycle work.",
+    example: "An engineer runs docker run from a workstation context. The CLI sends the request to the selected Docker endpoint, the daemon obtains the image if needed, creates a container and starts its configured process.",
+    commands: ["docker context show", "docker version", "docker info", "docker system events --since 10m"],
+    expected: "The context identifies the selected endpoint; version separates client and server versions; info reports daemon details; events show recent lifecycle operations.",
+    troubleshooting: "If the CLI cannot reach the daemon, verify the selected context, socket or endpoint, daemon service state and user permissions. A client/server version mismatch may also affect API compatibility.",
+    lab: "Inspect the active context and client/server versions, run a disposable container, follow Docker events and map each event to the container lifecycle."
+  };
+  if (/desktop|context|credential|config|proxy/.test(t)) return {
+    explanation: topic + " concerns the local Docker environment used by developers. Docker contexts select endpoints, Desktop provides a managed local engine on supported systems, and proxy or credential settings affect registry and daemon access.",
+    example: "A developer switches from the local Desktop engine to a remote test host using a named context, checks the endpoint before running commands and switches back after the task.",
+    commands: ["docker context ls", "docker context inspect <context>", "docker context use <context>", "docker login <registry>"],
+    expected: "The context list shows available endpoints and the active marker; inspect reveals endpoint details; login reports registry authentication status without displaying the password.",
+    troubleshooting: "Confirm the active context before every operation, check Desktop/daemon health, proxy variables, certificate trust and credential-helper configuration. Never copy credentials into shell history.",
+    lab: "Create or inspect a disposable context, verify its endpoint, switch to the intended local context and confirm docker info targets the expected engine."
+  };
+  return {
+    explanation: topic + " is part of " + lessonTitle + ". Identify the Docker object or setting it changes, the lifecycle phase where it applies, and the observable state that proves it is configured correctly.",
+    example: "For this lesson, the engineer changes only the named Docker setting on a disposable service, inspects the resulting container configuration and verifies the application behavior before using the same reviewed change in CI.",
+    commands: ["docker inspect <container>", "docker ps -a --no-trunc", "docker events --since 10m", "docker logs --tail 50 <container>"],
+    expected: "Inspect shows the configured runtime values, ps reports container state and exit information, events show lifecycle changes and logs expose application output.",
+    troubleshooting: "Compare the intended setting with docker inspect output, then check daemon events, application logs, permissions and resource limits. Change one variable at a time and retain the previous configuration for rollback.",
+    lab: "Apply the lesson setting to a disposable container, capture before/after inspect output, verify the effect, then revert and confirm the original behavior."
+  };
+}
+
+
 type Lesson = {
   title: string;
   description: string;
@@ -963,28 +1042,21 @@ export default function DockerRoadmapPage() {
                                 {lesson.topics.map((topic) => {
                                   const id = `${lessonKey}-${topic}`;
                                   const isDone = completed.includes(id);
-
+                                  const guide = getDockerTopicGuide(topic, lesson.title);
                                   return (
-                                    <label
-                                      key={id}
-                                      className="flex cursor-pointer items-start gap-3 text-sm leading-6 text-slate-300"
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        checked={isDone}
-                                        onChange={() => toggleTopic(id)}
-                                        className="mt-1 accent-sky-500"
-                                      />
-                                      <span
-                                        className={
-                                          isDone
-                                            ? "text-slate-500 line-through"
-                                            : ""
-                                        }
-                                      >
-                                        {topic}
-                                      </span>
-                                    </label>
+                                    <div key={id} className="space-y-2 rounded-xl border border-slate-200 bg-white p-3 text-slate-800">
+                                      <label className="flex cursor-pointer items-start gap-3 text-sm leading-6">
+                                        <input type="checkbox" checked={isDone} onChange={() => toggleTopic(id)} className="mt-1 accent-sky-500" />
+                                        <span className={isDone ? "text-slate-500 line-through" : "font-semibold text-slate-900"}>{topic}</span>
+                                      </label>
+                                      <div className="grid gap-3 border-t border-slate-100 pt-3 text-sm leading-6 md:grid-cols-2">
+                                        <div><p className="font-semibold text-sky-700">Explanation</p><p className="text-slate-700">{guide.explanation}</p></div>
+                                        <div><p className="font-semibold text-sky-700">Practical example</p><p className="text-slate-700">{guide.example}</p></div>
+                                        <div className="md:col-span-2"><p className="font-semibold text-emerald-700">Commands and expected checks</p>{guide.commands.map((command) => <pre key={command} className="mt-1 overflow-x-auto rounded bg-slate-950 p-2 text-xs text-emerald-300"><code>{command}</code></pre>)}<p className="mt-2 text-slate-600">{guide.expected}</p></div>
+                                        <div><p className="font-semibold text-rose-700">Troubleshooting</p><p className="text-slate-700">{guide.troubleshooting}</p></div>
+                                        <div><p className="font-semibold text-amber-700">Hands-on task</p><p className="text-slate-700">{guide.lab}</p></div>
+                                      </div>
+                                    </div>
                                   );
                                 })}
                               </div>

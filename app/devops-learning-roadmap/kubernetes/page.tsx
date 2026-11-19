@@ -3,6 +3,125 @@
 
 import { useMemo, useState } from "react";
 
+
+type K8sTopicGuide = { explanation: string; example: string; commands: string[]; expected: string; troubleshooting: string; lab: string };
+function getK8sTopicGuide(topic: string, lessonTitle: string): K8sTopicGuide {
+  const t = topic.toLowerCase();
+  if (/pod|container|init container|sidecar|restart|probe|lifecycle/.test(t)) return {
+    explanation: topic + " is part of the Pod and container runtime model. A Pod is the smallest deployable Kubernetes unit; the kubelet asks the container runtime to start containers and reports status back to the API server.",
+    example: "A Deployment maintains three API Pods. Readiness probes keep a starting Pod out of Service endpoints until the application can accept requests.",
+    commands: ["kubectl get pods -o wide", "kubectl describe pod <pod> -n <namespace>", "kubectl logs <pod> -c <container> --previous -n <namespace>", "kubectl get events -n <namespace> --sort-by=.lastTimestamp"],
+    expected: "get shows phase and node, describe shows conditions/events, logs show application output, and events explain scheduling, image-pull or probe failures.",
+    troubleshooting: "For Pending inspect scheduling events, requests, taints and PVCs. For CrashLoopBackOff inspect current/previous logs, exit code, command, environment and probes. For ImagePullBackOff verify image name, tag and registry credentials.",
+    lab: "Deploy a sample Pod, inspect it, intentionally use an invalid image tag, diagnose ImagePullBackOff, correct the image and verify Ready status."
+  };
+  if (/deployment|replica|replicaset|rolling|rollout|rollback|strategy|revision/.test(t)) return {
+    explanation: topic + " is part of Kubernetes declarative workload management. A Deployment stores the desired Pod template and manages ReplicaSets so the actual number and version of Pods converge toward the declared state.",
+    example: "A web Deployment runs three replicas. A new image is rolled out gradually; if readiness fails, the team checks rollout status and returns to the previous revision.",
+    commands: ["kubectl get deploy,rs,pods -n <namespace>", "kubectl rollout status deployment/<name> -n <namespace>", "kubectl rollout history deployment/<name> -n <namespace>", "kubectl rollout undo deployment/<name> -n <namespace>"],
+    expected: "The Deployment shows desired/available replicas, ReplicaSets represent revisions and rollout status reports whether updated replicas become available.",
+    troubleshooting: "If rollout stalls inspect describe output, events, Pod readiness, image pull, resource quotas, probes and maxUnavailable/maxSurge. Roll back only after identifying the bad revision and impact.",
+    lab: "Deploy an NGINX Deployment with two replicas, update its image, watch rollout status, then roll back to the previous revision and verify the running image."
+  };
+  if (/service|ingress|gateway|load balanc|endpoint|port|network policy|dns/.test(t)) return {
+    explanation: topic + " controls how Kubernetes workloads are reached. Services provide stable virtual endpoints for matching Pods; Ingress or Gateway resources define HTTP routing through a compatible controller, while NetworkPolicies restrict Pod traffic when supported by the CNI.",
+    example: "A ClusterIP Service selects API Pods using labels. An Ingress controller routes /api requests to that Service and keeps Pod IP changes hidden from clients.",
+    commands: ["kubectl get svc,ep -n <namespace>", "kubectl describe svc <service> -n <namespace>", "kubectl get ingress -A", "kubectl get networkpolicy -n <namespace>"],
+    expected: "Service selectors should match ready Pod labels and endpoints should list Pod IPs and target ports. Ingress status depends on a configured controller.",
+    troubleshooting: "Check selector labels, ready endpoints, service port/targetPort, container listen address, DNS, ingress controller events and NetworkPolicy rules. A Service with no endpoints usually indicates selector or readiness mismatch.",
+    lab: "Deploy two Pods and a ClusterIP Service, verify DNS and endpoints from a test Pod, change one selector label to reproduce no endpoints, then correct it."
+  };
+  if (/configmap|secret|environment variable|configuration|credential/.test(t)) return {
+    explanation: topic + " separates application configuration and sensitive values from container images. ConfigMaps store non-secret settings; Secrets store sensitive data but must still be protected with RBAC and encryption at rest.",
+    example: "A Deployment reads a database hostname from a ConfigMap and obtains a password from a Secret mounted as a file, avoiding credentials in the image or Git repository.",
+    commands: ["kubectl get configmap,secret -n <namespace>", "kubectl describe configmap <name> -n <namespace>", "kubectl get pod <pod> -o yaml -n <namespace>"],
+    expected: "The resources exist in the correct namespace and the Pod spec references the intended keys. Avoid printing decoded Secret values into shared terminals or logs.",
+    troubleshooting: "Check namespace, key spelling, volume/env references, RBAC and rollout behavior after configuration changes. Secret base64 encoding is not encryption.",
+    lab: "Create a ConfigMap and a dummy Secret in a disposable namespace, mount them into a test Pod, verify file presence without exposing secret contents, then delete the namespace."
+  };
+  if (/storage|persistentvolume|persistentvolumeclaim|pvc|pv|storageclass|volume|statefulset/.test(t)) return {
+    explanation: topic + " covers persistent storage in Kubernetes. PVCs request storage, StorageClasses describe dynamic provisioning and PVs represent provisioned storage. Stateful workloads need stable storage identity and careful backup/restore planning.",
+    example: "A database StatefulSet uses a PVC per replica so replacing a Pod does not automatically discard its data.",
+    commands: ["kubectl get pv,pvc -A", "kubectl describe pvc <claim> -n <namespace>", "kubectl get storageclass", "kubectl describe pod <pod> -n <namespace>"],
+    expected: "A bound PVC references a PV and StorageClass. Pending claims usually show provisioning, capacity, access-mode or topology events.",
+    troubleshooting: "Check requested size, access mode, StorageClass, provisioner, zone topology, CSI driver health and events. Do not delete PVCs or PVs before understanding reclaim policy and backup state.",
+    lab: "Create a PVC and a test Pod that writes a file. Delete and recreate the Pod using the same claim and verify the file remains."
+  };
+  if (/rbac|role|service account|authentication|authorization|certificate|kubeconfig|access/.test(t)) return {
+    explanation: topic + " controls identity and authorization to the Kubernetes API. Authentication establishes who the caller is; RBAC Roles and RoleBindings define which verbs are allowed on which resources in a namespace or cluster.",
+    example: "A CI service account receives permission to update Deployments only in a staging namespace, not cluster-admin privileges.",
+    commands: ["kubectl auth can-i get pods -n <namespace>", "kubectl auth can-i update deployments --as=system:serviceaccount:<namespace>:<service-account> -n <namespace>", "kubectl get role,rolebinding -n <namespace>", "kubectl config current-context"],
+    expected: "auth can-i returns yes or no for the tested identity and action. RBAC listings show the bound subjects and referenced roles.",
+    troubleshooting: "Confirm current context and namespace, authentication identity, Role/ClusterRole rules, binding subject and resource scope. A valid kubeconfig does not imply permission to every API resource.",
+    lab: "Create a namespace-scoped service account and Role that can read Pods only. Verify allowed get and denied delete operations with kubectl auth can-i."
+  };
+  if (/scheduler|node|taint|toleration|affinity|resource request|limit|hpa|autoscal|capacity/.test(t)) return {
+    explanation: topic + " influences Kubernetes workload placement and capacity. The scheduler evaluates resource requests, node labels, taints, tolerations and affinity rules before binding a Pod to a node.",
+    example: "A memory-intensive workload requests sufficient memory and uses node affinity to run on a dedicated worker pool; unrelated Pods are kept away using taints.",
+    commands: ["kubectl get nodes -o wide", "kubectl describe nodes", "kubectl get pods -o wide -n <namespace>", "kubectl top nodes", "kubectl top pods -n <namespace>"],
+    expected: "Node output shows allocatable resources, taints and conditions. Pending Pods describe output includes scheduling reasons such as insufficient CPU or unmatched affinity.",
+    troubleshooting: "Compare requests with allocatable capacity, inspect taints/tolerations, affinity, topology constraints, quotas and autoscaler events. Limits affect runtime throttling/OOM; requests drive scheduling.",
+    lab: "Create a Pod with an intentionally excessive CPU request, observe FailedScheduling, lower the request to fit a test node and verify it schedules."
+  };
+  if (/helm|chart|release|template|values/.test(t)) return {
+    explanation: topic + " is part of Helm package management for Kubernetes. A chart templates Kubernetes manifests, values supply environment-specific configuration and a release records an installed chart revision.",
+    example: "A team installs the same application chart into staging and production with separate values files and reviews rendered YAML before applying changes.",
+    commands: ["helm repo list", "helm list -A", "helm lint <chart-directory>", "helm template <release> <chart-directory> -f values.yaml", "helm history <release> -n <namespace>"],
+    expected: "lint validates chart structure, template renders manifests locally and history lists release revisions. Review rendered resources and image tags before installation.",
+    troubleshooting: "Check chart version, values key names, template rendering, namespace, release history and Kubernetes API compatibility. Use helm diff where installed before upgrading.",
+    lab: "Create or use a small chart, render it with a values file, inspect the Deployment and Service, install to a disposable namespace and roll back one revision."
+  };
+  if (/etcd|api server|control plane|controller|kubelet|kube-proxy|cni|coredns|architecture/.test(t)) return {
+    explanation: topic + " is a Kubernetes control-plane or node component. Control-plane services expose the API and reconcile desired state; node agents and networking components turn scheduled Pods into reachable running workloads.",
+    example: "A user submits a Deployment through the API server. Controllers create a ReplicaSet, the scheduler assigns Pods to nodes, and kubelets ask the runtime to start containers.",
+    commands: ["kubectl get nodes", "kubectl get pods -n kube-system -o wide", "kubectl get events -A --sort-by=.lastTimestamp", "kubectl cluster-info"],
+    expected: "System Pods and nodes should be healthy. Events and component logs help identify API, DNS, CNI or node-agent problems; managed clusters may hide control-plane host access.",
+    troubleshooting: "Separate API reachability/authentication from scheduler, kubelet, CNI and DNS failures. Inspect system namespace Pods, node conditions, events and provider control-plane health.",
+    lab: "Use a local kind or Minikube cluster to map control-plane and node components, inspect kube-system Pods and describe the request path for creating a Deployment."
+  };
+  if (/probe|health|readiness|liveness|startup/.test(t)) return {
+    explanation: topic + " defines how Kubernetes decides whether a container has started, is alive or can receive traffic. Startup, liveness and readiness probes serve different purposes and must match application behavior.",
+    example: "A slow-starting Java API uses a startup probe to allow warm-up, a liveness probe to detect a stuck process and a readiness probe to wait for dependencies.",
+    commands: ["kubectl describe pod <pod> -n <namespace>", "kubectl get events -n <namespace> --sort-by=.lastTimestamp", "kubectl logs <pod> -n <namespace>"],
+    expected: "Pod conditions and events show probe successes or failures. Readiness affects Service endpoints; repeated liveness failures restart the container.",
+    troubleshooting: "Check probe path/port/scheme, initial delay, timeout, period and failure threshold. Avoid making liveness depend on an external service that can cause cascading restarts.",
+    lab: "Add a readiness probe to a sample web Pod, deliberately configure the wrong path, observe it leave Service endpoints and fix the path."
+  };
+  if (/troubleshoot|debug|incident|production|failure|crash|pending|imagepull|oom/.test(t)) return {
+    explanation: topic + " is a structured Kubernetes incident investigation. Begin with workload status and events, then inspect container logs, resource pressure, network paths and recent configuration changes.",
+    example: "For a CrashLoopBackOff, inspect the previous container log and exit code, identify a missing environment variable, correct the Deployment and confirm a healthy rollout.",
+    commands: ["kubectl get pods -A -o wide", "kubectl describe pod <pod> -n <namespace>", "kubectl logs <pod> --previous -n <namespace>", "kubectl get events -A --sort-by=.lastTimestamp"],
+    expected: "The commands expose phase, node placement, restart count, container state, previous logs and chronological cluster events.",
+    troubleshooting: "Classify the symptom as scheduling, image, startup, probe, storage, network, permission or resource failure. Capture evidence before changing production objects and verify recovery after the smallest safe fix.",
+    lab: "Create a disposable namespace and reproduce one controlled failure such as a bad image tag. Collect describe output and events, fix it, verify Ready and write an incident note."
+  };
+  if (/api server|control plane|etcd|scheduler|controller manager|controller/.test(t)) return {
+    explanation: topic + " belongs to the Kubernetes control plane. The API server validates and persists API requests, etcd stores cluster state, the scheduler assigns unscheduled Pods to suitable nodes, and controllers continuously reconcile observed state toward the declared desired state.",
+    example: "When a Deployment replica count changes from two to three, the API server stores the updated object; the Deployment controller creates a ReplicaSet/Pod and the scheduler selects a node for the new Pod.",
+    commands: ["kubectl get componentstatuses", "kubectl get pods -n kube-system -o wide", "kubectl describe pod <control-plane-pod> -n kube-system", "kubectl get events -A --sort-by=.lastTimestamp"],
+    expected: "Control-plane Pod status and events provide component health evidence. Some managed Kubernetes services do not expose control-plane Pods or component status to tenants.",
+    troubleshooting: "For self-managed clusters, inspect control-plane service logs, API endpoint reachability, certificates, etcd health and resource pressure. For managed clusters, use provider control-plane diagnostics and audit logs.",
+    lab: "On a local disposable cluster, inspect control-plane components and trace a test Deployment update from API object change to scheduled Pod."
+  };
+  if (/rbac|role|service account|authorization|authentication/.test(t)) return {
+    explanation: topic + " controls who can authenticate to the Kubernetes API and which verbs they may perform on specific resources. Roles are namespace-scoped, ClusterRoles are cluster-wide or reusable, and bindings attach those permissions to users, groups or service accounts.",
+    example: "A CI service account receives permission to get and update Deployments only in the staging namespace; it cannot read Secrets or modify production resources.",
+    commands: ["kubectl auth can-i get deployments -n staging --as=system:serviceaccount:staging:ci", "kubectl get role,rolebinding -n staging", "kubectl get clusterrole,clusterrolebinding", "kubectl describe serviceaccount ci -n staging"],
+    expected: "auth can-i returns yes or no for the tested identity and verb. Role and binding output shows the granted rules and subject references.",
+    troubleshooting: "Verify the active kubeconfig identity, namespace, exact API group/resource/subresource, verb and binding subject. Avoid granting cluster-admin to make a pipeline pass.",
+    lab: "Create a namespace-scoped service account and Role for reading Pods, bind it, test allowed and denied actions with kubectl auth can-i, then remove the test RBAC objects."
+  };
+  return {
+    explanation: topic + " is part of " + lessonTitle + ". Identify the Kubernetes resource, API group, namespace scope, controller or dependency involved, then verify both the declared specification and observed cluster status.",
+    example: "An engineer changes this topic's setting in a version-controlled manifest, reviews the diff, applies it to a disposable namespace and checks the resource status, related Pods and recent Events before promoting the change.",
+    commands: ["kubectl diff -f <manifest.yaml>", "kubectl apply --dry-run=server -f <manifest.yaml>", "kubectl get <resource> -n <namespace> -o yaml", "kubectl describe <resource> <name> -n <namespace>", "kubectl get events -n <namespace> --sort-by=.lastTimestamp"],
+    expected: "diff shows the proposed change, server dry-run confirms API validation, get -o yaml shows persisted fields and describe/events show runtime reconciliation.",
+    troubleshooting: "Check API validation errors, namespace, labels/selectors, ownership references, RBAC, quotas and dependent resources. Compare desired and observed state before editing live objects.",
+    lab: "Create a minimal manifest for the topic, validate it with server-side dry-run, apply it in a disposable namespace, capture status and Events, then delete only the test resource."
+  };
+}
+
+
 type Lesson = {
   title: string;
   topics: string[];
@@ -1245,17 +1364,21 @@ export default function KubernetesRoadmapPage() {
                               </h3>
 
                               <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-                                {lesson.topics.map((topic) => (
-                                  <li
-                                    key={topic}
-                                    className="flex items-start gap-2 text-sm leading-6 text-slate-600"
-                                  >
-                                    <span className="mt-0.5 text-blue-600">
-                                      •
-                                    </span>
-                                    <span>{topic}</span>
-                                  </li>
-                                ))}
+                                {lesson.topics.map((topic) => {
+                                  const guide = getK8sTopicGuide(topic, lesson.title);
+                                  return (
+                                    <li key={topic} className="rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-800">
+                                      <p className="font-bold text-slate-900">{topic}</p>
+                                      <div className="mt-3 grid gap-3 md:grid-cols-2">
+                                        <div><p className="font-semibold text-blue-700">Explanation</p><p>{guide.explanation}</p></div>
+                                        <div><p className="font-semibold text-blue-700">Practical example</p><p>{guide.example}</p></div>
+                                        <div className="md:col-span-2"><p className="font-semibold text-emerald-700">Commands and expected output</p>{guide.commands.map((command) => <pre key={command} className="mt-1 overflow-x-auto rounded bg-slate-950 p-2 text-xs text-emerald-300"><code>{command}</code></pre>)}<p className="mt-2 text-slate-600">{guide.expected}</p></div>
+                                        <div><p className="font-semibold text-rose-700">Troubleshooting</p><p>{guide.troubleshooting}</p></div>
+                                        <div><p className="font-semibold text-amber-700">Hands-on task</p><p>{guide.lab}</p></div>
+                                      </div>
+                                    </li>
+                                  );
+                                })}
                               </ul>
                             </div>
                           </section>

@@ -414,6 +414,37 @@ export default function FeatureExplorer({
       return <IncidentCategoryPage feature={feature} category={category} />;
     }
 
+    if (featureId === "monitoring-playground") {
+      return (
+        <PageFrame feature={feature} eyebrow="Category Topics" title={category.name} description={`Browse all ${category.name} topics directly. Choose any topic to open its dedicated learning page.`}>
+          <Breadcrumbs feature={feature} items={[{ label: category.name }]} />
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-slate-400">All topics in this category</p>
+            <span className={`rounded-full px-3 py-1 text-xs ${theme.badge}`}>{topicCount(category)} topics</span>
+          </div>
+          <div className="space-y-6">
+            {category.subcategories.map((subcategory) => (
+              <section key={subcategory.name} aria-label={subcategory.name}>
+                {category.subcategories.length > 1 && <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-300">{subcategory.name}</h2>}
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {subcategory.topics.map((topic, index) => (
+                    <Link key={topic} href={`/${feature.id}/${slug[0]}/${slugify(subcategory.name)}/${slugify(topic)}`} className={`group rounded-xl border ${theme.panel} bg-slate-900/70 p-5 transition hover:-translate-y-1 hover:bg-slate-800`}>
+                      <div className="mb-4 flex items-center justify-between">
+                        <span className={`rounded-lg px-3 py-2 text-xs font-bold ${theme.badge}`}>TOPIC {String(index + 1).padStart(2, "0")}</span>
+                        <span className={`text-lg ${theme.accent}`}>↗</span>
+                      </div>
+                      <h2 className="font-bold text-white group-hover:text-slate-200">{topic}</h2>
+                      <p className="mt-3 text-xs text-slate-400">Open dedicated topic page →</p>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </PageFrame>
+      );
+    }
+
     return (
       <PageFrame feature={feature} eyebrow="Category Explorer" title={category.name} description={`Explore the ${category.name} learning areas and open a subcategory to view its individual topics.`}>
         <Breadcrumbs feature={feature} items={[{ label: category.name }]} />
