@@ -930,7 +930,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
       {
         "heading": "5. Practical commands with explanation",
         "paragraphs": [
-          "Use bash -n script.sh for syntax validation and shellcheck for static analysis; quote variables such as "$target" to prevent word splitting."
+          "Use bash -n script.sh for syntax validation and shellcheck for static analysis; quote variables such as \"$target\" to prevent word splitting."
         ],
         "code": "#!/usr/bin/env bash; set -euo pipefail; echo \"Host: $(hostname)\"; date; df -h /; chmod +x health-check.sh; ./health-check.sh",
         "note": "Unquoted variables, unchecked commands and unsafe rm paths scripts ni dangerous ga chesthayi."
