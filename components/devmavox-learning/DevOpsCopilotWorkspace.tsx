@@ -24,19 +24,20 @@ const accents = [
 
 const glyphs = ["✳", ">_", "{ }", "⌘", "◉", "⌁", "⇄", "◇", "◎", "⚑"];
 
-type LocalChatEngine = {
-  chat: {
-    completions: {
-      create: (input: {
-        messages: Array<{ role: "system" | "user"; content: string }>;
-        temperature: number;
-        max_tokens: number;
-      }) => Promise<{ choices: Array<{ message: { content?: string | null } }> }>;
-    };
+type BrowserTextGenerator = {
+  tokenizer: {
+    apply_chat_template: (
+      messages: Array<{ role: "system" | "user"; content: string }>,
+      options: { tokenize: false; add_generation_prompt: true },
+    ) => string;
   };
+  (
+    prompt: string,
+    options: { max_new_tokens: number; do_sample: boolean; return_full_text: boolean },
+  ): Promise<Array<{ generated_text: string }>>;
 };
 
-const LOCAL_MODEL_ID = "Qwen2.5-3B-Instruct-q4f16_1-MLC";
+const LOCAL_MODEL_ID = "onnx-community/Qwen2.5-0.5B-Instruct";
 
 type KnowledgeQuestion = { number?: number; question: string; answer: string };
 type KnowledgeGroup = { tool: string; category: string; questions: KnowledgeQuestion[] };
@@ -92,7 +93,7 @@ export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature
   const [loading, setLoading] = useState(false);
   const [modelStatus, setModelStatus] = useState<"not-loaded" | "loading" | "ready" | "unsupported">("not-loaded");
   const [modelProgress, setModelProgress] = useState("");
-  const engineRef = useRef<LocalChatEngine | null>(null);
+  const engineRef = useRef<BrowserTextGenerator | null>(null);
   const category = feature.categories.find((item) => slugify(item.name) === slug[0]);
   const subcategory = category?.subcategories.find((item) => slugify(item.name) === slug[1]);
   const topic = subcategory?.topics.find((item) => slugify(item) === slug[2]);
@@ -101,26 +102,28 @@ export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature
   const root = "/devops-ai-assistant";
   async function getLocalEngine() {
     if (engineRef.current) return engineRef.current;
-    if (!("gpu" in navigator)) {
-      setModelStatus("unsupported");
-      throw new Error("This browser/device does not support WebGPU. Please use an up-to-date Chrome or Edge browser on a WebGPU-capable device.");
-    }
     setModelStatus("loading");
-    setModelProgress("Loading the free AI engine…");
+    setModelProgress("Loading the CPU-compatible AI runtime…");
     try {
-      // WebLLM's official browser ESM build runs the model locally; no server API key or account is used.
-      // @ts-expect-error WebLLM is loaded from its documented browser ESM CDN.
-      const webllm = await import(/* webpackIgnore: true */ "https://esm.run/@mlc-ai/web-llm");
-      const engine = await webllm.CreateMLCEngine(LOCAL_MODEL_ID, {
-        initProgressCallback: (progress: { text?: string }) => setModelProgress(progress.text || "Downloading model files…"),
-      }) as LocalChatEngine;
-      engineRef.current = engine;
+      // Transformers.js runs quantized ONNX models through WebAssembly on the CPU.
+      // This deliberately avoids requiring WebGPU or a compatible graphics card.
+      // @ts-expect-error The browser ESM build is loaded from the official jsDelivr CDN.
+      const transformers = await import(/* webpackIgnore: true */ "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4");
+      const generator = await transformers.pipeline("text-generation", LOCAL_MODEL_ID, {
+        device: "wasm",
+        dtype: "q4",
+        progress_callback: (progress: { status?: string; file?: string; progress?: number }) => {
+          const percent = typeof progress.progress === "number" ? ` ${Math.round(progress.progress)}%` : "";
+          setModelProgress(`${progress.status || "Downloading model"}${progress.file ? `: ${progress.file}` : ""}${percent}`);
+        },
+      }) as BrowserTextGenerator;
+      engineRef.current = generator;
       setModelStatus("ready");
-      setModelProgress("Model ready on this device. It will usually be cached for later visits.");
-      return engine;
+      setModelProgress("CPU AI model ready. The browser will cache downloaded model files where supported.");
+      return generator;
     } catch (err) {
       setModelStatus("not-loaded");
-      throw new Error(err instanceof Error ? err.message : "Could not load the free browser AI model. Check your connection and available device memory, then retry.");
+      throw new Error(err instanceof Error ? err.message : "Could not load the CPU AI model. Check the network connection, browser storage and available memory, then retry.");
     }
   }
 
@@ -136,29 +139,43 @@ export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature
       const referenceContext = references.length
         ? references.map((item, index) => `[Reference ${index + 1} | ${item.tool} | ${item.category}]\nQuestion: ${item.question}\nAnswer: ${item.answer.slice(0, 1800)}`).join("\\n\\n")
         : "No matching DevMavox Q&A references were retrieved. Answer from your model knowledge and clearly state uncertainty.";
-      const result = await engine.chat.completions.create({
-        messages: [
-          {
-            role: "system",
-            content: `You are DevMavox AI, a careful senior DevOps tutor. Explain in beginner-friendly English, with simple Telugu-English phrasing when useful. Help with AWS, Linux, Git, Docker, Kubernetes, Terraform, Ansible, CI/CD, GitOps, monitoring and production troubleshooting. Structure answers with a short summary, assumptions, step-by-step explanation, safe commands/examples, expected output, validation and risks. Explain important command flags. Prefer read-only diagnostics before changes. Never claim to inspect live systems or execute commands. Never request secrets. Flag destructive commands and require human review for production changes. Be honest when uncertain. Use the supplied DevMavox reference material as supporting context, but do not blindly copy it or invent facts. If references conflict with supplied versions or environment, explain the mismatch.\n\nSelected topic guidance:\nPurpose: ${topicGuide?.purpose || "General DevOps assistance"}\nContext to request: ${topicGuide?.context || "Ask for versions, environment, expected and actual behavior, and redacted evidence."}\nExpected deliverables: ${topicGuide?.deliverables || "Explanation, safe steps, commands, validation and risks."}`,
-          },
-          {
-            role: "user",
-            content: `Capability: ${category?.name || "DevOps"}
+      const messages = [
+        {
+          role: "system" as const,
+          content: `You are DevMavox AI, a careful senior DevOps tutor. Explain in beginner-friendly English, with simple Telugu-English phrasing when useful. Help with AWS, Linux, Git, Docker, Kubernetes, Terraform, Ansible, CI/CD, GitOps, monitoring and production troubleshooting. Structure answers with a short summary, assumptions, step-by-step explanation, safe commands/examples, expected output, validation and risks. Explain important command flags. Prefer read-only diagnostics before changes. Never claim to inspect live systems or execute commands. Never request secrets. Flag destructive commands and require human review for production changes. Be honest when uncertain. Use the supplied DevMavox reference material as supporting context, but do not blindly copy it or invent facts. If references conflict with supplied versions or environment, explain the mismatch.
+
+Selected topic guidance:
+Purpose: ${topicGuide?.purpose || "General DevOps assistance"}
+Context to request: ${topicGuide?.context || "Ask for versions, environment, expected and actual behavior, and redacted evidence."}
+Expected deliverables: ${topicGuide?.deliverables || "Explanation, safe steps, commands, validation and risks."}`,
+        },
+        {
+          role: "user" as const,
+          content: `Capability: ${category?.name || "DevOps"}
 Topic: ${topic || "General assistance"}
 Mode: ${mode}
 Environment context: ${context.trim() || "Not supplied"}
 
+DevMavox knowledge references:
+${referenceContext}
+
 Request:
 ${question.trim()}`,
-          },
-        ],
-        temperature: 0.2,
-        max_tokens: 1200,
+        },
+      ];
+      const prompt = engine.tokenizer.apply_chat_template(messages, {
+        tokenize: false,
+        add_generation_prompt: true,
       });
-      const text = result.choices[0]?.message?.content?.trim();
-      if (!text) throw new Error("The local AI model returned an empty response. Please try a shorter or clearer question.");
-      setAnswer(text);
+      setModelProgress("Generating your DevOps answer on this device…");
+      const result = await engine(prompt, {
+        max_new_tokens: 700,
+        do_sample: false,
+        return_full_text: false,
+      });
+      const generated = result[0]?.generated_text?.trim();
+      if (!generated) throw new Error("The local AI model returned an empty response. Please try a shorter or clearer question.");
+      setAnswer(generated);
     } catch (err) { setError(err instanceof Error ? err.message : "Unable to run the local AI model."); }
     finally { setLoading(false); }
   }
@@ -181,15 +198,15 @@ ${question.trim()}`,
                   <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#c7ff43]/30 bg-[#c7ff43]/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.22em] text-[#d5ff79]"><span className="h-2 w-2 rounded-full bg-[#c7ff43]" /> DevOps intelligence layer</div>
                   <p className="mb-3 font-mono text-xs uppercase tracking-[.28em] text-[#ff896d]">Ask. Inspect. Understand. Improve.</p>
                   <h1 className="max-w-3xl text-4xl font-black leading-[1.04] tracking-tight sm:text-6xl">Your DevOps workbench, <span className="text-[#c7ff43]">powered by DevMavox AI.</span></h1>
-                  <p className="mt-5 max-w-2xl text-sm leading-7 text-white/60 sm:text-base">A free, login-free local AI tutor for command guidance, configuration reviews, infrastructure decisions and production incident reasoning, grounded with relevant DevMavox interview Q&A.</p>
+                  <p className="mt-5 max-w-2xl text-sm leading-7 text-white/60 sm:text-base">A free, login-free local AI tutor that runs on the device CPU, with command guidance, configuration reviews, infrastructure decisions and production incident reasoning grounded in DevMavox interview Q&A.</p>
                   <div className="mt-7 flex flex-wrap gap-2 text-[11px] font-semibold"><span className="rounded-lg bg-[#c7ff43] px-3 py-2 text-[#171b13]">10 capability domains</span><span className="rounded-lg border border-white/15 px-3 py-2 text-white/65">{topicCount} specialist workflows</span><span className="rounded-lg border border-white/15 px-3 py-2 text-white/65">3-level navigation</span></div>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-[#0c100d]/80 p-5 shadow-2xl shadow-black/30">
-                  <div className="mb-4 flex items-center justify-between"><span className="font-mono text-[10px] uppercase tracking-[.2em] text-white/45">AI response preview</span><span className="rounded-full bg-[#c7ff43]/10 px-2 py-1 text-[9px] text-[#d5ff79]">Free local AI · no account</span></div>
+                  <div className="mb-4 flex items-center justify-between"><span className="font-mono text-[10px] uppercase tracking-[.2em] text-white/45">AI response preview</span><span className="rounded-full bg-[#c7ff43]/10 px-2 py-1 text-[9px] text-[#d5ff79]">Free CPU AI · no account</span></div>
                   <div className="space-y-3 font-mono text-xs">
                     <div className="max-w-[90%] rounded-xl rounded-tl-sm bg-white/[.07] p-3 text-white/75">Why are my Kubernetes pods stuck in Pending?</div>
                     <div className="ml-auto max-w-[90%] rounded-xl rounded-tr-sm border border-[#c7ff43]/20 bg-[#c7ff43]/[.08] p-3 text-[#e6f8c7]">Inspect scheduling events, resource requests, node capacity and PVC binding. Start with <span className="text-[#c7ff43]">kubectl describe pod</span>.</div>
-                    <div className="flex items-center gap-2 border-t border-white/10 pt-3 text-[10px] text-white/35"><span className="h-1.5 w-1.5 rounded-full bg-[#ff896d]" /> Illustrative preview · local model runs on the student device</div>
+                    <div className="flex items-center gap-2 border-t border-white/10 pt-3 text-[10px] text-white/35"><span className="h-1.5 w-1.5 rounded-full bg-[#ff896d]" /> Illustrative preview · local model runs on the student device CPU</div>
                   </div>
                 </div>
               </div>
@@ -258,7 +275,7 @@ ${question.trim()}`,
                 {answer && <div className="mt-6 rounded-xl border border-[#c7ff43]/25 bg-[#0d110e] p-5"><p className="mb-3 font-mono text-[10px] uppercase tracking-[.18em] text-[#c7ff43]">DevMavox AI response</p><div className="whitespace-pre-wrap text-sm leading-7 text-white/80">{answer}</div></div>}
               </div>
               <aside className="space-y-3">
-                <div className="rounded-2xl border border-[#c7ff43]/25 bg-[#c7ff43]/[.05] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#d5ff79]">Free local AI status</p><p className="mt-3 text-lg font-bold">{modelStatus === "ready" ? "AI model ready on this device" : modelStatus === "loading" ? "Preparing the AI model…" : modelStatus === "unsupported" ? "WebGPU not available" : "Free Qwen 3B AI · not loaded yet"}</p><p className="mt-2 text-xs leading-5 text-white/50">No student login, ChatGPT account, Copilot login, API key or server AI subscription is used. First use downloads the Qwen2.5 3B model and the public DevMavox Q&A reference library; browser caching can speed up later visits. The model needs about 2.4 GB of GPU memory and a WebGPU-capable browser/device. Answers are generated locally and are not ChatGPT-level guaranteed.</p>{modelProgress && <p className="mt-3 text-[11px] leading-5 text-[#d5ff79]">{modelProgress}</p>}</div>
+                <div className="rounded-2xl border border-[#c7ff43]/25 bg-[#c7ff43]/[.05] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#d5ff79]">Free local CPU AI status</p><p className="mt-3 text-lg font-bold">{modelStatus === "ready" ? "AI model ready on this device" : modelStatus === "loading" ? "Preparing the AI model…" : modelStatus === "unsupported" ? "Browser AI unavailable" : "Free Qwen 0.5B AI · not loaded yet"}</p><p className="mt-2 text-xs leading-5 text-white/50">No student login, ChatGPT account, Copilot login, API key or server AI subscription is used. First use downloads a compact Qwen2.5 0.5B model and the public DevMavox Q&A reference library. It runs through WebAssembly on the device CPU, so a dedicated GPU and WebGPU are not required. First download may take time and generation can be slower on low-memory or older devices. Answers are generated locally and are not ChatGPT-level guaranteed.</p>{modelProgress && <p className="mt-3 text-[11px] leading-5 text-[#d5ff79]">{modelProgress}</p>}</div>
                 <div className="rounded-2xl border border-white/10 bg-[#1a201b] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#c7ff43]">Safe-use checklist</p><ul className="mt-3 space-y-2 text-xs leading-5 text-white/55"><li>• Remove passwords and tokens</li><li>• Redact customer data</li><li>• Verify commands before execution</li><li>• Require human approval for production changes</li></ul></div>
               </aside>
             </section>
