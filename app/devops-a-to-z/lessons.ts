@@ -6212,4 +6212,3919 @@ export const atoZLessons: Record<string, AtoZLesson> = {
       ]
     }
   }
+  "aws/cloud-computing-fundamentals": {
+    "summary": "On-demand compute, storage and networking delivered over a network with usage-based pricing",
+    "diagram": {
+      "title": "Cloud Computing Fundamentals workflow",
+      "nodes": [
+        "AWS account",
+        "region",
+        "service API",
+        "metered resource"
+      ],
+      "explanation": "AWS account → region → service API → metered resource. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "On-demand compute, storage and networking delivered over a network with usage-based pricing",
+          "Avoid buying and maintaining physical servers; provision capacity when demand changes"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A team launches a test server for two hours and terminates it after validation.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "AWS account → region → service API → metered resource. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "A team launches a test server for two hours and terminates it after validation.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws sts get-caller-identity\naws ec2 describe-regions --output table",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "On-demand compute, storage and networking delivered over a network with usage-based pricing In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Cloud Computing Fundamentals and give a DevOps use case.",
+        "answer": "On-demand compute, storage and networking delivered over a network with usage-based pricing I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving Cloud Computing Fundamentals?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/aws-global-infrastructure": {
+    "summary": "Regions are separate geographic areas; Availability Zones are isolated locations within a Region; edge locations serve content closer to users",
+    "diagram": {
+      "title": "AWS Global Infrastructure workflow",
+      "nodes": [
+        "User",
+        "Route 53",
+        "nearest edge / regional endpoint",
+        "AZ-backed workload"
+      ],
+      "explanation": "User → Route 53 → nearest edge / regional endpoint → AZ-backed workload. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Regions are separate geographic areas; Availability Zones are isolated locations within a Region; edge locations serve content closer to users",
+          "Choose geography for latency, data residency, resilience and service availability"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Deploy an application across multiple AZs in Mumbai so one AZ outage does not stop the service.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "User → Route 53 → nearest edge / regional endpoint → AZ-backed workload. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Deploy an application across multiple AZs in Mumbai so one AZ outage does not stop the service.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws ec2 describe-regions --all\naws ec2 describe-availability-zones --region ap-south-1",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Regions are separate geographic areas; Availability Zones are isolated locations within a Region; edge locations serve content closer to users In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain AWS Global Infrastructure and give a DevOps use case.",
+        "answer": "Regions are separate geographic areas; Availability Zones are isolated locations within a Region; edge locations serve content closer to users I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving AWS Global Infrastructure?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/iam-users-and-roles": {
+    "summary": "IAM identities represent people or workloads; roles provide temporary credentials through an assumable trust relationship",
+    "diagram": {
+      "title": "IAM Users and Roles workflow",
+      "nodes": [
+        "Human / EC2 workload",
+        "identity provider or STS",
+        "IAM role",
+        "temporary credentials"
+      ],
+      "explanation": "Human / EC2 workload → identity provider or STS → IAM role → temporary credentials. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "IAM identities represent people or workloads; roles provide temporary credentials through an assumable trust relationship",
+          "Avoid sharing root credentials and long-lived keys; grant each operator or workload its own identity"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Attach an instance profile role to an EC2 application instead of storing AWS keys on disk.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Human / EC2 workload → identity provider or STS → IAM role → temporary credentials. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Attach an instance profile role to an EC2 application instead of storing AWS keys on disk.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws sts get-caller-identity\naws iam list-roles",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "IAM identities represent people or workloads; roles provide temporary credentials through an assumable trust relationship In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain IAM Users and Roles and give a DevOps use case.",
+        "answer": "IAM identities represent people or workloads; roles provide temporary credentials through an assumable trust relationship I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving IAM Users and Roles?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/iam-policies": {
+    "summary": "Policies are JSON permission documents containing Effect, Action, Resource and optional Condition",
+    "diagram": {
+      "title": "IAM Policies workflow",
+      "nodes": [
+        "Principal",
+        "identity/resource policy evaluation",
+        "allow or explicit deny"
+      ],
+      "explanation": "Principal → identity/resource policy evaluation → allow or explicit deny. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Policies are JSON permission documents containing Effect, Action, Resource and optional Condition",
+          "Apply least privilege and make access reviewable rather than granting broad administrator access"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Allow an application role to read only one S3 bucket prefix.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Principal → identity/resource policy evaluation → allow or explicit deny. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Allow an application role to read only one S3 bucket prefix.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws iam get-policy-version --policy-arn arn:aws:iam::123456789012:policy/ReadOnlyApp --version-id v1",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Policies are JSON permission documents containing Effect, Action, Resource and optional Condition In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain IAM Policies and give a DevOps use case.",
+        "answer": "Policies are JSON permission documents containing Effect, Action, Resource and optional Condition I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving IAM Policies?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/mfa-and-access-keys": {
+    "summary": "MFA adds a second proof of identity; access keys are programmatic credentials consisting of an access key ID and secret",
+    "diagram": {
+      "title": "MFA and Access Keys workflow",
+      "nodes": [
+        "User sign-in",
+        "password + MFA",
+        "session; CLI",
+        "credential provider / role",
+        "signed API call"
+      ],
+      "explanation": "User sign-in → password + MFA → session; CLI → credential provider / role → signed API call. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "MFA adds a second proof of identity; access keys are programmatic credentials consisting of an access key ID and secret",
+          "Reduce account takeover risk and avoid static credentials where role-based temporary credentials are possible"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Require MFA for privileged human access and rotate/revoke exposed keys immediately.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "User sign-in → password + MFA → session; CLI → credential provider / role → signed API call. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Require MFA for privileged human access and rotate/revoke exposed keys immediately.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws configure list\naws sts get-caller-identity",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "MFA adds a second proof of identity; access keys are programmatic credentials consisting of an access key ID and secret In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain MFA and Access Keys and give a DevOps use case.",
+        "answer": "MFA adds a second proof of identity; access keys are programmatic credentials consisting of an access key ID and secret I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving MFA and Access Keys?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/ec2-introduction": {
+    "summary": "EC2 provides resizable virtual machine instances with selectable CPU, memory, storage and networking",
+    "diagram": {
+      "title": "EC2 Introduction workflow",
+      "nodes": [
+        "AMI",
+        "instance type",
+        "subnet + security group",
+        "EBS",
+        "running instance"
+      ],
+      "explanation": "AMI → instance type → subnet + security group → EBS → running instance. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "EC2 provides resizable virtual machine instances with selectable CPU, memory, storage and networking",
+          "Run application servers, build agents, bastions and workloads needing OS-level control"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Launch an Ubuntu instance, install Nginx, verify the health endpoint, then terminate the lab instance.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "AMI → instance type → subnet + security group → EBS → running instance. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Launch an Ubuntu instance, install Nginx, verify the health endpoint, then terminate the lab instance.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws ec2 describe-instances --filters Name=instance-state-name,Values=running --query 'Reservations[].Instances[].[InstanceId,InstanceType,State.Name]' --output table",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "EC2 provides resizable virtual machine instances with selectable CPU, memory, storage and networking In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain EC2 Introduction and give a DevOps use case.",
+        "answer": "EC2 provides resizable virtual machine instances with selectable CPU, memory, storage and networking I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving EC2 Introduction?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/ec2-instance-types": {
+    "summary": "Instance families are optimized for general purpose, compute, memory, storage or accelerated workloads",
+    "diagram": {
+      "title": "EC2 Instance Types workflow",
+      "nodes": [
+        "Workload metrics",
+        "instance family/size selection",
+        "EC2 capacity"
+      ],
+      "explanation": "Workload metrics → instance family/size selection → EC2 capacity. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Instance families are optimized for general purpose, compute, memory, storage or accelerated workloads",
+          "Match CPU, RAM, network and accelerator needs to measured workload behavior and cost"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Compare a burstable dev server with a compute-optimized worker using CPU metrics and benchmark results.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Workload metrics → instance family/size selection → EC2 capacity. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Compare a burstable dev server with a compute-optimized worker using CPU metrics and benchmark results.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws ec2 describe-instance-types --instance-types t3.micro m7i.large --query 'InstanceTypes[].[InstanceType,VCpuInfo.DefaultVCpus,MemoryInfo.SizeInMiB]'",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Instance families are optimized for general purpose, compute, memory, storage or accelerated workloads In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain EC2 Instance Types and give a DevOps use case.",
+        "answer": "Instance families are optimized for general purpose, compute, memory, storage or accelerated workloads I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving EC2 Instance Types?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/ami-and-launch-templates": {
+    "summary": "An AMI is a reusable machine image; a launch template stores versioned EC2 launch settings",
+    "diagram": {
+      "title": "AMI and Launch Templates workflow",
+      "nodes": [
+        "Golden AMI + launch template version",
+        "Auto Scaling / EC2 launch"
+      ],
+      "explanation": "Golden AMI + launch template version → Auto Scaling / EC2 launch. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "An AMI is a reusable machine image; a launch template stores versioned EC2 launch settings",
+          "Standardize repeatable instance creation and roll out reviewed configuration changes"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Bake approved packages and agents into a golden AMI, then roll out a new launch-template version.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Golden AMI + launch template version → Auto Scaling / EC2 launch. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Bake approved packages and agents into a golden AMI, then roll out a new launch-template version.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws ec2 describe-images --owners self\naws ec2 describe-launch-templates",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "An AMI is a reusable machine image; a launch template stores versioned EC2 launch settings In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain AMI and Launch Templates and give a DevOps use case.",
+        "answer": "An AMI is a reusable machine image; a launch template stores versioned EC2 launch settings I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving AMI and Launch Templates?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/ebs-volumes": {
+    "summary": "EBS provides persistent block storage volumes attached to EC2 instances, normally within one AZ",
+    "diagram": {
+      "title": "EBS Volumes workflow",
+      "nodes": [
+        "EC2",
+        "EBS block device",
+        "filesystem mount",
+        "application data"
+      ],
+      "explanation": "EC2 → EBS block device → filesystem mount → application data. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "EBS provides persistent block storage volumes attached to EC2 instances, normally within one AZ",
+          "Keep application data separate from ephemeral instance lifecycle and select performance to match I/O"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Attach and mount a data volume; verify filesystem UUID and mount configuration before reboot.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "EC2 → EBS block device → filesystem mount → application data. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Attach and mount a data volume; verify filesystem UUID and mount configuration before reboot.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "lsblk\nlsblk -f\ndf -h\naws ec2 describe-volumes",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "EBS provides persistent block storage volumes attached to EC2 instances, normally within one AZ In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain EBS Volumes and give a DevOps use case.",
+        "answer": "EBS provides persistent block storage volumes attached to EC2 instances, normally within one AZ I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving EBS Volumes?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/ebs-snapshots": {
+    "summary": "EBS snapshots are point-in-time, incremental backups stored and managed by AWS",
+    "diagram": {
+      "title": "EBS Snapshots workflow",
+      "nodes": [
+        "EBS volume",
+        "snapshot",
+        "retained backup",
+        "restored volume"
+      ],
+      "explanation": "EBS volume → snapshot → retained backup → restored volume. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "EBS snapshots are point-in-time, incremental backups stored and managed by AWS",
+          "Recover from accidental deletion or create reusable volume copies; snapshots alone do not prove application consistency"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Create a snapshot before a risky maintenance operation and test restoring it to a new volume.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "EBS volume → snapshot → retained backup → restored volume. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Create a snapshot before a risky maintenance operation and test restoring it to a new volume.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws ec2 describe-snapshots --owner-ids self\naws ec2 create-snapshot --volume-id vol-0123456789abcdef0 --description 'approved-backup'",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "EBS snapshots are point-in-time, incremental backups stored and managed by AWS In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain EBS Snapshots and give a DevOps use case.",
+        "answer": "EBS snapshots are point-in-time, incremental backups stored and managed by AWS I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving EBS Snapshots?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/elastic-load-balancing": {
+    "summary": "ELB distributes incoming connections across registered targets and performs health checks; ALB, NLB and GWLB serve different traffic patterns",
+    "diagram": {
+      "title": "Elastic Load Balancing workflow",
+      "nodes": [
+        "Client",
+        "listener",
+        "target group health check",
+        "healthy EC2 targets"
+      ],
+      "explanation": "Client → listener → target group health check → healthy EC2 targets. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "ELB distributes incoming connections across registered targets and performs health checks; ALB, NLB and GWLB serve different traffic patterns",
+          "Avoid a single application instance becoming the only entry point and remove unhealthy targets automatically"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Put two web instances behind an ALB and confirm traffic continues when one target is unhealthy.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Client → listener → target group health check → healthy EC2 targets. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Put two web instances behind an ALB and confirm traffic continues when one target is unhealthy.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws elbv2 describe-load-balancers\naws elbv2 describe-target-groups",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "ELB distributes incoming connections across registered targets and performs health checks; ALB, NLB and GWLB serve different traffic patterns In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Elastic Load Balancing and give a DevOps use case.",
+        "answer": "ELB distributes incoming connections across registered targets and performs health checks; ALB, NLB and GWLB serve different traffic patterns I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving Elastic Load Balancing?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/auto-scaling-groups": {
+    "summary": "An ASG maintains desired EC2 capacity and can scale based on schedules or metrics",
+    "diagram": {
+      "title": "Auto Scaling Groups workflow",
+      "nodes": [
+        "CloudWatch metric / health signal",
+        "scaling policy",
+        "ASG",
+        "EC2 instances across AZs"
+      ],
+      "explanation": "CloudWatch metric / health signal → scaling policy → ASG → EC2 instances across AZs. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "An ASG maintains desired EC2 capacity and can scale based on schedules or metrics",
+          "Replace failed instances and adjust capacity as demand changes without manually launching servers"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Set minimum, desired and maximum capacity, then test scale-out with a load metric in a lab.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "CloudWatch metric / health signal → scaling policy → ASG → EC2 instances across AZs. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Set minimum, desired and maximum capacity, then test scale-out with a load metric in a lab.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws autoscaling describe-auto-scaling-groups\naws autoscaling describe-scaling-activities",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "An ASG maintains desired EC2 capacity and can scale based on schedules or metrics In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Auto Scaling Groups and give a DevOps use case.",
+        "answer": "An ASG maintains desired EC2 capacity and can scale based on schedules or metrics I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving Auto Scaling Groups?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/vpc-fundamentals": {
+    "summary": "A VPC is a logically isolated virtual network with IP address ranges, subnets, routes and network controls",
+    "diagram": {
+      "title": "VPC Fundamentals workflow",
+      "nodes": [
+        "VPC CIDR",
+        "public/private subnets",
+        "route tables",
+        "gateways and security controls"
+      ],
+      "explanation": "VPC CIDR → public/private subnets → route tables → gateways and security controls. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "A VPC is a logically isolated virtual network with IP address ranges, subnets, routes and network controls",
+          "Define network boundaries and connectivity for application tiers and environments"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Design separate public load-balancer and private application/database subnets.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "VPC CIDR → public/private subnets → route tables → gateways and security controls. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Design separate public load-balancer and private application/database subnets.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws ec2 describe-vpcs\naws ec2 describe-subnets",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A VPC is a logically isolated virtual network with IP address ranges, subnets, routes and network controls In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain VPC Fundamentals and give a DevOps use case.",
+        "answer": "A VPC is a logically isolated virtual network with IP address ranges, subnets, routes and network controls I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving VPC Fundamentals?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/subnets-and-route-tables": {
+    "summary": "A subnet is an IP range inside one AZ; a route table decides where subnet traffic is sent",
+    "diagram": {
+      "title": "Subnets and Route Tables workflow",
+      "nodes": [
+        "Packet destination",
+        "subnet route table",
+        "local / gateway / peering target"
+      ],
+      "explanation": "Packet destination → subnet route table → local / gateway / peering target. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "A subnet is an IP range inside one AZ; a route table decides where subnet traffic is sent",
+          "Separate public ingress, private application and isolated data tiers with explicit routes"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Check that a private subnet has no direct Internet Gateway default route.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Packet destination → subnet route table → local / gateway / peering target. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Check that a private subnet has no direct Internet Gateway default route.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws ec2 describe-route-tables\naws ec2 describe-subnets",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A subnet is an IP range inside one AZ; a route table decides where subnet traffic is sent In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Subnets and Route Tables and give a DevOps use case.",
+        "answer": "A subnet is an IP range inside one AZ; a route table decides where subnet traffic is sent I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving Subnets and Route Tables?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/internet-and-nat-gateways": {
+    "summary": "An Internet Gateway enables eligible public-subnet internet routing; a NAT Gateway lets private IPv4 resources initiate outbound connections",
+    "diagram": {
+      "title": "Internet and NAT Gateways workflow",
+      "nodes": [
+        "Public subnet",
+        "IGW; private subnet",
+        "NAT Gateway in public subnet",
+        "IGW"
+      ],
+      "explanation": "Public subnet → IGW; private subnet → NAT Gateway in public subnet → IGW. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "An Internet Gateway enables eligible public-subnet internet routing; a NAT Gateway lets private IPv4 resources initiate outbound connections",
+          "Allow public endpoints where required while keeping private instances unreachable through unsolicited internet connections"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Allow private EC2 instances to download updates through NAT without assigning public IP addresses.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Public subnet → IGW; private subnet → NAT Gateway in public subnet → IGW. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Allow private EC2 instances to download updates through NAT without assigning public IP addresses.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws ec2 describe-internet-gateways\naws ec2 describe-nat-gateways",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "An Internet Gateway enables eligible public-subnet internet routing; a NAT Gateway lets private IPv4 resources initiate outbound connections In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Internet and NAT Gateways and give a DevOps use case.",
+        "answer": "An Internet Gateway enables eligible public-subnet internet routing; a NAT Gateway lets private IPv4 resources initiate outbound connections I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving Internet and NAT Gateways?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/security-groups-and-nacls": {
+    "summary": "Security groups are stateful instance/network-interface firewalls; network ACLs are stateless subnet-level filters",
+    "diagram": {
+      "title": "Security Groups and NACLs workflow",
+      "nodes": [
+        "Packet",
+        "subnet NACL",
+        "ENI security group",
+        "service listener"
+      ],
+      "explanation": "Packet → subnet NACL → ENI security group → service listener. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Security groups are stateful instance/network-interface firewalls; network ACLs are stateless subnet-level filters",
+          "Control allowed traffic at multiple layers and reduce exposed ports"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Allow HTTPS from the load balancer security group to app instances; do not expose SSH to the world.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Packet → subnet NACL → ENI security group → service listener. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Allow HTTPS from the load balancer security group to app instances; do not expose SSH to the world.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws ec2 describe-security-groups\naws ec2 describe-network-acls",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Security groups are stateful instance/network-interface firewalls; network ACLs are stateless subnet-level filters In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Security Groups and NACLs and give a DevOps use case.",
+        "answer": "Security groups are stateful instance/network-interface firewalls; network ACLs are stateless subnet-level filters I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving Security Groups and NACLs?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/s3-buckets": {
+    "summary": "S3 is object storage using buckets and keys, suitable for files, logs, artifacts and static assets",
+    "diagram": {
+      "title": "S3 Buckets workflow",
+      "nodes": [
+        "Application / CLI",
+        "IAM authorization",
+        "bucket + object key",
+        "S3"
+      ],
+      "explanation": "Application / CLI → IAM authorization → bucket + object key → S3. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "S3 is object storage using buckets and keys, suitable for files, logs, artifacts and static assets",
+          "Store durable unstructured data without managing block devices or file servers"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Upload a build artifact to a private bucket using a role with scoped permissions.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Application / CLI → IAM authorization → bucket + object key → S3. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Upload a build artifact to a private bucket using a role with scoped permissions.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws s3api list-buckets\naws s3 ls s3://YOUR-BUCKET/",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "S3 is object storage using buckets and keys, suitable for files, logs, artifacts and static assets In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain S3 Buckets and give a DevOps use case.",
+        "answer": "S3 is object storage using buckets and keys, suitable for files, logs, artifacts and static assets I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving S3 Buckets?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/s3-versioning-and-lifecycle": {
+    "summary": "Versioning preserves multiple object versions; lifecycle rules transition or expire objects according to retention policy",
+    "diagram": {
+      "title": "S3 Versioning and Lifecycle workflow",
+      "nodes": [
+        "Object write",
+        "version history",
+        "lifecycle age/filter",
+        "transition or expiration"
+      ],
+      "explanation": "Object write → version history → lifecycle age/filter → transition or expiration. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Versioning preserves multiple object versions; lifecycle rules transition or expire objects according to retention policy",
+          "Recover overwritten objects and control storage costs while meeting retention requirements"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Enable versioning and configure a reviewed lifecycle policy for old noncurrent versions.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Object write → version history → lifecycle age/filter → transition or expiration. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Enable versioning and configure a reviewed lifecycle policy for old noncurrent versions.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws s3api get-bucket-versioning --bucket YOUR-BUCKET\naws s3api get-bucket-lifecycle-configuration --bucket YOUR-BUCKET",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Versioning preserves multiple object versions; lifecycle rules transition or expire objects according to retention policy In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain S3 Versioning and Lifecycle and give a DevOps use case.",
+        "answer": "Versioning preserves multiple object versions; lifecycle rules transition or expire objects according to retention policy I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving S3 Versioning and Lifecycle?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/efs": {
+    "summary": "EFS is managed elastic NFS file storage that can be mounted concurrently by supported clients",
+    "diagram": {
+      "title": "EFS workflow",
+      "nodes": [
+        "EC2 / ECS task in VPC",
+        "mount target",
+        "NFS filesystem"
+      ],
+      "explanation": "EC2 / ECS task in VPC → mount target → NFS filesystem. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "EFS is managed elastic NFS file storage that can be mounted concurrently by supported clients",
+          "Share files between multiple Linux instances or container tasks without copying data between hosts"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Mount shared application uploads from two EC2 instances and verify both see the same file.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "EC2 / ECS task in VPC → mount target → NFS filesystem. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Mount shared application uploads from two EC2 instances and verify both see the same file.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "df -hT\nmount | grep efs\naws efs describe-file-systems",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "EFS is managed elastic NFS file storage that can be mounted concurrently by supported clients In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain EFS and give a DevOps use case.",
+        "answer": "EFS is managed elastic NFS file storage that can be mounted concurrently by supported clients I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving EFS?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/rds": {
+    "summary": "RDS is a managed relational database service handling common operational tasks such as backups, patching options and monitoring",
+    "diagram": {
+      "title": "RDS workflow",
+      "nodes": [
+        "Application private subnet",
+        "DB security group",
+        "RDS endpoint",
+        "database engine"
+      ],
+      "explanation": "Application private subnet → DB security group → RDS endpoint → database engine. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "RDS is a managed relational database service handling common operational tasks such as backups, patching options and monitoring",
+          "Run relational databases without manually operating every database host component"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Keep RDS private and allow inbound database traffic only from the application security group.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Application private subnet → DB security group → RDS endpoint → database engine. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Keep RDS private and allow inbound database traffic only from the application security group.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws rds describe-db-instances --query 'DBInstances[].[DBInstanceIdentifier,Engine,DBInstanceStatus,Endpoint.Address]' --output table",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "RDS is a managed relational database service handling common operational tasks such as backups, patching options and monitoring In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain RDS and give a DevOps use case.",
+        "answer": "RDS is a managed relational database service handling common operational tasks such as backups, patching options and monitoring I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving RDS?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/dynamodb": {
+    "summary": "DynamoDB is a managed NoSQL key-value/document database with partition and sort key access patterns",
+    "diagram": {
+      "title": "DynamoDB workflow",
+      "nodes": [
+        "Application SDK",
+        "IAM role",
+        "table key lookup/query",
+        "DynamoDB"
+      ],
+      "explanation": "Application SDK → IAM role → table key lookup/query → DynamoDB. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "DynamoDB is a managed NoSQL key-value/document database with partition and sort key access patterns",
+          "Serve predictable low-latency lookups and high-scale workloads without managing database servers"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Model a session table around userId as partition key and sessionId as sort key.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Application SDK → IAM role → table key lookup/query → DynamoDB. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Model a session table around userId as partition key and sessionId as sort key.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws dynamodb list-tables\naws dynamodb describe-table --table-name YOUR_TABLE",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "DynamoDB is a managed NoSQL key-value/document database with partition and sort key access patterns In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain DynamoDB and give a DevOps use case.",
+        "answer": "DynamoDB is a managed NoSQL key-value/document database with partition and sort key access patterns I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving DynamoDB?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/route-53": {
+    "summary": "Route 53 is AWS DNS service for hosted zones, records, health checks and routing policies",
+    "diagram": {
+      "title": "Route 53 workflow",
+      "nodes": [
+        "Client DNS query",
+        "resolver",
+        "hosted zone record",
+        "endpoint"
+      ],
+      "explanation": "Client DNS query → resolver → hosted zone record → endpoint. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Route 53 is AWS DNS service for hosted zones, records, health checks and routing policies",
+          "Resolve application names and route users using simple, weighted, latency or failover policies"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Create an alias record to an ALB and validate DNS resolution with dig.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Client DNS query → resolver → hosted zone record → endpoint. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Create an alias record to an ALB and validate DNS resolution with dig.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws route53 list-hosted-zones\naws route53 list-resource-record-sets --hosted-zone-id YOUR_ZONE_ID",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Route 53 is AWS DNS service for hosted zones, records, health checks and routing policies In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Route 53 and give a DevOps use case.",
+        "answer": "Route 53 is AWS DNS service for hosted zones, records, health checks and routing policies I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving Route 53?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/cloudfront": {
+    "summary": "CloudFront is a content delivery network that caches content at edge locations and connects to configured origins",
+    "diagram": {
+      "title": "CloudFront workflow",
+      "nodes": [
+        "Viewer",
+        "edge cache",
+        "cache hit or origin fetch",
+        "response"
+      ],
+      "explanation": "Viewer → edge cache → cache hit or origin fetch → response. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "CloudFront is a content delivery network that caches content at edge locations and connects to configured origins",
+          "Reduce latency and origin load for static and cacheable dynamic content"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Serve versioned static assets through CloudFront and invalidate only when necessary.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Viewer → edge cache → cache hit or origin fetch → response. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Serve versioned static assets through CloudFront and invalidate only when necessary.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws cloudfront list-distributions\ncurl -I https://YOUR_DOMAIN",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "CloudFront is a content delivery network that caches content at edge locations and connects to configured origins In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain CloudFront and give a DevOps use case.",
+        "answer": "CloudFront is a content delivery network that caches content at edge locations and connects to configured origins I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving CloudFront?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/cloudwatch": {
+    "summary": "CloudWatch collects metrics, logs and alarms and supports dashboards and operational monitoring",
+    "diagram": {
+      "title": "CloudWatch workflow",
+      "nodes": [
+        "AWS service / agent",
+        "metrics or log groups",
+        "alarm",
+        "notification or automation"
+      ],
+      "explanation": "AWS service / agent → metrics or log groups → alarm → notification or automation. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "CloudWatch collects metrics, logs and alarms and supports dashboards and operational monitoring",
+          "Detect resource and application problems before users report them"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Create an alarm for sustained high EC2 CPU and send it to an operations notification path.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "AWS service / agent → metrics or log groups → alarm → notification or automation. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Create an alarm for sustained high EC2 CPU and send it to an operations notification path.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws cloudwatch list-metrics\naws logs describe-log-groups",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "CloudWatch collects metrics, logs and alarms and supports dashboards and operational monitoring In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain CloudWatch and give a DevOps use case.",
+        "answer": "CloudWatch collects metrics, logs and alarms and supports dashboards and operational monitoring I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving CloudWatch?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/cloudtrail": {
+    "summary": "CloudTrail records AWS account activity and API events for auditing and investigation",
+    "diagram": {
+      "title": "CloudTrail workflow",
+      "nodes": [
+        "AWS API call",
+        "CloudTrail event",
+        "event history / trail S3 destination"
+      ],
+      "explanation": "AWS API call → CloudTrail event → event history / trail S3 destination. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "CloudTrail records AWS account activity and API events for auditing and investigation",
+          "Answer who performed an API action, when it happened and which identity or source was involved"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Investigate an unexpected security-group change by filtering CloudTrail events for AuthorizeSecurityGroupIngress.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "AWS API call → CloudTrail event → event history / trail S3 destination. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Investigate an unexpected security-group change by filtering CloudTrail events for AuthorizeSecurityGroupIngress.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws cloudtrail lookup-events --max-results 10",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "CloudTrail records AWS account activity and API events for auditing and investigation In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain CloudTrail and give a DevOps use case.",
+        "answer": "CloudTrail records AWS account activity and API events for auditing and investigation I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving CloudTrail?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/systems-manager": {
+    "summary": "Systems Manager provides managed operational capabilities such as Session Manager, Run Command, patching and inventory",
+    "diagram": {
+      "title": "Systems Manager workflow",
+      "nodes": [
+        "Operator IAM identity",
+        "SSM service",
+        "managed node agent",
+        "command/session"
+      ],
+      "explanation": "Operator IAM identity → SSM service → managed node agent → command/session. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Systems Manager provides managed operational capabilities such as Session Manager, Run Command, patching and inventory",
+          "Administer instances without opening inbound SSH or maintaining bastion access for every task"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Use Session Manager with audited access instead of exposing SSH to public networks.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Operator IAM identity → SSM service → managed node agent → command/session. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Use Session Manager with audited access instead of exposing SSH to public networks.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws ssm describe-instance-information\naws ssm start-session --target i-0123456789abcdef0",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Systems Manager provides managed operational capabilities such as Session Manager, Run Command, patching and inventory In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Systems Manager and give a DevOps use case.",
+        "answer": "Systems Manager provides managed operational capabilities such as Session Manager, Run Command, patching and inventory I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving Systems Manager?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/lambda": {
+    "summary": "Lambda runs event-driven functions without requiring the team to provision or manage servers",
+    "diagram": {
+      "title": "Lambda workflow",
+      "nodes": [
+        "Event source",
+        "Lambda invocation",
+        "execution role",
+        "function",
+        "downstream service"
+      ],
+      "explanation": "Event source → Lambda invocation → execution role → function → downstream service. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Lambda runs event-driven functions without requiring the team to provision or manage servers",
+          "Execute short-lived event handlers, automation and API backends with scaling managed by the service"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Trigger a function from an S3 object-created event and grant only required bucket permissions.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Event source → Lambda invocation → execution role → function → downstream service. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Trigger a function from an S3 object-created event and grant only required bucket permissions.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws lambda list-functions\naws lambda get-function-configuration --function-name YOUR_FUNCTION",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Lambda runs event-driven functions without requiring the team to provision or manage servers In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Lambda and give a DevOps use case.",
+        "answer": "Lambda runs event-driven functions without requiring the team to provision or manage servers I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving Lambda?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/ecr": {
+    "summary": "ECR is a managed container image registry with repository access controls and image scanning options",
+    "diagram": {
+      "title": "ECR workflow",
+      "nodes": [
+        "CI build",
+        "image tag/digest",
+        "ECR repository",
+        "ECS/EKS pull"
+      ],
+      "explanation": "CI build → image tag/digest → ECR repository → ECS/EKS pull. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "ECR is a managed container image registry with repository access controls and image scanning options",
+          "Store, version and distribute container images for ECS, EKS and build pipelines"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Push an immutable release tag and deploy by image digest for reproducible rollbacks.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "CI build → image tag/digest → ECR repository → ECS/EKS pull. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Push an immutable release tag and deploy by image digest for reproducible rollbacks.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws ecr describe-repositories\naws ecr list-images --repository-name YOUR_REPOSITORY",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "ECR is a managed container image registry with repository access controls and image scanning options In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain ECR and give a DevOps use case.",
+        "answer": "ECR is a managed container image registry with repository access controls and image scanning options I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving ECR?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/ecs": {
+    "summary": "ECS orchestrates containers using task definitions, services, clusters and capacity providers",
+    "diagram": {
+      "title": "ECS workflow",
+      "nodes": [
+        "Image in ECR",
+        "task definition",
+        "ECS service",
+        "tasks on Fargate or EC2"
+      ],
+      "explanation": "Image in ECR → task definition → ECS service → tasks on Fargate or EC2. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "ECS orchestrates containers using task definitions, services, clusters and capacity providers",
+          "Run containerized applications without operating Kubernetes when ECS fits the workload"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Deploy a service with desired task count two and an ALB health check.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Image in ECR → task definition → ECS service → tasks on Fargate or EC2. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Deploy a service with desired task count two and an ALB health check.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws ecs list-clusters\naws ecs describe-services --cluster YOUR_CLUSTER --services YOUR_SERVICE",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "ECS orchestrates containers using task definitions, services, clusters and capacity providers In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain ECS and give a DevOps use case.",
+        "answer": "ECS orchestrates containers using task definitions, services, clusters and capacity providers I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving ECS?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/aws-secrets-manager": {
+    "summary": "Secrets Manager stores, retrieves and can rotate credentials and other sensitive values",
+    "diagram": {
+      "title": "AWS Secrets Manager workflow",
+      "nodes": [
+        "Workload IAM role",
+        "Secrets Manager API",
+        "encrypted secret",
+        "application memory"
+      ],
+      "explanation": "Workload IAM role → Secrets Manager API → encrypted secret → application memory. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Secrets Manager stores, retrieves and can rotate credentials and other sensitive values",
+          "Keep passwords and API tokens out of source code, images and plain environment files"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Grant an application role access to one named secret and retrieve it at runtime.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Workload IAM role → Secrets Manager API → encrypted secret → application memory. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Grant an application role access to one named secret and retrieve it at runtime.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws secretsmanager list-secrets\naws secretsmanager describe-secret --secret-id YOUR_SECRET",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Secrets Manager stores, retrieves and can rotate credentials and other sensitive values In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain AWS Secrets Manager and give a DevOps use case.",
+        "answer": "Secrets Manager stores, retrieves and can rotate credentials and other sensitive values I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving AWS Secrets Manager?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/kms": {
+    "summary": "KMS manages cryptographic keys and performs or controls cryptographic operations through key policies and grants",
+    "diagram": {
+      "title": "KMS workflow",
+      "nodes": [
+        "Service / application",
+        "KMS key policy authorization",
+        "encrypt/decrypt operation"
+      ],
+      "explanation": "Service / application → KMS key policy authorization → encrypt/decrypt operation. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "KMS manages cryptographic keys and performs or controls cryptographic operations through key policies and grants",
+          "Centralize encryption-key permissions, auditing and lifecycle controls for supported AWS services"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Use a customer-managed key for a supported storage service and test key-policy access carefully.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Service / application → KMS key policy authorization → encrypt/decrypt operation. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Use a customer-managed key for a supported storage service and test key-policy access carefully.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws kms list-keys\naws kms describe-key --key-id YOUR_KEY_ID",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "KMS manages cryptographic keys and performs or controls cryptographic operations through key policies and grants In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain KMS and give a DevOps use case.",
+        "answer": "KMS manages cryptographic keys and performs or controls cryptographic operations through key policies and grants I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving KMS?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/backup-and-disaster-recovery": {
+    "summary": "Backup and disaster recovery combine protected copies, retention, recovery procedures and tested recovery objectives",
+    "diagram": {
+      "title": "Backup and Disaster Recovery workflow",
+      "nodes": [
+        "Production data",
+        "scheduled backup / cross-account copy",
+        "isolated recovery",
+        "validation"
+      ],
+      "explanation": "Production data → scheduled backup / cross-account copy → isolated recovery → validation. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Backup and disaster recovery combine protected copies, retention, recovery procedures and tested recovery objectives",
+          "Restore services after deletion, corruption, ransomware or regional failures"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Run a restore drill and measure actual RPO and RTO rather than assuming backups are usable.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Production data → scheduled backup / cross-account copy → isolated recovery → validation. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Run a restore drill and measure actual RPO and RTO rather than assuming backups are usable.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws backup list-backup-vaults\naws backup list-recovery-points-by-backup-vault --backup-vault-name YOUR_VAULT",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Backup and disaster recovery combine protected copies, retention, recovery procedures and tested recovery objectives In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Backup and Disaster Recovery and give a DevOps use case.",
+        "answer": "Backup and disaster recovery combine protected copies, retention, recovery procedures and tested recovery objectives I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving Backup and Disaster Recovery?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/aws-cli": {
+    "summary": "AWS CLI is a command-line client for AWS APIs, using configured profiles or credential providers",
+    "diagram": {
+      "title": "AWS CLI workflow",
+      "nodes": [
+        "CLI command",
+        "credential resolution",
+        "signed AWS API request",
+        "JSON response"
+      ],
+      "explanation": "CLI command → credential resolution → signed AWS API request → JSON response. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "AWS CLI is a command-line client for AWS APIs, using configured profiles or credential providers",
+          "Automate repeatable inspection and operations from terminals and CI pipelines"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Use named profiles locally and role-based short-lived credentials in CI; never commit access keys.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "CLI command → credential resolution → signed AWS API request → JSON response. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Use named profiles locally and role-based short-lived credentials in CI; never commit access keys.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws --version\naws configure list\naws sts get-caller-identity",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "AWS CLI is a command-line client for AWS APIs, using configured profiles or credential providers In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain AWS CLI and give a DevOps use case.",
+        "answer": "AWS CLI is a command-line client for AWS APIs, using configured profiles or credential providers I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving AWS CLI?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/cost-explorer-and-budgets": {
+    "summary": "Cost Explorer analyzes spend and usage; Budgets tracks configured thresholds and can notify or trigger supported actions",
+    "diagram": {
+      "title": "Cost Explorer and Budgets workflow",
+      "nodes": [
+        "Billing data",
+        "Cost Explorer analysis",
+        "budget threshold",
+        "notification/action"
+      ],
+      "explanation": "Billing data → Cost Explorer analysis → budget threshold → notification/action. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Cost Explorer analyzes spend and usage; Budgets tracks configured thresholds and can notify or trigger supported actions",
+          "Find unexpected spend, attribute costs and alert teams before budgets are exceeded"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Review spend by service and tag, then create alerts for forecasted budget overruns.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Billing data → Cost Explorer analysis → budget threshold → notification/action. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Review spend by service and tag, then create alerts for forecasted budget overruns.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws ce get-cost-and-usage --time-period Start=2026-11-01,End=2026-11-19 --granularity MONTHLY --metrics UnblendedCost",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Cost Explorer analyzes spend and usage; Budgets tracks configured thresholds and can notify or trigger supported actions In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Cost Explorer and Budgets and give a DevOps use case.",
+        "answer": "Cost Explorer analyzes spend and usage; Budgets tracks configured thresholds and can notify or trigger supported actions I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving Cost Explorer and Budgets?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
+  "aws/aws-well-architected-framework": {
+    "summary": "The Well-Architected Framework reviews workloads through operational excellence, security, reliability, performance efficiency, cost optimization and sustainability pillars",
+    "diagram": {
+      "title": "AWS Well-Architected Framework workflow",
+      "nodes": [
+        "Workload evidence",
+        "pillar questions",
+        "risks/priorities",
+        "improvement plan"
+      ],
+      "explanation": "Workload evidence → pillar questions → risks/priorities → improvement plan. Each stage has a clear responsibility; verify IAM permissions, network reachability and service health at the boundary where failures occur."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "The Well-Architected Framework reviews workloads through operational excellence, security, reliability, performance efficiency, cost optimization and sustainability pillars",
+          "Find design risks systematically instead of treating production readiness as only a deployment task"
+        ],
+        "bullets": [
+          "Understand the service boundary and which AWS resources it manages.",
+          "Check the Region, account, identity and network context before changing resources."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "Review a production workload, record risks, owners and measurable remediation actions.",
+          "In a DevOps lifecycle, use this capability during provisioning, deployment, operations, monitoring or recovery as appropriate. Select it based on workload requirements, availability, security and total cost."
+        ],
+        "bullets": [
+          "Development: validate configuration in an isolated account or sandbox.",
+          "CI/CD: automate only approved, repeatable actions using scoped roles.",
+          "Production: apply change review, monitoring, rollback and ownership procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Workload evidence → pillar questions → risks/priorities → improvement plan. The request is authenticated and authorized before the service performs the operation. Resource configuration, dependencies, quotas and regional availability can affect the result.",
+          "For troubleshooting, verify the caller identity first, inspect the resource state, then inspect the relevant logs, metrics, events and network path. Change one variable at a time."
+        ],
+        "bullets": [
+          "Identity and permissions determine who can call the API.",
+          "Configuration determines the target resource and behavior.",
+          "Monitoring and audit records provide evidence of success or failure."
+        ]
+      },
+      {
+        "heading": "4. Practical DevOps example",
+        "paragraphs": [
+          "Review a production workload, record risks, owners and measurable remediation actions.",
+          "Run read-only discovery first. Replace placeholders with your real resource identifiers. The commands below are inspection or lab examples; commands that create, delete, expose or modify resources should be reviewed and run only in a disposable environment."
+        ],
+        "code": "aws trustedadvisor describe-trusted-advisor-checks --language en",
+        "note": "Do not paste account IDs, credentials, secret values or private endpoints into public logs. Confirm the AWS profile and Region before running commands."
+      },
+      {
+        "heading": "5. Benefits, risks and production practices",
+        "paragraphs": [
+          "The main benefit is managed, repeatable operation with integration into AWS identity, monitoring and automation services.",
+          "The service does not remove the need for architecture decisions. Incorrect permissions, public exposure, missing backups, weak retention or untested recovery can still cause incidents."
+        ],
+        "bullets": [
+          "Apply least privilege and prefer temporary role credentials.",
+          "Use infrastructure as code and peer review for repeatable configuration.",
+          "Enable relevant logging, metrics, alarms and audit trails.",
+          "Tag resources, review cost and remove unused lab resources.",
+          "Test recovery and rollback procedures before relying on them."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting checklist",
+        "paragraphs": [
+          "If the workflow fails, start with the exact error and timestamp. Confirm account and Region, caller identity, IAM authorization, resource status, dependencies, quotas and network connectivity. Review CloudTrail for API-level evidence and CloudWatch where service metrics or logs are available."
+        ],
+        "bullets": [
+          "AccessDenied: inspect identity policy, resource policy, permissions boundary and explicit denies.",
+          "ResourceNotFound: verify identifier, account and Region.",
+          "Timeout or unreachable: inspect routes, security groups, NACLs, DNS and endpoint configuration where applicable.",
+          "Unexpected cost or behavior: inspect scaling, retention, tags and recent configuration changes."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "The Well-Architected Framework reviews workloads through operational excellence, security, reliability, performance efficiency, cost optimization and sustainability pillars In a real DevOps environment, I would use it for the scenario described above, secure it with least-privilege IAM, automate repeatable configuration, monitor its behavior and validate recovery or rollback."
+        ],
+        "bullets": [
+          "What problem does this AWS capability solve?",
+          "Which IAM permissions and network dependencies does it require?",
+          "How would you monitor, troubleshoot and recover it in production?"
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain AWS Well-Architected Framework and give a DevOps use case.",
+        "answer": "The Well-Architected Framework reviews workloads through operational excellence, security, reliability, performance efficiency, cost optimization and sustainability pillars I would introduce it through reviewed infrastructure as code, use a least-privilege IAM role, validate the resource in a non-production environment, monitor the result and document rollback or recovery steps."
+      },
+      {
+        "question": "How do you troubleshoot a failure involving AWS Well-Architected Framework?",
+        "answer": "First confirm the AWS account, Region and caller identity. Then inspect the resource state and exact API error, validate IAM policies and dependencies, check network reachability if relevant, and correlate CloudTrail events with CloudWatch logs or metrics. Make the smallest safe correction and verify the outcome."
+      }
+    ],
+    "handsOn": [
+      "In a non-production AWS account, identify the service resource relevant to this topic and record its Region, owner, tags and current state.",
+      "Run the read-only CLI commands in this lesson using a named profile; explain each output field.",
+      "Draw the request path and mark identity, network, dependency and monitoring boundaries.",
+      "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
+    ]
+  },
 };
