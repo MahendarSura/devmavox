@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import MonitoringStackCatalog from "./MonitoringStackCatalog";
 
 type Mode = "metrics" | "targets" | "promql" | "dashboard" | "alerts";
 type MetricRow = { name: string; value: number; unit: string; help: string };
@@ -154,5 +155,6 @@ export default function MonitoringInteractiveLab({ topic, category }: { topic: s
         </aside>
       </div>
     </section>
+      <MonitoringStackCatalog />
   );
 }
