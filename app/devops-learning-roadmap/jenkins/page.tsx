@@ -79,13 +79,37 @@ function getJenkinsTopicGuide(topic: string, lessonTitle: string): JenkinsTopicG
     troubleshooting: "Check controller logs, disk and inode usage, Java compatibility, plugin dependency errors and backup integrity. Restore tests should use an isolated controller version-compatible with the backup.",
     lab: "On a disposable Jenkins instance, record plugin versions, create a backup of test configuration and verify that it can be restored in an isolated instance."
   };
+  if (/controller|agent|node|executor|label|workspace|distributed/.test(t)) return {
+    explanation: topic + " determines where Jenkins schedules and executes work. The controller stores job configuration and coordinates builds; agents provide executors and toolchains, while labels constrain which nodes can run a job.",
+    example: "A Maven test stage targets a Linux agent labelled maven-linux. Jenkins allocates an executor there, checks out the source into that agent's workspace and runs the build with the installed JDK and Maven.",
+    commands: ["java -version", "mvn -version", "git rev-parse HEAD", "df -h", "free -h"],
+    expected: "The build log identifies the selected node and workspace; tool commands report versions; host checks expose disk and memory pressure that can prevent agent work.",
+    troubleshooting: "For an offline agent inspect connection mode, Java compatibility, inbound/SSH logs, firewall, credentials, executor availability, disk space and remoting errors. Keep untrusted builds off the controller.",
+    lab: "Create a disposable labelled agent, route a simple pipeline stage to it, print hostname and tool versions, then take the agent offline and diagnose the queue behavior."
+  };
+  if (/credential|secret|token|password|ssh key/.test(t)) return {
+    explanation: topic + " covers Jenkins credential management. Credentials are stored centrally and referenced by credential ID so pipelines can authenticate without embedding secrets in Jenkinsfiles or source control.",
+    example: "A deployment stage binds a registry credential by ID, logs in to a private registry, pushes the tested image and masks secret values from console output.",
+    commands: ["jenkins-cli -s <jenkins-url> list-credentials", "git grep -nE 'password|token|secret' -- '*.groovy' '*.yml' '*.yaml'"],
+    expected: "The Jenkins credential inventory shows IDs and types, not secret values. Repository scanning highlights possible hard-coded secrets that must be reviewed.",
+    troubleshooting: "Verify credential scope, ID, domain, permissions and binding type. Check expiry and target service access; rotate exposed credentials and never echo them or enable shell tracing around secrets.",
+    lab: "Create a disposable test credential, bind it in a pipeline using its ID, verify masking, then remove the test credential and confirm the job fails safely."
+  };
+  if (/plugin|update center|upgrade|version/.test(t)) return {
+    explanation: topic + " concerns Jenkins core and plugin compatibility. Plugins extend Jenkins functionality but must match the installed core and supported dependency versions.",
+    example: "Before a controller upgrade, an engineer checks plugin compatibility in staging, snapshots configuration and validates representative pipelines before scheduling production maintenance.",
+    commands: ["java -version", "jenkins-cli -s <jenkins-url> version", "jenkins-cli -s <jenkins-url> list-plugins"],
+    expected: "The commands report Java/Jenkins versions and installed plugins when the CLI is configured and authorized.",
+    troubleshooting: "Review update-center connectivity, plugin dependency failures, Java support matrix, startup logs and backup integrity. Do not update all plugins blindly on a production controller.",
+    lab: "On a disposable Jenkins instance, record core/plugin versions, upgrade one approved plugin, restart if required and run a pipeline regression check."
+  };
   return {
-    explanation: topic + " is a core concept in " + lessonTitle + ". Understand which Jenkins object, controller service, agent capability or pipeline stage is responsible and how it affects build traceability.",
-    example: "A DevOps team applies this practice to a test pipeline, records the build number and source revision, and verifies the result before promoting an artifact.",
-    commands: ["java -version", "jenkins-cli -s <jenkins-url> list-jobs", "git rev-parse HEAD"],
-    expected: "The commands confirm runtime version, available jobs and exact source revision. Jenkins build history should link the run to its parameters and console output.",
-    troubleshooting: "Check job configuration, controller and agent logs, permissions, network connectivity, plugin compatibility and workspace state before changing global settings.",
-    lab: "Apply the concept to a disposable job, capture its configuration and console output, introduce one safe failure, diagnose it and document the fix."
+    explanation: topic + " is part of " + lessonTitle + ". Identify the Jenkins controller setting, job configuration, plugin, credential binding or pipeline behavior involved and confirm it through build logs and configuration rather than assuming a green UI badge proves success.",
+    example: "A team tests this setting in a non-production folder, runs a small pipeline with a known commit, records the build URL and console output, then checks the produced artifact and its checksum.",
+    commands: ["git rev-parse HEAD", "java -version", "mvn -version", "jenkins-cli -s <jenkins-url> list-jobs"],
+    expected: "The source command identifies the exact revision, tool commands report runtime versions and the CLI lists jobs only when authenticated and authorized.",
+    troubleshooting: "Correlate queue time, controller logs, agent logs, stage output, credentials, plugin versions and workspace state. Preserve the failed build number and console log before retrying.",
+    lab: "Configure the topic on a disposable job, run it against a known commit, capture configuration and console evidence, introduce a controlled failure and document a verified correction."
   };
 }
 
