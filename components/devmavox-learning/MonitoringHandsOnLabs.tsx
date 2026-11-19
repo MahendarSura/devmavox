@@ -28,7 +28,9 @@ const logRows = [
 export default function MonitoringHandsOnLabs() {
   const [active, setActive] = useState<LabId>("promql");
   const [code, setCode] = useState(labs[0].starter);
-  const [incident, setIncident] = useState(false);\n  const [incidentObserved, setIncidentObserved] = useState(false);\n  const [recoveryApplied, setRecoveryApplied] = useState(false);
+  const [incident, setIncident] = useState(false);
+  const [incidentObserved, setIncidentObserved] = useState(false);
+  const [recoveryApplied, setRecoveryApplied] = useState(false);
   const [executed, setExecuted] = useState(false);
   const [result, setResult] = useState("");
   const [resultDetail, setResultDetail] = useState("");
