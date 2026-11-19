@@ -3139,4 +3139,2748 @@ export const atoZLessons: Record<string, AtoZLesson> = {
       ]
     }
   }
+  ...{
+    "git-github/version-control-concepts": {
+      "summary": "Version Control Concepts: Track file history, compare revisions, collaborate safely and recover earlier states.. A production bug is introduced in a release. Team uses commit history and tags to identify the change, revert it safely and review the fix before redeploying.",
+      "diagram": {
+        "title": "Version Control Concepts workflow",
+        "nodes": [
+          "Developer edits files",
+          "version control records snapshots or deltas",
+          "branches isolate work",
+          "review integrates changes",
+          "history supports recovery."
+        ],
+        "explanation": "Version Control Concepts workflow lo ee stages order lo execute avuthayi. Version control can be local or distributed. Git is distributed: each clone contains repository history. A commit records a snapshot reference, metadata and parent relationship; it is not simply a backup of the working directory."
+      },
+      "sections": [
+        {
+          "heading": "1. Version Control Concepts ante enti?",
+          "paragraphs": [
+            "Track file history, compare revisions, collaborate safely and recover earlier states. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Track file history, compare revisions, collaborate safely and recover earlier states.",
+            "DevOps use: A production bug is introduced in a release. Team uses commit history and tags to identify the change, revert it safely and review the fix before redeploying."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Teams need a reliable history of who changed code, why it changed and how to restore a known-good version.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Solo development, team collaboration, release management, audit trails and incident rollback.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "A production bug is introduced in a release. Team uses commit history and tags to identify the change, revert it safely and review the fix before redeploying."
+          ]
+        },
+        {
+          "heading": "5. Version Control Concepts ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Developer edits files; 2) version control records snapshots or deltas; 3) branches isolate work; 4) review integrates changes; 5) history supports recovery..",
+            "Internal behavior: Version control can be local or distributed. Git is distributed: each clone contains repository history. A commit records a snapshot reference, metadata and parent relationship; it is not simply a backup of the working directory."
+          ],
+          "bullets": [
+            "1. Developer edits files",
+            "2. version control records snapshots or deltas",
+            "3. branches isolate work",
+            "4. review integrates changes",
+            "5. history supports recovery."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git --version\ngit status\ngit log --oneline --decorate --all\ngit diff\n git diff --staged",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "A production bug is introduced in a release. Team uses commit history and tags to identify the change, revert it safely and review the fix before redeploying.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Centralized VCS depends on a central server for history operations; distributed Git allows local commits and branching. Git does not replace remote backup, code review or CI.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: It records changes over time, enables parallel work, supports review and traceability, and provides controlled ways to compare or restore code."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Track file history, compare revisions, collaborate safely and recover earlier states.. Version control can be local or distributed. Git is distributed: each clone contains repository history. A commit records a snapshot reference, metadata and parent relationship; it is not simply a backup of the working directory.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Create a local repository, make two commits, inspect git log and compare versions with git diff.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "What problem does version control solve?",
+          "answer": "It records changes over time, enables parallel work, supports review and traceability, and provides controlled ways to compare or restore code."
+        },
+        {
+          "question": "Version Control Concepts use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Create a local repository, make two commits, inspect git log and compare versions with git diff.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/git-architecture": {
+      "summary": "Git Architecture: Understand working tree, index, local repository, objects, refs, HEAD and remote tracking references.. A developer stages only a tested config change while leaving unrelated debug edits unstaged, then commits and pushes the intended snapshot.",
+      "diagram": {
+        "title": "Git Architecture workflow",
+        "nodes": [
+          "Working tree edits",
+          "index/staging snapshot",
+          "commit object in local object database",
+          "branch ref and HEAD move",
+          "push transfers commits to remote."
+        ],
+        "explanation": "Git Architecture workflow lo ee stages order lo execute avuthayi. Working tree contains checked-out files; index stores next commit content; object database stores blobs, trees and commits; refs name commits; HEAD identifies current checkout. Remote-tracking refs such as origin/main are local observations of remote branches."
+      },
+      "sections": [
+        {
+          "heading": "1. Git Architecture ante enti?",
+          "paragraphs": [
+            "Understand working tree, index, local repository, objects, refs, HEAD and remote tracking references. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Understand working tree, index, local repository, objects, refs, HEAD and remote tracking references.",
+            "DevOps use: A developer stages only a tested config change while leaving unrelated debug edits unstaged, then commits and pushes the intended snapshot."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Knowing Git's internal areas explains why edits, staged files, commits and remote pushes are separate actions.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "When a file appears modified but is not committed, when staging is selective, and when diagnosing branch or remote state.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "A developer stages only a tested config change while leaving unrelated debug edits unstaged, then commits and pushes the intended snapshot."
+          ]
+        },
+        {
+          "heading": "5. Git Architecture ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Working tree edits; 2) index/staging snapshot; 3) commit object in local object database; 4) branch ref and HEAD move; 5) push transfers commits to remote..",
+            "Internal behavior: Working tree contains checked-out files; index stores next commit content; object database stores blobs, trees and commits; refs name commits; HEAD identifies current checkout. Remote-tracking refs such as origin/main are local observations of remote branches."
+          ],
+          "bullets": [
+            "1. Working tree edits",
+            "2. index/staging snapshot",
+            "3. commit object in local object database",
+            "4. branch ref and HEAD move",
+            "5. push transfers commits to remote."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git status\ngit add app.js\ngit diff\ngit diff --staged\ngit commit -m 'Add app feature'\ngit show --stat HEAD\ngit branch -avv",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "A developer stages only a tested config change while leaving unrelated debug edits unstaged, then commits and pushes the intended snapshot.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "git diff compares working tree to index; git diff --staged compares index to HEAD. A branch is a movable ref, not a separate copy of all files.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: Working tree is where I edit files, index is where I prepare the exact next commit, and local repository stores committed history and references."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Understand working tree, index, local repository, objects, refs, HEAD and remote tracking references.. Working tree contains checked-out files; index stores next commit content; object database stores blobs, trees and commits; refs name commits; HEAD identifies current checkout. Remote-tracking refs such as origin/main are local observations of remote branches.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Make two file edits, stage only one, compare both diff commands, commit and inspect git show.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Explain Git's three main areas.",
+          "answer": "Working tree is where I edit files, index is where I prepare the exact next commit, and local repository stores committed history and references."
+        },
+        {
+          "question": "Git Architecture use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Make two file edits, stage only one, compare both diff commands, commit and inspect git show.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/git-installation-and-configuration": {
+      "summary": "Git Installation and Configuration: Install Git and configure identity, default branch, editor, line endings and scoped settings.. A team standardizes main as default branch and configures developer identity. CI jobs set bot identity explicitly for automated commits only when needed.",
+      "diagram": {
+        "title": "Git Installation and Configuration workflow",
+        "nodes": [
+          "Install Git package",
+          "configure system/global/local settings",
+          "verify effective config",
+          "initialize or clone repository."
+        ],
+        "explanation": "Git Installation and Configuration workflow lo ee stages order lo execute avuthayi. System config applies broadly; global config applies to user; local config applies to current repository and overrides broader values. user.name/email are commit metadata, not GitHub authentication credentials. Avoid putting secrets in config."
+      },
+      "sections": [
+        {
+          "heading": "1. Git Installation and Configuration ante enti?",
+          "paragraphs": [
+            "Install Git and configure identity, default branch, editor, line endings and scoped settings. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Install Git and configure identity, default branch, editor, line endings and scoped settings.",
+            "DevOps use: A team standardizes main as default branch and configures developer identity. CI jobs set bot identity explicitly for automated commits only when needed."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Git needs a consistent identity and predictable client behavior so commits and collaboration workflows work correctly.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "New developer laptop, CI runner setup, container build image and repository-specific conventions.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "A team standardizes main as default branch and configures developer identity. CI jobs set bot identity explicitly for automated commits only when needed."
+          ]
+        },
+        {
+          "heading": "5. Git Installation and Configuration ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Install Git package; 2) configure system/global/local settings; 3) verify effective config; 4) initialize or clone repository..",
+            "Internal behavior: System config applies broadly; global config applies to user; local config applies to current repository and overrides broader values. user.name/email are commit metadata, not GitHub authentication credentials. Avoid putting secrets in config."
+          ],
+          "bullets": [
+            "1. Install Git package",
+            "2. configure system/global/local settings",
+            "3. verify effective config",
+            "4. initialize or clone repository."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git --version\ngit config --global user.name 'Dev User'\ngit config --global user.email 'dev@example.com'\ngit config --global init.defaultBranch main\ngit config --list --show-origin\ngit config --local --list",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "A team standardizes main as default branch and configures developer identity. CI jobs set bot identity explicitly for automated commits only when needed.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Git identity vs GitHub login are different. Credential helpers store authentication; user.email appears in commit metadata. core.autocrlf behavior depends on OS and team .gitattributes policy.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: No. It sets commit author/committer metadata. Authentication to GitHub uses HTTPS credentials, a credential manager, SSH keys or supported token/OIDC flows."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Install Git and configure identity, default branch, editor, line endings and scoped settings.. System config applies broadly; global config applies to user; local config applies to current repository and overrides broader values. user.name/email are commit metadata, not GitHub authentication credentials. Avoid putting secrets in config.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Install Git in a lab VM, set global identity, override local identity in one repository and inspect config origin.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Does git config user.email authenticate to GitHub?",
+          "answer": "No. It sets commit author/committer metadata. Authentication to GitHub uses HTTPS credentials, a credential manager, SSH keys or supported token/OIDC flows."
+        },
+        {
+          "question": "Git Installation and Configuration use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Install Git in a lab VM, set global identity, override local identity in one repository and inspect config origin.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/repositories": {
+      "summary": "Git Repositories: Create, inspect and maintain repositories containing tracked content and commit history.. Team clones one service repository, creates feature branches and uses pull requests to merge reviewed changes to main.",
+      "diagram": {
+        "title": "Git Repositories workflow",
+        "nodes": [
+          "Repository directory",
+          ".git metadata and object database",
+          "working tree checkout",
+          "commits and refs evolve."
+        ],
+        "explanation": "Git Repositories workflow lo ee stages order lo execute avuthayi. A normal repository has a working tree and .git directory. A bare repository has no checked-out working tree and is commonly used as a server-side remote. Clone copies history and checks out a working tree."
+      },
+      "sections": [
+        {
+          "heading": "1. Git Repositories ante enti?",
+          "paragraphs": [
+            "Create, inspect and maintain repositories containing tracked content and commit history. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Create, inspect and maintain repositories containing tracked content and commit history.",
+            "DevOps use: Team clones one service repository, creates feature branches and uses pull requests to merge reviewed changes to main."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "A repository creates a boundary for versioned source, history, refs and configuration.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Starting a project, cloning an existing codebase, splitting services and managing multiple environments.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Team clones one service repository, creates feature branches and uses pull requests to merge reviewed changes to main."
+          ]
+        },
+        {
+          "heading": "5. Git Repositories ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Repository directory; 2) .git metadata and object database; 3) working tree checkout; 4) commits and refs evolve..",
+            "Internal behavior: A normal repository has a working tree and .git directory. A bare repository has no checked-out working tree and is commonly used as a server-side remote. Clone copies history and checks out a working tree."
+          ],
+          "bullets": [
+            "1. Repository directory",
+            "2. .git metadata and object database",
+            "3. working tree checkout",
+            "4. commits and refs evolve."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git init my-app\ncd my-app\ngit rev-parse --show-toplevel\ngit status\nls -la .git\ngit clone https://github.com/ORG/REPO.git",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Team clones one service repository, creates feature branches and uses pull requests to merge reviewed changes to main.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Repository vs working directory: repository includes Git metadata/history; working directory is checked-out files. Monorepo contains multiple projects; polyrepo separates them.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: Git metadata including objects, refs, configuration, index and repository state. The working files are checked out separately in a non-bare repository."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Create, inspect and maintain repositories containing tracked content and commit history.. A normal repository has a working tree and .git directory. A bare repository has no checked-out working tree and is commonly used as a server-side remote. Clone copies history and checks out a working tree.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Initialize a repository, inspect .git, create a commit, then clone it to another directory.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "What is stored inside .git?",
+          "answer": "Git metadata including objects, refs, configuration, index and repository state. The working files are checked out separately in a non-bare repository."
+        },
+        {
+          "question": "Git Repositories use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Initialize a repository, inspect .git, create a commit, then clone it to another directory.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/working-tree-and-staging-area": {
+      "summary": "Working Tree and Staging Area: Understand untracked, modified, staged and committed file states.. Developer has a feature change and temporary debug logging. They stage only the feature, inspect staged diff and commit it independently.",
+      "diagram": {
+        "title": "Working Tree and Staging Area workflow",
+        "nodes": [
+          "File edit",
+          "working-tree diff",
+          "git add updates index",
+          "staged diff review",
+          "commit records index snapshot."
+        ],
+        "explanation": "Working Tree and Staging Area workflow lo ee stages order lo execute avuthayi. Untracked means Git is not tracking the file. Modified means tracked content differs from index. Staged means index differs from HEAD. git restore --staged unstages while preserving working-tree edits."
+      },
+      "sections": [
+        {
+          "heading": "1. Working Tree and Staging Area ante enti?",
+          "paragraphs": [
+            "Understand untracked, modified, staged and committed file states. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Understand untracked, modified, staged and committed file states.",
+            "DevOps use: Developer has a feature change and temporary debug logging. They stage only the feature, inspect staged diff and commit it independently."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Staging lets developers choose exactly which changes belong in the next commit, preventing unrelated edits from being bundled.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Before every commit, when reviewing partial changes and when resolving merge conflicts.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Developer has a feature change and temporary debug logging. They stage only the feature, inspect staged diff and commit it independently."
+          ]
+        },
+        {
+          "heading": "5. Working Tree and Staging Area ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) File edit; 2) working-tree diff; 3) git add updates index; 4) staged diff review; 5) commit records index snapshot..",
+            "Internal behavior: Untracked means Git is not tracking the file. Modified means tracked content differs from index. Staged means index differs from HEAD. git restore --staged unstages while preserving working-tree edits."
+          ],
+          "bullets": [
+            "1. File edit",
+            "2. working-tree diff",
+            "3. git add updates index",
+            "4. staged diff review",
+            "5. commit records index snapshot."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git status --short\ngit diff\n git add src/app.ts\ngit diff --cached\ngit restore --staged src/app.ts\ngit status",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Developer has a feature change and temporary debug logging. They stage only the feature, inspect staged diff and commit it independently.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "git add stages content; git commit records staged content. git restore file discards working-tree edits and can destroy work, so inspect first.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: It shows the exact content that will be committed, helping catch secrets, debug code, unrelated edits and accidental file changes."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Understand untracked, modified, staged and committed file states.. Untracked means Git is not tracking the file. Modified means tracked content differs from index. Staged means index differs from HEAD. git restore --staged unstages while preserving working-tree edits.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Edit two files, stage one, compare status and both diff views, then unstage without losing edits.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Why review git diff --staged before commit?",
+          "answer": "It shows the exact content that will be committed, helping catch secrets, debug code, unrelated edits and accidental file changes."
+        },
+        {
+          "question": "Working Tree and Staging Area use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Edit two files, stage one, compare status and both diff views, then unstage without losing edits.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/git-init-and-clone": {
+      "summary": "git init and git clone: Create a new local repository or copy an existing remote repository and its history.. New microservice begins with git init and first commit, then a GitHub remote is created and added. Existing project is cloned for local work.",
+      "diagram": {
+        "title": "git init and git clone workflow",
+        "nodes": [
+          "New project: directory",
+          "git init",
+          "files and commits. Existing project: remote URL",
+          "clone",
+          "local repository plus checkout."
+        ],
+        "explanation": "git init and git clone workflow lo ee stages order lo execute avuthayi. git init creates repository metadata; it does not create a GitHub repository. git clone downloads remote history and sets origin by default. Use shallow clone only when reduced history is acceptable for the workflow."
+      },
+      "sections": [
+        {
+          "heading": "1. git init and git clone ante enti?",
+          "paragraphs": [
+            "Create a new local repository or copy an existing remote repository and its history. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Create a new local repository or copy an existing remote repository and its history.",
+            "DevOps use: New microservice begins with git init and first commit, then a GitHub remote is created and added. Existing project is cloned for local work."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Developers either start a new project or join an existing project; these commands establish the local Git repository.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Project bootstrap, onboarding, CI checkout and reproducing a bug from a remote repository.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "New microservice begins with git init and first commit, then a GitHub remote is created and added. Existing project is cloned for local work."
+          ]
+        },
+        {
+          "heading": "5. git init and git clone ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) New project: directory; 2) git init; 3) files and commits. Existing project: remote URL; 4) clone; 5) local repository plus checkout..",
+            "Internal behavior: git init creates repository metadata; it does not create a GitHub repository. git clone downloads remote history and sets origin by default. Use shallow clone only when reduced history is acceptable for the workflow."
+          ],
+          "bullets": [
+            "1. New project: directory",
+            "2. git init",
+            "3. files and commits. Existing project: remote URL",
+            "4. clone",
+            "5. local repository plus checkout."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "mkdir demo && cd demo\ngit init -b main\ngit status\ncd ..\ngit clone https://github.com/git/git.git git-source\ngit -C git-source remote -v",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "New microservice begins with git init and first commit, then a GitHub remote is created and added. Existing project is cloned for local work.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "init creates; clone copies an existing remote. Clone URL can be HTTPS or SSH; access permissions still apply.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: No. It initializes a local repository. To publish, create a remote repository, add it with git remote add origin URL, then push a branch."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Create a new local repository or copy an existing remote repository and its history.. git init creates repository metadata; it does not create a GitHub repository. git clone downloads remote history and sets origin by default. Use shallow clone only when reduced history is acceptable for the workflow.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Initialize a local repo and clone a public sample repo; inspect .git and remote -v.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Does git init upload code to GitHub?",
+          "answer": "No. It initializes a local repository. To publish, create a remote repository, add it with git remote add origin URL, then push a branch."
+        },
+        {
+          "question": "git init and git clone use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Initialize a local repo and clone a public sample repo; inspect .git and remote -v.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/git-add-and-commit": {
+      "summary": "git add and git commit: Stage selected file content and record it as a permanent local history snapshot.. A developer makes one commit for a health-check endpoint and another for documentation so each can be reviewed and reverted separately.",
+      "diagram": {
+        "title": "git add and git commit workflow",
+        "nodes": [
+          "Edit files",
+          "git add selects snapshot",
+          "staged diff review",
+          "git commit creates commit object and advances current branch."
+        ],
+        "explanation": "git add and git commit workflow lo ee stages order lo execute avuthayi. git add path stages current file content. git commit records staged snapshot with author, committer, message, timestamp and parent commit. Commit exists locally until pushed or otherwise shared."
+      },
+      "sections": [
+        {
+          "heading": "1. git add and git commit ante enti?",
+          "paragraphs": [
+            "Stage selected file content and record it as a permanent local history snapshot. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Stage selected file content and record it as a permanent local history snapshot.",
+            "DevOps use: A developer makes one commit for a health-check endpoint and another for documentation so each can be reviewed and reverted separately."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "A controlled commit is a small, reviewable unit of change that can be tested, reviewed and reverted.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "After a logical task or bug fix is complete and before pushing a branch.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "A developer makes one commit for a health-check endpoint and another for documentation so each can be reviewed and reverted separately."
+          ]
+        },
+        {
+          "heading": "5. git add and git commit ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Edit files; 2) git add selects snapshot; 3) staged diff review; 4) git commit creates commit object and advances current branch..",
+            "Internal behavior: git add path stages current file content. git commit records staged snapshot with author, committer, message, timestamp and parent commit. Commit exists locally until pushed or otherwise shared."
+          ],
+          "bullets": [
+            "1. Edit files",
+            "2. git add selects snapshot",
+            "3. staged diff review",
+            "4. git commit creates commit object and advances current branch."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git add README.md\ngit add src/\ngit diff --cached\ngit commit -m 'Document deployment steps'\ngit show --stat --oneline HEAD",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "A developer makes one commit for a health-check endpoint and another for documentation so each can be reviewed and reverted separately.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "git add -p stages selected hunks. Empty commit is possible with --allow-empty but should be intentional. Good messages describe change purpose.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: git add prepares selected content in the index. git commit records the staged snapshot in local repository history."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Stage selected file content and record it as a permanent local history snapshot.. git add path stages current file content. git commit records staged snapshot with author, committer, message, timestamp and parent commit. Commit exists locally until pushed or otherwise shared.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Stage one file, inspect staged diff, commit it, then use git show to verify exact contents.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "What is the difference between git add and git commit?",
+          "answer": "git add prepares selected content in the index. git commit records the staged snapshot in local repository history."
+        },
+        {
+          "question": "git add and git commit use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Stage one file, inspect staged diff, commit it, then use git show to verify exact contents.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/git-status-and-log": {
+      "summary": "git status and git log: Inspect current file state, branch divergence and commit history.. Before a release, engineer checks clean worktree, confirms branch and commit ancestry, then compares deployed tag to intended release commit.",
+      "diagram": {
+        "title": "git status and git log workflow",
+        "nodes": [
+          "Working tree and index state",
+          "git status summary; commit graph and refs",
+          "git log history view."
+        ],
+        "explanation": "git status and git log workflow lo ee stages order lo execute avuthayi. git status reports staged, unstaged, untracked and branch tracking state. git log displays commits; --graph visualizes ancestry; --decorate shows refs; path-limited log filters history touching a path."
+      },
+      "sections": [
+        {
+          "heading": "1. git status and git log ante enti?",
+          "paragraphs": [
+            "Inspect current file state, branch divergence and commit history. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Inspect current file state, branch divergence and commit history.",
+            "DevOps use: Before a release, engineer checks clean worktree, confirms branch and commit ancestry, then compares deployed tag to intended release commit."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Before changing or pushing code, developers need to know what is modified and what history exists.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Daily workflow, pre-commit checks, branch debugging and release traceability.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Before a release, engineer checks clean worktree, confirms branch and commit ancestry, then compares deployed tag to intended release commit."
+          ]
+        },
+        {
+          "heading": "5. git status and git log ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Working tree and index state; 2) git status summary; commit graph and refs; 3) git log history view..",
+            "Internal behavior: git status reports staged, unstaged, untracked and branch tracking state. git log displays commits; --graph visualizes ancestry; --decorate shows refs; path-limited log filters history touching a path."
+          ],
+          "bullets": [
+            "1. Working tree and index state",
+            "2. git status summary; commit graph and refs",
+            "3. git log history view."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git status --short --branch\ngit log --oneline -10\ngit log --graph --decorate --all --oneline\ngit show HEAD\ngit log -- src/app.ts",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Before a release, engineer checks clean worktree, confirms branch and commit ancestry, then compares deployed tag to intended release commit.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "status is current state; log is history. git show inspects one commit; git diff compares content. A clean status does not mean remote is up to date.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: Use git log -- path for commits affecting the file and git blame path for line-level last-change attribution; then inspect the relevant commit with git show."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Inspect current file state, branch divergence and commit history.. git status reports staged, unstaged, untracked and branch tracking state. git log displays commits; --graph visualizes ancestry; --decorate shows refs; path-limited log filters history touching a path.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Create several commits, inspect graph, filter log by file and use git status --short --branch.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "How do you find who changed a file and when?",
+          "answer": "Use git log -- path for commits affecting the file and git blame path for line-level last-change attribution; then inspect the relevant commit with git show."
+        },
+        {
+          "question": "git status and git log use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Create several commits, inspect graph, filter log by file and use git status --short --branch.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/branches": {
+      "summary": "Git Branches: Create isolated lines of development and move between named commit references.. One engineer builds login while another fixes a production bug on separate branches; each change is independently tested and reviewed.",
+      "diagram": {
+        "title": "Git Branches workflow",
+        "nodes": [
+          "main commit",
+          "create feature branch ref",
+          "new commits advance feature ref",
+          "review and merge back to target branch."
+        ],
+        "explanation": "Git Branches workflow lo ee stages order lo execute avuthayi. Branch is a lightweight movable reference to a commit. Creating branch does not copy whole repository. Switching updates HEAD and working tree; uncommitted conflicting changes may block checkout."
+      },
+      "sections": [
+        {
+          "heading": "1. Git Branches ante enti?",
+          "paragraphs": [
+            "Create isolated lines of development and move between named commit references. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Create isolated lines of development and move between named commit references.",
+            "DevOps use: One engineer builds login while another fixes a production bug on separate branches; each change is independently tested and reviewed."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Parallel features and fixes should not block each other or destabilize the shared main branch.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Feature work, hotfixes, release branches and experimental changes.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "One engineer builds login while another fixes a production bug on separate branches; each change is independently tested and reviewed."
+          ]
+        },
+        {
+          "heading": "5. Git Branches ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) main commit; 2) create feature branch ref; 3) new commits advance feature ref; 4) review and merge back to target branch..",
+            "Internal behavior: Branch is a lightweight movable reference to a commit. Creating branch does not copy whole repository. Switching updates HEAD and working tree; uncommitted conflicting changes may block checkout."
+          ],
+          "bullets": [
+            "1. main commit",
+            "2. create feature branch ref",
+            "3. new commits advance feature ref",
+            "4. review and merge back to target branch."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git switch -c feature/login\ngit branch --show-current\ngit switch main\ngit branch -avv\ngit switch feature/login",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "One engineer builds login while another fixes a production bug on separate branches; each change is independently tested and reviewed.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Feature branch vs release branch differ by policy and lifetime. Branch names are local refs until pushed; remote branch tracking is configured separately.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: No. A branch is a lightweight reference to a commit. Git reuses shared objects and only new commits add new history objects."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Create isolated lines of development and move between named commit references.. Branch is a lightweight movable reference to a commit. Creating branch does not copy whole repository. Switching updates HEAD and working tree; uncommitted conflicting changes may block checkout.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Create feature branch, commit a change, switch to main and back, then inspect branch refs.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Are Git branches full copies of a repository?",
+          "answer": "No. A branch is a lightweight reference to a commit. Git reuses shared objects and only new commits add new history objects."
+        },
+        {
+          "question": "Git Branches use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Create feature branch, commit a change, switch to main and back, then inspect branch refs.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/merge-strategies": {
+      "summary": "Git Merge Strategies: Integrate branch histories using fast-forward, three-way merge and squash workflows.. Team uses squash merge for compact main history or merge commits when retaining branch topology is important. Policy should be consistent and documented.",
+      "diagram": {
+        "title": "Git Merge Strategies workflow",
+        "nodes": [
+          "Source and target branch tips",
+          "ancestry check",
+          "fast-forward or merge commit / squash",
+          "integrated target history."
+        ],
+        "explanation": "Git Merge Strategies workflow lo ee stages order lo execute avuthayi. Fast-forward moves target ref when target is ancestor of source. Three-way merge uses common ancestor and both tips. --no-ff forces merge commit; --squash combines changes without recording source branch ancestry as a merge commit."
+      },
+      "sections": [
+        {
+          "heading": "1. Git Merge Strategies ante enti?",
+          "paragraphs": [
+            "Integrate branch histories using fast-forward, three-way merge and squash workflows. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Integrate branch histories using fast-forward, three-way merge and squash workflows.",
+            "DevOps use: Team uses squash merge for compact main history or merge commits when retaining branch topology is important. Policy should be consistent and documented."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Completed work must be integrated while preserving the project's desired history and review conventions.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Feature completion, release integration, hotfix integration and pull request merge settings.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Team uses squash merge for compact main history or merge commits when retaining branch topology is important. Policy should be consistent and documented."
+          ]
+        },
+        {
+          "heading": "5. Git Merge Strategies ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Source and target branch tips; 2) ancestry check; 3) fast-forward or merge commit / squash; 4) integrated target history..",
+            "Internal behavior: Fast-forward moves target ref when target is ancestor of source. Three-way merge uses common ancestor and both tips. --no-ff forces merge commit; --squash combines changes without recording source branch ancestry as a merge commit."
+          ],
+          "bullets": [
+            "1. Source and target branch tips",
+            "2. ancestry check",
+            "3. fast-forward or merge commit / squash",
+            "4. integrated target history."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git switch main\ngit merge --ff-only feature/login\n# For a merge commit when histories diverged:\ngit merge --no-ff feature/login\n# Squash changes into working tree, then commit:\ngit merge --squash feature/login",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Team uses squash merge for compact main history or merge commits when retaining branch topology is important. Policy should be consistent and documented.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Fast-forward preserves linear history but no merge commit. No-ff records integration point. Squash creates one new commit and loses original branch commit topology from target ancestry.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: When the team wants an explicit merge commit showing that a feature branch was integrated, even when a fast-forward would be possible."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Integrate branch histories using fast-forward, three-way merge and squash workflows.. Fast-forward moves target ref when target is ancestor of source. Three-way merge uses common ancestor and both tips. --no-ff forces merge commit; --squash combines changes without recording source branch ancestry as a merge commit.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Create divergent branches and practice fast-forward, no-ff and squash in a disposable repository.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "When would you use --no-ff?",
+          "answer": "When the team wants an explicit merge commit showing that a feature branch was integrated, even when a fast-forward would be possible."
+        },
+        {
+          "question": "Git Merge Strategies use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Create divergent branches and practice fast-forward, no-ff and squash in a disposable repository.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/rebase": {
+      "summary": "Git Rebase: Replay commits onto a new base to create a different, often linear, commit history.. Developer updates their private feature branch on latest origin/main before opening PR, reducing integration surprises.",
+      "diagram": {
+        "title": "Git Rebase workflow",
+        "nodes": [
+          "Feature commits A-B",
+          "choose latest main commit as new base",
+          "replay A and B as new commits",
+          "feature branch points to updated history."
+        ],
+        "explanation": "Git Rebase workflow lo ee stages order lo execute avuthayi. Rebase rewrites commit identities because parent and commit metadata change. Never rebase shared public commits without team agreement. Resolve conflicts per replayed commit; --continue proceeds and --abort restores pre-rebase state."
+      },
+      "sections": [
+        {
+          "heading": "1. Git Rebase ante enti?",
+          "paragraphs": [
+            "Replay commits onto a new base to create a different, often linear, commit history. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Replay commits onto a new base to create a different, often linear, commit history.",
+            "DevOps use: Developer updates their private feature branch on latest origin/main before opening PR, reducing integration surprises."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Long-running feature branches become harder to merge as main changes. Rebase updates feature work on latest base before integration.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Updating private feature branches, cleaning local commit history and preparing a pull request.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Developer updates their private feature branch on latest origin/main before opening PR, reducing integration surprises."
+          ]
+        },
+        {
+          "heading": "5. Git Rebase ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Feature commits A-B; 2) choose latest main commit as new base; 3) replay A and B as new commits; 4) feature branch points to updated history..",
+            "Internal behavior: Rebase rewrites commit identities because parent and commit metadata change. Never rebase shared public commits without team agreement. Resolve conflicts per replayed commit; --continue proceeds and --abort restores pre-rebase state."
+          ],
+          "bullets": [
+            "1. Feature commits A-B",
+            "2. choose latest main commit as new base",
+            "3. replay A and B as new commits",
+            "4. feature branch points to updated history."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git fetch origin\ngit switch feature/login\ngit rebase origin/main\n# If conflicts occur:\ngit status\n# edit files, then:\ngit add <resolved-file>\ngit rebase --continue\n# To cancel:\ngit rebase --abort",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Developer updates their private feature branch on latest origin/main before opening PR, reducing integration surprises.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Merge preserves original ancestry; rebase replays commits and rewrites hashes. Interactive rebase can squash/reword local commits. Avoid rewriting shared protected branch history.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: Other developers may already depend on the original commit hashes. Rewriting them creates divergent histories and requires coordination to recover safely."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Replay commits onto a new base to create a different, often linear, commit history.. Rebase rewrites commit identities because parent and commit metadata change. Never rebase shared public commits without team agreement. Resolve conflicts per replayed commit; --continue proceeds and --abort restores pre-rebase state.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Create two branches with divergent commits, rebase feature onto main, inspect graph and practice --abort in a separate test.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Why should you avoid rebasing a shared branch?",
+          "answer": "Other developers may already depend on the original commit hashes. Rewriting them creates divergent histories and requires coordination to recover safely."
+        },
+        {
+          "question": "Git Rebase use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Create two branches with divergent commits, rebase feature onto main, inspect graph and practice --abort in a separate test.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/cherry-pick": {
+      "summary": "Git Cherry-pick: Apply the change introduced by selected commit(s) onto the current branch as new commit(s).. Critical fix merged to main must also be applied to supported release/1.x; team cherry-picks exact fix commit and runs release tests.",
+      "diagram": {
+        "title": "Git Cherry-pick workflow",
+        "nodes": [
+          "Select source commit",
+          "switch target branch",
+          "apply patch",
+          "resolve conflicts if needed",
+          "create new commit."
+        ],
+        "explanation": "Git Cherry-pick workflow lo ee stages order lo execute avuthayi. Cherry-pick copies the changeset into a new commit with a different hash and current branch parent. Repeated cherry-picks can duplicate changes or complicate later merges; record backport references."
+      },
+      "sections": [
+        {
+          "heading": "1. Git Cherry-pick ante enti?",
+          "paragraphs": [
+            "Apply the change introduced by selected commit(s) onto the current branch as new commit(s). Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Apply the change introduced by selected commit(s) onto the current branch as new commit(s).",
+            "DevOps use: Critical fix merged to main must also be applied to supported release/1.x; team cherry-picks exact fix commit and runs release tests."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "A specific fix may be needed in a release branch without merging every change from the feature branch.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Backporting security fixes, patching maintained release branches and moving isolated commits.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Critical fix merged to main must also be applied to supported release/1.x; team cherry-picks exact fix commit and runs release tests."
+          ]
+        },
+        {
+          "heading": "5. Git Cherry-pick ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Select source commit; 2) switch target branch; 3) apply patch; 4) resolve conflicts if needed; 5) create new commit..",
+            "Internal behavior: Cherry-pick copies the changeset into a new commit with a different hash and current branch parent. Repeated cherry-picks can duplicate changes or complicate later merges; record backport references."
+          ],
+          "bullets": [
+            "1. Select source commit",
+            "2. switch target branch",
+            "3. apply patch",
+            "4. resolve conflicts if needed",
+            "5. create new commit."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git log --oneline\ngit switch release/1.x\ngit cherry-pick <commit-sha>\n# If conflict:\ngit status\n# resolve, stage, then:\ngit cherry-pick --continue\n# cancel:\ngit cherry-pick --abort",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Critical fix merged to main must also be applied to supported release/1.x; team cherry-picks exact fix commit and runs release tests.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Merge integrates branch history; cherry-pick applies selected commit changes. Revert creates an inverse change commit. Conflict handling is similar but operation state differs.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: No. It creates a new commit on the target branch, normally with a different parent and therefore a different commit hash."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Apply the change introduced by selected commit(s) onto the current branch as new commit(s).. Cherry-pick copies the changeset into a new commit with a different hash and current branch parent. Repeated cherry-picks can duplicate changes or complicate later merges; record backport references.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Create fix commit on one branch and cherry-pick it to another; compare hashes and resulting file content.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Does cherry-pick preserve the original commit SHA?",
+          "answer": "No. It creates a new commit on the target branch, normally with a different parent and therefore a different commit hash."
+        },
+        {
+          "question": "Git Cherry-pick use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Create fix commit on one branch and cherry-pick it to another; compare hashes and resulting file content.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/tags-and-releases": {
+      "summary": "Git Tags and Releases: Mark important repository commits with lightweight or annotated tags and connect them to release artifacts.. CI pipeline triggers on v* tag, builds immutable artifact and deploys same artifact through environments with approval gates.",
+      "diagram": {
+        "title": "Git Tags and Releases workflow",
+        "nodes": [
+          "Approved commit",
+          "create version tag",
+          "push tag",
+          "CI builds artifact",
+          "release publishes notes and artifact."
+        ],
+        "explanation": "Git Tags and Releases workflow lo ee stages order lo execute avuthayi. Lightweight tag is a simple ref; annotated tag stores tagger, date and message and is preferred for releases. Tags do not move automatically with branch commits. Protect release tags and follow semantic versioning policy."
+      },
+      "sections": [
+        {
+          "heading": "1. Git Tags and Releases ante enti?",
+          "paragraphs": [
+            "Mark important repository commits with lightweight or annotated tags and connect them to release artifacts. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Mark important repository commits with lightweight or annotated tags and connect them to release artifacts.",
+            "DevOps use: CI pipeline triggers on v* tag, builds immutable artifact and deploys same artifact through environments with approval gates."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Deployments need stable identifiers so teams can trace exactly which source revision produced a release.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Versioned releases, production deployment references, rollback identification and release notes.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "CI pipeline triggers on v* tag, builds immutable artifact and deploys same artifact through environments with approval gates."
+          ]
+        },
+        {
+          "heading": "5. Git Tags and Releases ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Approved commit; 2) create version tag; 3) push tag; 4) CI builds artifact; 5) release publishes notes and artifact..",
+            "Internal behavior: Lightweight tag is a simple ref; annotated tag stores tagger, date and message and is preferred for releases. Tags do not move automatically with branch commits. Protect release tags and follow semantic versioning policy."
+          ],
+          "bullets": [
+            "1. Approved commit",
+            "2. create version tag",
+            "3. push tag",
+            "4. CI builds artifact",
+            "5. release publishes notes and artifact."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git tag\ngit tag -a v1.2.0 -m 'Release 1.2.0'\ngit show v1.2.0\ngit push origin v1.2.0\ngit ls-remote --tags origin",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "CI pipeline triggers on v* tag, builds immutable artifact and deploys same artifact through environments with approval gates.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Branch moves as commits arrive; tag marks a specific point. Git tag is source reference; GitHub Release adds published notes/assets.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: They include tag metadata and a message, making release markers auditable and easier to understand than an unannotated pointer."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Mark important repository commits with lightweight or annotated tags and connect them to release artifacts.. Lightweight tag is a simple ref; annotated tag stores tagger, date and message and is preferred for releases. Tags do not move automatically with branch commits. Protect release tags and follow semantic versioning policy.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Create annotated v0.1.0 tag, inspect with git show, and push only to a test remote if available.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Why use annotated tags for releases?",
+          "answer": "They include tag metadata and a message, making release markers auditable and easier to understand than an unannotated pointer."
+        },
+        {
+          "question": "Git Tags and Releases use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Create annotated v0.1.0 tag, inspect with git show, and push only to a test remote if available.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/remote-repositories": {
+      "summary": "Remote Repositories: Configure remote URLs and synchronize local branches with shared repositories.. Developer fetches origin/main, rebases private feature branch and pushes it for review. Protected main rejects direct push by policy.",
+      "diagram": {
+        "title": "Remote Repositories workflow",
+        "nodes": [
+          "Local repository",
+          "remote URL configuration",
+          "fetch downloads refs/objects",
+          "pull integrates",
+          "push publishes commits."
+        ],
+        "explanation": "Remote Repositories workflow lo ee stages order lo execute avuthayi. Remote is a named URL configuration, commonly origin. fetch updates remote-tracking refs without merging into current branch. pull fetches then integrates according to configured strategy. Push sends local commits subject to server policy."
+      },
+      "sections": [
+        {
+          "heading": "1. Remote Repositories ante enti?",
+          "paragraphs": [
+            "Configure remote URLs and synchronize local branches with shared repositories. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Configure remote URLs and synchronize local branches with shared repositories.",
+            "DevOps use: Developer fetches origin/main, rebases private feature branch and pushes it for review. Protected main rejects direct push by policy."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Local commits are not automatically visible to teammates; remotes provide shared collaboration and distribution.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Team development, fork workflows, backup mirrors and CI checkout.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Developer fetches origin/main, rebases private feature branch and pushes it for review. Protected main rejects direct push by policy."
+          ]
+        },
+        {
+          "heading": "5. Remote Repositories ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Local repository; 2) remote URL configuration; 3) fetch downloads refs/objects; 4) pull integrates; 5) push publishes commits..",
+            "Internal behavior: Remote is a named URL configuration, commonly origin. fetch updates remote-tracking refs without merging into current branch. pull fetches then integrates according to configured strategy. Push sends local commits subject to server policy."
+          ],
+          "bullets": [
+            "1. Local repository",
+            "2. remote URL configuration",
+            "3. fetch downloads refs/objects",
+            "4. pull integrates",
+            "5. push publishes commits."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git remote -v\ngit remote add origin https://github.com/ORG/REPO.git\ngit fetch origin\ngit branch -r\ngit push -u origin main\ngit remote set-url origin git@github.com:ORG/REPO.git",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Developer fetches origin/main, rebases private feature branch and pushes it for review. Protected main rejects direct push by policy.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Remote-tracking branch is local record of remote state, not live connection. fetch is safer inspection step; pull changes current branch.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: fetch downloads objects and updates remote-tracking refs without changing current branch. pull performs fetch followed by merge or rebase integration."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Configure remote URLs and synchronize local branches with shared repositories.. Remote is a named URL configuration, commonly origin. fetch updates remote-tracking refs without merging into current branch. pull fetches then integrates according to configured strategy. Push sends local commits subject to server policy.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Add a local bare repository as remote, push a branch, make a remote commit and fetch it locally.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "What does git fetch do compared with git pull?",
+          "answer": "fetch downloads objects and updates remote-tracking refs without changing current branch. pull performs fetch followed by merge or rebase integration."
+        },
+        {
+          "question": "Remote Repositories use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Add a local bare repository as remote, push a branch, make a remote commit and fetch it locally.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/github-repositories": {
+      "summary": "GitHub Repositories: Host Git repositories on GitHub with access control, issues, settings, automation and collaboration features.. Company repository uses private visibility, team-based least privilege, required PR reviews, status checks and secret scanning.",
+      "diagram": {
+        "title": "GitHub Repositories workflow",
+        "nodes": [
+          "Local Git repo",
+          "GitHub remote repository",
+          "branches and commits",
+          "pull requests/issues/actions",
+          "protected integration branch."
+        ],
+        "explanation": "GitHub Repositories workflow lo ee stages order lo execute avuthayi. Git is version-control software; GitHub is a hosted collaboration platform built around Git. Repository visibility, collaborators, teams, branch protection/rulesets, secrets and Actions permissions are configured separately."
+      },
+      "sections": [
+        {
+          "heading": "1. GitHub Repositories ante enti?",
+          "paragraphs": [
+            "Host Git repositories on GitHub with access control, issues, settings, automation and collaboration features. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Host Git repositories on GitHub with access control, issues, settings, automation and collaboration features.",
+            "DevOps use: Company repository uses private visibility, team-based least privilege, required PR reviews, status checks and secret scanning."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "A remote Git repository alone does not provide the full team workflow for review, issue tracking, permissions and CI integration.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Open-source projects, company source control, team services and portfolio projects.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Company repository uses private visibility, team-based least privilege, required PR reviews, status checks and secret scanning."
+          ]
+        },
+        {
+          "heading": "5. GitHub Repositories ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Local Git repo; 2) GitHub remote repository; 3) branches and commits; 4) pull requests/issues/actions; 5) protected integration branch..",
+            "Internal behavior: Git is version-control software; GitHub is a hosted collaboration platform built around Git. Repository visibility, collaborators, teams, branch protection/rulesets, secrets and Actions permissions are configured separately."
+          ],
+          "bullets": [
+            "1. Local Git repo",
+            "2. GitHub remote repository",
+            "3. branches and commits",
+            "4. pull requests/issues/actions",
+            "5. protected integration branch."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git remote add origin https://github.com/OWNER/REPO.git\ngit branch -M main\ngit push -u origin main\n# GitHub CLI examples:\ngh repo view\ngh repo clone OWNER/REPO",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Company repository uses private visibility, team-based least privilege, required PR reviews, status checks and secret scanning.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "GitHub vs Git: Git operates locally and tracks history; GitHub hosts repositories and collaboration features. GitHub is not the only Git hosting provider.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: Yes. Git is a distributed version-control system and can operate entirely locally or with any compatible remote host such as GitLab, Bitbucket or self-hosted Git."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Host Git repositories on GitHub with access control, issues, settings, automation and collaboration features.. Git is version-control software; GitHub is a hosted collaboration platform built around Git. Repository visibility, collaborators, teams, branch protection/rulesets, secrets and Actions permissions are configured separately.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Create a test GitHub repository, push a local commit, inspect branches, issues, settings and access permissions.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Can Git work without GitHub?",
+          "answer": "Yes. Git is a distributed version-control system and can operate entirely locally or with any compatible remote host such as GitLab, Bitbucket or self-hosted Git."
+        },
+        {
+          "question": "GitHub Repositories use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Create a test GitHub repository, push a local commit, inspect branches, issues, settings and access permissions.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/pull-requests": {
+      "summary": "Pull Requests: Propose, review, discuss and merge a branch into a target branch on GitHub.. Terraform change PR includes plan output, reviewer approval and policy checks before merge; production apply remains gated by environment approval.",
+      "diagram": {
+        "title": "Pull Requests workflow",
+        "nodes": [
+          "Feature branch push",
+          "open PR",
+          "automated checks",
+          "reviewer comments/approval",
+          "required checks pass",
+          "merge."
+        ],
+        "explanation": "Pull Requests workflow lo ee stages order lo execute avuthayi. A PR compares source and base branches, displays changed files and supports discussion, review, status checks and merge options. Required reviewers and checks are repository policy, not guaranteed by opening a PR."
+      },
+      "sections": [
+        {
+          "heading": "1. Pull Requests ante enti?",
+          "paragraphs": [
+            "Propose, review, discuss and merge a branch into a target branch on GitHub. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Propose, review, discuss and merge a branch into a target branch on GitHub.",
+            "DevOps use: Terraform change PR includes plan output, reviewer approval and policy checks before merge; production apply remains gated by environment approval."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Direct unreviewed changes to shared branches increase defects and reduce accountability. Pull requests create a controlled integration checkpoint.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Feature delivery, bug fixes, release preparation and infrastructure code review.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Terraform change PR includes plan output, reviewer approval and policy checks before merge; production apply remains gated by environment approval."
+          ]
+        },
+        {
+          "heading": "5. Pull Requests ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Feature branch push; 2) open PR; 3) automated checks; 4) reviewer comments/approval; 5) required checks pass; 6) merge..",
+            "Internal behavior: A PR compares source and base branches, displays changed files and supports discussion, review, status checks and merge options. Required reviewers and checks are repository policy, not guaranteed by opening a PR."
+          ],
+          "bullets": [
+            "1. Feature branch push",
+            "2. open PR",
+            "3. automated checks",
+            "4. reviewer comments/approval",
+            "5. required checks pass",
+            "6. merge."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git switch -c feature/readme\n# edit and commit\n git add README.md\ngit commit -m 'Improve setup guide'\ngit push -u origin feature/readme\n# Open PR in GitHub UI or:\ngh pr create --base main --head feature/readme",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Terraform change PR includes plan output, reviewer approval and policy checks before merge; production apply remains gated by environment approval.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "PR is a GitHub collaboration object; merge is Git history integration. Draft PR requests early feedback; required checks enforce policy.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: Configured branch rules such as required approvals, resolved conversations, signed commits or required CI status checks. Exact requirements depend on repository policy."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Propose, review, discuss and merge a branch into a target branch on GitHub.. A PR compares source and base branches, displays changed files and supports discussion, review, status checks and merge options. Required reviewers and checks are repository policy, not guaranteed by opening a PR.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Create feature branch and PR in a test repository; add review comment, inspect checks and merge using team policy.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "What must pass before merging a protected PR?",
+          "answer": "Configured branch rules such as required approvals, resolved conversations, signed commits or required CI status checks. Exact requirements depend on repository policy."
+        },
+        {
+          "question": "Pull Requests use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Create feature branch and PR in a test repository; add review comment, inspect checks and merge using team policy.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/code-reviews": {
+      "summary": "Code Reviews: Evaluate proposed code for correctness, maintainability, security, testing and operational risk.. Reviewer finds Terraform security group exposing database port publicly and requests CIDR restriction plus test evidence before approval.",
+      "diagram": {
+        "title": "Code Reviews workflow",
+        "nodes": [
+          "PR diff",
+          "reviewer checks behavior and risks",
+          "comments/request changes or approve",
+          "author updates",
+          "final checks and merge."
+        ],
+        "explanation": "Code Reviews workflow lo ee stages order lo execute avuthayi. Review should focus on behavior, edge cases, security, backward compatibility, observability, tests and rollback. Review comments should be actionable and respectful. Approval should not bypass required checks."
+      },
+      "sections": [
+        {
+          "heading": "1. Code Reviews ante enti?",
+          "paragraphs": [
+            "Evaluate proposed code for correctness, maintainability, security, testing and operational risk. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Evaluate proposed code for correctness, maintainability, security, testing and operational risk.",
+            "DevOps use: Reviewer finds Terraform security group exposing database port publicly and requests CIDR restriction plus test evidence before approval."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Automated tests cannot catch every design, access-control, readability or production-impact issue. Human review adds context.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Every meaningful change to application code, infrastructure, pipeline and security configuration.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Reviewer finds Terraform security group exposing database port publicly and requests CIDR restriction plus test evidence before approval."
+          ]
+        },
+        {
+          "heading": "5. Code Reviews ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) PR diff; 2) reviewer checks behavior and risks; 3) comments/request changes or approve; 4) author updates; 5) final checks and merge..",
+            "Internal behavior: Review should focus on behavior, edge cases, security, backward compatibility, observability, tests and rollback. Review comments should be actionable and respectful. Approval should not bypass required checks."
+          ],
+          "bullets": [
+            "1. PR diff",
+            "2. reviewer checks behavior and risks",
+            "3. comments/request changes or approve",
+            "4. author updates",
+            "5. final checks and merge."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git diff origin/main...HEAD\ngh pr view --web\ngh pr diff\ngh pr review --approve",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Reviewer finds Terraform security group exposing database port publicly and requests CIDR restriction plus test evidence before approval.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Review is not only style policing; lint/format automate style. CODEOWNERS can require domain experts for sensitive paths.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: I check correctness, security, secrets, permissions, failure handling, monitoring, environment impact, tests, rollback and whether the change follows team standards."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Evaluate proposed code for correctness, maintainability, security, testing and operational risk.. Review should focus on behavior, edge cases, security, backward compatibility, observability, tests and rollback. Review comments should be actionable and respectful. Approval should not bypass required checks.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Review a sample PR diff and write three actionable comments: one correctness, one security and one operational.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "What do you check in a DevOps code review?",
+          "answer": "I check correctness, security, secrets, permissions, failure handling, monitoring, environment impact, tests, rollback and whether the change follows team standards."
+        },
+        {
+          "question": "Code Reviews use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Review a sample PR diff and write three actionable comments: one correctness, one security and one operational.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/merge-conflicts": {
+      "summary": "Merge Conflicts: Resolve incompatible edits when Git cannot automatically combine branch changes.. Two engineers update same Kubernetes replica count differently. Reviewer checks desired capacity and environment intent, combines correct change and runs manifest validation.",
+      "diagram": {
+        "title": "Merge Conflicts workflow",
+        "nodes": [
+          "Two branches edit overlapping content",
+          "Git detects conflict",
+          "conflict markers appear",
+          "developer chooses correct combined result",
+          "stage resolution",
+          "continue operation."
+        ],
+        "explanation": "Merge Conflicts workflow lo ee stages order lo execute avuthayi. Conflict markers show HEAD/current side and incoming side, separated by =======. Do not blindly choose ours/theirs; understand intended behavior. git status identifies operation state. Abort command depends on operation."
+      },
+      "sections": [
+        {
+          "heading": "1. Merge Conflicts ante enti?",
+          "paragraphs": [
+            "Resolve incompatible edits when Git cannot automatically combine branch changes. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Resolve incompatible edits when Git cannot automatically combine branch changes.",
+            "DevOps use: Two engineers update same Kubernetes replica count differently. Reviewer checks desired capacity and environment intent, combines correct change and runs manifest validation."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Parallel developers may modify the same lines or file structure. Git needs a human decision when intent is ambiguous.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Merge, rebase, cherry-pick and pull operations with overlapping changes.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Two engineers update same Kubernetes replica count differently. Reviewer checks desired capacity and environment intent, combines correct change and runs manifest validation."
+          ]
+        },
+        {
+          "heading": "5. Merge Conflicts ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Two branches edit overlapping content; 2) Git detects conflict; 3) conflict markers appear; 4) developer chooses correct combined result; 5) stage resolution; 6) continue operation..",
+            "Internal behavior: Conflict markers show HEAD/current side and incoming side, separated by =======. Do not blindly choose ours/theirs; understand intended behavior. git status identifies operation state. Abort command depends on operation."
+          ],
+          "bullets": [
+            "1. Two branches edit overlapping content",
+            "2. Git detects conflict",
+            "3. conflict markers appear",
+            "4. developer chooses correct combined result",
+            "5. stage resolution",
+            "6. continue operation."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git status\n# open conflicted file and resolve markers\n git diff\n git add path/to/file\n# choose matching operation:\ngit merge --continue\ngit rebase --continue\ngit cherry-pick --continue",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Two engineers update same Kubernetes replica count differently. Reviewer checks desired capacity and environment intent, combines correct change and runs manifest validation.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Merge conflict vs runtime bug: conflict is source integration ambiguity; resolved file still needs tests. ours/theirs semantics can be confusing during rebase.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: Inspect status and conflict context, understand both changes, edit final intended content, remove markers, run tests, stage resolution and continue the active merge/rebase/cherry-pick."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Resolve incompatible edits when Git cannot automatically combine branch changes.. Conflict markers show HEAD/current side and incoming side, separated by =======. Do not blindly choose ours/theirs; understand intended behavior. git status identifies operation state. Abort command depends on operation.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Create conflicting edits on two branches, merge, resolve manually, run diff and tests, then complete merge.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "How do you resolve a merge conflict safely?",
+          "answer": "Inspect status and conflict context, understand both changes, edit final intended content, remove markers, run tests, stage resolution and continue the active merge/rebase/cherry-pick."
+        },
+        {
+          "question": "Merge Conflicts use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Create conflicting edits on two branches, merge, resolve manually, run diff and tests, then complete merge.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/reset-revert-and-restore": {
+      "summary": "Reset, Revert and Restore: Move branch/index state, create inverse commits, or discard working-tree changes with the correct recovery command.. Production hotfix already shared: use git revert to preserve history. Private local typo commit not pushed: reset may be suitable after checking working tree.",
+      "diagram": {
+        "title": "Reset, Revert and Restore workflow",
+        "nodes": [
+          "Identify target state",
+          "choose scope: working tree/index/branch history",
+          "execute safe undo operation",
+          "inspect status and history."
+        ],
+        "explanation": "Reset, Revert and Restore workflow lo ee stages order lo execute avuthayi. restore changes working tree or index; revert creates a new commit reversing a prior commit; reset moves current branch ref and optionally updates index/worktree. --hard discards tracked uncommitted changes and is destructive."
+      },
+      "sections": [
+        {
+          "heading": "1. Reset, Revert and Restore ante enti?",
+          "paragraphs": [
+            "Move branch/index state, create inverse commits, or discard working-tree changes with the correct recovery command. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Move branch/index state, create inverse commits, or discard working-tree changes with the correct recovery command.",
+            "DevOps use: Production hotfix already shared: use git revert to preserve history. Private local typo commit not pushed: reset may be suitable after checking working tree."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Developers need to undo mistakes without damaging shared history or losing uncommitted work.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Local commit correction, public branch rollback, accidental staging and unwanted file edits.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Production hotfix already shared: use git revert to preserve history. Private local typo commit not pushed: reset may be suitable after checking working tree."
+          ]
+        },
+        {
+          "heading": "5. Reset, Revert and Restore ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Identify target state; 2) choose scope: working tree/index/branch history; 3) execute safe undo operation; 4) inspect status and history..",
+            "Internal behavior: restore changes working tree or index; revert creates a new commit reversing a prior commit; reset moves current branch ref and optionally updates index/worktree. --hard discards tracked uncommitted changes and is destructive."
+          ],
+          "bullets": [
+            "1. Identify target state",
+            "2. choose scope: working tree/index/branch history",
+            "3. execute safe undo operation",
+            "4. inspect status and history."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git restore file.txt\ngit restore --staged file.txt\ngit revert <commit-sha>\n# Local-only history movement; inspect before use:\ngit reset --soft HEAD~1\ngit reset --mixed HEAD~1\ngit reset --hard HEAD~1",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Production hotfix already shared: use git revert to preserve history. Private local typo commit not pushed: reset may be suitable after checking working tree.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Public/shared history: prefer revert. Local unpublished commits: reset may be acceptable. restore is for file/index state, not branch history.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: It adds a new commit that reverses the target change without rewriting existing shared commit history, so teammates can synchronize normally."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Move branch/index state, create inverse commits, or discard working-tree changes with the correct recovery command.. restore changes working tree or index; revert creates a new commit reversing a prior commit; reset moves current branch ref and optionally updates index/worktree. --hard discards tracked uncommitted changes and is destructive.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "In a disposable repo, create a commit and practice restore, revert and soft reset; inspect log/status after each.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Why is git revert safer for shared branches?",
+          "answer": "It adds a new commit that reverses the target change without rewriting existing shared commit history, so teammates can synchronize normally."
+        },
+        {
+          "question": "Reset, Revert and Restore use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "In a disposable repo, create a commit and practice restore, revert and soft reset; inspect log/status after each.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/stash": {
+      "summary": "Git Stash: Temporarily save uncommitted working-tree changes and restore them later.. Developer parks incomplete feature changes, switches to urgent hotfix branch, commits fix, then returns and restores WIP.",
+      "diagram": {
+        "title": "Git Stash workflow",
+        "nodes": [
+          "Uncommitted edits",
+          "stash snapshot",
+          "clean working tree",
+          "switch/perform task",
+          "apply or pop stash",
+          "verify changes."
+        ],
+        "explanation": "Git Stash workflow lo ee stages order lo execute avuthayi. stash can save tracked changes and optionally untracked files with -u. apply restores but keeps stash; pop applies and removes on success. Conflicts can occur. Stash is local and not a durable shared backup."
+      },
+      "sections": [
+        {
+          "heading": "1. Git Stash ante enti?",
+          "paragraphs": [
+            "Temporarily save uncommitted working-tree changes and restore them later. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Temporarily save uncommitted working-tree changes and restore them later.",
+            "DevOps use: Developer parks incomplete feature changes, switches to urgent hotfix branch, commits fix, then returns and restores WIP."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Urgent branch switch or hotfix may be needed before current work is ready to commit.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Switching context, pulling a clean branch and parking experimental edits.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Developer parks incomplete feature changes, switches to urgent hotfix branch, commits fix, then returns and restores WIP."
+          ]
+        },
+        {
+          "heading": "5. Git Stash ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Uncommitted edits; 2) stash snapshot; 3) clean working tree; 4) switch/perform task; 5) apply or pop stash; 6) verify changes..",
+            "Internal behavior: stash can save tracked changes and optionally untracked files with -u. apply restores but keeps stash; pop applies and removes on success. Conflicts can occur. Stash is local and not a durable shared backup."
+          ],
+          "bullets": [
+            "1. Uncommitted edits",
+            "2. stash snapshot",
+            "3. clean working tree",
+            "4. switch/perform task",
+            "5. apply or pop stash",
+            "6. verify changes."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "git status\ngit stash push -m 'WIP login form'\ngit stash list\ngit switch main\n# return and restore:\ngit switch feature/login\ngit stash apply stash@{0}\n# after verifying, remove stash:\ngit stash drop stash@{0}",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Developer parks incomplete feature changes, switches to urgent hotfix branch, commits fix, then returns and restores WIP.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Stash vs commit: stash is temporary local shelf, commit is named history. Stash may not include untracked files unless -u; ignored files require -a.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: No. Use git stash push -u to include untracked files. Ignored files require -a and should be handled carefully."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Temporarily save uncommitted working-tree changes and restore them later.. stash can save tracked changes and optionally untracked files with -u. apply restores but keeps stash; pop applies and removes on success. Conflicts can occur. Stash is local and not a durable shared backup.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Create tracked and untracked edits, stash normally then with -u, inspect stash list and restore.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Does git stash push include untracked files by default?",
+          "answer": "No. Use git stash push -u to include untracked files. Ignored files require -a and should be handled carefully."
+        },
+        {
+          "question": "Git Stash use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Create tracked and untracked edits, stash normally then with -u, inspect stash list and restore.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/gitignore": {
+      "summary": " .gitignore: Define untracked file patterns Git should ignore in a repository.. Next.js project ignores node_modules, build output and local .env while committing a sanitized .env.example with required variable names only.",
+      "diagram": {
+        "title": " .gitignore workflow",
+        "nodes": [
+          "Pattern in .gitignore",
+          "Git excludes matching untracked paths from status/add-all",
+          "tracked files remain tracked until explicitly removed from index."
+        ],
+        "explanation": " .gitignore workflow lo ee stages order lo execute avuthayi. Ignore patterns apply to untracked files. Adding a pattern does not untrack files already committed. git rm --cached removes from index but leaves local working copy. Never commit real credentials; rotate if exposed."
+      },
+      "sections": [
+        {
+          "heading": "1.  .gitignore ante enti?",
+          "paragraphs": [
+            "Define untracked file patterns Git should ignore in a repository. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Define untracked file patterns Git should ignore in a repository.",
+            "DevOps use: Next.js project ignores node_modules, build output and local .env while committing a sanitized .env.example with required variable names only."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Build outputs, local environment files, logs and secrets should not be committed accidentally.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Node/Python projects, Terraform state, IDE files, local credentials and generated artifacts.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Next.js project ignores node_modules, build output and local .env while committing a sanitized .env.example with required variable names only."
+          ]
+        },
+        {
+          "heading": "5.  .gitignore ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) Pattern in .gitignore; 2) Git excludes matching untracked paths from status/add-all; 3) tracked files remain tracked until explicitly removed from index..",
+            "Internal behavior: Ignore patterns apply to untracked files. Adding a pattern does not untrack files already committed. git rm --cached removes from index but leaves local working copy. Never commit real credentials; rotate if exposed."
+          ],
+          "bullets": [
+            "1. Pattern in .gitignore",
+            "2. Git excludes matching untracked paths from status/add-all",
+            "3. tracked files remain tracked until explicitly removed from index."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "cat > .gitignore <<'EOF'\nnode_modules/\n.next/\n.env\n*.log\n!.env.example\nEOF\ngit check-ignore -v .env\ngit status --short\n# If a file is already tracked:\ngit rm --cached .env",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Next.js project ignores node_modules, build output and local .env while committing a sanitized .env.example with required variable names only.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            ".gitignore is repository policy; global excludes apply user-wide. Ignore does not secure a secret already pushed; remove exposure and rotate credentials.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: Because it is already tracked. Remove it from the index with git rm --cached and commit that change; the local file remains on disk."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Define untracked file patterns Git should ignore in a repository.. Ignore patterns apply to untracked files. Adding a pattern does not untrack files already committed. git rm --cached removes from index but leaves local working copy. Never commit real credentials; rotate if exposed.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Create ignored log and env test files, inspect git check-ignore, then test tracked-file behavior in disposable repo.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Why is a file still showing after adding it to .gitignore?",
+          "answer": "Because it is already tracked. Remove it from the index with git rm --cached and commit that change; the local file remains on disk."
+        },
+        {
+          "question": " .gitignore use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Create ignored log and env test files, inspect git check-ignore, then test tracked-file behavior in disposable repo.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/ssh-keys": {
+      "summary": "Git SSH Keys: Authenticate Git operations using public-key cryptography and verified SSH host identity.. Engineer registers public key in account, clones private repo over SSH and uses organization access controls. CI should prefer short-lived credentials or narrowly scoped deploy keys.",
+      "diagram": {
+        "title": "Git SSH Keys workflow",
+        "nodes": [
+          "SSH client offers public-key identity",
+          "server validates authorized public key",
+          "encrypted authenticated session",
+          "Git transport operates over SSH."
+        ],
+        "explanation": "Git SSH Keys workflow lo ee stages order lo execute avuthayi. Private key stays secret on client; public key is registered with hosting account or deploy key. Host key verifies server identity. Use passphrase and agent; never upload private key to GitHub or commit it."
+      },
+      "sections": [
+        {
+          "heading": "1. Git SSH Keys ante enti?",
+          "paragraphs": [
+            "Authenticate Git operations using public-key cryptography and verified SSH host identity. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Authenticate Git operations using public-key cryptography and verified SSH host identity.",
+            "DevOps use: Engineer registers public key in account, clones private repo over SSH and uses organization access controls. CI should prefer short-lived credentials or narrowly scoped deploy keys."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Repeated password entry and embedded tokens are poor long-term authentication patterns. SSH keys enable secure, manageable Git remote access.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Developer workstations, automation runners and controlled access to Git hosting.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Engineer registers public key in account, clones private repo over SSH and uses organization access controls. CI should prefer short-lived credentials or narrowly scoped deploy keys."
+          ]
+        },
+        {
+          "heading": "5. Git SSH Keys ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) SSH client offers public-key identity; 2) server validates authorized public key; 3) encrypted authenticated session; 4) Git transport operates over SSH..",
+            "Internal behavior: Private key stays secret on client; public key is registered with hosting account or deploy key. Host key verifies server identity. Use passphrase and agent; never upload private key to GitHub or commit it."
+          ],
+          "bullets": [
+            "1. SSH client offers public-key identity",
+            "2. server validates authorized public key",
+            "3. encrypted authenticated session",
+            "4. Git transport operates over SSH."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "ssh-keygen -t ed25519 -C 'dev@example.com'\neval \"$(ssh-agent -s)\"\nssh-add ~/.ssh/id_ed25519\ncat ~/.ssh/id_ed25519.pub\nssh -T git@github.com\ngit remote set-url origin git@github.com:OWNER/REPO.git",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Engineer registers public key in account, clones private repo over SSH and uses organization access controls. CI should prefer short-lived credentials or narrowly scoped deploy keys.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "SSH authentication vs commit identity: key proves access; git user.email records commit metadata. Account SSH key and repository deploy key have different scope.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: Only the public key, commonly id_ed25519.pub. The private key id_ed25519 must remain secret and never be shared."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Authenticate Git operations using public-key cryptography and verified SSH host identity.. Private key stays secret on client; public key is registered with hosting account or deploy key. Host key verifies server identity. Use passphrase and agent; never upload private key to GitHub or commit it.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Generate a test key pair, inspect public-key fingerprint, configure SSH agent and test GitHub SSH authentication.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Which SSH key file should be added to GitHub?",
+          "answer": "Only the public key, commonly id_ed25519.pub. The private key id_ed25519 must remain secret and never be shared."
+        },
+        {
+          "question": "Git SSH Keys use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Generate a test key pair, inspect public-key fingerprint, configure SSH agent and test GitHub SSH authentication.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    },
+    "git-github/github-actions-overview": {
+      "summary": "GitHub Actions Overview: Automate repository workflows using events, workflow files, jobs, runners and reusable actions.. Pull request triggers lint/tests/build; merge to main may publish artifact; production deployment can require protected environment approval and OIDC cloud identity.",
+      "diagram": {
+        "title": "GitHub Actions Overview workflow",
+        "nodes": [
+          "GitHub event",
+          "workflow YAML selected",
+          "jobs scheduled on runners",
+          "steps execute actions/commands",
+          "status and artifacts reported."
+        ],
+        "explanation": "GitHub Actions Overview workflow lo ee stages order lo execute avuthayi. Workflow files live under .github/workflows and use YAML. Events trigger workflows; jobs run on runners; steps execute actions or shell commands. Pin third-party actions to trusted versions/SHAs, use least-privilege permissions and protect secrets."
+      },
+      "sections": [
+        {
+          "heading": "1. GitHub Actions Overview ante enti?",
+          "paragraphs": [
+            "Automate repository workflows using events, workflow files, jobs, runners and reusable actions. Git and GitHub workflow lo ee topic specific responsibility ni handle chesthundi. Simple ga, code changes ni safe ga create, track, share or integrate cheyadaniki ee concept use avuthundi.",
+            "Git local repository lo work chesthundi; GitHub remote collaboration and automation features provide chesthundi. Topic batti command local state ni change chesthunda, remote state ni affect chesthunda ani identify cheyyali."
+          ],
+          "bullets": [
+            "Main purpose: Automate repository workflows using events, workflow files, jobs, runners and reusable actions.",
+            "DevOps use: Pull request triggers lint/tests/build; merge to main may publish artifact; production deployment can require protected environment approval and OIDC cloud identity."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Builds, tests and releases should run consistently after code changes instead of relying on manual execution.",
+            "Ee practice follow avvakapothe accidental overwrites, unclear history, unreviewed changes, difficult rollback or inconsistent team workflows occur avvachu."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Pull request validation, main branch CI, release tagging, scheduled scans and deployment workflows.",
+            "Command run cheyadaniki mundu current branch, working tree status, remote target and whether operation rewrites or deletes history ani verify cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "Developer workstation, GitHub repositories, CI runners, infrastructure-as-code repositories and release pipelines lo ee concept apply avuthundi.",
+            "Pull request triggers lint/tests/build; merge to main may publish artifact; production deployment can require protected environment approval and OIDC cloud identity."
+          ]
+        },
+        {
+          "heading": "5. GitHub Actions Overview ela work avuthundi?",
+          "paragraphs": [
+            "Diagram lo flow ni step-by-step chudandi. 1) GitHub event; 2) workflow YAML selected; 3) jobs scheduled on runners; 4) steps execute actions/commands; 5) status and artifacts reported..",
+            "Internal behavior: Workflow files live under .github/workflows and use YAML. Events trigger workflows; jobs run on runners; steps execute actions or shell commands. Pin third-party actions to trusted versions/SHAs, use least-privilege permissions and protect secrets."
+          ],
+          "bullets": [
+            "1. GitHub event",
+            "2. workflow YAML selected",
+            "3. jobs scheduled on runners",
+            "4. steps execute actions/commands",
+            "5. status and artifacts reported."
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Kindha example ni disposable repository or test branch lo run cheyyandi. Placeholder values (<...>) ni mee lab values tho replace cheyyali. Destructive or history-rewriting commands ni shared branch meeda practice cheyyakandi.",
+            "Commands purpose: current state inspect → operation perform → output/history verify."
+          ],
+          "code": "mkdir -p .github/workflows\ncat > .github/workflows/ci.yml <<'EOF'\nname: CI\non:\n  pull_request:\n  push:\n    branches: [main]\njobs:\n  verify:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 22\n      - run: npm ci\n      - run: npm run lint --if-present\n      - run: npm run build\nEOF",
+          "note": "Secrets, personal access tokens and private SSH keys ni source code, command history, logs or commits lo store cheyyakandi. Production branch changes ki review and rollback plan follow avvali."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "Pull request triggers lint/tests/build; merge to main may publish artifact; production deployment can require protected environment approval and OIDC cloud identity.",
+            "Team workflow lo issue/ticket link, small commits, automated checks, reviewer approval and deployment evidence maintain cheyyadam traceability improve chesthundi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "GitHub Actions vs Jenkins: Actions is GitHub-native hosted/managed workflow system; Jenkins is independently operated automation server. Both need secure runners, secrets and pipeline controls.",
+            "Best practices: meaningful branch/commit names, small reviewable changes, clean staged diff, protected default branch, required CI checks, least-privilege credentials and regular remote synchronization."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview answer lo concept definition, why it exists, internal behavior, commands and one production example explain cheyyandi.",
+            "Sample answer: A runner is the execution environment that receives a job and runs its steps, commands and actions, then reports logs and results."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Remember: Automate repository workflows using events, workflow files, jobs, runners and reusable actions.. Workflow files live under .github/workflows and use YAML. Events trigger workflows; jobs run on runners; steps execute actions or shell commands. Pin third-party actions to trusted versions/SHAs, use least-privilege permissions and protect secrets.",
+            "Lab lo success case tho paatu failure/conflict case kuda observe cheyyandi; final repository status and history clean ga unnayo verify cheyyandi."
+          ],
+          "bullets": [
+            "Create a harmless CI workflow on a test repository, trigger it with a PR and inspect job/step logs.",
+            "git status and relevant diff/log output capture cheyyandi.",
+            "Same workflow lo one failure condition reproduce chesi safe recovery practice cheyyandi.",
+            "Team lo use chese review, permissions and rollback policy document cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "What is the role of a runner?",
+          "answer": "A runner is the execution environment that receives a job and runs its steps, commands and actions, then reports logs and results."
+        },
+        {
+          "question": "GitHub Actions Overview use chesthunappudu common risk enti?",
+          "answer": "Current repository state and operation impact verify cheyyakunda command run cheyadam. First status/diff/history inspect chesi, shared history or remote state affect ayye changes ki review and recovery plan follow chesthanu."
+        }
+      ],
+      "handsOn": [
+        "Create a harmless CI workflow on a test repository, trigger it with a PR and inspect job/step logs.",
+        "Commands ni test repository lo execute chesi output explain cheyyandi.",
+        "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
+      ]
+    }
+  }
 };
