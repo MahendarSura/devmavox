@@ -243,7 +243,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Create a file, set 640, test access as owner, group member and unrelated user in a disposable VM.",
-      "Execute safe inspection commands for File Permissions and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -365,7 +364,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Create shared directory; grant one named user read-only ACL; verify getfacl and test as that user.",
-      "Execute safe inspection commands for Ownership and ACL and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -492,7 +490,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Run five read-only commands on a test VM and write what each output tells about the host.",
-      "Execute safe inspection commands for Linux Commands and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -617,7 +614,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Take sample access log, count HTTP status codes with cut/sort/uniq, and explain each pipeline stage.",
-      "Execute safe inspection commands for Text Processing and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -743,7 +739,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Generate sample log; identify ERROR lines, replace a test string in a copy, and print first and ninth fields.",
-      "Execute safe inspection commands for Grep, Sed and Awk and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -871,7 +866,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Run a command with stdout and stderr separately redirected; use tee and explain exit status with pipefail.",
-      "Execute safe inspection commands for Pipes and Redirection and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -998,7 +992,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Write a health-check script that checks disk threshold and exits non-zero when threshold is crossed.",
-      "Execute safe inspection commands for Shell Scripting and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -1125,7 +1118,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Create a script that reads APP_ENV and ARTIFACT_VERSION, validates both, and prints deployment target.",
-      "Execute safe inspection commands for Bash Variables and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -1253,7 +1245,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Loop over test host list and report reachable/unreachable without making configuration changes.",
-      "Execute safe inspection commands for Conditions and Loops and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -1380,7 +1371,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Start a harmless sleep process, inspect PID/PPID, send TERM, and verify it exited.",
-      "Execute safe inspection commands for Processes and Signals and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -1508,7 +1498,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Create a simple systemd service for a harmless script in a VM; start, enable, inspect and disable it.",
-      "Execute safe inspection commands for Systemd and Services and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -1633,7 +1622,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Identify package manager on Ubuntu and RHEL-like test VMs; inspect package version without installing.",
-      "Execute safe inspection commands for Package Management and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -1756,7 +1744,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Compare `/etc/os-release` and package query commands on Ubuntu and Amazon Linux; document differences.",
-      "Execute safe inspection commands for APT and YUM/DNF and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -1882,7 +1869,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Disposable loopback disk or VM disk meeda lsblk, blkid, df inspect cheyandi; destructive formatting optional and only disposable disk.",
-      "Execute safe inspection commands for Disk and Partition Management and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -2006,7 +1992,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Lab VM lo two virtual disks tho PV/VG/LV create chesi mount and extend; cleanup only after unmount.",
-      "Execute safe inspection commands for LVM and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -2133,7 +2118,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Create temporary filesystem mount in VM, add UUID entry to test fstab, validate and safely remove entry.",
-      "Execute safe inspection commands for Mounting and fstab and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -2263,7 +2247,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Diagnose one unreachable test service using ip, getent, ss and curl; record which layer fails.",
-      "Execute safe inspection commands for Networking Commands and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -2391,7 +2374,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Create disposable VM SSH key login and SCP a harmless file; verify host key prompt and file checksum.",
-      "Execute safe inspection commands for SSH and SCP and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -2517,7 +2499,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Schedule a harmless script every minute in lab, capture output, then remove crontab entry.",
-      "Execute safe inspection commands for Cron and Scheduling and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -2643,7 +2624,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Generate logger event, find it with journalctl, filter by time and explain priority.",
-      "Execute safe inspection commands for Logs and journalctl and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -2770,7 +2750,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Run controlled CPU/memory test in VM and observe top, free, vmstat; stop test safely.",
-      "Execute safe inspection commands for Memory and CPU Monitoring and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -2900,7 +2879,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Audit a disposable Linux VM: users, sudo rights, SSH settings, listening ports and pending updates.",
-      "Execute safe inspection commands for Linux Security and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -3031,7 +3009,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "In a disposable VM allow a test port only from a private subnet; verify allowed and denied connection.",
-      "Execute safe inspection commands for Firewall Basics and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -3164,7 +3141,6 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "Simulate stopped test service and full temporary filesystem in disposable lab; diagnose without deleting evidence.",
-      "Execute safe inspection commands for Troubleshooting Linux and explain each output field.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   }
