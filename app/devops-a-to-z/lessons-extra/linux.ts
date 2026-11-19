@@ -975,7 +975,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Write a health-check script that checks disk threshold and exits non-zero when threshold is crossed.",
-          "Use bash -n script.sh for syntax validation and shellcheck for static analysis; quote variables such as "$target" to prevent word splitting.",
+          "Use bash -n script.sh for syntax validation and shellcheck for static analysis; quote variables such as \"$target\" to prevent word splitting.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -1228,7 +1228,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Loop over test host list and report reachable/unreachable without making configuration changes.",
-          "Use [[ -f "$file" ]] to test a file, and quote loop variables; avoid parsing ls output because filenames may contain spaces or newlines.",
+          "Use [[ -f \"$file\" ]] to test a file, and quote loop variables; avoid parsing ls output because filenames may contain spaces or newlines.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
