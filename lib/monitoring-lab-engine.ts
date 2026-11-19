@@ -139,7 +139,8 @@ const baseLogs: LogRow[] = [
   { timestamp: "12:06:11.000", level: "ERROR", service: "gateway", request_id: "req-1045", trace_id: "tr-8f24", message: "HTTP 504 returned to client" },
 ];
 export function runLogsLab(query: string, incident = false, recovered = false): LabResult {
-  const rows = incident ? [...baseLogs, { timestamp: "12:07:02.001", level: "ERROR", service: "payment-db", request_id: "req-1050", trace_id: "tr-8f30", message: "ConnectionTimeout after 5000ms" }, { timestamp: "12:07:02.020", level: "ERROR", service: "checkout", request_id: "req-1050", trace_id: "tr-8f30", message: "HTTP 503 returned to client" }] : baseLogs;\n  const recoveredLogs = recovered ? [...rows, { timestamp: "12:08:00.000", level: "INFO", service: "checkout", request_id: "req-1042", trace_id: "tr-8f21", message: "Health check passed after recovery" }] : rows;
+  const rows = incident ? [...baseLogs, { timestamp: "12:07:02.001", level: "ERROR", service: "payment-db", request_id: "req-1050", trace_id: "tr-8f30", message: "ConnectionTimeout after 5000ms" }, { timestamp: "12:07:02.020", level: "ERROR", service: "checkout", request_id: "req-1050", trace_id: "tr-8f30", message: "HTTP 503 returned to client" }] : baseLogs;
+  const recoveredLogs = recovered ? [...rows, { timestamp: "12:08:00.000", level: "INFO", service: "checkout", request_id: "req-1042", trace_id: "tr-8f21", message: "Health check passed after recovery" }] : rows;
   const filters: Record<string, string> = {}; const terms: string[] = [];
   query.trim().split(/\s+/).filter(Boolean).forEach((token) => {
     const match = token.match(/^([\w]+)(=|:)(.+)$/);
@@ -150,7 +151,9 @@ export function runLogsLab(query: string, incident = false, recovered = false): 
   const unknown = Object.keys(filters).filter((key) => !aliases[key] && key !== "after" && key !== "before");
   if (unknown.length) return { ok: false, output: "Invalid filter field: " + unknown.join(", "), detail: "Supported fields: level, severity, service, request_id, trace_id, message. Example: level=ERROR request_id=req-1042", evidence: {} };
   const matched = recoveredLogs.filter((row) => Object.entries(filters).every(([key, value]) => {
-    if (key === "after") return row.timestamp > value;\n    if (key === "before") return row.timestamp < value;\n    const field = aliases[key]; return field ? row[field].toLowerCase().includes(value.toLowerCase()) : false;
+    if (key === "after") return row.timestamp > value;
+    if (key === "before") return row.timestamp < value;
+    const field = aliases[key]; return field ? row[field].toLowerCase().includes(value.toLowerCase()) : false;
   }) && terms.every((term) => (row.message + " " + row.service + " " + row.level).toLowerCase().includes(term)));
   const rootCause = matched.some((row) => row.service === "payment-db" && /DatabaseTimeout|ConnectionTimeout/.test(row.message));
   const has503 = matched.some((row) => row.message.includes("HTTP 503"));
