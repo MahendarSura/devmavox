@@ -262,6 +262,79 @@ export default function DevOpsCopilotWorkspace({ feature: _feature, slug: _slug 
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{tracks.map(([n,title,tools,desc]) => <article key={n} className="rounded-2xl border border-white/10 bg-gradient-to-br from-slate-800 to-slate-900 p-4"><span className="font-mono text-xs font-black text-amber-300">{n} / LEARNING STAGE</span><h3 className="mt-3 font-extrabold">{title}</h3><p className="mt-2 text-[11px] font-bold leading-5 text-cyan-200">{tools}</p><p className="mt-2 min-h-12 text-xs leading-5 text-slate-400">{desc}</p><button type="button" onClick={() => askAI(makePrompt(title, `Teach these areas: ${tools}. ${desc} Include a topic-by-topic curriculum, hands-on labs, checkpoints and projects.`))} className="mt-4 rounded-lg border border-amber-300/30 bg-amber-300/10 px-3 py-2 text-xs font-bold text-amber-200 hover:bg-amber-300/20">Ask AI to teach this stage ↗</button></article>)}</div>
         </section>
 
+        <section className="border-t border-white/10 py-9">
+          <div className="mb-6"><p className="text-[10px] font-black uppercase tracking-[.22em] text-cyan-300">AI-native DevOps · fundamentals</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">What makes DevOps AI-native?</h2><p className="mt-2 max-w-4xl text-sm leading-6 text-slate-400">AI-native DevOps treats AI as a capability across development and operations, not as a replacement for engineers. Students learn how assistants and agents work alongside people, with clear permissions, evidence and approval.</p></div>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {[
+              ["Understand context","Use repository files, issue descriptions, pipeline logs, telemetry and runbooks as task context. Learn what data an assistant can and cannot see."],
+              ["Analyse data and detect patterns","Find recurring test failures, unusual metrics, log patterns, deployment regressions and capacity trends."],
+              ["Recommend actions","Explain evidence, compare options, identify risks and propose commands or configuration changes for review."],
+              ["Perform approved routine tasks","Automate bounded, reversible tasks only when tool access, permissions and explicit approval are configured."],
+              ["Learn from past outcomes","Use incident reviews, resolved tickets and feedback to improve runbooks and recommendations; protect sensitive data."],
+              ["Work with engineers","Keep engineers accountable for design decisions, security, production approvals and final outcomes."]
+            ].map(([title,desc],i)=><article key={title} className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#172b45] to-[#111a31] p-5"><span className="font-mono text-xs font-black text-cyan-300">AI CAPABILITY 0{i+1}</span><h3 className="mt-3 font-extrabold">{title}</h3><p className="mt-2 text-xs leading-6 text-slate-400">{desc}</p><button type="button" onClick={()=>askAI(makePrompt(title,desc))} className="mt-4 rounded-lg border border-cyan-300/30 bg-cyan-300/10 px-3 py-2 text-xs font-bold text-cyan-200">Ask AI ↗</button></article>)}
+          </div>
+        </section>
+
+        <section className="border-t border-white/10 py-9">
+          <div className="mb-6"><p className="text-[10px] font-black uppercase tracking-[.22em] text-orange-300">Agentic SDLC · end-to-end pipeline</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">See where AI agents fit in a real delivery pipeline</h2><p className="mt-2 text-sm text-slate-400">Follow a change from planning to operations. Each stage connects to familiar engineering tools and has a human checkpoint.</p></div>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+            {[
+              ["Plan · intent","Jira · Linear · GitHub Issues","Planning agent turns a request into tasks, acceptance criteria and risks. Developer or product owner reviews the plan."],
+              ["Code · implementation","GitHub · Copilot · code assistants","Code agent explains a repository, drafts changes and tests, then opens a proposed pull request for review."],
+              ["Test · quality gates","GitHub Actions · Jenkins · Snyk","Test agent analyses build and test results, suggests missing tests and highlights security findings."],
+              ["Deploy · release","Docker · Kubernetes · Argo CD","Deployment agent checks manifests, rollout health and release signals; approval gates control production rollout."],
+              ["Operate · feedback","Datadog · Grafana · PagerDuty","SRE agent correlates alerts, metrics, logs and traces, supports incident triage and feeds lessons back into planning."]
+            ].map(([stage,tools,desc],i)=><article key={stage} className="rounded-2xl border border-white/10 bg-[#14233a] p-4"><span className="font-mono text-xs font-black text-orange-300">PIPELINE 0{i+1}</span><h3 className="mt-3 font-extrabold">{stage}</h3><p className="mt-2 text-xs font-bold leading-5 text-cyan-200">{tools}</p><p className="mt-3 text-xs leading-6 text-slate-400">{desc}</p><button type="button" onClick={()=>askAI(makePrompt(stage,desc+" Tools to study: "+tools))} className="mt-4 rounded-lg bg-gradient-to-r from-cyan-300 to-violet-300 px-3 py-2 text-xs font-black text-slate-950">Explore this stage ↗</button></article>)}
+          </div>
+          <div className="mt-5 rounded-2xl border border-cyan-300/20 bg-cyan-300/5 p-5"><h3 className="font-extrabold text-cyan-100">The platform capabilities behind the agents</h3><div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">{[
+            ["Engineering context","Repositories, tickets, service catalogues, runbooks and environment metadata."],
+            ["Agent orchestration","Choose the right agent, sequence tasks, pass context and handle failures."],
+            ["Policies & governance","Identity, least privilege, policy checks, approval gates and audit trails."],
+            ["Observability & feedback","Logs, metrics, traces, evaluation, outcomes and continuous feedback."],
+            ["Tool integrations","Connect approved CI/CD, cloud, source control, monitoring and ticketing tools."],
+            ["Human in the loop","People review plans, approve sensitive actions and own production decisions."]
+          ].map(([title,desc])=><div key={title} className="rounded-xl border border-white/10 bg-slate-950/40 p-3"><h4 className="text-sm font-bold">{title}</h4><p className="mt-1 text-xs leading-5 text-slate-400">{desc}</p><button type="button" onClick={()=>askAI(makePrompt(title,desc))} className="mt-2 text-xs font-bold text-cyan-200">Ask AI ↗</button></div>)}</div></div>
+        </section>
+
+        <section className="border-t border-white/10 py-9">
+          <div className="mb-6"><p className="text-[10px] font-black uppercase tracking-[.22em] text-violet-300">How AI is changing DevOps · learning path</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">From AI fundamentals to autonomous operations</h2><p className="mt-2 text-sm text-slate-400">A practical progression inspired by the learning-path reference. Learn fundamentals before giving agents access to tools.</p></div>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {[
+              ["01 · Understand AI basics","AI vs ML vs DL · LLMs · GenAI in DevOps","Learn what models can do, hallucinations, context windows, prompt design, privacy and how to verify answers."],
+              ["02 · AI in CI/CD","GitHub Copilot · AI code review · pipeline automation","Use AI to explain pipeline files, draft tests, interpret build failures and improve quality gates."],
+              ["03 · AI in monitoring","Log analysis · anomaly detection · predictive alerts","Explore AI-assisted metrics, logs and traces, alert correlation and anomaly investigation."],
+              ["04 · AI in incident response","Incident triage · RCA assistance · chatops","Practise incident summaries, evidence timelines, hypotheses and human-approved remediation."],
+              ["05 · Build DevOps agents","MCP · tool calling · agent workflows","Create a read-only assistant, define tools and permissions, evaluate outputs and add audit logs."],
+              ["06 · Advanced AI operations","AIOps platforms · Kubernetes AI · cloud optimisation","Study production governance, evaluation, observability, cost, reliability and controlled automation."]
+            ].map(([stage,topics,desc])=><article key={stage} className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#202044] to-[#111a31] p-5"><span className="text-xs font-black text-violet-300">{stage}</span><h3 className="mt-3 font-extrabold">{topics}</h3><p className="mt-2 text-xs leading-6 text-slate-400">{desc}</p><button type="button" onClick={()=>askAI(makePrompt(stage,desc+" Topics: "+topics))} className="mt-4 rounded-lg border border-violet-300/30 bg-violet-300/10 px-3 py-2 text-xs font-bold text-violet-200">Start this learning stage ↗</button></article>)}
+          </div>
+        </section>
+
+        <section className="border-t border-white/10 py-9">
+          <div className="mb-6"><p className="text-[10px] font-black uppercase tracking-[.22em] text-rose-300">AI agents · practical build ideas</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">Four agents DevOps students can design and practise</h2></div>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{[
+            ["Incident response agent","Detect an alert, gather approved read-only context, build an incident timeline and suggest a mitigation."],
+            ["CI/CD pipeline agent","Monitor pipeline outcomes, explain failed stages, suggest fixes and prepare a pull request or ticket."],
+            ["Cloud cost optimisation agent","Analyse billing and utilisation, detect idle resources and estimate savings without changing infrastructure."],
+            ["Security & compliance agent","Review vulnerabilities, policy violations, misconfigurations, secrets exposure and software supply-chain risks."]
+          ].map(([title,desc],i)=><article key={title} className="rounded-2xl border border-rose-300/20 bg-gradient-to-br from-[#2a203e] to-[#111a31] p-4"><span className="text-xs font-black text-rose-300">AGENT 0{i+1}</span><h3 className="mt-3 font-extrabold">{title}</h3><p className="mt-2 text-xs leading-6 text-slate-400">{desc}</p><button type="button" onClick={()=>askAI(makePrompt(title,desc+" Teach architecture, data sources, tool permissions, evaluation, failure handling and a safe student lab."))} className="mt-4 rounded-lg bg-gradient-to-r from-cyan-300 to-violet-300 px-3 py-2 text-xs font-black text-slate-950">Build with AI ↗</button></article>)}</div>
+        </section>
+
+        <section className="border-t border-white/10 py-9">
+          <div className="mb-6"><p className="text-[10px] font-black uppercase tracking-[.22em] text-amber-300">AI tool categories · expanded map</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">Explore the complete AI tools landscape</h2><p className="mt-2 text-sm text-slate-400">Learn what each category is for, where it fits in the lifecycle and how to evaluate it. Product names are examples; confirm current capabilities with vendors.</p></div>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{[
+            ["AI navigators","ChatGPT · Claude · Microsoft Copilot · Gemini · Perplexity","Research, explain, compare and plan."],
+            ["AI buddies","GitHub Copilot · cloud provider copilots · platform assistants","Context-aware help in repositories and cloud consoles."],
+            ["VS Code extensions","Code completion · IDE chat · code review · test generation","Work with code and configuration inside the editor."],
+            ["High-level design","Architecture modelling · diagram assistants · system design copilots","Explore components, flows, dependencies and trade-offs."],
+            ["Create and edit","Code generation · YAML generation · documentation · image/diagram creation","Draft and refine technical artefacts with human review."],
+            ["Deployment cycle","Build · test · release · deploy · progressive delivery · rollback","Understand and improve each delivery stage."],
+            ["Monitoring","Prometheus · Grafana · Datadog · Dynatrace · OpenTelemetry","Observe systems, detect anomalies and investigate incidents."],
+            ["Security","SAST · DAST · SCA · SBOM · secrets scanning · cloud posture","Find and prioritise vulnerabilities and compliance risks."]
+          ].map(([title,tools,desc],i)=><article key={title} className="rounded-2xl border border-white/10 bg-[#151d35] p-5"><span className="font-mono text-xs font-black text-amber-300">CATEGORY 0{i+1}</span><h3 className="mt-2 font-extrabold">{title}</h3><p className="mt-2 text-xs font-bold leading-5 text-cyan-200">{tools}</p><p className="mt-2 text-xs leading-6 text-slate-400">{desc}</p><button type="button" onClick={()=>askAI(makePrompt(title,desc+" Explain and compare: "+tools))} className="mt-4 rounded-lg border border-amber-300/30 bg-amber-300/10 px-3 py-2 text-xs font-bold text-amber-200">Ask AI about category ↗</button></article>)}</div>
+        </section>
+
         <section className="mb-8 rounded-3xl border border-emerald-300/20 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-violet-500/10 p-6 sm:p-8">
           <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center"><div><p className="text-[10px] font-black uppercase tracking-[.22em] text-emerald-200">Learn safely · Think independently</p><h2 className="mt-2 text-2xl font-black">AI suggests. You understand. You verify. You decide.</h2><p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">Use read-only diagnostics first. Never paste passwords, tokens or customer data. Test generated commands and configurations in a safe lab. Require human review and approval before production changes.</p></div><button type="button" onClick={() => askAI("Create a personal 12-week DevOps learning plan for me. Start by assessing my current skills, available study time and computer/lab access. Include weekly goals, hands-on labs, projects, revision and assessments.")} className="rounded-xl bg-gradient-to-r from-emerald-300 to-cyan-300 px-5 py-3 text-sm font-black text-slate-950">Create my AI learning plan ↗</button></div>
         </section>
