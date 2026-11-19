@@ -5883,4 +5883,333 @@ export const atoZLessons: Record<string, AtoZLesson> = {
       ]
     }
   }
+  ...{
+    "git-github/git-flow": {
+      "summary": "Git Flow: A branching model using main, develop, feature, release and hotfix branches to coordinate planned releases. A team releases monthly: feature work integrates in develop, QA validates release/2.0, then main receives the release tag. An urgent production fix is handled in a hotfix branch.",
+      "diagram": {
+        "title": "Git Flow workflow",
+        "nodes": [
+          "main stable history",
+          "develop integration",
+          "feature branches",
+          "release branch testing",
+          "merge and tag main",
+          "hotfix for urgent production patch"
+        ],
+        "explanation": "Feature branches usually start from develop; release branches stabilize a candidate; hotfix branches start from production main and should be merged back into develop too. Exact merge-back policy must be documented. Workflow stages: main stable history → develop integration → feature branches → release branch testing → merge and tag main → hotfix for urgent production patch."
+      },
+      "sections": [
+        {
+          "heading": "1. Git Flow ante enti?",
+          "paragraphs": [
+            "A branching model using main, develop, feature, release and hotfix branches to coordinate planned releases.",
+            "Git history and branch behavior ni ardham chesukunte team changes ni safe ga plan, integrate and recover cheyochu."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Teams with scheduled releases need parallel feature development, a stabilization window and a clear emergency-fix path.",
+            "Clear branching policy lekapothe merge conflicts, delayed integration and unclear release state increase avuthayi."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Use it when releases are planned and teams maintain release candidates or multiple supported versions.",
+            "Operation mundu branch name, working tree, remote state and repository protection policy inspect cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "GitHub repositories, application development, infrastructure code, release engineering and CI/CD pipelines lo use chestharu.",
+            "A team releases monthly: feature work integrates in develop, QA validates release/2.0, then main receives the release tag. An urgent production fix is handled in a hotfix branch."
+          ]
+        },
+        {
+          "heading": "5. Git Flow ela work avuthundi?",
+          "paragraphs": [
+            "Flow: 1. main stable history; 2. develop integration; 3. feature branches; 4. release branch testing; 5. merge and tag main; 6. hotfix for urgent production patch.",
+            "Feature branches usually start from develop; release branches stabilize a candidate; hotfix branches start from production main and should be merged back into develop too. Exact merge-back policy must be documented."
+          ],
+          "bullets": [
+            "main stable history",
+            "develop integration",
+            "feature branches",
+            "release branch testing",
+            "merge and tag main",
+            "hotfix for urgent production patch"
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Commands ni disposable repository lo practice cheyyandi. Existing team branch policy ni follow cheyyandi; shared history ni force rewrite cheyyakandi."
+          ],
+          "code": "git switch develop\ngit switch -c feature/payment\n# finish feature and merge through a PR into develop\ngit switch -c release/2.0 develop\n# validate, then merge release into main and tag it\ngit switch main\ngit switch -c hotfix/payment-timeout",
+          "note": "Production branches protected ga unchandi; merge mundu tests, review and rollback plan verify cheyyandi."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "A team releases monthly: feature work integrates in develop, QA validates release/2.0, then main receives the release tag. An urgent production fix is handled in a hotfix branch.",
+            "Release evidence lo commit SHA, PR link, CI run and artifact version record cheyyandi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Git Flow uses longer-lived branches and release branches. Trunk-based development favors short-lived branches and frequent integration. Git Flow adds coordination overhead.",
+            "Small commits, short-lived branches where possible, required checks, protected main and documented recovery steps follow avvali."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview lo definition, workflow, trade-offs and practical production example explain cheyyandi. Sample answer: It can help teams with scheduled releases, formal stabilization periods and parallel maintenance of production releases, but it adds branch management overhead."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Feature branches usually start from develop; release branches stabilize a candidate; hotfix branches start from production main and should be merged back into develop too. Exact merge-back policy must be documented.",
+            "In a disposable repository simulate develop, feature, release and hotfix branches; draw which branches must receive each fix."
+          ],
+          "bullets": [
+            "In a disposable repository simulate develop, feature, release and hotfix branches; draw which branches must receive each fix.",
+            "git status and git log output capture cheyyandi.",
+            "Failure case simulate chesi safe recovery verify cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "When is Git Flow useful?",
+          "answer": "It can help teams with scheduled releases, formal stabilization periods and parallel maintenance of production releases, but it adds branch management overhead."
+        }
+      ],
+      "handsOn": [
+        "In a disposable repository simulate develop, feature, release and hotfix branches; draw which branches must receive each fix.",
+        "Workflow diagram ni own words lo explain cheyyandi.",
+        "One failure scenario create chesi recovery steps document cheyyandi."
+      ]
+    },
+    "git-github/trunk-based-development": {
+      "summary": "Trunk-Based Development: A collaboration model where developers integrate small changes frequently into one shared trunk, usually main. A team merges several small PRs daily. Incomplete functionality stays behind a feature flag, so main remains deployable while development continues.",
+      "diagram": {
+        "title": "Trunk-Based Development workflow",
+        "nodes": [
+          "Small change on short-lived branch",
+          "automated tests",
+          "merge quickly",
+          "deploy independently or behind feature flag"
+        ],
+        "explanation": "Trunk-based development emphasizes short-lived branches, small commits, strong CI and feature flags for incomplete functionality. Direct pushes to main are a policy choice, not a requirement. Workflow stages: Small change on short-lived branch → automated tests → merge quickly → deploy independently or behind feature flag."
+      },
+      "sections": [
+        {
+          "heading": "1. Trunk-Based Development ante enti?",
+          "paragraphs": [
+            "A collaboration model where developers integrate small changes frequently into one shared trunk, usually main.",
+            "Git history and branch behavior ni ardham chesukunte team changes ni safe ga plan, integrate and recover cheyochu."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Long-lived branches create integration drift and painful merges. Frequent integration keeps changes small and feedback fast.",
+            "Clear branching policy lekapothe merge conflicts, delayed integration and unclear release state increase avuthayi."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Use it with continuous integration, reliable automated tests, feature flags and frequent releases.",
+            "Operation mundu branch name, working tree, remote state and repository protection policy inspect cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "GitHub repositories, application development, infrastructure code, release engineering and CI/CD pipelines lo use chestharu.",
+            "A team merges several small PRs daily. Incomplete functionality stays behind a feature flag, so main remains deployable while development continues."
+          ]
+        },
+        {
+          "heading": "5. Trunk-Based Development ela work avuthundi?",
+          "paragraphs": [
+            "Flow: 1. Small change on short-lived branch; 2. automated tests; 3. merge quickly; 4. deploy independently or behind feature flag.",
+            "Trunk-based development emphasizes short-lived branches, small commits, strong CI and feature flags for incomplete functionality. Direct pushes to main are a policy choice, not a requirement."
+          ],
+          "bullets": [
+            "Small change on short-lived branch",
+            "automated tests",
+            "merge quickly",
+            "deploy independently or behind feature flag"
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Commands ni disposable repository lo practice cheyyandi. Existing team branch policy ni follow cheyyandi; shared history ni force rewrite cheyyakandi."
+          ],
+          "code": "git switch main\ngit pull --ff-only origin main\ngit switch -c feature/small-change\n# make a small change\ngit add .\ngit commit -m 'Add small feature'\ngit push -u origin feature/small-change\n# open a fast PR, merge after required checks",
+          "note": "Production branches protected ga unchandi; merge mundu tests, review and rollback plan verify cheyyandi."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "A team merges several small PRs daily. Incomplete functionality stays behind a feature flag, so main remains deployable while development continues.",
+            "Release evidence lo commit SHA, PR link, CI run and artifact version record cheyyandi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "Compared with Git Flow, trunk-based development reduces long-lived branch complexity but requires reliable automated tests, review discipline and feature-flag practices.",
+            "Small commits, short-lived branches where possible, required checks, protected main and documented recovery steps follow avvali."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview lo definition, workflow, trade-offs and practical production example explain cheyyandi. Sample answer: They reduce divergence from main, make conflicts smaller and provide rapid integration feedback. Automated tests and feature flags help keep the trunk stable."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "Trunk-based development emphasizes short-lived branches, small commits, strong CI and feature flags for incomplete functionality. Direct pushes to main are a policy choice, not a requirement.",
+            "Simulate two short-lived feature branches, merge one quickly, update the other and compare conflict size with a long-lived branch."
+          ],
+          "bullets": [
+            "Simulate two short-lived feature branches, merge one quickly, update the other and compare conflict size with a long-lived branch.",
+            "git status and git log output capture cheyyandi.",
+            "Failure case simulate chesi safe recovery verify cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "Why use short-lived branches in trunk-based development?",
+          "answer": "They reduce divergence from main, make conflicts smaller and provide rapid integration feedback. Automated tests and feature flags help keep the trunk stable."
+        }
+      ],
+      "handsOn": [
+        "Simulate two short-lived feature branches, merge one quickly, update the other and compare conflict size with a long-lived branch.",
+        "Workflow diagram ni own words lo explain cheyyandi.",
+        "One failure scenario create chesi recovery steps document cheyyandi."
+      ]
+    },
+    "git-github/git-troubleshooting": {
+      "summary": "Git Troubleshooting: Diagnose common Git problems involving authentication, rejected pushes, detached HEAD, conflicts, large files and incorrect history. CI push fails because main is protected. Engineer creates a feature branch and PR instead of force-pushing. For a non-fast-forward rejection, fetch and inspect both sides before integrating.",
+      "diagram": {
+        "title": "Git Troubleshooting workflow",
+        "nodes": [
+          "Read exact error",
+          "inspect status branch remotes and history",
+          "identify mismatch",
+          "choose non-destructive repair",
+          "verify"
+        ],
+        "explanation": "A rejected push may mean the remote has commits missing locally or branch protection blocks direct pushes. Detached HEAD means HEAD points directly to a commit; create a branch if new work must be retained. Authentication errors require checking URL, credential helper, SSH key and permissions. Workflow stages: Read exact error → inspect status branch remotes and history → identify mismatch → choose non-destructive repair → verify."
+      },
+      "sections": [
+        {
+          "heading": "1. Git Troubleshooting ante enti?",
+          "paragraphs": [
+            "Diagnose common Git problems involving authentication, rejected pushes, detached HEAD, conflicts, large files and incorrect history.",
+            "Git history and branch behavior ni ardham chesukunte team changes ni safe ga plan, integrate and recover cheyochu."
+          ]
+        },
+        {
+          "heading": "2. Enduku avasaram?",
+          "paragraphs": [
+            "Git errors often reflect repository state or remote policy; blindly forcing commands can lose work or overwrite shared commits.",
+            "Clear branching policy lekapothe merge conflicts, delayed integration and unclear release state increase avuthayi."
+          ]
+        },
+        {
+          "heading": "3. Eppudu use cheyali?",
+          "paragraphs": [
+            "Use this workflow when clone, fetch, pull, push, checkout, merge or CI checkout behaves unexpectedly.",
+            "Operation mundu branch name, working tree, remote state and repository protection policy inspect cheyyali."
+          ]
+        },
+        {
+          "heading": "4. Ekkada use chestham?",
+          "paragraphs": [
+            "GitHub repositories, application development, infrastructure code, release engineering and CI/CD pipelines lo use chestharu.",
+            "CI push fails because main is protected. Engineer creates a feature branch and PR instead of force-pushing. For a non-fast-forward rejection, fetch and inspect both sides before integrating."
+          ]
+        },
+        {
+          "heading": "5. Git Troubleshooting ela work avuthundi?",
+          "paragraphs": [
+            "Flow: 1. Read exact error; 2. inspect status branch remotes and history; 3. identify mismatch; 4. choose non-destructive repair; 5. verify.",
+            "A rejected push may mean the remote has commits missing locally or branch protection blocks direct pushes. Detached HEAD means HEAD points directly to a commit; create a branch if new work must be retained. Authentication errors require checking URL, credential helper, SSH key and permissions."
+          ],
+          "bullets": [
+            "Read exact error",
+            "inspect status branch remotes and history",
+            "identify mismatch",
+            "choose non-destructive repair",
+            "verify"
+          ]
+        },
+        {
+          "heading": "6. Practical commands and example",
+          "paragraphs": [
+            "Commands ni disposable repository lo practice cheyyandi. Existing team branch policy ni follow cheyyandi; shared history ni force rewrite cheyyakandi."
+          ],
+          "code": "git status --short --branch\ngit remote -v\ngit branch -avv\ngit log --oneline --graph --decorate -15\ngit fetch origin\n# inspect divergence before integrating:\ngit log --oneline HEAD..origin/main\ngit log --oneline origin/main..HEAD",
+          "note": "Production branches protected ga unchandi; merge mundu tests, review and rollback plan verify cheyyandi."
+        },
+        {
+          "heading": "7. Real-time DevOps scenario",
+          "paragraphs": [
+            "CI push fails because main is protected. Engineer creates a feature branch and PR instead of force-pushing. For a non-fast-forward rejection, fetch and inspect both sides before integrating.",
+            "Release evidence lo commit SHA, PR link, CI run and artifact version record cheyyandi."
+          ]
+        },
+        {
+          "heading": "8. Comparison and best practices",
+          "paragraphs": [
+            "fetch downloads remote state without integrating; pull integrates it. Force push rewrites remote branch history; normal push does not. Avoid force-push on shared branches; use --force-with-lease only with team approval.",
+            "Small commits, short-lived branches where possible, required checks, protected main and documented recovery steps follow avvali."
+          ]
+        },
+        {
+          "heading": "9. Interview explanation",
+          "paragraphs": [
+            "Interview lo definition, workflow, trade-offs and practical production example explain cheyyandi. Sample answer: First inspect status and remote tracking state, then fetch origin and compare local and remote commits. Integrate remote changes with the team's merge or rebase policy, resolve conflicts, run tests and push. If branch protection rejected it, use a PR."
+          ]
+        },
+        {
+          "heading": "10. Important points and hands-on practice",
+          "paragraphs": [
+            "A rejected push may mean the remote has commits missing locally or branch protection blocks direct pushes. Detached HEAD means HEAD points directly to a commit; create a branch if new work must be retained. Authentication errors require checking URL, credential helper, SSH key and permissions.",
+            "Use a remote bare repository and two clones to reproduce a non-fast-forward rejection; fetch, inspect divergence and integrate safely."
+          ],
+          "bullets": [
+            "Use a remote bare repository and two clones to reproduce a non-fast-forward rejection; fetch, inspect divergence and integrate safely.",
+            "git status and git log output capture cheyyandi.",
+            "Failure case simulate chesi safe recovery verify cheyyandi."
+          ]
+        }
+      ],
+      "interview": [
+        {
+          "question": "How do you troubleshoot a rejected Git push?",
+          "answer": "First inspect status and remote tracking state, then fetch origin and compare local and remote commits. Integrate remote changes with the team's merge or rebase policy, resolve conflicts, run tests and push. If branch protection rejected it, use a PR."
+        }
+      ],
+      "handsOn": [
+        "Use a remote bare repository and two clones to reproduce a non-fast-forward rejection; fetch, inspect divergence and integrate safely.",
+        "Workflow diagram ni own words lo explain cheyyandi.",
+        "One failure scenario create chesi recovery steps document cheyyandi."
+      ]
+    }
+  }
 };
