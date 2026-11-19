@@ -51,11 +51,15 @@ export default function MonitoringPlaygroundHome({ feature }: { feature: Feature
                 <a href="#quick-start" className="rounded-full border border-white/25 bg-white/5 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10">Explore hands-on topics　↗</a>
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-black/20 p-3 backdrop-blur sm:gap-3 sm:p-4">
-              <div className="rounded-xl bg-fuchsia-400/10 p-3 text-center"><p className="text-2xl font-black text-fuchsia-300">{feature.categories.length}</p><p className="mt-1 text-[11px] text-slate-300">Categories</p></div>
-              <div className="rounded-xl bg-emerald-400/10 p-3 text-center"><p className="text-2xl font-black text-emerald-300">{totalSubcategories}</p><p className="mt-1 text-[11px] text-slate-300">Subcategories</p></div>
-              <div className="rounded-xl bg-orange-400/10 p-3 text-center"><p className="text-2xl font-black text-orange-300">{totalTopics}</p><p className="mt-1 text-[11px] text-slate-300">Learning topics</p></div>
-            </div>
+            <Link href="/monitoring-playground/hands-on-labs" className="group block w-full max-w-[440px] rounded-2xl border border-emerald-300/35 bg-slate-950/50 p-4 shadow-xl shadow-emerald-950/20 transition hover:-translate-y-1 hover:border-emerald-300/70 hover:bg-slate-900/80 sm:p-5">
+              <div className="flex items-center justify-between gap-3">
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-400/15 text-2xl text-emerald-300">⌘</span>
+                <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-200">6 interactive labs</span>
+              </div>
+              <h2 className="mt-4 text-xl font-black text-white">Monitoring Playground – Hands-on Labs</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-300">Open production-style practice environments for metrics, PromQL, dashboards, logs, traces, alerts and Kubernetes monitoring.</p>
+              <span className="mt-4 flex items-center justify-between border-t border-white/10 pt-3 text-sm font-bold text-emerald-300">Open lab workspace <span className="text-xl transition group-hover:translate-x-1">→</span></span>
+            </Link>
           </div>
           <div className="relative mt-8 grid grid-cols-2 gap-2 border-t border-white/10 pt-5 text-xs text-slate-300 sm:grid-cols-4">
             <span>◉ Metrics & monitoring</span><span>▤ Logs & events</span><span>⌁ Distributed traces</span><span>♧ Alerts & reliability</span>
