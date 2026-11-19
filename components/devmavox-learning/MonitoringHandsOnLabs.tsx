@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { parse as parseYaml } from "yaml";
+import { runAlertLab, runGrafanaLab, runKubernetesLab, runLogsLab, runPromqlLab, runTracesLab } from "@/lib/monitoring-lab-engine";
 
 type LabId = "promql" | "grafana" | "logs" | "traces" | "alerts" | "kubernetes";
 type Lab = { id: LabId; title: string; description: string; task: string; starter: string; };
@@ -47,6 +48,8 @@ export default function MonitoringHandsOnLabs() {
   const [panelMetric, setPanelMetric] = useState("CPU utilization");
   const [logFilter, setLogFilter] = useState("ERROR");
   const [alertThreshold, setAlertThreshold] = useState(1);
+  const [alertTicks, setAlertTicks] = useState(0);
+  const [lastEvidence, setLastEvidence] = useState<Record<string, string | number | boolean>>({});
   const [podHealthy, setPodHealthy] = useState(false);
   const [notes, setNotes] = useState("Investigate the signal, correlate evidence, apply a safe fix, and verify service recovery.");
 
@@ -61,97 +64,40 @@ export default function MonitoringHandsOnLabs() {
 
   function choose(id: LabId) {
     setActive(id); setCode(labs.find((item) => item.id === id)!.starter);
-    setIncident(false); setPodHealthy(false);
+    setIncident(false); setPodHealthy(false); setAlertTicks(0); setLastEvidence({});
     setExecuted(false); setResult(""); setResultDetail("");
     document.getElementById("active-lab-workspace")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   function execute() {
     setExecuted(true);
-    if (active === "promql") {
-      const lines = code.split("\n").map((line) => line.trim()).filter(Boolean);
-      const results = lines.map((query) => {
-        if (query.startsWith("#")) return "Comment skipped";
-        if (/^up(?:\\{|$)/.test(query)) return "up{job=\"checkout-api\"} = " + (incident ? "0 · target DOWN" : "1 · target UP");
-        if (/http_request_duration_seconds_p95/.test(query)) return "http_request_duration_seconds_p95 = " + (incident ? "1.84" : "0.24") + " seconds";
-        if (/process_cpu_usage_percent|node_cpu/.test(query)) return "process_cpu_usage_percent = " + (incident ? "94" : "38") + "%";
-        if (/http_requests_total/.test(query) && query.includes("/") && /5xx|status/.test(query)) return "checkout_5xx_error_ratio = " + (incident ? "4.8" : "0.32") + "% (counter samples evaluated)";
-        if (/http_requests_total/.test(query) && /rate\s*\(/.test(query)) return "checkout_request_rate = " + (incident ? "42.6" : "18.4") + " requests/sec (5m range)";
-        if (/http_requests_total/.test(query) && /sum\s*\(/.test(query)) return "http_requests_total = " + (incident ? "5160" : "4920") + " samples";
-        return "ERROR: PromQL parse/evaluation failed for: " + query + ". Supported metrics: up, http_requests_total, http_request_duration_seconds_p95, process_cpu_usage_percent.";
-      });
-      const ok = results.some((line) => !line.startsWith("ERROR:"));
-      setResult(results.join("\n")); setResultDetail((ok ? "Query engine evaluated " : "No valid expression. ") + lines.length + " expression(s) against the six-sample training time-series dataset. Use rate(), sum(), metric selectors and label matchers.");
-    } else if (active === "grafana") {
-      try {
-        const dashboard = parseYaml(code) as { title?: string; panels?: { title?: string; query?: string; type?: string }[] };
-        const supported = ["timeseries", "time series", "stat", "gauge", "bar", "table"];
-        const panelsFromYaml = Array.isArray(dashboard?.panels) ? dashboard.panels : [];
-        const errors: string[] = [];
-        if (!dashboard?.title) errors.push("Dashboard title is required.");
-        if (panelsFromYaml.length < 4) errors.push("Add at least four panels for throughput, errors, latency and resources.");
-        panelsFromYaml.forEach((panel, index) => {
-          if (!panel.title || !panel.query) errors.push("Panel " + (index + 1) + " needs title and query.");
-          if (!supported.includes((panel.type ?? "").toLowerCase())) errors.push("Panel " + (index + 1) + " has an unsupported visualization type.");
-        });
-        setPanels(panelsFromYaml.map((panel) => panel.title ?? "Untitled"));
-        setResult((errors.length ? "Dashboard validation FAILED" : "Dashboard validation PASSED") + "\n" + panelsFromYaml.map((panel) => "Panel: " + panel.title + " | " + panel.type + " | " + panel.query).join("\n"));
-        setResultDetail(errors.length ? errors.join(" ") : "YAML parsed successfully. " + panelsFromYaml.length + " panel definitions validated and rendered in the dashboard preview.");
-      } catch (error) {
-        setResult("YAML parse error"); setResultDetail(error instanceof Error ? error.message : "Invalid dashboard YAML.");
-      }
-    } else if (active === "logs") {
-      const filters = Object.fromEntries(code.trim().split(/\\s+/).filter((part) => part.includes("=")).map((part) => { const [key, ...value] = part.split("="); return [key.toLowerCase(), value.join("=")]; }));
-      const terms = code.trim().split(/\\s+/).filter((part) => !part.includes("=")).map((part) => part.toLowerCase());
-      const matches = logRows.filter((row) =>
-        (!filters.service || row.service === filters.service) &&
-        (!filters.level || row.level.toLowerCase() === filters.level.toLowerCase()) &&
-        (!filters.request_id || row.request === filters.request_id) &&
-        (!filters.trace_id || row.trace === filters.trace_id) &&
-        terms.every((term) => (row.message + " " + row.service + " " + row.request + " " + row.trace).toLowerCase().includes(term))
-      );
-      setResult(matches.length + " matching log events\n" + matches.map((row) => row.time + " " + row.level + " " + row.service + " [" + row.request + "/" + row.trace + "] " + row.message).join("\n"));
-      setResultDetail(matches.some((row) => row.message.includes("DatabaseTimeout")) ? "Root cause located: payment-db timeout occurs before checkout returns HTTP 503. Correlate trace tr-8f21." : "No database timeout in current result. Try service=checkout level=ERROR request=req-1042 or trace=tr-8f21.");
-    } else if (active === "traces") {
-      const traceId = code.match(/(?:trace_id|trace)\\s*=\\s*([\\w-]+)/i)?.[1];
-      if (traceId !== "tr-8f21") { setResult("No trace matched"); setResultDetail("Try trace_id=tr-8f21. Trace search accepts a trace ID and optional min_duration filter."); }
-      else { setResult("Trace tr-8f21 · GET /checkout · 1,840 ms · ERROR\ngateway.GET /checkout 1840ms\nauth-service.validate-token 42ms\ncart-service.read-cart 86ms\npayment-service.authorize 1680ms ERROR\npayment-db.SELECT payment 1650ms ERROR"); setResultDetail("Critical path identified: payment-db query consumes 1,650ms (89.7% of end-to-end duration), causing payment-service and checkout to fail."); }
-    } else if (active === "alerts") {
-      try {
-        const parsed = parseYaml(code) as { groups?: { rules?: { alert?: string; expr?: string; for?: string; labels?: Record<string,string>; annotations?: Record<string,string> }[] }[] };
-        const rule = parsed?.groups?.[0]?.rules?.[0];
-        const errors: string[] = [];
-        if (!rule?.alert) errors.push("Missing alert name.");
-        if (!rule?.expr?.includes("http_request_duration_seconds_p95") || !rule.expr.includes(">")) errors.push("Expression must compare checkout p95 latency with a threshold.");
-        if (!rule?.for || !/^\\d+[smhd]$/.test(rule.for)) errors.push("Use a valid for duration such as 5m.");
-        if (!rule?.labels?.severity || !rule?.labels?.service) errors.push("Add severity and service labels.");
-        if (!rule?.annotations?.summary || !rule?.annotations?.runbook) errors.push("Add summary and runbook annotations.");
-        if (errors.length) { setResult("Alert rule validation FAILED"); setResultDetail(errors.join(" ")); }
-        else if (rule) { const firing = incident && alertThreshold <= 1.84; setResult(firing ? "FIRING · " + rule.alert : "INACTIVE · " + rule.alert); setResultDetail("Rule parsed and evaluated. Current p95=" + (incident ? "1.84s" : "0.24s") + ", threshold=" + alertThreshold + "s. " + (firing ? "Critical alert would route to payments-on-call." : "No threshold breach; inject a latency incident to test firing.")); } else { setResult("Alert rule validation FAILED"); setResultDetail("No alert rule was found in the YAML groups."); }
-      } catch (error) { setResult("Alert YAML parse error"); setResultDetail(error instanceof Error ? error.message : "Invalid YAML."); }
-    } else {
-      const commands = code.split("\n").map((line) => line.trim()).filter(Boolean);
-      const recognized = commands.filter((command) => /^(kubectl get nodes|kubectl get pods|kubectl describe pod|kubectl get events|kubectl top nodes|kubectl top pods|kubectl rollout status)/.test(command));
-      const output = recognized.map((command) => {
-        if (command.startsWith("kubectl get nodes")) return "worker-01 Ready · CPU 42% · MEM 61%\nworker-02 Ready · CPU " + (podHealthy ? "48%" : "94%") + " · MEM " + (podHealthy ? "62%" : "88%");
-        if (command.startsWith("kubectl get pods")) return "checkout-7c9d  " + (podHealthy ? "1/1 Running 0 restarts" : "0/1 CrashLoopBackOff 5 restarts");
-        if (command.startsWith("kubectl describe pod")) return "Last State: " + (podHealthy ? "Running" : "Terminated · OOMKilled") + "\nEvents: " + (podHealthy ? "Started, Ready" : "BackOff, OOMKilled");
-        if (command.startsWith("kubectl get events")) return podHealthy ? "Normal Started · Ready" : "Warning BackOff · restarting failed container";
-        if (command.startsWith("kubectl top")) return "worker-02 CPU " + (podHealthy ? "48%" : "94%") + " · memory " + (podHealthy ? "62%" : "88%");
-        return "deployment/checkout rollout status: " + (podHealthy ? "3/3 successfully rolled out" : "2/3 replicas available · waiting for rollout");
-      });
-      setResult(recognized.length + "/" + commands.length + " kubectl commands recognized by the training shell\n" + output.join("\n"));
-      setResultDetail(commands.length === recognized.length ? (podHealthy ? "Cluster is healthy. Verify all replicas and node resources." : "Evidence: checkout pod OOMKilled, BackOff events, worker-02 resource pressure and unavailable replica.") : "One or more commands are unsupported. Use get nodes, get pods, describe pod, get events, top nodes/pods or rollout status.");
+    let execution;
+    if (active === "promql") execution = runPromqlLab(code, incident);
+    else if (active === "grafana") execution = runGrafanaLab(code, parseYaml);
+    else if (active === "logs") execution = runLogsLab(code);
+    else if (active === "traces") execution = runTracesLab(code);
+    else if (active === "alerts") {
+      const nextTicks = incident ? alertTicks + 1 : 0;
+      setAlertTicks(nextTicks);
+      execution = runAlertLab(code, incident, nextTicks, parseYaml);
+    } else execution = runKubernetesLab(code, podHealthy);
+    setResult(execution.output);
+    setResultDetail(execution.detail);
+    setLastEvidence(execution.evidence);
+    if (active === "grafana") {
+      const parsed = (() => { try { return parseYaml(code) as {panels?: {title?: string}[]}; } catch { return {panels: []}; } })();
+      setPanels((parsed.panels ?? []).map((panel) => panel.title ?? "Untitled"));
     }
   }
   function verify() {
-    const success = active === "promql" ? executed && result.includes("http_request_duration_seconds_p95") && result.includes("http_requests_total")
-      : active === "grafana" ? executed && result.includes("Dashboard validation PASSED") && panels.length >= 4
-      : active === "logs" ? executed && result.includes("DatabaseTimeout") && result.includes("HTTP 503")
-      : active === "traces" ? executed && result.includes("payment-db.SELECT payment") && resultDetail.includes("Critical path")
-      : active === "alerts" ? executed && result.includes("FIRING") && resultDetail.includes("parsed and evaluated")
-      : executed && podHealthy && result.includes("3/3 successfully rolled out");
+    const success = active === "promql"
+      ? Object.keys(lastEvidence).length > 0 && !result.includes("ERROR:")
+      : active === "grafana" ? lastEvidence.valid === true && Number(lastEvidence.panelCount) >= 4
+      : active === "logs" ? lastEvidence.rootCause === true && lastEvidence.has503 === true
+      : active === "traces" ? lastEvidence.criticalPath === true && Number(lastEvidence.dbMs) > 1000
+      : active === "alerts" ? lastEvidence.firing === true
+      : lastEvidence.podsHealthy === true && Number(lastEvidence.recognized) === Number(lastEvidence.total) && result.includes("successfully rolled out");
     if (success) setPassed((current) => current.includes(active) ? current : [...current, active]);
-    setResultDetail((current) => current + (success ? " · Verification passed. Lab completed." : " · Verification failed: complete the task requirements, apply recovery if needed, and execute again."));
+    setResultDetail((current) => current + (success ? " · Verification passed from simulator evidence." : " · Verification failed: simulator evidence does not satisfy the task yet."));
   }
 
   return (
@@ -164,9 +110,9 @@ export default function MonitoringHandsOnLabs() {
             <article className="rounded-2xl border border-orange-400/20 bg-slate-900/70 p-5"><p className="text-xs font-black uppercase tracking-widest text-orange-300">01 · Task</p><h2 className="mt-2 text-xl font-bold text-white">{lab.title}</h2><p className="mt-3 text-sm leading-7 text-slate-300">{lab.task}</p><div className="mt-4 rounded-xl border border-white/10 bg-black/20 p-4"><p className="text-xs font-bold uppercase tracking-wider text-amber-300">Student workflow</p><ol className="mt-2 list-decimal space-y-1 pl-5 text-xs leading-5 text-slate-300"><li>Read the task and inspect the dashboard or evidence panel.</li><li>Edit the starter query, YAML or kubectl commands in the workspace.</li><li>Run it and read every line of the output; use Inject production failure to compare unhealthy signals.</li><li>Write your finding in investigation notes, apply recovery, run again and verify.</li></ol><p className="mt-3 text-xs text-slate-400">Tip: the starter workspace is intentionally configured to meet this lab task. Change one value at a time to learn how validation and output respond.</p></div></article>
             <article className="rounded-2xl border border-cyan-400/20 bg-slate-900/70 p-5"><div className="flex flex-wrap items-center justify-between gap-2"><div><p className="text-xs font-black uppercase tracking-widest text-cyan-300">02 · Practice</p><h2 className="mt-2 text-lg font-bold text-white">Configuration / query editor</h2></div><span className="text-xs text-slate-500">Editable workspace</span></div>
               <textarea value={code} onChange={(event) => { setCode(event.target.value); setExecuted(false); }} rows={active === "kubernetes" ? 6 : 5} spellCheck={false} className="mt-4 w-full rounded-xl border border-white/10 bg-[#050811] p-4 font-mono text-xs leading-6 text-emerald-200 outline-none focus:border-cyan-400" />
-              <div className="mt-3 flex flex-wrap gap-2"><button onClick={execute} className="rounded-xl bg-emerald-400 px-5 py-2.5 text-sm font-black text-slate-950 hover:bg-emerald-300">▶ Run / Execute</button><button onClick={() => { setIncident((value) => !value); if (active === "kubernetes") setPodHealthy(false); setExecuted(false); setResult(""); setResultDetail(""); }} className={`rounded-xl border px-4 py-2.5 text-sm font-bold ${incident ? "border-rose-400/40 bg-rose-400/10 text-rose-200" : "border-rose-400/30 text-rose-200"}`}>{incident ? "Clear injected incident" : "Inject production failure"}</button><button onClick={verify} className="rounded-xl border border-cyan-400/30 px-4 py-2.5 text-sm font-bold text-cyan-200">✓ Verify task</button></div>
+              <div className="mt-3 flex flex-wrap gap-2"><button onClick={execute} className="rounded-xl bg-emerald-400 px-5 py-2.5 text-sm font-black text-slate-950 hover:bg-emerald-300">▶ Run / Execute</button><button onClick={() => { setIncident((value) => !value); setAlertTicks(0); if (active === "kubernetes") setPodHealthy(false); setExecuted(false); setLastEvidence({}); setResult(""); setResultDetail(""); }} className={`rounded-xl border px-4 py-2.5 text-sm font-bold ${incident ? "border-rose-400/40 bg-rose-400/10 text-rose-200" : "border-rose-400/30 text-rose-200"}`}>{incident ? "Clear injected incident" : "Inject production failure"}</button><button onClick={verify} className="rounded-xl border border-cyan-400/30 px-4 py-2.5 text-sm font-bold text-cyan-200">✓ Verify task</button></div>
             </article>
-            <article className="rounded-2xl border border-violet-400/20 bg-slate-900/70 p-5"><p className="text-xs font-black uppercase tracking-widest text-violet-300">05 · Troubleshoot</p><h2 className="mt-2 text-lg font-bold text-white">Incident investigation notes</h2><textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={3} className="mt-3 w-full rounded-xl border border-white/10 bg-black/20 p-3 text-sm text-slate-200 outline-none focus:border-violet-400" /><div className="mt-3 flex flex-wrap items-center gap-3"><button onClick={() => { setIncident(false); setPodHealthy(true); setExecuted(false); setResult(""); setResultDetail("Recovery action applied in the training simulator. Execute again to verify the healthy state."); }} className="rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-xs font-bold text-emerald-200">Apply recovery action</button><span className="text-xs text-slate-500">Use evidence from outputs before recovery.</span></div></article>
+            <article className="rounded-2xl border border-violet-400/20 bg-slate-900/70 p-5"><p className="text-xs font-black uppercase tracking-widest text-violet-300">05 · Troubleshoot</p><h2 className="mt-2 text-lg font-bold text-white">Incident investigation notes</h2><textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={3} className="mt-3 w-full rounded-xl border border-white/10 bg-black/20 p-3 text-sm text-slate-200 outline-none focus:border-violet-400" /><div className="mt-3 flex flex-wrap items-center gap-3"><button onClick={() => { setIncident(false); setPodHealthy(true); setAlertTicks(0); setExecuted(false); setLastEvidence({}); setResult(""); setResultDetail("Recovery action applied in the training simulator. Execute again to verify the healthy state."); }} className="rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-xs font-bold text-emerald-200">Apply recovery action</button><span className="text-xs text-slate-500">Use evidence from outputs before recovery.</span></div></article>
           </div>
           <div className="space-y-4">
             <article className="rounded-2xl border border-white/10 bg-[#0d1421] p-5"><div className="flex items-center justify-between"><div><p className="text-xs font-black uppercase tracking-widest text-slate-400">Live telemetry view</p><h2 className="mt-1 text-lg font-bold text-white">Service health dashboard</h2></div><span className="flex items-center gap-2 text-[10px] font-bold text-emerald-300"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400"/>SIMULATED LIVE</span></div><div className="mt-4 grid grid-cols-2 gap-2">{metrics.map((metric) => <div key={metric.name} className="rounded-xl border border-white/10 bg-black/20 p-3"><p className="text-[11px] text-slate-400">{metric.name}</p><p className="mt-1 text-xl font-black text-white">{metric.value}<span className="ml-1 text-[10px] text-slate-500">{metric.unit}</span></p><div className="mt-3 h-1.5 rounded-full bg-slate-800"><div className={`h-full rounded-full ${incident ? "bg-rose-400" : "bg-emerald-400"}`} style={{ width: metric.width }}/></div></div>)}</div><div className="mt-4 rounded-xl border border-white/10 bg-black/20 p-3"><div className="flex items-center justify-between"><span className="text-xs font-bold text-slate-300">Metric trend · last 5 intervals</span><span className="text-[10px] text-slate-500">CPU %</span></div><div className="mt-3 flex h-20 items-end gap-2">{(incident ? [35,42,55,74,94] : [30,34,32,36,38]).map((v,i)=><div key={i} className="flex-1 rounded-t bg-cyan-400/70" style={{height:v+"%"}} title={v+"%"}/>)}</div></div></article>
