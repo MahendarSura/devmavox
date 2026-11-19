@@ -3,5 +3,6 @@ import { kubernetesAtoZLessons } from "./lessons-extra/kubernetes";
 import { jenkinsAtoZLessons } from "./lessons-extra/jenkins";
 import { terraformAtoZLessons } from "./lessons-extra/terraform";
 import { ansibleAtoZLessons } from "./lessons-extra/ansible";
+import { cicdAtoZLessons } from "./lessons-extra/cicd-github-actions";
 
-export const atoZLessons = { ...baseLessons, ...kubernetesAtoZLessons, ...jenkinsAtoZLessons, ...terraformAtoZLessons, ...ansibleAtoZLessons };
+export const atoZLessons = { ...baseLessons, ...kubernetesAtoZLessons, ...jenkinsAtoZLessons, ...terraformAtoZLessons, ...ansibleAtoZLessons, ...cicdAtoZLessons };
