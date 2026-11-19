@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Module = {
   title: string;
@@ -176,14 +176,50 @@ function getAwsTopicGuide(topic: string, moduleTitle: string): AwsTopicGuide {
     troubleshoot: "Stabilize customer impact first, collect timestamps and evidence, isolate the failing layer, make the smallest reversible change and verify recovery before writing the root-cause report.",
     lab: "Draw the architecture, introduce one controlled failure in a sandbox, collect command output and logs, restore service, and write impact, root cause, mitigation and prevention notes."
   };
+  if (/route 53|dns|hosted zone|domain/.test(t)) return {
+    what: topic + " covers Route 53 DNS resolution. Hosted zones contain records, resolver queries map names to records, and routing policies control how DNS answers are selected.",
+    why: "Correct DNS records and health-aware routing make applications discoverable and allow controlled traffic shifts during releases or failover.",
+    example: "A release changes api.example.com to a new load balancer. The team validates the record, TTL and target health, then monitors DNS resolution from more than one resolver before closing the change.",
+    commands: ["aws route53 list-hosted-zones", "aws route53 list-resource-record-sets --hosted-zone-id <zone-id>", "dig <hostname>", "nslookup <hostname>"],
+    expected: "Route 53 returns hosted-zone and record-set metadata; dig/nslookup show the resolver answer and TTL. Check authoritative answers separately from cached recursive responses.",
+    troubleshoot: "Verify hosted-zone delegation at the registrar, record name/type/value, alias target, TTL, health-check state and split-horizon configuration. Account for resolver caching before declaring a change failed.",
+    lab: "In a sandbox hosted zone, create a test record, query it, change its value and observe TTL/caching behavior, then remove the test record."
+  };
+  if (/cloudfront|cdn|waf|edge/.test(t)) return {
+    what: topic + " provides edge delivery or request filtering. CloudFront caches content near users and forwards cache misses to origins; AWS WAF evaluates web requests against configured rules.",
+    why: "Edge delivery reduces latency and origin load, while request filtering helps block unwanted traffic before it reaches the application.",
+    example: "A static frontend is served through CloudFront with an S3 origin. A cache invalidation follows a release, and WAF blocks a controlled test pattern while allowing normal traffic.",
+    commands: ["aws cloudfront list-distributions", "aws cloudfront get-distribution-config --id <distribution-id>", "aws wafv2 list-web-acls --scope CLOUDFRONT --region us-east-1"],
+    expected: "Distribution configuration shows origin, behaviors and cache policy; WAF output lists configured web ACL metadata. CloudFront-scoped WAF resources use us-east-1.",
+    troubleshoot: "Check origin reachability, origin access control, cache key, TTL, invalidation status, certificate region/hostname and WAF rule priority/metrics. Use response headers and logs to distinguish cache from origin failures.",
+    lab: "Inspect a test distribution and WAF ACL, change a harmless test cache behavior, verify response headers and metrics, then restore the original configuration."
+  };
+  if (/cloudformation|stack|infrastructure as code|template/.test(t)) return {
+    what: topic + " uses CloudFormation templates and stacks to provision AWS resources declaratively. Change sets preview proposed resource updates before a stack operation is executed.",
+    why: "Declarative templates make infrastructure reviewable, repeatable and easier to recover than undocumented console changes.",
+    example: "A CI workflow validates a template, creates a change set for a staging stack and requires approval before executing changes that may replace production resources.",
+    commands: ["aws cloudformation validate-template --template-body file://template.yaml", "aws cloudformation describe-stacks --stack-name <stack>", "aws cloudformation describe-stack-events --stack-name <stack>", "aws cloudformation describe-change-set --stack-name <stack> --change-set-name <name>"],
+    expected: "Validation returns template parameters; stack output reports status; events identify the failing logical resource; change-set details show additions, modifications and replacements.",
+    troubleshoot: "Inspect the first failed logical resource, IAM capabilities, quotas, dependency ordering, drift and replacement behavior. Never execute a destructive change set without reviewing its impact and backup plan.",
+    lab: "Deploy a small sandbox stack, inspect its events and outputs, create a harmless change set, review it and delete only the test stack."
+  };
+  if (/lambda|serverless|function/.test(t)) return {
+    what: topic + " uses AWS Lambda's managed execution model. An event source invokes a function, the execution role grants runtime access and CloudWatch Logs captures invocation output.",
+    why: "Event-driven functions can scale without managing a server fleet, but concurrency, timeout, memory, package size and downstream limits still require design.",
+    example: "An S3 upload triggers a Lambda function that validates object metadata and writes a result to a separate prefix. The team uses a least-privilege execution role and a dead-letter or failure destination.",
+    commands: ["aws lambda list-functions", "aws lambda get-function-configuration --function-name <name>", "aws lambda get-function --function-name <name>", "aws logs tail /aws/lambda/<name> --since 15m"],
+    expected: "Configuration shows runtime, handler, timeout, memory, role and state; logs show invocation IDs, duration and application errors.",
+    troubleshoot: "Check trigger permissions, execution role, VPC routing, timeout, memory, concurrency throttles, deployment package and environment variables. Separate invocation errors from downstream service errors.",
+    lab: "Deploy a test function with a harmless event, inspect configuration and logs, introduce an invalid input, diagnose the invocation and restore the valid event."
+  };
   return {
-    what: topic + " is a core part of " + moduleTitle + " in the AWS learning path. Understand the service or concept, its inputs and outputs, dependencies, and required AWS identity and network permissions.",
-    why: "Knowing when and why to use a capability helps you choose a safe design instead of memorizing service names. Connect it to availability, security, operations and cost.",
-    example: "In a DevOps environment, a team applies " + topic.toLowerCase() + " while delivering an application to AWS. The change is reviewed, performed with a least-privilege role and verified through service status and application health.",
-    commands: ["aws sts get-caller-identity", "aws --version", "aws configure list"],
-    expected: "The CLI returns JSON for the selected account and Region. Confirm the resource identifier, status and configuration fields rather than assuming a successful command means the application is healthy.",
-    troubleshoot: "Start with the exact error, account, Region and resource ID. Check IAM authorization, resource policy, network path, service events and CloudWatch logs. Change one variable at a time and verify the result.",
-    lab: "In a non-production AWS account, identify resources related to " + topic.toLowerCase() + ", inspect them with read-only CLI commands, record expected state and explain one failure scenario and safe recovery."
+    what: topic + " is part of " + moduleTitle + ". Identify the AWS service/API that owns this capability, the resource ARN and Region, the calling principal, and the dependency chain before changing it.",
+    why: "The operational decision is to prove the resource's desired configuration and live state, then understand availability, security, cost and blast radius before promoting a change.",
+    example: "For a " + topic.toLowerCase() + " change, the engineer first confirms the active account and Region, inspects the exact resource with read-only APIs, records the current configuration, applies a reviewed change in a sandbox and verifies the service-specific health signal.",
+    commands: ["aws sts get-caller-identity", "aws configure get region", "aws <service> list-*", "aws <service> describe-*"],
+    expected: "Identity output identifies the account and assumed role; service list/describe output should identify the target resource, status and configuration. Replace the service placeholder with the correct AWS CLI namespace for this lesson.",
+    troubleshoot: "For AccessDenied inspect identity policy, resource policy, permission boundary, SCP and session policy. For missing resources verify account and Region. For unhealthy resources inspect service events, CloudWatch metrics/logs and dependent networking.",
+    lab: "In a non-production account, identify the service and resource covered by this topic, run its read-only describe/list commands, record the ARN/Region and expected state, then document one likely failure, evidence source and reversible recovery."
   };
 }
 
@@ -610,6 +646,35 @@ export default function AWSRoadmapPage() {
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState<string | null>("0");
   const [completed, setCompleted] = useState<string[]>([]);
+  const [progressLoaded, setProgressLoaded] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("devmavox:aws-roadmap:completed:v1");
+      if (saved) {
+        const parsed: unknown = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setCompleted(parsed.filter((item): item is string => typeof item === "string"));
+        }
+      }
+    } catch {
+      // Keep the roadmap usable when browser storage is unavailable or invalid.
+    } finally {
+      setProgressLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!progressLoaded) return;
+    try {
+      window.localStorage.setItem(
+        "devmavox:aws-roadmap:completed:v1",
+        JSON.stringify(completed),
+      );
+    } catch {
+      // Progress remains available for the current page session if storage is blocked.
+    }
+  }, [completed, progressLoaded]);
   const [showInterviews, setShowInterviews] = useState(false);
 
   const level = levels.find((item) => item.id === activeLevel)!;
