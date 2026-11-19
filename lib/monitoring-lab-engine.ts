@@ -1,89 +1,247 @@
-export type LabResult = { ok: boolean; output: string; detail: string; evidence: Record<string, string | number | boolean> };
-type Sample = { metric: string; labels: Record<string,string>; values: number[] };
-const base: Sample[] = [
- {metric:"http_requests_total",labels:{service:"checkout",status:"200"},values:[4100,4210,4320,4440,4560,4680]},
- {metric:"http_requests_total",labels:{service:"checkout",status:"500"},values:[12,13,14,15,16,17]},
- {metric:"http_request_duration_seconds_p95",labels:{service:"checkout"},values:[.21,.22,.24,.23,.24,.24]},
- {metric:"process_cpu_usage_percent",labels:{node:"worker-02"},values:[34,36,37,38,38,38]},
- {metric:"node_memory_usage_percent",labels:{node:"worker-02"},values:[60,61,62,62,63,63]},
- {metric:"up",labels:{job:"checkout-api"},values:[1,1,1,1,1,1]}
+export type LabResult = {
+  ok: boolean;
+  output: string;
+  detail: string;
+  evidence: Record<string, string | number | boolean>;
+};
+
+type Sample = { metric: string; labels: Record<string, string>; values: number[] };
+const baseline: Sample[] = [
+  { metric: "http_requests_total", labels: { service: "checkout", status: "200" }, values: [4100, 4210, 4320, 4440, 4560, 4680] },
+  { metric: "http_requests_total", labels: { service: "checkout", status: "500" }, values: [12, 13, 14, 15, 16, 17] },
+  { metric: "http_request_duration_seconds_p95", labels: { service: "checkout" }, values: [0.21, 0.22, 0.24, 0.23, 0.24, 0.24] },
+  { metric: "process_cpu_usage_percent", labels: { node: "worker-02" }, values: [34, 36, 37, 38, 38, 38] },
+  { metric: "node_memory_usage_percent", labels: { node: "worker-02" }, values: [60, 61, 62, 62, 63, 63] },
+  { metric: "up", labels: { job: "checkout-api" }, values: [1, 1, 1, 1, 1, 1] },
 ];
-function dataFor(incident:boolean):Sample[]{return base.map(s=>{
- if(!incident)return s;
- if(s.metric==="http_requests_total"&&s.labels.status==="500")return {...s,values:[12,18,30,48,70,96]};
- if(s.metric==="http_requests_total"&&s.labels.status==="200")return {...s,values:[4100,4230,4380,4560,4770,5010]};
- if(s.metric==="http_request_duration_seconds_p95")return {...s,values:[.24,.42,.78,1.22,1.62,1.84]};
- if(s.metric==="process_cpu_usage_percent")return {...s,values:[38,48,61,75,88,94]};
- if(s.metric==="node_memory_usage_percent")return {...s,values:[63,68,72,78,84,88]};
- return s;
-});}
-type Vec={metric:string;labels:Record<string,string>;value:number};
-function selector(q:string,data:Sample[]):Vec[]{
- const m=q.trim().match(/^([a-zA-Z_:][\w:]*)(?:\{([^}]*)\})?$/);
- if(!m)throw Error("Invalid metric selector. Example: http_requests_total{status=\"500\"}");
- const filters=(m[2]||"").split(",").filter(Boolean).map(x=>{const z=x.trim().match(/^([\w]+)\s*(=~|!~|!=|=)\s*\"([^\"]*)\"$/);if(!z)throw Error("Invalid label matcher: "+x);return z;});
- const found=data.filter(s=>s.metric===m[1]&&filters.every(f=>{const v=s.labels[f[1]]||"";return f[2]==="="?v===f[3]:f[2]==="!="?v!==f[3]:f[2]==="=~"?new RegExp(f[3]).test(v):!new RegExp(f[3]).test(v);}));
- if(!found.length)throw Error("Unknown metric or no matching series: "+m[1]);
- return found.map(s=>({metric:s.metric,labels:s.labels,value:s.values[s.values.length-1]}));
+const samples = (incident: boolean): Sample[] => baseline.map((series) => {
+  if (!incident) return series;
+  if (series.metric === "http_requests_total" && series.labels.status === "500") return { ...series, values: [12, 18, 30, 48, 70, 96] };
+  if (series.metric === "http_requests_total" && series.labels.status === "200") return { ...series, values: [4100, 4230, 4380, 4560, 4770, 5010] };
+  if (series.metric === "http_request_duration_seconds_p95") return { ...series, values: [0.24, 0.42, 0.78, 1.22, 1.62, 1.84] };
+  if (series.metric === "process_cpu_usage_percent") return { ...series, values: [38, 48, 61, 75, 88, 94] };
+  if (series.metric === "node_memory_usage_percent") return { ...series, values: [63, 68, 72, 78, 84, 88] };
+  return series;
+});
+type Vector = { metric: string; labels: Record<string, string>; value: number };
+const splitTopLevel = (input: string, operator: string): string[] => {
+  const parts: string[] = []; let depth = 0; let quote = false; let start = 0;
+  for (let i = 0; i < input.length; i += 1) {
+    const char = input[i];
+    if (char === '"' && input[i - 1] !== "\\") quote = !quote;
+    if (quote) continue;
+    if (char === "(" || char === "{" || char === "[") depth += 1;
+    if (char === ")" || char === "}" || char === "]") depth -= 1;
+    if (depth === 0 && input.slice(i, i + operator.length) === operator) {
+      parts.push(input.slice(start, i).trim()); start = i + operator.length; i += operator.length - 1;
+    }
+  }
+  if (parts.length) parts.push(input.slice(start).trim());
+  return parts;
+};
+function selectMetric(query: string, data: Sample[]): Vector[] {
+  const match = query.trim().match(/^([a-zA-Z_:][\w:]*)(?:\{(.*)\})?$/);
+  if (!match) throw new Error("Invalid selector. Use metric_name or metric_name{label=\"value\"}.");
+  const filters = (match[2] || "").split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).filter(Boolean).map((item) => {
+    const parsed = item.trim().match(/^([a-zA-Z_][\w]*)\s*(=~|!~|!=|=)\s*"([^"]*)"$/);
+    if (!parsed) throw new Error("Invalid label matcher: " + item);
+    return parsed;
+  });
+  const found = data.filter((series) => series.metric === match[1] && filters.every((filter) => {
+    const value = series.labels[filter[1]] || "";
+    if (filter[2] === "=") return value === filter[3];
+    if (filter[2] === "!=") return value !== filter[3];
+    const regex = new RegExp(filter[3]);
+    return filter[2] === "=~" ? regex.test(value) : !regex.test(value);
+  }));
+  if (!found.length) throw new Error("No series found for metric: " + match[1]);
+  return found.map((series) => ({ metric: series.metric, labels: series.labels, value: series.values[series.values.length - 1] }));
 }
-function evalExpr(q:string,incident:boolean):Vec[]{
- const data=dataFor(incident),d=q.match(/^(.+?)\s*\/\s*(.+)$/);
- if(d){const a=evalExpr(d[1],incident).reduce((n,x)=>n+x.value,0),b=evalExpr(d[2],incident).reduce((n,x)=>n+x.value,0);if(!b)throw Error("Division by zero");return [{metric:"expression",labels:{},value:a/b}];}
- const a=q.match(/^(sum|avg|max|min)\((.*)\)$/);
- if(a){const v=evalExpr(a[2],incident).map(x=>x.value);return [{metric:a[1],labels:{},value:a[1]==="sum"?v.reduce((x,y)=>x+y,0):a[1]==="avg"?v.reduce((x,y)=>x+y,0)/v.length:a[1]==="max"?Math.max(...v):Math.min(...v)}];}
- const f=q.match(/^(rate|increase)\(([\w:]+)(?:\{([^}]*)\})?\[(\d+)([smhd])\]\)$/);
- if(f){const rows=selector(f[2]+(f[3]?"{"+f[3]+"}":""),data);return rows.map(v=>{const s=data.find(x=>x.metric===v.metric&&JSON.stringify(x.labels)===JSON.stringify(v.labels))!;const delta=s.values[5]-s.values[0],secs=Number(f[4])*({s:1,m:60,h:3600,d:86400}[f[5]]||60);return {...v,metric:f[1],value:f[1]==="rate"?delta/secs:delta};});}
- return selector(q,data);
+function evaluateExpression(expression: string, incident: boolean): Vector[] {
+  const query = expression.trim();
+  if (!query) throw new Error("Expression is empty.");
+  const data = samples(incident);
+  const division = splitTopLevel(query, "/");
+  if (division.length === 2) {
+    const left = evaluateExpression(division[0], incident).reduce((sum, row) => sum + row.value, 0);
+    const right = evaluateExpression(division[1], incident).reduce((sum, row) => sum + row.value, 0);
+    if (right === 0) throw new Error("Division by zero.");
+    return [{ metric: "expression", labels: {}, value: left / right }];
+  }
+  const comparison = query.match(/^(.+?)\s*(>=|<=|==|!=|>|<)\s*(\d+(?:\.\d+)?)$/);
+  if (comparison) {
+    const value = evaluateExpression(comparison[1], incident).reduce((sum, row) => sum + row.value, 0);
+    const target = Number(comparison[3]);
+    const passed = comparison[2] === ">" ? value > target : comparison[2] === "<" ? value < target : comparison[2] === ">=" ? value >= target : comparison[2] === "<=" ? value <= target : comparison[2] === "==" ? value === target : value !== target;
+    return [{ metric: "comparison", labels: {}, value: passed ? 1 : 0 }];
+  }
+  const aggregate = query.match(/^(sum|avg|min|max|count)\((.*)\)$/);
+  if (aggregate) {
+    const values = evaluateExpression(aggregate[2], incident);
+    const numbers = values.map((row) => row.value);
+    const value = aggregate[1] === "sum" ? numbers.reduce((a, b) => a + b, 0)
+      : aggregate[1] === "avg" ? numbers.reduce((a, b) => a + b, 0) / numbers.length
+      : aggregate[1] === "min" ? Math.min(...numbers)
+      : aggregate[1] === "max" ? Math.max(...numbers) : numbers.length;
+    return [{ metric: aggregate[1], labels: {}, value }];
+  }
+  const range = query.match(/^(rate|irate|increase)\((.+)\[(\d+)([smhd])\]\)$/);
+  if (range) {
+    const rows = selectMetric(range[2], data);
+    const durationSeconds = Number(range[3]) * ({ s: 1, m: 60, h: 3600, d: 86400 }[range[4]] || 1);
+    return rows.map((row) => {
+      const series = data.find((item) => item.metric === row.metric && JSON.stringify(item.labels) === JSON.stringify(row.labels))!;
+      const delta = Math.max(0, series.values[5] - series.values[0]);
+      const value = range[1] === "increase" ? delta : delta / Math.min(durationSeconds, 300);
+      return { ...row, metric: range[1], value };
+    });
+  }
+  const instant = query.match(/^(abs|ceil|floor|round)\((.*)\)$/);
+  if (instant) {
+    const rows = evaluateExpression(instant[2], incident);
+    return rows.map((row) => ({ ...row, metric: instant[1], value: instant[1] === "abs" ? Math.abs(row.value) : instant[1] === "ceil" ? Math.ceil(row.value) : instant[1] === "floor" ? Math.floor(row.value) : Math.round(row.value) }));
+  }
+  return selectMetric(query, data);
 }
-export function runPromqlLab(code:string,incident:boolean):LabResult{
- const qs=code.split("\n").map(x=>x.trim()).filter(x=>x&&!x.startsWith("#"));if(!qs.length)return {ok:false,output:"No expression entered",detail:"Enter a PromQL expression.",evidence:{}};
- const out:string[]=[],ev:Record<string,string|number|boolean>={};let good=0;
- for(const q of qs){try{const vs=evalExpr(q,incident);good++;for(const v of vs){out.push(v.metric+" "+JSON.stringify(v.labels)+" = "+Number(v.value.toFixed(5)));ev[v.metric]=v.value;}}catch(e){out.push("ERROR: "+q+"\n"+(e instanceof Error?e.message:"Query failed"));}}
- return {ok:good===qs.length,output:out.join("\n"),detail:good+"/"+qs.length+" expressions evaluated against six timestamped samples. "+(incident?"Injected failure data active.":"Baseline data active."),evidence:ev};
+export function runPromqlLab(code: string, incident: boolean): LabResult {
+  const expressions = code.split("\n").map((line) => line.trim()).filter((line) => line && !line.startsWith("#"));
+  if (!expressions.length) return { ok: false, output: "No PromQL expression entered.", detail: "Add one or more metric queries.", evidence: {} };
+  const output: string[] = []; const evidence: Record<string, string | number | boolean> = {};
+  let evaluated = 0; let hasRate = false; let hasLatency = false; let hasErrorRatio = false;
+  expressions.forEach((query, index) => {
+    try {
+      const rows = evaluateExpression(query, incident); evaluated += 1;
+      if (/rate\(|irate\(/.test(query)) hasRate = true;
+      if (/http_request_duration_seconds_p95/.test(query)) hasLatency = true;
+      if (/http_requests_total.*status=~/.test(query) && query.includes("/")) hasErrorRatio = true;
+      output.push("Query " + (index + 1) + ": " + query);
+      rows.forEach((row) => output.push("  " + row.metric + (Object.keys(row.labels).length ? JSON.stringify(row.labels) : "") + " = " + Number(row.value.toFixed(6))));
+    } catch (error) {
+      output.push("ERROR: " + query + "\n  " + (error instanceof Error ? error.message : "Query evaluation failed."));
+    }
+  });
+  const success = evaluated === expressions.length;
+  evidence.evaluated = evaluated; evidence.totalQueries = expressions.length; evidence.hasRate = hasRate; evidence.hasLatency = hasLatency; evidence.hasErrorRatio = hasErrorRatio; evidence.allValid = success;
+  return { ok: success, output: output.join("\n"), detail: evaluated + "/" + expressions.length + " PromQL expressions evaluated against six samples per series. " + (incident ? "Incident telemetry is active." : "Baseline telemetry is active."), evidence };
 }
-type Log={time:string;level:string;service:string;request_id:string;trace_id:string;message:string};
-const logData:Log[]=[
- {time:"12:04:01.120",level:"INFO",service:"gateway",request_id:"req-1042",trace_id:"tr-8f21",message:"Request received GET /checkout"},
- {time:"12:04:01.141",level:"INFO",service:"auth",request_id:"req-1042",trace_id:"tr-8f21",message:"JWT validation succeeded"},
- {time:"12:04:02.002",level:"ERROR",service:"payment-db",request_id:"req-1042",trace_id:"tr-8f21",message:"DatabaseTimeout after 3000ms"},
- {time:"12:04:02.018",level:"WARN",service:"checkout",request_id:"req-1042",trace_id:"tr-8f21",message:"Retry attempt 2/3"},
- {time:"12:04:03.004",level:"ERROR",service:"checkout",request_id:"req-1042",trace_id:"tr-8f21",message:"HTTP 503 returned to client"},
- {time:"12:04:04.300",level:"INFO",service:"catalog",request_id:"req-1043",trace_id:"tr-8f22",message:"GET /products completed 200"}
+
+type LogRow = { timestamp: string; level: string; service: string; request_id: string; trace_id: string; message: string };
+const baseLogs: LogRow[] = [
+  { timestamp: "12:04:01.120", level: "INFO", service: "gateway", request_id: "req-1042", trace_id: "tr-8f21", message: "Request received GET /checkout" },
+  { timestamp: "12:04:01.141", level: "INFO", service: "auth", request_id: "req-1042", trace_id: "tr-8f21", message: "JWT validation succeeded" },
+  { timestamp: "12:04:02.002", level: "ERROR", service: "payment-db", request_id: "req-1042", trace_id: "tr-8f21", message: "DatabaseTimeout after 3000ms" },
+  { timestamp: "12:04:02.018", level: "WARN", service: "checkout", request_id: "req-1042", trace_id: "tr-8f21", message: "Retry attempt 2/3" },
+  { timestamp: "12:04:03.004", level: "ERROR", service: "checkout", request_id: "req-1042", trace_id: "tr-8f21", message: "HTTP 503 returned to client" },
+  { timestamp: "12:04:04.300", level: "INFO", service: "catalog", request_id: "req-1043", trace_id: "tr-8f22", message: "GET /products completed 200" },
+  { timestamp: "12:05:01.100", level: "WARN", service: "payment-db", request_id: "req-1044", trace_id: "tr-8f23", message: "Connection pool at 80 percent" },
+  { timestamp: "12:05:02.200", level: "INFO", service: "checkout", request_id: "req-1044", trace_id: "tr-8f23", message: "Checkout completed 200" },
+  { timestamp: "12:06:10.500", level: "ERROR", service: "inventory", request_id: "req-1045", trace_id: "tr-8f24", message: "Upstream timeout after 1200ms" },
+  { timestamp: "12:06:11.000", level: "ERROR", service: "gateway", request_id: "req-1045", trace_id: "tr-8f24", message: "HTTP 504 returned to client" },
 ];
-export function runLogsLab(query:string):LabResult{
- const f:Record<string,string>={},terms:string[]=[];
- query.trim().split(/\s+/).filter(Boolean).forEach(t=>{const m=t.match(/^([\w]+)[=:](.+)$/);if(m)f[m[1].toLowerCase()]=m[2];else terms.push(t.toLowerCase());});
- const rows=logData.filter(r=>Object.entries(f).every(([k,v])=>{const key=({request:"request_id",trace:"trace_id"} as Record<string,string>)[k]||k;return ["level","service","request_id","trace_id"].includes(key)&&r[key as keyof Log].toLowerCase()===v.toLowerCase();})&&terms.every(t=>(r.message+" "+r.service+" "+r.level).toLowerCase().includes(t)));
- const root=rows.some(r=>r.message.includes("DatabaseTimeout"));
- return {ok:rows.length>0,output:rows.length+" matching events\n"+rows.map(r=>r.time+" "+r.level+" "+r.service+" request="+r.request_id+" trace="+r.trace_id+" "+r.message).join("\n"),detail:root?"Root cause: payment-db DatabaseTimeout precedes checkout HTTP 503.":"No database timeout in results; try level=ERROR request_id=req-1042.",evidence:{matches:rows.length,rootCause:root,has503:rows.some(r=>r.message.includes("HTTP 503"))}};
+export function runLogsLab(query: string, incident = false): LabResult {
+  const rows = incident ? [...baseLogs, { timestamp: "12:07:02.001", level: "ERROR", service: "payment-db", request_id: "req-1050", trace_id: "tr-8f30", message: "ConnectionTimeout after 5000ms" }, { timestamp: "12:07:02.020", level: "ERROR", service: "checkout", request_id: "req-1050", trace_id: "tr-8f30", message: "HTTP 503 returned to client" }] : baseLogs;
+  const filters: Record<string, string> = {}; const terms: string[] = [];
+  query.trim().split(/\s+/).filter(Boolean).forEach((token) => {
+    const match = token.match(/^([\w]+)(=|:)(.+)$/);
+    if (match) filters[match[1].toLowerCase()] = match[3].replace(/^"|"$/g, "");
+    else terms.push(token.toLowerCase());
+  });
+  const aliases: Record<string, keyof LogRow> = { level: "level", severity: "level", service: "service", request: "request_id", request_id: "request_id", trace: "trace_id", trace_id: "trace_id", message: "message", time: "timestamp" };
+  const unknown = Object.keys(filters).filter((key) => !aliases[key] && key !== "after" && key !== "before");
+  if (unknown.length) return { ok: false, output: "Invalid filter field: " + unknown.join(", "), detail: "Supported fields: level, severity, service, request_id, trace_id, message. Example: level=ERROR request_id=req-1042", evidence: {} };
+  const matched = rows.filter((row) => Object.entries(filters).every(([key, value]) => {
+    if (key === "after") return row.timestamp > value;\n    if (key === "before") return row.timestamp < value;\n    const field = aliases[key]; return field ? row[field].toLowerCase().includes(value.toLowerCase()) : false;
+  }) && terms.every((term) => (row.message + " " + row.service + " " + row.level).toLowerCase().includes(term)));
+  const rootCause = matched.some((row) => row.service === "payment-db" && /DatabaseTimeout|ConnectionTimeout/.test(row.message));
+  const has503 = matched.some((row) => row.message.includes("HTTP 503"));
+  const output = matched.map((row) => row.timestamp + " " + row.level.padEnd(5) + " service=" + row.service + " request_id=" + row.request_id + " trace_id=" + row.trace_id + " " + row.message);
+  return { ok: matched.length > 0, output: matched.length + " matching log events\n" + output.join("\n"), detail: rootCause && has503 ? "Correlated database timeout and downstream HTTP 503 events found." : "Matched events. Narrow the search by request_id or trace_id to correlate the incident.", evidence: { matches: matched.length, rootCause, has503, correlated: rootCause && has503, injectedEvents: incident } };
 }
-export function runTracesLab(query:string):LabResult{
- const id=query.match(/(?:trace_id|trace)\s*=\s*([\w-]+)/i)?.[1];if(id!=="tr-8f21")return {ok:false,output:"No trace matched. Known trace: tr-8f21",detail:"Enter trace_id=tr-8f21.",evidence:{found:false}};
- const spans=[["gateway","GET /checkout",1840,0],["auth-service","validate-token",42,1],["cart-service","read-cart",86,1],["payment-service","authorize",1680,1],["payment-db","SELECT payment",1650,2]];
- return {ok:true,output:"Trace "+id+" · 1840ms total\n"+spans.map(s=>"  ".repeat(Number(s[3]))+s[0]+"."+s[1]+" "+s[2]+"ms").join("\n"),detail:"Critical path: payment-db SELECT payment takes 1650ms (89.7% of end-to-end latency).",evidence:{totalMs:1840,dbMs:1650,criticalPath:true}};
+
+type Span = { trace_id: string; service: string; operation: string; parent: string | null; start_ms: number; duration_ms: number; status: "OK" | "ERROR" };
+const traceData: Span[] = [
+  { trace_id: "tr-8f21", service: "gateway", operation: "GET /checkout", parent: null, start_ms: 0, duration_ms: 1840, status: "ERROR" },
+  { trace_id: "tr-8f21", service: "auth-service", operation: "validate-token", parent: "gateway", start_ms: 8, duration_ms: 42, status: "OK" },
+  { trace_id: "tr-8f21", service: "cart-service", operation: "read-cart", parent: "gateway", start_ms: 55, duration_ms: 86, status: "OK" },
+  { trace_id: "tr-8f21", service: "payment-service", operation: "authorize", parent: "gateway", start_ms: 160, duration_ms: 1680, status: "ERROR" },
+  { trace_id: "tr-8f21", service: "payment-db", operation: "SELECT payment", parent: "payment-service", start_ms: 175, duration_ms: 1650, status: "ERROR" },
+  { trace_id: "tr-8f22", service: "gateway", operation: "GET /products", parent: null, start_ms: 0, duration_ms: 128, status: "OK" },
+  { trace_id: "tr-8f22", service: "catalog", operation: "list-products", parent: "gateway", start_ms: 10, duration_ms: 92, status: "OK" },
+  { trace_id: "tr-8f23", service: "gateway", operation: "GET /checkout", parent: null, start_ms: 0, duration_ms: 460, status: "OK" },
+  { trace_id: "tr-8f23", service: "payment-service", operation: "authorize", parent: "gateway", start_ms: 120, duration_ms: 280, status: "OK" },
+];
+export function runTracesLab(query: string, incident = false): LabResult {
+  const id = query.match(/(?:trace_id|trace)\s*[=:]\s*([\w-]+)/i)?.[1];
+  const service = query.match(/service\s*[=:]\s*([\w-]+)/i)?.[1];
+  if (!id) return { ok: false, output: "Trace ID is required.", detail: "Try trace_id=tr-8f21 or trace_id=tr-8f22.", evidence: {} };
+  const spans = traceData.filter((span) => span.trace_id === id && (!service || span.service.toLowerCase().includes(service.toLowerCase()))).map((span) => incident && id === "tr-8f21" && span.service === "payment-db" ? { ...span, duration_ms: 2650, status: "ERROR" as const } : span);
+  if (!spans.length) return { ok: false, output: "No spans matched trace_id=" + id + (service ? " service=" + service : ""), detail: "Known traces: tr-8f21, tr-8f22 and tr-8f23.", evidence: { found: false } };
+  const total = spans.find((span) => span.parent === null)?.duration_ms || Math.max(...spans.map((span) => span.start_ms + span.duration_ms));
+  const slowest = [...spans].sort((a, b) => b.duration_ms - a.duration_ms)[0];
+  const lines = spans.map((span) => (span.parent ? "  " : "") + span.service + "." + span.operation + " start=" + span.start_ms + "ms duration=" + span.duration_ms + "ms status=" + span.status);
+  return { ok: true, output: "Trace " + id + " · " + total + "ms total\n" + lines.join("\n"), detail: "Slowest matching span: " + slowest.service + "." + slowest.operation + " (" + slowest.duration_ms + "ms).", evidence: { found: true, totalMs: total, slowestMs: slowest.duration_ms, slowestService: slowest.service, criticalPath: id === "tr-8f21" && slowest.service === "payment-db", dbMs: spans.find((span) => span.service === "payment-db")?.duration_ms || 0, spanCount: spans.length } };
 }
-export function runGrafanaLab(code:string,parseYaml:(s:string)=>unknown):LabResult{
- try{const d=parseYaml(code) as {title?:string;panels?:{title?:string;type?:string;query?:string}[]};const ps=Array.isArray(d.panels)?d.panels:[],errors:string[]=[];if(!d.title)errors.push("Dashboard title required");if(ps.length<4)errors.push("At least four panels required");ps.forEach((p,i)=>{if(!p.title||!p.query)errors.push("Panel "+(i+1)+" requires title and query");if(!["timeseries","time series","stat","gauge","bar","table"].includes((p.type||"").toLowerCase()))errors.push("Panel "+(i+1)+" has unsupported type");});
- return {ok:errors.length===0,output:"Dashboard: "+(d.title||"untitled")+"\n"+ps.map(p=>p.title+" ["+p.type+"] → "+p.query).join("\n"),detail:errors.join(". ")||ps.length+" panel definitions parsed and validated from submitted YAML.",evidence:{panelCount:ps.length,valid:errors.length===0}};
- }catch(e){return {ok:false,output:"Dashboard YAML parse error",detail:e instanceof Error?e.message:"Invalid YAML",evidence:{}};}
+
+type Panel = { title?: string; type?: string; query?: string; thresholds?: { value?: number; color?: string }[] };
+export function runGrafanaLab(code: string, parseYaml: (source: string) => unknown, incident = false): LabResult {
+  try {
+    const dashboard = parseYaml(code) as { title?: string; panels?: Panel[] };
+    const panels = Array.isArray(dashboard.panels) ? dashboard.panels : [];
+    const errors: string[] = [];
+    if (!dashboard.title?.trim()) errors.push("Dashboard title is required.");
+    if (panels.length < 4) errors.push("Add at least four panels.");
+    const results: string[] = [];
+    panels.forEach((panel, index) => {
+      if (!panel.title?.trim()) errors.push("Panel " + (index + 1) + " needs a title.");
+      if (!panel.query?.trim()) { errors.push("Panel " + (index + 1) + " needs a PromQL query."); return; }
+      if (!["timeseries", "time series", "stat", "gauge", "bar", "table"].includes((panel.type || "").toLowerCase())) errors.push("Panel " + (index + 1) + " has an unsupported visualization type.");
+      try {
+        const rows = evaluateExpression(panel.query, incident);
+        results.push(panel.title + " [" + panel.type + "] = " + rows.map((row) => Number(row.value.toFixed(5))).join(", "));
+      } catch (error) { errors.push("Panel " + (panel.title || index + 1) + " query: " + (error instanceof Error ? error.message : "invalid query")); }
+      if (panel.thresholds?.some((threshold) => typeof threshold.value !== "number")) errors.push("Panel " + (panel.title || index + 1) + " has a non-numeric threshold.");
+    });
+    return { ok: errors.length === 0, output: "Dashboard: " + (dashboard.title || "(untitled)") + "\n" + results.join("\n"), detail: errors.length ? errors.join(" ") : panels.length + " panels parsed, validated and evaluated against the telemetry dataset.", evidence: { valid: errors.length === 0, panelCount: panels.length, queriesEvaluated: results.length, hasLatency: panels.some((panel) => /http_request_duration_seconds_p95/.test(panel.query || "")), hasErrors: panels.some((panel) => /status=~/.test(panel.query || "")), hasCpu: panels.some((panel) => /process_cpu_usage_percent/.test(panel.query || "")), hasLatencyThreshold: panels.some((panel) => /http_request_duration_seconds_p95/.test(panel.query || "") && (panel.thresholds || []).some((threshold) => typeof threshold.value === "number" && threshold.value > 0)) } };
+  } catch (error) { return { ok: false, output: "Dashboard YAML parse error.", detail: error instanceof Error ? error.message : "Invalid YAML.", evidence: { valid: false } }; }
 }
-export function runAlertLab(code:string,incident:boolean,ticks:number,parseYaml:(s:string)=>unknown):LabResult{
- try{const d=parseYaml(code) as {groups?:{rules?:{alert?:string;expr?:string;for?:string;labels?:Record<string,string>;annotations?:Record<string,string>}[]}[]};const r=d.groups?.[0]?.rules?.[0],err:string[]=[];if(!r?.alert)err.push("Alert name missing");if(!r?.expr||!/^http_request_duration_seconds_p95\s*>\s*\d+(\.\d+)?$/.test(r.expr))err.push("Use p95 metric > numeric threshold");if(!r?.for||!/^\d+[smhd]$/.test(r.for))err.push("Invalid for duration");if(!r?.labels?.severity||!r.labels.service)err.push("Severity and service labels required");if(!r?.annotations?.summary||!r.annotations.runbook)err.push("Summary and runbook annotations required");if(err.length)return {ok:false,output:"Alert rule invalid",detail:err.join(". "),evidence:{valid:false}};
- const threshold=Number(r!.expr!.split(">").pop()),breach=incident&&1.84>threshold,state=breach?(ticks>=2?"FIRING":"PENDING"):ticks>0?"RESOLVED":"INACTIVE";
- return {ok:true,output:state+" · "+r!.alert+"\n"+r!.expr+"\nfor: "+r!.for+"\nevaluation ticks: "+ticks+"\ncurrent p95: "+(incident?"1.84":"0.24")+"s",detail:state==="PENDING"?"Condition breached; waiting for second evaluation.":state==="FIRING"?"Condition persisted for two ticks; alert firing.":state==="RESOLVED"?"Condition cleared; alert resolved.":"No active breach.",evidence:{valid:true,breach,firing:state==="FIRING",resolved:state==="RESOLVED",ticks}};
- }catch(e){return {ok:false,output:"Alert YAML parse error",detail:e instanceof Error?e.message:"Invalid YAML",evidence:{}};}
+
+type AlertRule = { alert?: string; expr?: string; for?: string; labels?: Record<string, string>; annotations?: Record<string, string> };
+export function runAlertLab(code: string, incident: boolean, ticks: number, parseYaml: (source: string) => unknown, previouslyFired = false): LabResult {
+  try {
+    const config = parseYaml(code) as { groups?: { rules?: AlertRule[] }[] };
+    const rule = config.groups?.[0]?.rules?.[0]; const errors: string[] = [];
+    if (!rule?.alert?.trim()) errors.push("Alert name is required.");
+    if (!rule?.expr || !/^http_request_duration_seconds_p95\s*>\s*\d+(?:\.\d+)?$/.test(rule.expr)) errors.push("Expression must compare http_request_duration_seconds_p95 with a numeric threshold.");
+    if (!rule?.for || !/^\d+[smhd]$/.test(rule.for)) errors.push("Use a valid for duration such as 2m.");
+    if (!rule?.labels?.severity || !rule.labels.service) errors.push("severity and service labels are required.");
+    if (!rule?.annotations?.summary || !rule.annotations.runbook) errors.push("summary and runbook annotations are required.");
+    if (errors.length) return { ok: false, output: "Alert rule rejected.", detail: errors.join(" "), evidence: { valid: false } };
+    const threshold = Number(rule!.expr!.split(">").pop());
+    const current = incident ? 1.84 : 0.24;
+    const breach = current > threshold;
+    const state = breach ? ticks >= 2 ? "FIRING" : "PENDING" : previouslyFired ? "RESOLVED" : "INACTIVE";
+    return { ok: true, output: state + " · " + rule!.alert + "\nexpression: " + rule!.expr + "\nfor: " + rule!.for + "\nevaluation interval: 1 minute\nconsecutive evaluations: " + ticks + "\ncurrent p95: " + current + "s", detail: state === "PENDING" ? "First consecutive breach. Evaluate once more to satisfy the pending duration." : state === "FIRING" ? "Threshold breached for the required consecutive evaluations." : state === "RESOLVED" ? "Metric recovered below threshold; alert transitioned to Resolved." : "No active breach.", evidence: { valid: true, breach, firing: state === "FIRING", resolved: state === "RESOLVED", ticks, threshold, current } };
+  } catch (error) { return { ok: false, output: "Alert YAML parse error.", detail: error instanceof Error ? error.message : "Invalid YAML.", evidence: { valid: false } }; }
 }
-export function runKubernetesLab(code:string,healthy:boolean):LabResult{
- let ok=healthy,cpu=healthy?48:94,mem=healthy?62:88,restarts=healthy?0:5,replicas=3;const lines=code.split("\n").map(x=>x.trim()).filter(Boolean),out:string[]=[];let count=0;
- for(const c of lines){if(/^kubectl\s+get\s+nodes/.test(c)){count++;out.push("worker-01 Ready CPU 42% MEM 61%\nworker-02 Ready CPU "+cpu+"% MEM "+mem+"%");}
- else if(/^kubectl\s+get\s+pods/.test(c)){count++;out.push("checkout-7c9d "+(ok?"1/1 Running":"0/1 CrashLoopBackOff")+" restarts="+restarts);}
- else if(/^kubectl\s+describe\s+pod\s+checkout/.test(c)){count++;out.push("Last State: "+(ok?"Running":"Terminated")+"\nReason: "+(ok?"-":"OOMKilled")+"\nEvents: "+(ok?"Started, Ready":"BackOff, OOMKilled"));}
- else if(/^kubectl\s+get\s+events/.test(c)){count++;out.push(ok?"Normal Started Ready":"Warning BackOff OOMKilled");}
- else if(/^kubectl\s+top\s+nodes/.test(c)){count++;out.push("worker-02 CPU "+cpu+"% MEM "+mem+"%");}
- else if(/^kubectl\s+top\s+pods/.test(c)){count++;out.push("checkout-7c9d CPU "+(ok?180:950)+"m MEM "+(ok?256:980)+"Mi");}
- else if(/^kubectl\s+rollout\s+status\s+deployment\/checkout/.test(c)){count++;out.push("deployment/checkout "+(ok?replicas+"/"+replicas+" successfully rolled out":"2/3 replicas available"));}
- else if(/^kubectl\s+rollout\s+restart\s+deployment\/checkout/.test(c)){count++;ok=true;cpu=48;mem=62;restarts=0;out.push("deployment.apps/checkout restarted; replacement pods healthy");}
- else if(/^kubectl\s+scale\s+deployment\/checkout\s+--replicas=\d+/.test(c)){count++;replicas=Number(c.match(/--replicas=(\d+)/)![1]);out.push("deployment.apps/checkout scaled to "+replicas+" replicas");}
- else out.push("error: unsupported command: "+c);}
- return {ok:count===lines.length&&count>0,output:count+"/"+lines.length+" commands executed\n"+out.join("\n"),detail:count!==lines.length?"Unsupported command. Use get, describe, top, rollout status/restart or scale.":ok?"Cluster healthy after simulated recovery.":"Evidence: OOMKilled pod, BackOff events, node pressure and one unavailable replica.",evidence:{recognized:count,total:lines.length,podsHealthy:ok,cpu,memory:mem,restarts,replicas}};
+
+export function runKubernetesLab(code: string, healthy: boolean): LabResult {
+  let isHealthy = healthy; let cpu = healthy ? 48 : 94; let memory = healthy ? 62 : 88; let restarts = healthy ? 0 : 5; let replicas = healthy ? 3 : 2; let ready = healthy ? 3 : 2;
+  const commands = code.split("\n").map((line) => line.trim()).filter(Boolean); const output: string[] = []; let recognized = 0; let changedState = false;
+  for (const command of commands) {
+    if (/^kubectl\s+get\s+nodes(?:\s|$)/.test(command)) { recognized++; output.push("NAME       STATUS   CPU   MEMORY\nworker-01 Ready     42%   61%\nworker-02 Ready     " + cpu + "%   " + memory + "%"); }
+    else if (/^kubectl\s+get\s+pods(?:\s|$)/.test(command)) { recognized++; output.push("NAME             READY   STATUS             RESTARTS\ncheckout-7c9d    " + (isHealthy ? "1/1     Running" : "0/1     CrashLoopBackOff") + "       " + restarts); }
+    else if (/^kubectl\s+describe\s+pod\s+checkout/.test(command)) { recognized++; output.push("Name: checkout-7c9d\nNamespace: production\nLast State: " + (isHealthy ? "Running" : "Terminated") + "\nReason: " + (isHealthy ? "Completed" : "OOMKilled") + "\nReady: " + (isHealthy ? "True" : "False") + "\nEvents: " + (isHealthy ? "Started, Readiness probe passed" : "BackOff, OOMKilled")); }
+    else if (/^kubectl\s+get\s+events(?:\s|$)/.test(command)) { recognized++; output.push(isHealthy ? "Normal Started checkout pod\nNormal Readiness probe passed" : "Warning BackOff checkout container\nWarning OOMKilled checkout container\nWarning Unhealthy readiness probe failed"); }
+    else if (/^kubectl\s+top\s+nodes(?:\s|$)/.test(command)) { recognized++; output.push("NAME       CPU(cores)   MEMORY(bytes)\nworker-02  " + cpu + "%          " + memory + "%"); }
+    else if (/^kubectl\s+top\s+pods(?:\s|$)/.test(command)) { recognized++; output.push("NAME             CPU   MEMORY\ncheckout-7c9d    " + (isHealthy ? "180m" : "950m") + "  " + (isHealthy ? "256Mi" : "980Mi")); }
+    else if (/^kubectl\s+rollout\s+status\s+deployment\/checkout/.test(command)) { recognized++; output.push(isHealthy ? "deployment/checkout successfully rolled out (" + ready + "/" + replicas + " available)" : "Waiting for deployment checkout rollout: " + ready + "/" + replicas + " replicas available"); }
+    else if (/^kubectl\s+rollout\s+restart\s+deployment\/checkout/.test(command)) { recognized++; isHealthy = true; cpu = 48; memory = 62; restarts = 0; replicas = 3; ready = 3; changedState = true; output.push("deployment.apps/checkout restarted\nNew ReplicaSet created; 3/3 pods Ready"); }
+    else if (/^kubectl\s+scale\s+deployment\/checkout\s+--replicas=(\d+)/.test(command)) { recognized++; replicas = Number(command.match(/--replicas=(\d+)/)![1]); ready = isHealthy ? replicas : Math.min(ready, replicas); changedState = true; output.push("deployment.apps/checkout scaled to " + replicas + " replicas (" + ready + " Ready)"); }
+    else if (/^kubectl\s+delete\s+pod\s+checkout/.test(command)) { recognized++; isHealthy = true; cpu = 48; memory = 62; restarts = 0; ready = replicas; changedState = true; output.push("pod \"checkout-7c9d\" deleted\nReplacement pod scheduled and Ready"); }
+    else if (/^kubectl\s+apply\s+-f\s+/.test(command)) { recognized++; isHealthy = true; cpu = 48; memory = 62; restarts = 0; ready = replicas; changedState = true; output.push("configuration applied; deployment reconciled"); }
+    else output.push("error: unsupported command: " + command + "\nSupported: get nodes/pods/events, describe pod, top nodes/pods, rollout status/restart, scale, delete pod, apply -f");
+  }
+  const allRecognized = recognized === commands.length && commands.length > 0;
+  const rolloutVerified = isHealthy && ready === replicas && output.some((line) => line.includes("successfully rolled out"));
+  return { ok: allRecognized, output: recognized + "/" + commands.length + " commands executed\n" + output.join("\n"), detail: !allRecognized ? "One or more commands are unsupported. Correct the command and run again." : isHealthy ? "Cluster state is healthy. Confirm all replicas are Ready with rollout status." : "Evidence shows OOMKilled, BackOff events, resource pressure and unavailable replicas. Use rollout restart or apply a corrected manifest.", evidence: { recognized, total: commands.length, podsHealthy: isHealthy, cpu, memory, restarts, replicas, ready, changedState, rolloutVerified } };
 }
