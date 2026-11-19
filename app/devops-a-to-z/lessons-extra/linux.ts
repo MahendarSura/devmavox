@@ -19,7 +19,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Users and Groups ante enti?",
         "paragraphs": [
           "Linux lo user accounts individual identity ni, groups shared permissions ni represent chesthayi. User ID (UID), Group ID (GID), primary group and supplementary groups important.",
-          "Simple ga cheppalante, Users and Groups anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Linux user accounts assign UID-based identities, while groups provide shared authorization for files and services; service accounts keep Jenkins and deployment automation separate from human logins."
         ],
         "bullets": [
           "UID identifies user",
@@ -33,20 +33,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Access ni person-wise and team-wise control cheyadaniki; Jenkins, deploy and monitoring service accounts ni separate cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "A process starts with a UID and group list; the kernel compares those credentials with inode ownership and mode bits before allowing file access."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: User/group database → authentication → group membership → file/service permission check. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: User/group database → authentication → group membership → file/service permission check. A process starts with a UID and group list; the kernel compares those credentials with inode ownership and mode bits before allowing file access.",
+          "UID, primary GID, supplementary groups, /etc/passwd, /etc/shadow and /etc/group describe identity and membership; NSS may also resolve directory-backed accounts."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "UID, primary GID, supplementary groups, /etc/passwd, /etc/shadow and /etc/group describe identity and membership; NSS may also resolve directory-backed accounts."
         ],
         "bullets": [
           "UID identifies user",
@@ -59,7 +59,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
       {
         "heading": "5. Practical commands with explanation",
         "paragraphs": [
-          "Kindha commands Users and Groups ni inspect/practice cheyadaniki. First read-only commands run chesi output ardham chesukondi; privileged or modifying commands ni disposable lab lo matrame test cheyyandi."
+          "Use id and getent to inspect the effective identity and account database; after usermod -aG, start a new login session and verify id deployer."
         ],
         "code": "id; whoami; getent passwd; getent group; sudo useradd -m deployer; sudo passwd deployer; sudo groupadd developers; sudo usermod -aG developers deployer",
         "note": "Duplicate UID, missing home directory, or usermod without -a can cause access problems. Verify with id deployer; never share personal accounts."
@@ -68,27 +68,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Production lo deployer user ni create chesi developers group lo add chestham; shared deployment directory ki group access istham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Create a deployer account in a disposable VM, grant membership in only the approved deployment group, and prove that unrelated users cannot read its protected files."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Duplicate UID, missing home directory, or usermod without -a can cause access problems. Verify with id deployer; never share personal accounts.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Create a deployer account in a disposable VM, grant membership in only the approved deployment group, and prove that unrelated users cannot read its protected files."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Use least privilege, disable unused accounts, prefer sudo audit trails, and avoid direct root SSH login.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Create a deployer account in a disposable VM, grant membership in only the approved deployment group, and prove that unrelated users cannot read its protected files."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "UID, primary GID, supplementary groups, /etc/passwd, /etc/shadow and /etc/group describe identity and membership; NSS may also resolve directory-backed accounts."
         ],
         "bullets": [
           "Question: What is Users and Groups in Linux?",
@@ -104,7 +104,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "A new engineer needs read access to deployment logs but must not restart services. Create a named account, add only to approved read-only group, test effective access.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use id and getent to inspect the effective identity and account database; after usermod -aG, start a new login session and verify id deployer.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -141,7 +141,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. File Permissions ante enti?",
         "paragraphs": [
           "Linux file permissions read (r), write (w), execute (x) ni owner, group, others ki separately set chesthayi. Directory execute permission ante traverse/search permission.",
-          "Simple ga cheppalante, File Permissions anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Linux permission bits decide whether the file owner, owning group and other users may read, write or execute a file; directory execute means traverse/search."
         ],
         "bullets": [
           "r=4, w=2, x=1",
@@ -155,20 +155,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Sensitive files protect cheyadaniki and scripts/services ki minimum required access ivvadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "The kernel checks the process credentials against owner/group/other mode bits, then considers ACLs and mandatory access controls where enabled."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Process user/group identity → inode permission bits → access decision. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Process user/group identity → inode permission bits → access decision. The kernel checks the process credentials against owner/group/other mode bits, then considers ACLs and mandatory access controls where enabled.",
+          "r=4, w=2 and x=1 form octal modes; umask removes default permission bits, while setuid, setgid and sticky bits add special behavior."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "r=4, w=2 and x=1 form octal modes; umask removes default permission bits, while setuid, setgid and sticky bits add special behavior."
         ],
         "bullets": [
           "r=4, w=2, x=1",
@@ -181,7 +181,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
       {
         "heading": "5. Practical commands with explanation",
         "paragraphs": [
-          "Kindha commands File Permissions ni inspect/practice cheyadaniki. First read-only commands run chesi output ardham chesukondi; privileged or modifying commands ni disposable lab lo matrame test cheyyandi."
+          "Use stat and namei -l to inspect mode bits and every parent directory; choose chmod 640 for a private config rather than broad world access."
         ],
         "code": "ls -l; stat app.sh; chmod 640 config.yml; chmod u+x deploy.sh; chmod 750 deploy.sh; umask",
         "note": "chmod 777 quick fix kaadu; directory execute permission miss aithe file kanipinchina access fail avvachu."
@@ -190,27 +190,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Application config file ni owner read/write, approved group read, others no access laga set chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Create a test config and script, apply 640 and 750 modes, then verify allowed and denied access as both owner and an unprivileged user."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "chmod 777 quick fix kaadu; directory execute permission miss aithe file kanipinchina access fail avvachu.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Create a test config and script, apply 640 and 750 modes, then verify allowed and denied access as both owner and an unprivileged user."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Secrets files ki 600 or stricter, directories ki appropriate 700/750, service account ownership verify cheyyali.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Create a test config and script, apply 640 and 750 modes, then verify allowed and denied access as both owner and an unprivileged user."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "r=4, w=2 and x=1 form octal modes; umask removes default permission bits, while setuid, setgid and sticky bits add special behavior."
         ],
         "bullets": [
           "Question: What is File Permissions in Linux?",
@@ -226,7 +226,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Create a file, set 640, test access as owner, group member and unrelated user in a disposable VM.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use stat and namei -l to inspect mode bits and every parent directory; choose chmod 640 for a private config rather than broad world access.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -263,7 +263,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Ownership and ACL ante enti?",
         "paragraphs": [
           "Ownership lo each file ki user owner and group owner untaru. POSIX ACL standard owner/group/other bits kanna granular user/group permissions ivvagaladu.",
-          "Simple ga cheppalante, Ownership and ACL anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Ownership maps each inode to a user and group; POSIX ACLs add named-user and named-group permissions when basic owner/group/other bits are insufficient."
         ],
         "bullets": [
           "chown changes owner",
@@ -277,20 +277,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Shared team directory lo file owner change cheyakunda multiple teams ki controlled access ivvadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "The filesystem evaluates owner, matching named-user ACL, matching group entries and other permissions; the ACL mask limits effective named-user and group rights."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Filesystem inode ownership → mode bits → ACL evaluation. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Filesystem inode ownership → mode bits → ACL evaluation. The filesystem evaluates owner, matching named-user ACL, matching group entries and other permissions; the ACL mask limits effective named-user and group rights.",
+          "chown changes ownership, chgrp changes group, getfacl reads ACL entries, setfacl modifies them, and the ACL mask caps effective permissions."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "chown changes ownership, chgrp changes group, getfacl reads ACL entries, setfacl modifies them, and the ACL mask caps effective permissions."
         ],
         "bullets": [
           "chown changes owner",
@@ -312,27 +312,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Application service owns logs; operations group ki write, auditor user ki read-only ACL grant chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Give a read-only deployment auditor access to one log directory with a named ACL, then confirm that write access remains denied."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "ACL mask valla configured permission effective ga reduce avvachu; recursive ACL changes wide impact create chesthayi.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Give a read-only deployment auditor access to one log directory with a named ACL, then confirm that write access remains denied."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Grant only required ACL entries, review with getfacl, document default ACLs, avoid broad recursive chown in production.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Give a read-only deployment auditor access to one log directory with a named ACL, then confirm that write access remains denied."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "chown changes ownership, chgrp changes group, getfacl reads ACL entries, setfacl modifies them, and the ACL mask caps effective permissions."
         ],
         "bullets": [
           "Question: What is Ownership and ACL in Linux?",
@@ -348,7 +348,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Create shared directory; grant one named user read-only ACL; verify getfacl and test as that user.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Inspect with ls -l and getfacl; after setfacl, read the effective rights shown by getfacl and verify access as the target account.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -386,7 +386,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Linux Commands ante enti?",
         "paragraphs": [
           "Linux commands shell dwara files, processes, storage, networking and services ni inspect/manage chesthayi. Command options and exit codes automation lo critical.",
-          "Simple ga cheppalante, Linux Commands anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Linux commands are small programs that inspect or change system state; combining them lets an operator answer operational questions quickly."
         ],
         "bullets": [
           "absolute/relative path",
@@ -402,20 +402,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Daily administration, incident triage and repeatable automation kosam.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "The shell parses a command line, resolves built-ins or executables through PATH, expands arguments, starts processes and reports exit status."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Shell parses command → executable receives arguments → kernel operations → stdout/stderr and exit status. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Shell parses command → executable receives arguments → kernel operations → stdout/stderr and exit status. The shell parses a command line, resolves built-ins or executables through PATH, expands arguments, starts processes and reports exit status.",
+          "PATH, environment variables, arguments, stdin, stdout, stderr, exit status and manual pages are the core vocabulary for reliable command use."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "PATH, environment variables, arguments, stdin, stdout, stderr, exit status and manual pages are the core vocabulary for reliable command use."
         ],
         "bullets": [
           "absolute/relative path",
@@ -430,7 +430,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
       {
         "heading": "5. Practical commands with explanation",
         "paragraphs": [
-          "Kindha commands Linux Commands ni inspect/practice cheyadaniki. First read-only commands run chesi output ardham chesukondi; privileged or modifying commands ni disposable lab lo matrame test cheyyandi."
+          "Use command -v to locate a program, type to identify aliases or built-ins, and man or --help to confirm flags before running privileged commands."
         ],
         "code": "pwd; ls -lah; find /var/log -type f; df -h; free -h; ps aux; systemctl status ssh; echo $?",
         "note": "Destructive commands like rm, dd and find -delete ni path verify cheyakunda run cheyyakudadhu."
@@ -439,27 +439,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Incident start lo hostname, uptime, disk, memory and failed services collect chesi evidence bundle prepare chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Collect hostname, uptime, disk and memory evidence from a test VM and save the output with timestamps for an incident record."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Destructive commands like rm, dd and find -delete ni path verify cheyakunda run cheyyakudadhu.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Collect hostname, uptime, disk and memory evidence from a test VM and save the output with timestamps for an incident record."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Prefer read-only diagnostics first, quote paths, use sudo only when needed, and capture command output with timestamps.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Collect hostname, uptime, disk and memory evidence from a test VM and save the output with timestamps for an incident record."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "PATH, environment variables, arguments, stdin, stdout, stderr, exit status and manual pages are the core vocabulary for reliable command use."
         ],
         "bullets": [
           "Question: What is Linux Commands in Linux?",
@@ -475,7 +475,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Run five read-only commands on a test VM and write what each output tells about the host.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use command -v to locate a program, type to identify aliases or built-ins, and man or --help to confirm flags before running privileged commands.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -513,7 +513,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Text Processing ante enti?",
         "paragraphs": [
           "Text processing tools logs and configuration files nundi relevant lines, columns and patterns extract, transform and summarize chesthayi.",
-          "Simple ga cheppalante, Text Processing anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Text-processing tools transform logs and configuration output into focused evidence without manually opening every line."
         ],
         "bullets": [
           "head/tail preview",
@@ -528,20 +528,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Large logs lo error pattern identify cheyadaniki and CI output analyze cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "A pipeline sends one process's stdout to the next process's stdin; filters select, transform, count or format records while preserving the original source file."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Input stream/file → filter or transform utility → stdout/file → next analysis step. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Input stream/file → filter or transform utility → stdout/file → next analysis step. A pipeline sends one process's stdout to the next process's stdin; filters select, transform, count or format records while preserving the original source file.",
+          "cut selects fields, sort orders records, uniq counts adjacent duplicates, wc counts lines/bytes, tr translates characters and column formats output."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "cut selects fields, sort orders records, uniq counts adjacent duplicates, wc counts lines/bytes, tr translates characters and column formats output."
         ],
         "bullets": [
           "head/tail preview",
@@ -555,7 +555,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
       {
         "heading": "5. Practical commands with explanation",
         "paragraphs": [
-          "Kindha commands Text Processing ni inspect/practice cheyadaniki. First read-only commands run chesi output ardham chesukondi; privileged or modifying commands ni disposable lab lo matrame test cheyyandi."
+          "Use journalctl -u nginx --since today | grep -i error to filter service logs; add timestamps and avoid destructive in-place edits until a backup exists."
         ],
         "code": "head -n 20 app.log; tail -f app.log; cut -d' ' -f1 access.log; sort names.txt; uniq -c; wc -l app.log; tr '[:lower:]' '[:upper:]' < input.txt",
         "note": "uniq mundu sort cheyyakapothe non-adjacent duplicates count miss avuthayi; delimiter assumptions validate cheyyali."
@@ -564,27 +564,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Nginx access log lo request counts extract chesi top endpoints identify chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Extract the most frequent HTTP status codes from a sample access log and compare the counts with the monitoring dashboard."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "uniq mundu sort cheyyakapothe non-adjacent duplicates count miss avuthayi; delimiter assumptions validate cheyyali.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Extract the most frequent HTTP status codes from a sample access log and compare the counts with the monitoring dashboard."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Work on copied logs, preserve originals, handle spaces/encoding, and avoid exposing secrets in output.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Extract the most frequent HTTP status codes from a sample access log and compare the counts with the monitoring dashboard."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "cut selects fields, sort orders records, uniq counts adjacent duplicates, wc counts lines/bytes, tr translates characters and column formats output."
         ],
         "bullets": [
           "Question: What is Text Processing in Linux?",
@@ -600,7 +600,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Take sample access log, count HTTP status codes with cut/sort/uniq, and explain each pipeline stage.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use journalctl -u nginx --since today | grep -i error to filter service logs; add timestamps and avoid destructive in-place edits until a backup exists.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -637,7 +637,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Grep, Sed and Awk ante enti?",
         "paragraphs": [
           "grep pattern matching, sed stream editing, awk field-based text processing kosam use chestham. Ee tools shell pipelines lo logs/configs analyze cheyadaniki core utilities.",
-          "Simple ga cheppalante, Grep, Sed and Awk anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "grep finds matching lines, sed performs stream edits and awk processes records and fields; together they support fast log investigation."
         ],
         "bullets": [
           "regex",
@@ -653,20 +653,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Errors filter, config values replace, and structured log fields aggregate cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "grep applies patterns to input lines, sed applies editing commands to a stream, and awk splits records into fields before evaluating rules and actions."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Pattern selection → optional stream transformation → field extraction/aggregation. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Pattern selection → optional stream transformation → field extraction/aggregation. grep applies patterns to input lines, sed applies editing commands to a stream, and awk splits records into fields before evaluating rules and actions.",
+          "Regular expressions describe patterns; grep -E enables extended syntax, sed substitution uses s/pattern/replacement/, and awk fields default to whitespace."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "Regular expressions describe patterns; grep -E enables extended syntax, sed substitution uses s/pattern/replacement/, and awk fields default to whitespace."
         ],
         "bullets": [
           "regex",
@@ -690,27 +690,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Access log lo 500 errors count chesi source IP and status fields report chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Find 5xx responses in a sample Nginx log, print timestamp and request path with awk, and count the affected endpoints."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Unescaped regex special characters and in-place sed edits can alter files unexpectedly; test on copy first.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Find 5xx responses in a sample Nginx log, print timestamp and request path with awk, and count the affected endpoints."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Use grep to locate, sed to preview transformations, awk to extract columns; redact tokens and personal data.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Find 5xx responses in a sample Nginx log, print timestamp and request path with awk, and count the affected endpoints."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "Regular expressions describe patterns; grep -E enables extended syntax, sed substitution uses s/pattern/replacement/, and awk fields default to whitespace."
         ],
         "bullets": [
           "Question: What is Grep, Sed and Awk in Linux?",
@@ -726,7 +726,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Generate sample log; identify ERROR lines, replace a test string in a copy, and print first and ninth fields.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Test patterns against copied log files first; use grep -n, sed -n and awk print statements to inspect exact matches before transforming production data.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -763,7 +763,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Pipes and Redirection ante enti?",
         "paragraphs": [
           "Pipe `|` oka command stdout ni next command stdin ki pampisthundi. Redirection stdout/stderr ni file or stream ki route chesthundi.",
-          "Simple ga cheppalante, Pipes and Redirection anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Pipes and redirection connect command output to other commands or files, making repeatable evidence collection possible."
         ],
         "bullets": [
           "stdin=0",
@@ -780,20 +780,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Small Unix tools combine chesi repeatable diagnostic pipelines build cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "The shell opens redirected file descriptors before executing a command; a pipe connects stdout of the left process to stdin of the right process."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Producer stdout → pipe buffer → consumer stdin; redirection shell file descriptors ni set chesthundi. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Producer stdout → pipe buffer → consumer stdin; redirection shell file descriptors ni set chesthundi. The shell opens redirected file descriptors before executing a command; a pipe connects stdout of the left process to stdin of the right process.",
+          ">, >>, <, 2>, 2>&1 and | control stdout, append, stdin, stderr and pipelines; tee duplicates output to screen and file."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          ">, >>, <, 2>, 2>&1 and | control stdout, append, stdin, stderr and pipelines; tee duplicates output to screen and file."
         ],
         "bullets": [
           "stdin=0",
@@ -818,27 +818,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Disk usage command output ni tee tho terminal and evidence file rendu places lo save chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Capture a diagnostic command's stdout and stderr separately, then use tee to retain a timestamped copy while reviewing it."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "`>` existing file truncate chesthundi; command order of `2>&1` matters; pipe default ga only stdout pass chesthundi.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Capture a diagnostic command's stdout and stderr separately, then use tee to retain a timestamped copy while reviewing it."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Use `set -o pipefail` in scripts, protect output paths, and avoid logging secrets.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Capture a diagnostic command's stdout and stderr separately, then use tee to retain a timestamped copy while reviewing it."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          ">, >>, <, 2>, 2>&1 and | control stdout, append, stdin, stderr and pipelines; tee duplicates output to screen and file."
         ],
         "bullets": [
           "Question: What is Pipes and Redirection in Linux?",
@@ -854,7 +854,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Run a command with stdout and stderr separately redirected; use tee and explain exit status with pipefail.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use set -o pipefail in scripts so a failing command inside a pipeline is not hidden by the final command's success.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -892,7 +892,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Shell Scripting ante enti?",
         "paragraphs": [
           "Shell script commands ni executable file lo sequence/logic ga organize chesi system administration tasks automate chesthundi.",
-          "Simple ga cheppalante, Shell Scripting anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Shell scripts automate repeatable operating-system tasks and provide consistent checks during provisioning, deployment and incident response."
         ],
         "bullets": [
           "shebang",
@@ -908,20 +908,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Repeated deployments, backups, health checks and housekeeping tasks consistent ga run cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "The interpreter reads commands in order, expands variables, evaluates conditions and loops, launches processes and returns an exit code to the caller."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Script interpreter → variable/command evaluation → control flow → exit status. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Script interpreter → variable/command evaluation → control flow → exit status. The interpreter reads commands in order, expands variables, evaluates conditions and loops, launches processes and returns an exit code to the caller.",
+          "Shebang, positional parameters, quoting, functions, exit codes, traps and set -euo pipefail determine script execution and failure handling."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "Shebang, positional parameters, quoting, functions, exit codes, traps and set -euo pipefail determine script execution and failure handling."
         ],
         "bullets": [
           "shebang",
@@ -936,7 +936,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
       {
         "heading": "5. Practical commands with explanation",
         "paragraphs": [
-          "Kindha commands Shell Scripting ni inspect/practice cheyadaniki. First read-only commands run chesi output ardham chesukondi; privileged or modifying commands ni disposable lab lo matrame test cheyyandi."
+          "Use bash -n script.sh for syntax validation and shellcheck for static analysis; quote variables such as "$target" to prevent word splitting."
         ],
         "code": "#!/usr/bin/env bash; set -euo pipefail; echo \"Host: $(hostname)\"; date; df -h /; chmod +x health-check.sh; ./health-check.sh",
         "note": "Unquoted variables, unchecked commands and unsafe rm paths scripts ni dangerous ga chesthayi."
@@ -945,27 +945,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "CI runner deployment mundu disk, service and endpoint checks execute chesi failure aithe pipeline stop chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Write a script that checks disk usage and service health, returns nonzero on failure, and emits a clear message suitable for CI logs."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Unquoted variables, unchecked commands and unsafe rm paths scripts ni dangerous ga chesthayi.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Write a script that checks disk usage and service health, returns nonzero on failure, and emits a clear message suitable for CI logs."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Quote variables, validate inputs, use absolute paths, trap cleanup, log actions and test in disposable environment.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Write a script that checks disk usage and service health, returns nonzero on failure, and emits a clear message suitable for CI logs."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "Shebang, positional parameters, quoting, functions, exit codes, traps and set -euo pipefail determine script execution and failure handling."
         ],
         "bullets": [
           "Question: What is Shell Scripting in Linux?",
@@ -981,7 +981,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Write a health-check script that checks disk threshold and exits non-zero when threshold is crossed.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use bash -n script.sh for syntax validation and shellcheck for static analysis; quote variables such as "$target" to prevent word splitting.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -1019,7 +1019,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Bash Variables ante enti?",
         "paragraphs": [
           "Bash variables shell session lo strings and command results store chesthayi. Environment variables child processes ki export chesthe inherit avuthayi.",
-          "Simple ga cheppalante, Bash Variables anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Bash variables store values used by commands; environment variables are exported to child processes while ordinary shell variables remain local to the shell."
         ],
         "bullets": [
           "local variable",
@@ -1035,20 +1035,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Reusable scripts, environment-specific configuration and secrets references manage cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "The shell expands $NAME when parsing commands; export places a variable in the environment inherited by child processes, and quoting controls expansion behavior."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Assignment → expansion → optional export to child process → command consumes value. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Assignment → expansion → optional export to child process → command consumes value. The shell expands $NAME when parsing commands; export places a variable in the environment inherited by child processes, and quoting controls expansion behavior.",
+          "Local variables, exported environment variables, positional parameters, command substitution and readonly variables have different scope and lifetime."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "Local variables, exported environment variables, positional parameters, command substitution and readonly variables have different scope and lifetime."
         ],
         "bullets": [
           "local variable",
@@ -1063,7 +1063,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
       {
         "heading": "5. Practical commands with explanation",
         "paragraphs": [
-          "Kindha commands Bash Variables ni inspect/practice cheyadaniki. First read-only commands run chesi output ardham chesukondi; privileged or modifying commands ni disposable lab lo matrame test cheyyandi."
+          "Use declare -p and env to inspect shell versus exported variables; quote expansions and avoid putting secrets in command-line arguments or logs."
         ],
         "code": "APP_ENV=staging; echo \"$APP_ENV\"; export APP_ENV; printf '%s\\n' \"$PATH\"; readonly REGION=ap-south-1; unset APP_ENV",
         "note": "Spaces unna values quote cheyyali; secrets shell history or process arguments lo leak avvakunda chusukovali."
@@ -1072,27 +1072,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Same deploy script dev/staging/prod lo APP_ENV and artifact version batti behavior select chesthundi.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Pass a non-secret deployment environment name to a test script and verify that the child process receives it without exposing credentials."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Spaces unna values quote cheyyali; secrets shell history or process arguments lo leak avvakunda chusukovali.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Pass a non-secret deployment environment name to a test script and verify that the child process receives it without exposing credentials."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Inject secrets from approved secret store, avoid hardcoding, set defaults safely with `${VAR:-default}`.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Pass a non-secret deployment environment name to a test script and verify that the child process receives it without exposing credentials."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "Local variables, exported environment variables, positional parameters, command substitution and readonly variables have different scope and lifetime."
         ],
         "bullets": [
           "Question: What is Bash Variables in Linux?",
@@ -1108,7 +1108,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Create a script that reads APP_ENV and ARTIFACT_VERSION, validates both, and prints deployment target.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use declare -p and env to inspect shell versus exported variables; quote expansions and avoid putting secrets in command-line arguments or logs.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -1145,7 +1145,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Conditions and Loops ante enti?",
         "paragraphs": [
           "Bash conditions decisions execute chesthayi; loops commands ni list or condition batti repeat chesthayi. Exit codes shell automation lo true/false decision ki common.",
-          "Simple ga cheppalante, Conditions and Loops anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Bash conditions and loops make scripts choose actions based on command results and repeat work over controlled input sets."
         ],
         "bullets": [
           "test/[ ]",
@@ -1162,20 +1162,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Multiple servers/files process cheyadaniki and health status batti deployment continue/stop cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "if evaluates a command's exit status, case matches patterns, and for/while loops iterate through lists or continue while a test succeeds."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Condition evaluates exit status/expression → branch or loop body executes → next iteration/exit. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Condition evaluates exit status/expression → branch or loop body executes → next iteration/exit. if evaluates a command's exit status, case matches patterns, and for/while loops iterate through lists or continue while a test succeeds.",
+          "test brackets, [[ ]], numeric comparisons, string comparisons, case patterns, break and continue control branching and iteration."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "test brackets, [[ ]], numeric comparisons, string comparisons, case patterns, break and continue control branching and iteration."
         ],
         "bullets": [
           "test/[ ]",
@@ -1200,27 +1200,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Hosts inventory meeda SSH health check loop run chesi failed host list generate chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Loop through a small list of test services, check each with systemctl is-active, and report failed services without restarting them automatically."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "`[ $VAR = x ]` empty value tho fail avvachu; use quotes or `[[ ]]`; infinite while loops avoid cheyyali.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Loop through a small list of test services, check each with systemctl is-active, and report failed services without restarting them automatically."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Validate input, quote expansions, add timeout/retry limits, and make loops safe for filenames with spaces.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Loop through a small list of test services, check each with systemctl is-active, and report failed services without restarting them automatically."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "test brackets, [[ ]], numeric comparisons, string comparisons, case patterns, break and continue control branching and iteration."
         ],
         "bullets": [
           "Question: What is Conditions and Loops in Linux?",
@@ -1236,7 +1236,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Loop over test host list and report reachable/unreachable without making configuration changes.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use [[ -f "$file" ]] to test a file, and quote loop variables; avoid parsing ls output because filenames may contain spaces or newlines.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -1274,7 +1274,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Processes and Signals ante enti?",
         "paragraphs": [
           "Process ante running program instance; PID unique process identifier. Signals process ki terminate, reload or control request pampisthayi.",
-          "Simple ga cheppalante, Processes and Signals anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "A process is a running program with a PID, credentials, open file descriptors and resource usage; signals request actions such as termination."
         ],
         "bullets": [
           "PID",
@@ -1290,20 +1290,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "High CPU process identify cheyadaniki, stuck jobs stop cheyadaniki and services graceful reload cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "The kernel schedules runnable processes; signals such as TERM request graceful shutdown, while KILL cannot be caught and should be a last resort."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Kernel creates process → scheduler allocates CPU → process handles signals → exits or changes state. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Kernel creates process → scheduler allocates CPU → process handles signals → exits or changes state. The kernel schedules runnable processes; signals such as TERM request graceful shutdown, while KILL cannot be caught and should be a last resort.",
+          "PID, PPID, process state, nice value, foreground/background jobs, SIGTERM, SIGKILL and zombie processes explain process lifecycle."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "PID, PPID, process state, nice value, foreground/background jobs, SIGTERM, SIGKILL and zombie processes explain process lifecycle."
         ],
         "bullets": [
           "PID",
@@ -1327,27 +1327,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Memory leak unna worker identify chesi service manager dwara graceful restart plan chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Investigate a test worker consuming CPU, identify its parent and command line, then stop it gracefully and verify the service recovers."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Blind `kill -9` data loss or interrupted writes cause cheyochu; PID reuse risk undi.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Investigate a test worker consuming CPU, identify its parent and command line, then stop it gracefully and verify the service recovers."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Identify owner and command before termination; prefer SIGTERM and service manager; capture logs and impact.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Investigate a test worker consuming CPU, identify its parent and command line, then stop it gracefully and verify the service recovers."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "PID, PPID, process state, nice value, foreground/background jobs, SIGTERM, SIGKILL and zombie processes explain process lifecycle."
         ],
         "bullets": [
           "Question: What is Processes and Signals in Linux?",
@@ -1363,7 +1363,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Start a harmless sleep process, inspect PID/PPID, send TERM, and verify it exited.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Inspect with ps, top and pgrep; send TERM first, verify shutdown, and use KILL only after confirming the exact PID and impact.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -1402,7 +1402,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Systemd and Services ante enti?",
         "paragraphs": [
           "systemd Linux systems lo boot and service manager ga units ni start, stop, order, monitor chesthundi. Service unit application process lifecycle define chesthundi.",
-          "Simple ga cheppalante, Systemd and Services anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "systemd manages Linux services and system startup through unit files, dependencies, targets and journal logging."
         ],
         "bullets": [
           "unit",
@@ -1418,20 +1418,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Nginx, Docker, sshd lanti daemons boot time lo start avvadam and failures recover cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "systemd loads unit definitions, resolves dependencies, starts requested units and supervises service processes according to restart and ordering policies."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Boot target → dependency ordering → unit activation → process supervision → journal logging. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Boot target → dependency ordering → unit activation → process supervision → journal logging. systemd loads unit definitions, resolves dependencies, starts requested units and supervises service processes according to restart and ordering policies.",
+          "Unit types include service, target, socket, timer and mount; ExecStart, After, Wants, Requires and Restart shape service behavior."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "Unit types include service, target, socket, timer and mount; ExecStart, After, Wants, Requires and Restart shape service behavior."
         ],
         "bullets": [
           "unit",
@@ -1455,27 +1455,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "New release taruvatha Nginx config test chesi controlled reload perform chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Create a harmless test service in a VM, enable it at boot, inspect its journal and validate restart behavior after a controlled failure."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "`enable` service ni immediate ga start cheyyadu; unit edit tarvatha daemon-reload required; restart downtime cause cheyochu.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Create a harmless test service in a VM, enable it at boot, inspect its journal and validate restart behavior after a controlled failure."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Before restart inspect status/config, use reload when supported, define restart policy and monitor health.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Create a harmless test service in a VM, enable it at boot, inspect its journal and validate restart behavior after a controlled failure."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "Unit types include service, target, socket, timer and mount; ExecStart, After, Wants, Requires and Restart shape service behavior."
         ],
         "bullets": [
           "Question: What is Systemd and Services in Linux?",
@@ -1491,7 +1491,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Create a simple systemd service for a harmless script in a VM; start, enable, inspect and disable it.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use systemctl status and cat to inspect a unit, daemon-reload after editing unit files, and journalctl -u to inspect its logs.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -1529,7 +1529,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Package Management ante enti?",
         "paragraphs": [
           "Package manager software packages install, update, verify and remove chesthundi while dependencies and repository metadata manage chesthundi.",
-          "Simple ga cheppalante, Package Management anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Package managers install, update, verify and remove software while tracking dependencies and package metadata."
         ],
         "bullets": [
           "package",
@@ -1544,20 +1544,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Servers lo supported, repeatable and auditable software installation kosam.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "The package client resolves requested packages against configured repositories, downloads signed metadata and packages, checks dependencies and invokes installation scripts."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Repository metadata → dependency resolution → package download/signature verification → install scripts/files. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Repository metadata → dependency resolution → package download/signature verification → install scripts/files. The package client resolves requested packages against configured repositories, downloads signed metadata and packages, checks dependencies and invokes installation scripts.",
+          "Repositories, package indexes, dependencies, package signatures, holds and transaction history are essential for reproducible server maintenance."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "Repositories, package indexes, dependencies, package signatures, holds and transaction history are essential for reproducible server maintenance."
         ],
         "bullets": [
           "package",
@@ -1571,7 +1571,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
       {
         "heading": "5. Practical commands with explanation",
         "paragraphs": [
-          "Kindha commands Package Management ni inspect/practice cheyadaniki. First read-only commands run chesi output ardham chesukondi; privileged or modifying commands ni disposable lab lo matrame test cheyyandi."
+          "Use apt-cache policy or dnf info before installing; inspect pending changes and repository origin, then verify installed versions after the transaction."
         ],
         "code": "apt-cache policy nginx; apt list --installed; dnf info nginx; rpm -qi nginx; dpkg -l nginx; sudo apt install nginx",
         "note": "Unplanned major upgrades production compatibility break cheyochu; untrusted repositories supply-chain risk."
@@ -1580,27 +1580,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Golden image build lo approved Nginx version install chesi package inventory record chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Install a small diagnostic package on a disposable host, record its repository and version, then remove it using the package manager."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Unplanned major upgrades production compatibility break cheyochu; untrusted repositories supply-chain risk.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Install a small diagnostic package on a disposable host, record its repository and version, then remove it using the package manager."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Use approved repositories, pin/test versions, patch in maintenance windows and record package inventory.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Install a small diagnostic package on a disposable host, record its repository and version, then remove it using the package manager."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "Repositories, package indexes, dependencies, package signatures, holds and transaction history are essential for reproducible server maintenance."
         ],
         "bullets": [
           "Question: What is Package Management in Linux?",
@@ -1616,7 +1616,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Identify package manager on Ubuntu and RHEL-like test VMs; inspect package version without installing.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use apt-cache policy or dnf info before installing; inspect pending changes and repository origin, then verify installed versions after the transaction.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -1654,7 +1654,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. APT and YUM/DNF ante enti?",
         "paragraphs": [
           "APT Debian/Ubuntu distributions lo `.deb` packages manage chesthundi; YUM/DNF RPM-based distributions lo packages manage chesthayi. Commands similar purpose serve chesthayi but repositories and package formats differ.",
-          "Simple ga cheppalante, APT and YUM/DNF anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "APT is common on Debian/Ubuntu; DNF is used by Fedora and modern RHEL-family systems, while older systems may use YUM compatibility commands."
         ],
         "bullets": [
           "APT uses dpkg",
@@ -1668,20 +1668,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Different Linux families lo correct patch/install workflow follow cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "APT refreshes package indexes before resolving installs; DNF reads repository metadata, resolves dependencies and executes an RPM transaction."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Refresh repository metadata → resolve dependencies → download signed packages → install/update. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Refresh repository metadata → resolve dependencies → download signed packages → install/update. APT refreshes package indexes before resolving installs; DNF reads repository metadata, resolves dependencies and executes an RPM transaction.",
+          "apt update refreshes indexes, apt upgrade applies updates, dnf check-update checks availability, and dnf history records RPM transactions."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "apt update refreshes indexes, apt upgrade applies updates, dnf check-update checks availability, and dnf history records RPM transactions."
         ],
         "bullets": [
           "APT uses dpkg",
@@ -1703,27 +1703,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Ubuntu CI runner lo apt, Amazon Linux/RHEL server lo dnf use chesi same approved package install chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Compare available security updates on Ubuntu and a RHEL-compatible test VM, then verify package versions and transaction history."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Ubuntu commands RHEL host lo blindly run cheyyakudadhu; distro and major version first identify cheyyali.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Compare available security updates on Ubuntu and a RHEL-compatible test VM, then verify package versions and transaction history."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Check `/etc/os-release`, verify repository origin and package version, snapshot critical hosts before upgrades.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Compare available security updates on Ubuntu and a RHEL-compatible test VM, then verify package versions and transaction history."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "apt update refreshes indexes, apt upgrade applies updates, dnf check-update checks availability, and dnf history records RPM transactions."
         ],
         "bullets": [
           "Question: What is APT and YUM/DNF in Linux?",
@@ -1739,7 +1739,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Compare `/etc/os-release` and package query commands on Ubuntu and Amazon Linux; document differences.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Check OS release first, review the proposed transaction and repository source, and use apt or dnf consistently with the host distribution.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -1778,7 +1778,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Disk and Partition Management ante enti?",
         "paragraphs": [
           "Disk management block devices, partitions, filesystems and capacity ni configure/monitor chesthundi. Partition disk ni logical regions ga divide chesthundi.",
-          "Simple ga cheppalante, Disk and Partition Management anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Disk management prepares block devices with partitions and filesystems, then mounts them so applications can store data persistently."
         ],
         "bullets": [
           "block device",
@@ -1793,20 +1793,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Filesystem capacity plan cheyadaniki and new attached cloud volume safely prepare cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "The kernel discovers block devices; partition tables define regions, filesystems organize files and mount points attach those filesystems into the directory tree."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Block device → partition table → filesystem creation → mount point → application writes. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Block device → partition table → filesystem creation → mount point → application writes. The kernel discovers block devices; partition tables define regions, filesystems organize files and mount points attach those filesystems into the directory tree.",
+          "Block device, GPT/MBR, partition, filesystem, UUID, mount point and inode capacity describe different storage layers."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "Block device, GPT/MBR, partition, filesystem, UUID, mount point and inode capacity describe different storage layers."
         ],
         "bullets": [
           "block device",
@@ -1829,27 +1829,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "EC2 EBS volume attach ayyaka device identify chesi approved partition/filesystem plan follow chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Attach a disposable virtual disk, create a test partition and filesystem, mount it temporarily, and verify capacity and filesystem type."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Wrong disk select chesi mkfs/partition commands run chesthe data permanently loss avvachu.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Attach a disposable virtual disk, create a test partition and filesystem, mount it temporarily, and verify capacity and filesystem type."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Confirm device serial/size, backup/snapshot, maintenance approval and never format mounted production volume.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Attach a disposable virtual disk, create a test partition and filesystem, mount it temporarily, and verify capacity and filesystem type."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "Block device, GPT/MBR, partition, filesystem, UUID, mount point and inode capacity describe different storage layers."
         ],
         "bullets": [
           "Question: What is Disk and Partition Management in Linux?",
@@ -1865,7 +1865,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Disposable loopback disk or VM disk meeda lsblk, blkid, df inspect cheyandi; destructive formatting optional and only disposable disk.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use lsblk -f, blkid, df -hT and findmnt before changes; never format a device until its identity and data-retention impact are confirmed.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -1904,7 +1904,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. LVM ante enti?",
         "paragraphs": [
           "Logical Volume Manager physical volumes (PV), volume groups (VG), logical volumes (LV) layers create chesi storage flexible ga allocate/extend cheyadaniki help chesthundi.",
-          "Simple ga cheppalante, LVM anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "LVM adds a flexible storage layer by combining physical volumes into volume groups and allocating logical volumes that can be resized."
         ],
         "bullets": [
           "PV physical volume",
@@ -1918,20 +1918,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Underlying disk space available unnapudu filesystem layout redesign cheyakunda logical volume expand cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "Physical volumes contribute extents to a volume group; logical volumes allocate those extents and are formatted and mounted like block devices."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Disk/partition → PV → VG storage pool → LV virtual block device → filesystem. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Disk/partition → PV → VG storage pool → LV virtual block device → filesystem. Physical volumes contribute extents to a volume group; logical volumes allocate those extents and are formatted and mounted like block devices.",
+          "PV, VG, LV, physical extent, thin pool, snapshot and filesystem resize are distinct LVM concepts."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "PV, VG, LV, physical extent, thin pool, snapshot and filesystem resize are distinct LVM concepts."
         ],
         "bullets": [
           "PV physical volume",
@@ -1953,27 +1953,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Application data volume usage perigite VG free extents unte LV and filesystem online extend chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Extend a test logical volume in a VM, grow its filesystem with the filesystem-appropriate tool, and validate the new capacity."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "VG free space, filesystem support and backup verify cheyakunda LV resize cheyyakudadhu; shrink risky.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Extend a test logical volume in a VM, grow its filesystem with the filesystem-appropriate tool, and validate the new capacity."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Monitor VG free capacity, snapshot/backup, confirm filesystem type and follow vendor-supported resize procedure.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Extend a test logical volume in a VM, grow its filesystem with the filesystem-appropriate tool, and validate the new capacity."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "PV, VG, LV, physical extent, thin pool, snapshot and filesystem resize are distinct LVM concepts."
         ],
         "bullets": [
           "Question: What is LVM in Linux?",
@@ -1989,7 +1989,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Lab VM lo two virtual disks tho PV/VG/LV create chesi mount and extend; cleanup only after unmount.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Inspect with pvs, vgs and lvs; confirm free extents and filesystem type before extending, and back up data before storage changes.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -2027,7 +2027,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Mounting and fstab ante enti?",
         "paragraphs": [
           "Mount operation filesystem ni directory path ki attach chesthundi. `/etc/fstab` boot-time mount configuration store chesthundi.",
-          "Simple ga cheppalante, Mounting and fstab anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Mounting attaches a filesystem to a directory; /etc/fstab describes filesystems that should be mounted automatically or on demand."
         ],
         "bullets": [
           "mount point",
@@ -2043,20 +2043,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Persistent disks, shared storage and application data paths reboot tarvatha kuda available ga undadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "The kernel exposes a filesystem at a mount point; systemd may generate mount units from fstab and enforce dependencies during boot."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Device/UUID → filesystem driver → mount point → process path access. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Device/UUID → filesystem driver → mount point → process path access. The kernel exposes a filesystem at a mount point; systemd may generate mount units from fstab and enforce dependencies during boot.",
+          "UUID, mount point, filesystem type, mount options, dump and fsck pass fields determine persistent mount behavior."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "UUID, mount point, filesystem type, mount options, dump and fsck pass fields determine persistent mount behavior."
         ],
         "bullets": [
           "mount point",
@@ -2080,27 +2080,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "EBS data volume UUID tho fstab lo configure chesi reboot tarvatha stable `/data` mount ensure chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Mount a test filesystem by UUID, add a safe fstab entry in a VM and verify both manual mount and reboot persistence."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Wrong fstab entry boot delay/emergency mode create cheyochu; device names can change across boots.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Mount a test filesystem by UUID, add a safe fstab entry in a VM and verify both manual mount and reboot persistence."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Use UUID not unstable device names, validate `mount -a` before reboot, keep console access and backup fstab.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Mount a test filesystem by UUID, add a safe fstab entry in a VM and verify both manual mount and reboot persistence."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "UUID, mount point, filesystem type, mount options, dump and fsck pass fields determine persistent mount behavior."
         ],
         "bullets": [
           "Question: What is Mounting and fstab in Linux?",
@@ -2116,7 +2116,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Create temporary filesystem mount in VM, add UUID entry to test fstab, validate and safely remove entry.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Prefer UUID= entries, validate edits with findmnt --verify or mount -a in a maintenance window, and keep a console rollback path.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -2155,7 +2155,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Networking Commands ante enti?",
         "paragraphs": [
           "Linux networking commands interfaces, routes, DNS, sockets and connectivity ni inspect chesthayi. Different tools different layer diagnose chesthayi.",
-          "Simple ga cheppalante, Networking Commands anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Linux networking commands inspect interfaces, addresses, routes, name resolution, sockets and packet reachability."
         ],
         "bullets": [
           "interface",
@@ -2172,20 +2172,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Application timeout DNS, route, firewall or listening port issue aa ani isolate cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "Applications resolve names, select a route and source address, connect to a destination socket, then exchange packets through interfaces and network policy."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Interface/IP → route lookup → DNS resolution → TCP connection → application response. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Interface/IP → route lookup → DNS resolution → TCP connection → application response. Applications resolve names, select a route and source address, connect to a destination socket, then exchange packets through interfaces and network policy.",
+          "ip address, ip route, DNS resolver, TCP/UDP socket, listening port, MTU and connection state describe different network layers."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "ip address, ip route, DNS resolver, TCP/UDP socket, listening port, MTU and connection state describe different network layers."
         ],
         "bullets": [
           "interface",
@@ -2201,7 +2201,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
       {
         "heading": "5. Practical commands with explanation",
         "paragraphs": [
-          "Kindha commands Networking Commands ni inspect/practice cheyadaniki. First read-only commands run chesi output ardham chesukondi; privileged or modifying commands ni disposable lab lo matrame test cheyyandi."
+          "Use ip -br address, ip route get, getent hosts, ss -lntup and curl -v to isolate name, route, port and application failures."
         ],
         "code": "ip addr; ip route; ss -tulpn; getent hosts example.com; resolvectl status; ping -c 4 8.8.8.8; curl -I https://example.com",
         "note": "Ping success HTTP success ani guarantee kaadu; ICMP blocked undochu; DNS cache/resolver config vary avuthayi."
@@ -2210,27 +2210,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Pod/VM nundi database endpoint reach avvatledu; route, DNS resolution and TCP port individually test chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Troubleshoot a test web service by checking DNS resolution, route selection, listening socket and HTTP response separately."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Ping success HTTP success ani guarantee kaadu; ICMP blocked undochu; DNS cache/resolver config vary avuthayi.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Troubleshoot a test web service by checking DNS resolution, route selection, listening socket and HTTP response separately."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Use layered tests, avoid changing routes/firewall during diagnosis, redact internal IPs in public reports.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Troubleshoot a test web service by checking DNS resolution, route selection, listening socket and HTTP response separately."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "ip address, ip route, DNS resolver, TCP/UDP socket, listening port, MTU and connection state describe different network layers."
         ],
         "bullets": [
           "Question: What is Networking Commands in Linux?",
@@ -2246,7 +2246,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Diagnose one unreachable test service using ip, getent, ss and curl; record which layer fails.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use ip -br address, ip route get, getent hosts, ss -lntup and curl -v to isolate name, route, port and application failures.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -2285,7 +2285,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. SSH and SCP ante enti?",
         "paragraphs": [
           "SSH encrypted remote login and command execution protocol. SCP SSH transport use chesi files copy chesthundi; modern OpenSSH scp internally SFTP protocol use cheyagaladu.",
-          "Simple ga cheppalante, SSH and SCP anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "SSH provides encrypted remote login and command execution; SCP transfers files over the authenticated SSH transport."
         ],
         "bullets": [
           "private/public key",
@@ -2301,20 +2301,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Secure remote server administration, CI deployment and file transfer kosam.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "The client resolves the host, negotiates cryptographic algorithms, verifies the server host key, authenticates the user and opens an encrypted session or transfer."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Client resolves host → TCP port 22 → key exchange/host verification → user authentication → encrypted session. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Client resolves host → TCP port 22 → key exchange/host verification → user authentication → encrypted session. The client resolves the host, negotiates cryptographic algorithms, verifies the server host key, authenticates the user and opens an encrypted session or transfer.",
+          "Host key, known_hosts, public/private key pair, ssh-agent, authorized_keys, port forwarding and file permissions are core SSH terms."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "Host key, known_hosts, public/private key pair, ssh-agent, authorized_keys, port forwarding and file permissions are core SSH terms."
         ],
         "bullets": [
           "private/public key",
@@ -2338,27 +2338,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "CI runner SSH key use chesi approved deployment account tho artifact upload chesthundi.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Configure key-based access between two disposable VMs, verify host identity and copy a deployment artifact without enabling passwordless root access."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Host key verification disable cheyyadam MITM risk; private key repo lo commit cheyyakudadhu.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Configure key-based access between two disposable VMs, verify host identity and copy a deployment artifact without enabling passwordless root access."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Use Ed25519 keys, passphrase/agent, pinned known_hosts, least-privilege deploy account and rotate keys.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Configure key-based access between two disposable VMs, verify host identity and copy a deployment artifact without enabling passwordless root access."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "Host key, known_hosts, public/private key pair, ssh-agent, authorized_keys, port forwarding and file permissions are core SSH terms."
         ],
         "bullets": [
           "Question: What is SSH and SCP in Linux?",
@@ -2374,7 +2374,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Create disposable VM SSH key login and SCP a harmless file; verify host key prompt and file checksum.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Run ssh -vvv for client diagnostics, ssh -G to inspect effective settings and ssh-keygen -lf to verify fingerprints; protect private keys.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -2411,7 +2411,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Cron and Scheduling ante enti?",
         "paragraphs": [
           "cron time-based scheduler; crontab entries minute, hour, day, month and weekday fields use chesi recurring jobs schedule chesthayi.",
-          "Simple ga cheppalante, Cron and Scheduling anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Cron and systemd timers schedule commands for recurring maintenance, backups, cleanup and health checks."
         ],
         "bullets": [
           "five time fields",
@@ -2427,20 +2427,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Log cleanup, backups, certificate checks and periodic health tasks automate cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "The cron daemon reads user and system schedules and launches commands with a limited environment; systemd timers activate linked service units."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Cron daemon reads schedule → launches command with limited environment → records output/logs. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Cron daemon reads schedule → launches command with limited environment → records output/logs. The cron daemon reads user and system schedules and launches commands with a limited environment; systemd timers activate linked service units.",
+          "Minute, hour, day-of-month, month, day-of-week, crontab environment, timer unit and persistent timer behavior define schedules."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "Minute, hour, day-of-month, month, day-of-week, crontab environment, timer unit and persistent timer behavior define schedules."
         ],
         "bullets": [
           "five time fields",
@@ -2464,27 +2464,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Daily backup script 02:15 ki run ayi success/failure status monitoring ki publish chesthundi.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Schedule a harmless report script in a VM, verify its timestamped log and confirm the job does not overlap when a prior run is delayed."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Cron environment interactive shell la undadu; overlapping jobs and missed run windows possible.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Schedule a harmless report script in a VM, verify its timestamped log and confirm the job does not overlap when a prior run is delayed."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Use absolute paths, explicit environment, locking, timeout, logs, alerting and backup verification.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Schedule a harmless report script in a VM, verify its timestamped log and confirm the job does not overlap when a prior run is delayed."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "Minute, hour, day-of-month, month, day-of-week, crontab environment, timer unit and persistent timer behavior define schedules."
         ],
         "bullets": [
           "Question: What is Cron and Scheduling in Linux?",
@@ -2500,7 +2500,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Schedule a harmless script every minute in lab, capture output, then remove crontab entry.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use crontab -l and systemctl list-timers to inspect schedules; set absolute paths, redirect logs and define a safe lock to prevent overlapping runs.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -2537,7 +2537,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Logs and journalctl ante enti?",
         "paragraphs": [
           "Linux logs system events, kernel messages and service output ni record chesthayi. systemd journal structured metadata tho logs store chesthundi.",
-          "Simple ga cheppalante, Logs and journalctl anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Linux logs record kernel, authentication and service events; journald indexes structured records that operators can filter by unit, priority and time."
         ],
         "bullets": [
           "journal",
@@ -2553,20 +2553,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Incident timeline, failed service root cause and authentication events investigate cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "Services write to stdout/stderr or syslog; journald collects records with metadata and journalctl queries them using time, unit, boot and priority filters."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Application/service writes stdout/stderr or syslog → journald/log file → query/filter by time, unit and priority. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Application/service writes stdout/stderr or syslog → journald/log file → query/filter by time, unit and priority. Services write to stdout/stderr or syslog; journald collects records with metadata and journalctl queries them using time, unit, boot and priority filters.",
+          "Journal unit, priority, boot ID, timestamp, facility, persistent versus volatile journal and log rotation affect incident evidence."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "Journal unit, priority, boot ID, timestamp, facility, persistent versus volatile journal and log rotation affect incident evidence."
         ],
         "bullets": [
           "journal",
@@ -2590,27 +2590,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Deployment taruvatha Nginx restart fail ayindi; exact timestamp range lo unit logs and config error inspect chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Trace a failed test service start by correlating systemd status, journal timestamps and the last configuration change."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Logs rotate or volatile storage reboot tarvatha disappear avvachu; timestamps/timezones align cheyyali.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Trace a failed test service start by correlating systemd status, journal timestamps and the last configuration change."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Centralize important logs, set retention, restrict access and redact credentials/PII.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Trace a failed test service start by correlating systemd status, journal timestamps and the last configuration change."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "Journal unit, priority, boot ID, timestamp, facility, persistent versus volatile journal and log rotation affect incident evidence."
         ],
         "bullets": [
           "Question: What is Logs and journalctl in Linux?",
@@ -2626,7 +2626,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Generate logger event, find it with journalctl, filter by time and explain priority.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use journalctl -u service --since and -p err; preserve relevant time ranges before rotation and avoid clearing logs during incident response.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -2664,7 +2664,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Memory and CPU Monitoring ante enti?",
         "paragraphs": [
           "CPU monitoring utilization, load and process scheduling pressure ni measure chesthundi. Memory monitoring RAM, cache, swap and OOM behavior ni track chesthundi.",
-          "Simple ga cheppalante, Memory and CPU Monitoring anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "CPU and memory monitoring identifies saturation, pressure, swapping and runaway processes that can slow applications or trigger OOM kills."
         ],
         "bullets": [
           "load average",
@@ -2680,20 +2680,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Slow application CPU saturation, memory leak or OOM kill valla vachinda ani identify cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "The scheduler allocates CPU time; virtual memory maps process pages, reclaim and swap handle pressure, while cgroups can impose workload limits."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Workload → scheduler and memory manager → system metrics → process-level evidence. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Workload → scheduler and memory manager → system metrics → process-level evidence. The scheduler allocates CPU time; virtual memory maps process pages, reclaim and swap handle pressure, while cgroups can impose workload limits.",
+          "Load average is not CPU percentage; RSS, cache, swap, PSI, OOM killer and cgroup limits describe different resource signals."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "Load average is not CPU percentage; RSS, cache, swap, PSI, OOM killer and cgroup limits describe different resource signals."
         ],
         "bullets": [
           "load average",
@@ -2717,27 +2717,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Java service high memory use chesthundi; heap metrics, RSS, swap and OOM logs compare chesi root cause isolate chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Diagnose a test application with rising memory use by comparing process RSS, container limits and OOM events before changing capacity."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Linux free memory lo cache include avuthundi; free memory low ani alone memory failure conclude cheyyakudadhu.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Diagnose a test application with rising memory use by comparing process RSS, container limits and OOM events before changing capacity."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Correlate metrics over time, set realistic alerts, use cgroups limits and inspect application heap separately.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Diagnose a test application with rising memory use by comparing process RSS, container limits and OOM events before changing capacity."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "Load average is not CPU percentage; RSS, cache, swap, PSI, OOM killer and cgroup limits describe different resource signals."
         ],
         "bullets": [
           "Question: What is Memory and CPU Monitoring in Linux?",
@@ -2753,7 +2753,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Run controlled CPU/memory test in VM and observe top, free, vmstat; stop test safely.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Compare uptime, vmstat, free -h, ps and top over time; inspect cgroup limits and kernel OOM messages before resizing instances.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -2792,7 +2792,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Linux Security ante enti?",
         "paragraphs": [
           "Linux security users, permissions, authentication, patching, network exposure and audit controls combine chesi host protect chesthundi.",
-          "Simple ga cheppalante, Linux Security anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Linux host security combines identity, authentication, authorization, patching, network controls and audit evidence to reduce compromise risk."
         ],
         "bullets": [
           "least privilege",
@@ -2809,20 +2809,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Cloud VM and production worker nodes compromise risk reduce cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "A login is authenticated, access is authorized through credentials and policy, processes run with privileges, network filters restrict exposure and audit tools record activity."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Identity verification → authorization → process isolation → network filtering → audit and patch cycle. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Identity verification → authorization → process isolation → network filtering → audit and patch cycle. A login is authenticated, access is authorized through credentials and policy, processes run with privileges, network filters restrict exposure and audit tools record activity.",
+          "sudoers, PAM, SSH hardening, SELinux/AppArmor, auditd, patch cadence and least privilege protect different parts of the host."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "sudoers, PAM, SSH hardening, SELinux/AppArmor, auditd, patch cadence and least privilege protect different parts of the host."
         ],
         "bullets": [
           "least privilege",
@@ -2838,7 +2838,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
       {
         "heading": "5. Practical commands with explanation",
         "paragraphs": [
-          "Kindha commands Linux Security ni inspect/practice cheyadaniki. First read-only commands run chesi output ardham chesukondi; privileged or modifying commands ni disposable lab lo matrame test cheyyandi."
+          "Use sudo -l, sshd -T, getenforce or aa-status and audit logs to inspect controls; validate changes in a console-backed test host before reload."
         ],
         "code": "sudo -l; passwd -S user; ss -tulpn; sudo ufw status; last; lastb; sudo visudo; sudo sshd -T | grep permitrootlogin",
         "note": "Disabling security controls blindly can break services; lockout risk before SSH config reload."
@@ -2847,27 +2847,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Production EC2 baseline lo SSH key-only access, restricted sudo, security updates and audit logging enforce chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Audit a disposable VM for privileged accounts, SSH settings, listening ports and pending security updates; document each remediation."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Disabling security controls blindly can break services; lockout risk before SSH config reload.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Audit a disposable VM for privileged accounts, SSH settings, listening ports and pending security updates; document each remediation."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Use MFA/bastion where applicable, no shared root, patch cadence, tested backups and centralized audit logs.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Audit a disposable VM for privileged accounts, SSH settings, listening ports and pending security updates; document each remediation."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "sudoers, PAM, SSH hardening, SELinux/AppArmor, auditd, patch cadence and least privilege protect different parts of the host."
         ],
         "bullets": [
           "Question: What is Linux Security in Linux?",
@@ -2883,7 +2883,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Audit a disposable Linux VM: users, sudo rights, SSH settings, listening ports and pending updates.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Use sudo -l, sshd -T, getenforce or aa-status and audit logs to inspect controls; validate changes in a console-backed test host before reload.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -2921,7 +2921,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Firewall Basics ante enti?",
         "paragraphs": [
           "Host firewall inbound/outbound packets ni policy rules prakaram allow or deny chesthundi. Linux lo nftables modern framework; ufw/firewalld management layers provide chesthayi.",
-          "Simple ga cheppalante, Firewall Basics anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "A host firewall filters inbound and outbound packets using source, destination, protocol, port, interface and connection state."
         ],
         "bullets": [
           "inbound/outbound",
@@ -2939,20 +2939,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Only required ports expose cheyadaniki and lateral access restrict cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "Packets traverse network hooks and ordered rules; the firewall accepts, drops or rejects traffic according to policy and connection tracking."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Packet arrives → interface/connection tracking → ordered firewall rules → accept/drop/reject. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Packet arrives → interface/connection tracking → ordered firewall rules → accept/drop/reject. Packets traverse network hooks and ordered rules; the firewall accepts, drops or rejects traffic according to policy and connection tracking.",
+          "nftables is the modern packet-filtering framework; ufw and firewalld manage rules through higher-level interfaces and zones."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "nftables is the modern packet-filtering framework; ufw and firewalld manage rules through higher-level interfaces and zones."
         ],
         "bullets": [
           "inbound/outbound",
@@ -2969,7 +2969,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
       {
         "heading": "5. Practical commands with explanation",
         "paragraphs": [
-          "Kindha commands Firewall Basics ni inspect/practice cheyadaniki. First read-only commands run chesi output ardham chesukondi; privileged or modifying commands ni disposable lab lo matrame test cheyyandi."
+          "Inspect nft list ruleset or firewall-cmd --list-all first; add a narrow allow rule before restrictive rules and retain console access to prevent SSH lockout."
         ],
         "code": "sudo ufw status verbose; sudo ufw allow 22/tcp; sudo ufw allow from 10.0.0.0/8 to any port 8080 proto tcp; sudo firewall-cmd --list-all; sudo nft list ruleset",
         "note": "Remote SSH session ki firewall rule change chesi port 22 block chesthe lockout avutharu."
@@ -2978,27 +2978,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Application server lo load balancer subnet nundi 8080 allow chesi public internet access deny chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Allow a test application port only from a private subnet on a disposable VM and verify both permitted and blocked connections."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Remote SSH session ki firewall rule change chesi port 22 block chesthe lockout avutharu.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Allow a test application port only from a private subnet on a disposable VM and verify both permitted and blocked connections."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Keep console/rollback path, add allow rule before deny, restrict source ranges and verify from external host.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Allow a test application port only from a private subnet on a disposable VM and verify both permitted and blocked connections."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "nftables is the modern packet-filtering framework; ufw and firewalld manage rules through higher-level interfaces and zones."
         ],
         "bullets": [
           "Question: What is Firewall Basics in Linux?",
@@ -3014,7 +3014,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "In a disposable VM allow a test port only from a private subnet; verify allowed and denied connection.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Inspect nft list ruleset or firewall-cmd --list-all first; add a narrow allow rule before restrictive rules and retain console access to prevent SSH lockout.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
@@ -3054,7 +3054,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "1. Troubleshooting Linux ante enti?",
         "paragraphs": [
           "Linux troubleshooting evidence-first process: symptom define, scope identify, layers isolate, root cause verify, reversible fix and monitor.",
-          "Simple ga cheppalante, Troubleshooting Linux anedi Linux host ni predictable ga operate cheyadaniki use ayye core concept. Technical terms ni command output tho connect chesi chudali."
+          "Linux troubleshooting is an evidence-led process: define impact, identify the affected layer, test a hypothesis, make a reversible correction and validate recovery."
         ],
         "bullets": [
           "symptom",
@@ -3072,20 +3072,20 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "2. Enduku use chestham?",
         "paragraphs": [
           "Production incident lo guess-based changes avoid chesi downtime reduce cheyadaniki.",
-          "DevOps engineer incident response, server provisioning, deployment automation and security review lo ee concept ni apply chesthadu."
+          "Operators correlate application symptoms with process, service, resource, filesystem, network and kernel evidence before selecting a remediation."
         ]
       },
       {
         "heading": "3. Ela work avuthundi? Step-by-step",
         "paragraphs": [
-          "Basic flow: Alert/symptom → host/service/resource/network evidence → hypothesis → safe test → corrective change → validation. Prati stage lo current state ni inspect chesi next action decide chestham.",
-          "Command run chesinappudu output, exit code and target host context verify cheyyali; same command every distribution lo identical behavior ivvakapovachu."
+          "Basic flow: Alert/symptom → host/service/resource/network evidence → hypothesis → safe test → corrective change → validation. Operators correlate application symptoms with process, service, resource, filesystem, network and kernel evidence before selecting a remediation.",
+          "Timeline, blast radius, baseline, hypothesis, root cause, mitigation, rollback and post-incident action make troubleshooting auditable."
         ]
       },
       {
         "heading": "4. Important components and terminology",
         "paragraphs": [
-          "Ee topic lo frequently use ayye terms ni clear ga understand cheskovali."
+          "Timeline, blast radius, baseline, hypothesis, root cause, mitigation, rollback and post-incident action make troubleshooting auditable."
         ],
         "bullets": [
           "symptom",
@@ -3102,7 +3102,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
       {
         "heading": "5. Practical commands with explanation",
         "paragraphs": [
-          "Kindha commands Troubleshooting Linux ni inspect/practice cheyadaniki. First read-only commands run chesi output ardham chesukondi; privileged or modifying commands ni disposable lab lo matrame test cheyyandi."
+          "Capture date, hostname, systemctl status, journal errors, disk, memory, sockets and kernel messages; change one variable at a time and retain command exit codes."
         ],
         "code": "date; hostname; uptime; systemctl --failed; journalctl -p err --since -1h; df -h; df -i; free -h; top; ss -tulpn; dmesg -T | tail -n 50",
         "note": "Random restarts/log deletion/permission 777 can hide evidence or worsen outage."
@@ -3111,27 +3111,27 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "heading": "6. Real-time DevOps example",
         "paragraphs": [
           "Website 502 issue lo Nginx status, upstream port, application logs, disk and recent deployment compare chestham.",
-          "Production lo change mundu approval, backup/rollback and monitoring plan ready ga undali."
+          "Simulate a stopped test service and a full temporary filesystem in a disposable VM; diagnose each without deleting logs or restarting unrelated services."
         ]
       },
       {
         "heading": "7. Common mistakes and troubleshooting",
         "paragraphs": [
           "Random restarts/log deletion/permission 777 can hide evidence or worsen outage.",
-          "Troubleshooting lo exact timestamp, host, user, command exit status and relevant logs capture chesi one hypothesis at a time test cheyyali."
+          "Simulate a stopped test service and a full temporary filesystem in a disposable VM; diagnose each without deleting logs or restarting unrelated services."
         ]
       },
       {
         "heading": "8. Security and best practices",
         "paragraphs": [
           "Capture timestamps, preserve logs, check change history, make one change at a time and verify user-facing health.",
-          "Least privilege, auditable changes, secret protection and tested rollback ee topic ki mandatory operational habits."
+          "Simulate a stopped test service and a full temporary filesystem in a disposable VM; diagnose each without deleting logs or restarting unrelated services."
         ]
       },
       {
         "heading": "9. Interview questions and answers",
         "paragraphs": [
-          "Interview lo definition cheppadam tho aagakunda, enduku use chestham, workflow, practical command and production risk explain cheyyali."
+          "Timeline, blast radius, baseline, hypothesis, root cause, mitigation, rollback and post-incident action make troubleshooting auditable."
         ],
         "bullets": [
           "Question: What is Troubleshooting Linux in Linux?",
@@ -3147,7 +3147,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         ],
         "bullets": [
           "Simulate stopped test service and full temporary filesystem in disposable lab; diagnose without deleting evidence.",
-          "Run the read-only inspection commands and record expected versus actual output.",
+          "Capture date, hostname, systemctl status, journal errors, disk, memory, sockets and kernel messages; change one variable at a time and retain command exit codes.",
           "Write a short runbook with pre-check, action, validation and rollback steps."
         ]
       }
