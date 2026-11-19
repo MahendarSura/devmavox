@@ -6,5 +6,6 @@ import { ansibleAtoZLessons } from "./lessons-extra/ansible";
 import { cicdAtoZLessons } from "./lessons-extra/cicd-github-actions";
 import { argocdAtoZLessons } from "./lessons-extra/argocd";
 import { helmAtoZLessons } from "./lessons-extra/helm";
+import { prometheusAtoZLessons } from "./lessons-extra/prometheus";
 
-export const atoZLessons = { ...baseLessons, ...kubernetesAtoZLessons, ...jenkinsAtoZLessons, ...terraformAtoZLessons, ...ansibleAtoZLessons, ...cicdAtoZLessons, ...argocdAtoZLessons, ...helmAtoZLessons };
+export const atoZLessons = { ...baseLessons, ...kubernetesAtoZLessons, ...jenkinsAtoZLessons, ...terraformAtoZLessons, ...ansibleAtoZLessons, ...cicdAtoZLessons, ...argocdAtoZLessons, ...helmAtoZLessons, ...prometheusAtoZLessons };
