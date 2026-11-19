@@ -73,8 +73,8 @@ export default function MonitoringHandsOnLabs() {
         if (/http_request_duration_seconds_p95/.test(query)) return "http_request_duration_seconds_p95 = " + (incident ? "1.84" : "0.24") + " seconds";
         if (/process_cpu_usage_percent|node_cpu/.test(query)) return "process_cpu_usage_percent = " + (incident ? "94" : "38") + "%";
         if (/http_requests_total/.test(query) && query.includes("/") && /5xx|status/.test(query)) return "checkout_5xx_error_ratio = " + (incident ? "4.8" : "0.32") + "% (counter samples evaluated)";
-        if (/http_requests_total/.test(query) && /rate\\s*\\(/.test(query)) return "checkout_request_rate = " + (incident ? "42.6" : "18.4") + " requests/sec (5m range)";
-        if (/http_requests_total/.test(query) && /sum\\s*\\(/.test(query)) return "http_requests_total = " + (incident ? "5160" : "4920") + " samples";
+        if (/http_requests_total/.test(query) && /rate\s*\(/.test(query)) return "checkout_request_rate = " + (incident ? "42.6" : "18.4") + " requests/sec (5m range)";
+        if (/http_requests_total/.test(query) && /sum\s*\(/.test(query)) return "http_requests_total = " + (incident ? "5160" : "4920") + " samples";
         return "ERROR: PromQL parse/evaluation failed for: " + query + ". Supported metrics: up, http_requests_total, http_request_duration_seconds_p95, process_cpu_usage_percent.";
       });
       const ok = results.some((line) => !line.startsWith("ERROR:"));
@@ -124,7 +124,7 @@ export default function MonitoringHandsOnLabs() {
         if (!rule?.labels?.severity || !rule?.labels?.service) errors.push("Add severity and service labels.");
         if (!rule?.annotations?.summary || !rule?.annotations?.runbook) errors.push("Add summary and runbook annotations.");
         if (errors.length) { setResult("Alert rule validation FAILED"); setResultDetail(errors.join(" ")); }
-        else { const firing = incident && alertThreshold <= 1.84; setResult(firing ? "FIRING · " + rule.alert : "INACTIVE · " + rule.alert); setResultDetail("Rule parsed and evaluated. Current p95=" + (incident ? "1.84s" : "0.24s") + ", threshold=" + alertThreshold + "s. " + (firing ? "Critical alert would route to payments-on-call." : "No threshold breach; inject a latency incident to test firing.")); }
+        else if (rule) { const firing = incident && alertThreshold <= 1.84; setResult(firing ? "FIRING · " + rule.alert : "INACTIVE · " + rule.alert); setResultDetail("Rule parsed and evaluated. Current p95=" + (incident ? "1.84s" : "0.24s") + ", threshold=" + alertThreshold + "s. " + (firing ? "Critical alert would route to payments-on-call." : "No threshold breach; inject a latency incident to test firing.")); } else { setResult("Alert rule validation FAILED"); setResultDetail("No alert rule was found in the YAML groups."); }
       } catch (error) { setResult("Alert YAML parse error"); setResultDetail(error instanceof Error ? error.message : "Invalid YAML."); }
     } else {
       const commands = code.split("\n").map((line) => line.trim()).filter(Boolean);
