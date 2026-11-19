@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { findAtoZCategory, findAtoZTopic, slugifyAtoZ } from "../../data";
-import { atoZLessons } from "../../lessons";
+import { atoZLessons } from "../../lesson-index";
 
 function ArchitectureDiagram({ diagram, topic }: { diagram?: { title: string; nodes: string[]; explanation: string }; topic: string }) {
   if (!diagram) return <div className="mt-6 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5 text-sm leading-6 text-amber-100">Topic-specific architecture diagram is pending for this lesson; generic diagrams are not shown as a substitute.</div>;
