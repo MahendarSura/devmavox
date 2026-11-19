@@ -184,6 +184,65 @@ export default function DevOpsCopilotWorkspace({ feature: _feature, slug: _slug 
         </section>
 
         <section className="border-t border-white/10 py-9">
+          <div className="mb-6"><p className="text-[10px] font-black uppercase tracking-[.22em] text-lime-300">AI in DevOps · business outcomes</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">What changes when AI works with DevOps teams?</h2><p className="mt-2 max-w-4xl text-sm leading-6 text-slate-400">Understand the outcomes shown in the AI-in-DevOps reference: faster feedback, safer delivery, stronger quality and more reliable operations. These are potential benefits, not guaranteed percentages.</p></div>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {[
+              ["Automated & self-healing CI/CD","Detect recurring pipeline failures, explain likely causes and suggest a reviewed recovery action."],
+              ["Security at scale","Prioritise vulnerabilities, inspect policy violations and recommend secure configuration changes."],
+              ["Higher availability · less downtime","Correlate alerts and service signals to help teams detect incidents earlier and reduce recovery time."],
+              ["Higher code quality","Generate test ideas, review pull requests and identify maintainability or reliability risks."],
+              ["Cost-aware engineering","Analyse utilisation and cloud spend; recommend rightsizing for human review."],
+              ["Smarter deployment & release management","Assess release risk, compare rollout options and watch health signals after deployment."]
+            ].map(([title,desc],i)=><article key={title} className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#172b45] to-[#111a31] p-5"><span className="text-xl">{["⚙","🛡","↗","✓","◈","⇧"][i]}</span><h3 className="mt-3 font-extrabold">{title}</h3><p className="mt-2 text-xs leading-6 text-slate-400">{desc}</p><button type="button" onClick={()=>askAI(makePrompt(title,desc))} className="mt-4 rounded-lg border border-cyan-300/30 bg-cyan-300/10 px-3 py-2 text-xs font-bold text-cyan-200">Ask AI ↗</button></article>)}
+          </div>
+        </section>
+
+        <section className="border-t border-white/10 py-9">
+          <div className="mb-6"><p className="text-[10px] font-black uppercase tracking-[.22em] text-cyan-300">AI assistants · specialist roles</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">Meet the AI assistants used across DevOps work</h2><p className="mt-2 text-sm text-slate-400">Each assistant has a clear job. Students can ask what it does, when to use it, what input it needs and how to verify its output.</p></div>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {[
+              ["Learning assistant","Explains tools and concepts simply, builds a learning sequence and checks understanding."],
+              ["Code assistant","Writes and explains scripts, application code, Dockerfiles and Kubernetes YAML."],
+              ["Review assistant","Checks code and configuration for correctness, security risks and maintainability."],
+              ["Troubleshooting assistant","Reads redacted logs and events, builds hypotheses and guides root-cause analysis."],
+              ["CI/CD assistant","Reviews pipeline stages, failed jobs, test results and deployment strategies."],
+              ["Documentation assistant","Creates runbooks, deployment notes, architecture records and incident summaries."]
+            ].map(([title,desc],i)=><article key={title} className="rounded-2xl border border-cyan-300/15 bg-[#14233a] p-5"><span className="text-xs font-black text-cyan-300">ASSISTANT 0{i+1}</span><h3 className="mt-2 font-extrabold">{title}</h3><p className="mt-2 text-xs leading-6 text-slate-400">{desc}</p><button type="button" onClick={()=>askAI(makePrompt(title,desc))} className="mt-4 rounded-lg bg-gradient-to-r from-cyan-300 to-violet-300 px-3 py-2 text-xs font-black text-slate-950">Ask this assistant ↗</button></article>)}
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2 rounded-2xl border border-white/10 bg-slate-900/60 p-4">{["Linux","Docker","Kubernetes","AWS","Terraform","Jenkins"].map(tool=><button key={tool} type="button" onClick={()=>askAI(makePrompt(tool+" DevOps assistant","Teach me how AI can help me learn, configure, review and troubleshoot "+tool+". Include practical examples, commands, safe labs and common mistakes."))} className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-xs font-bold text-cyan-100">{tool} · Ask AI</button>)}</div>
+        </section>
+
+        <section className="border-t border-white/10 py-9">
+          <div className="mb-6"><p className="text-[10px] font-black uppercase tracking-[.22em] text-violet-300">AI-powered engineering capabilities</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">How AI transforms software development and operations</h2></div>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {[
+              ["Intelligent code generation","Draft code, scripts, IaC and documentation from requirements; engineers review and test every change."],
+              ["Automated code reviews","Summarise pull requests and flag possible bugs, security issues and maintainability concerns."],
+              ["AI-powered testing & quality","Suggest test cases, expand coverage, analyse failures and identify risky changes."],
+              ["Smarter build management","Inspect build logs, identify recurring failure patterns and recommend pipeline improvements."],
+              ["Intelligent deployment","Assess release risk, compare rollout strategies and monitor deployment health."],
+              ["Monitoring & predictive signals","Analyse logs, metrics and traces to identify anomalies and possible emerging incidents."]
+            ].map(([title,desc],i)=><article key={title} className="rounded-2xl border border-white/10 bg-gradient-to-br from-slate-800 to-slate-900 p-5"><span className="font-mono text-xs font-black text-violet-300">CAPABILITY 0{i+1}</span><h3 className="mt-3 font-bold">{title}</h3><p className="mt-2 text-xs leading-6 text-slate-400">{desc}</p><button type="button" onClick={()=>askAI(makePrompt(title,desc))} className="mt-4 rounded-lg border border-violet-300/30 bg-violet-300/10 px-3 py-2 text-xs font-bold text-violet-200">Explore with AI ↗</button></article>)}
+          </div>
+        </section>
+
+        <section className="border-t border-white/10 py-9">
+          <div className="mb-6"><p className="text-[10px] font-black uppercase tracking-[.22em] text-pink-300">AI tools landscape</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">Explore AI tools by how engineers use them</h2><p className="mt-2 text-sm text-slate-400">Tool names below are learning examples, not endorsements. Availability, pricing and integrations vary; ask AI to compare current options and verify with vendor documentation.</p></div>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {[
+              ["AI navigators","ChatGPT · Claude · Gemini · Copilot · Perplexity","Research concepts, compare solutions, explain errors and plan learning."],
+              ["AI buddies & platform copilots","GitHub Copilot · Azure DevOps integrations · cloud assistants","Get contextual help with repositories, work items and cloud workflows."],
+              ["VS Code extensions","IDE chat · code completion · code review assistants","Explain code, generate tests and improve Terraform, YAML and scripts."],
+              ["High-level design tools","Architecture assistants · diagramming copilots","Explore system design, dependencies, trade-offs and architecture diagrams."],
+              ["Create & edit tools","Code generation · documentation · config assistants","Create or refine scripts, manifests, pipeline files and technical documents."],
+              ["Deployment cycle tools","CI/CD copilots · GitOps · release intelligence","Understand build, test, deploy, rollout, rollback and release health."],
+              ["Monitoring tools","Datadog · Grafana · Prometheus · Dynatrace","Investigate telemetry, alert noise, anomalies and service health."],
+              ["Security tools","SAST · DAST · SBOM · secrets scanning · policy as code","Triage findings, inspect supply-chain risks and validate compliance."]
+            ].map(([title,tools,desc],i)=><article key={title} className="rounded-2xl border border-white/10 bg-[#151d35] p-5"><span className="text-[10px] font-black uppercase tracking-widest text-pink-300">TOOL CATEGORY 0{i+1}</span><h3 className="mt-2 font-extrabold">{title}</h3><p className="mt-2 text-xs font-bold leading-5 text-cyan-200">{tools}</p><p className="mt-3 text-xs leading-6 text-slate-400">{desc}</p><button type="button" onClick={()=>askAI(makePrompt(title,desc+" Explain the tools listed: "+tools+" Compare use cases, limitations, security and beginner practice."))} className="mt-4 rounded-lg bg-gradient-to-r from-cyan-300 to-violet-300 px-3 py-2 text-xs font-black text-slate-950">Compare & learn ↗</button></article>)}
+          </div>
+        </section>
+
+        <section className="border-t border-white/10 py-9">
           <div className="mb-6"><p className="text-[10px] font-black uppercase tracking-[.22em] text-orange-300">AI-native software delivery</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">Plan → Code → Test → Deploy → Operate</h2><p className="mt-2 text-sm text-slate-400">Understand agent roles, tools, checkpoints and human approvals at every stage.</p></div>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">{lifecycle.map((stage,i) => <article key={stage.title} className="relative rounded-2xl border border-white/10 bg-[#101d31] p-4"><span className="text-[10px] font-mono font-bold text-orange-300">STAGE 0{i+1}</span><div className="mt-3 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-orange-300/20 to-cyan-300/10 text-xl font-black text-cyan-100">{stage.icon}</div><h3 className="mt-3 text-lg font-black">{stage.title}</h3><p className="mt-1 text-xs font-bold text-violet-200">{stage.agent}</p><p className="mt-3 min-h-16 text-xs leading-5 text-slate-400">{stage.desc}</p><button type="button" onClick={() => askAI(makePrompt(stage.title,stage.prompt))} className="mt-4 rounded-lg bg-gradient-to-r from-cyan-300 to-violet-300 px-3 py-2 text-xs font-black text-slate-950">Ask AI ↗</button>{i<4 && <span className="absolute -right-3 top-1/2 z-10 hidden text-lg text-cyan-300 xl:block">›</span>}</article>)}</div>
         </section>
