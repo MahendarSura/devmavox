@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import MonitoringStackCatalog from "./MonitoringStackCatalog";
+import MonitoringCategoryPractice from "./MonitoringCategoryPractice";
 
 type Mode = "metrics" | "targets" | "promql" | "dashboard" | "alerts";
 type MetricRow = { name: string; value: number; unit: string; help: string };
@@ -156,5 +157,6 @@ export default function MonitoringInteractiveLab({ topic, category }: { topic: s
       </div>
     </section>
       <MonitoringStackCatalog />
+      <MonitoringCategoryPractice />
   );
 }
