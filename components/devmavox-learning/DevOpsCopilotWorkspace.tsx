@@ -36,7 +36,51 @@ type LocalChatEngine = {
   };
 };
 
-const LOCAL_MODEL_ID = "Llama-3.2-1B-Instruct-q4f16_1-MLC";
+const LOCAL_MODEL_ID = "Qwen2.5-3B-Instruct-q4f16_1-MLC";
+
+type KnowledgeQuestion = { number?: number; question: string; answer: string };
+type KnowledgeGroup = { tool: string; category: string; questions: KnowledgeQuestion[] };
+let knowledgeDatasetPromise: Promise<KnowledgeGroup[]> | null = null;
+
+async function retrieveDevMavoxKnowledge(query: string, category: string, topic: string) {
+  if (!knowledgeDatasetPromise) {
+    knowledgeDatasetPromise = fetch(
+      "https://raw.githubusercontent.com/MahendarSura/devmavox/main/data/basic-interview-qa-aws-docker-kubernetes.json",
+      { cache: "force-cache" },
+    ).then(async (response) => {
+      if (!response.ok) throw new Error("DevMavox learning knowledge could not be downloaded.");
+      const parsed = await response.json();
+      if (!Array.isArray(parsed)) throw new Error("DevMavox learning knowledge has an unexpected format.");
+      return parsed as KnowledgeGroup[];
+    }).catch((error) => {
+      knowledgeDatasetPromise = null;
+      throw error;
+    });
+  }
+
+  const groups = await knowledgeDatasetPromise;
+  const stopWords = new Set(["the", "and", "for", "with", "from", "that", "this", "what", "when", "where", "which", "how", "why", "can", "does", "into", "are", "you", "your", "about", "please", "help", "need", "want", "should"]);
+  const terms = [...new Set((`${category} ${topic} ${query}`.toLowerCase().match(/[a-z0-9.+#_-]{3,}/g) || []).filter((term) => !stopWords.has(term)))];
+  if (!terms.length) return [];
+
+  const matches: Array<{ score: number; tool: string; category: string; question: string; answer: string }> = [];
+  for (const group of groups) {
+    const groupText = `${group.tool || ""} ${group.category || ""}`.toLowerCase();
+    for (const item of group.questions || []) {
+      if (!item.question || !item.answer) continue;
+      const questionText = item.question.toLowerCase();
+      const answerText = item.answer.toLowerCase();
+      let score = 0;
+      for (const term of terms) {
+        if (questionText.includes(term)) score += 4;
+        if (answerText.includes(term)) score += 1;
+        if (groupText.includes(term)) score += 3;
+      }
+      if (score > 0) matches.push({ score, tool: group.tool, category: group.category, question: item.question, answer: item.answer });
+    }
+  }
+  return matches.sort((a, b) => b.score - a.score).slice(0, 3);
+}
 
 export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature: FeatureDefinition; slug?: string[] }) {
   const [mode, setMode] = useState("Explain");
@@ -84,12 +128,19 @@ export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature
     if (!question.trim() || loading) return;
     setLoading(true); setError(""); setAnswer(""); setNotice(false);
     try {
+      setModelProgress("Searching the DevMavox interview knowledge base…");
+      let references: Awaited<ReturnType<typeof retrieveDevMavoxKnowledge>> = [];
+      try { references = await retrieveDevMavoxKnowledge(question, category?.name || "DevOps", topic || "General assistance"); }
+      catch { setModelProgress("Using the local AI model; the optional DevMavox reference library could not be reached."); }
       const engine = await getLocalEngine();
+      const referenceContext = references.length
+        ? references.map((item, index) => `[Reference ${index + 1} | ${item.tool} | ${item.category}]\nQuestion: ${item.question}\nAnswer: ${item.answer.slice(0, 1800)}`).join("\\n\\n")
+        : "No matching DevMavox Q&A references were retrieved. Answer from your model knowledge and clearly state uncertainty.";
       const result = await engine.chat.completions.create({
         messages: [
           {
             role: "system",
-            content: "You are DevMavox AI, a careful DevOps tutor. Explain in beginner-friendly English, with simple Telugu-English phrasing when useful. Help with AWS, Linux, Git, Docker, Kubernetes, Terraform, Ansible, CI/CD, GitOps, monitoring and production troubleshooting. Structure answers with summary, assumptions, step-by-step explanation, safe commands/examples, validation and risks. Explain commands. Prefer read-only diagnostics before changes. Never claim to inspect live systems or execute commands. Never request secrets. Flag destructive commands and require human review for production changes. Be honest when uncertain.",
+            content: `You are DevMavox AI, a careful senior DevOps tutor. Explain in beginner-friendly English, with simple Telugu-English phrasing when useful. Help with AWS, Linux, Git, Docker, Kubernetes, Terraform, Ansible, CI/CD, GitOps, monitoring and production troubleshooting. Structure answers with a short summary, assumptions, step-by-step explanation, safe commands/examples, expected output, validation and risks. Explain important command flags. Prefer read-only diagnostics before changes. Never claim to inspect live systems or execute commands. Never request secrets. Flag destructive commands and require human review for production changes. Be honest when uncertain. Use the supplied DevMavox reference material as supporting context, but do not blindly copy it or invent facts. If references conflict with supplied versions or environment, explain the mismatch.\n\nSelected topic guidance:\nPurpose: ${topicGuide?.purpose || "General DevOps assistance"}\nContext to request: ${topicGuide?.context || "Ask for versions, environment, expected and actual behavior, and redacted evidence."}\nExpected deliverables: ${topicGuide?.deliverables || "Explanation, safe steps, commands, validation and risks."}`,
           },
           {
             role: "user",
@@ -130,7 +181,7 @@ ${question.trim()}`,
                   <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#c7ff43]/30 bg-[#c7ff43]/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.22em] text-[#d5ff79]"><span className="h-2 w-2 rounded-full bg-[#c7ff43]" /> DevOps intelligence layer</div>
                   <p className="mb-3 font-mono text-xs uppercase tracking-[.28em] text-[#ff896d]">Ask. Inspect. Understand. Improve.</p>
                   <h1 className="max-w-3xl text-4xl font-black leading-[1.04] tracking-tight sm:text-6xl">Your DevOps workbench, <span className="text-[#c7ff43]">powered by DevMavox AI.</span></h1>
-                  <p className="mt-5 max-w-2xl text-sm leading-7 text-white/60 sm:text-base">A focused engineering workspace for command guidance, configuration reviews, infrastructure decisions and production incident reasoning.</p>
+                  <p className="mt-5 max-w-2xl text-sm leading-7 text-white/60 sm:text-base">A free, login-free local AI tutor for command guidance, configuration reviews, infrastructure decisions and production incident reasoning, grounded with relevant DevMavox interview Q&A.</p>
                   <div className="mt-7 flex flex-wrap gap-2 text-[11px] font-semibold"><span className="rounded-lg bg-[#c7ff43] px-3 py-2 text-[#171b13]">10 capability domains</span><span className="rounded-lg border border-white/15 px-3 py-2 text-white/65">{topicCount} specialist workflows</span><span className="rounded-lg border border-white/15 px-3 py-2 text-white/65">3-level navigation</span></div>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-[#0c100d]/80 p-5 shadow-2xl shadow-black/30">
@@ -207,7 +258,7 @@ ${question.trim()}`,
                 {answer && <div className="mt-6 rounded-xl border border-[#c7ff43]/25 bg-[#0d110e] p-5"><p className="mb-3 font-mono text-[10px] uppercase tracking-[.18em] text-[#c7ff43]">DevMavox AI response</p><div className="whitespace-pre-wrap text-sm leading-7 text-white/80">{answer}</div></div>}
               </div>
               <aside className="space-y-3">
-                <div className="rounded-2xl border border-[#c7ff43]/25 bg-[#c7ff43]/[.05] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#d5ff79]">Free local AI status</p><p className="mt-3 text-lg font-bold">{modelStatus === "ready" ? "AI model ready on this device" : modelStatus === "loading" ? "Preparing the AI model…" : modelStatus === "unsupported" ? "WebGPU not available" : "Free AI · not loaded yet"}</p><p className="mt-2 text-xs leading-5 text-white/50">No student login, ChatGPT account, Copilot login, API key or server AI subscription is used. The first question downloads the open model to this browser (large download); later visits can use the cached model. Requires a WebGPU-capable browser/device.</p>{modelProgress && <p className="mt-3 text-[11px] leading-5 text-[#d5ff79]">{modelProgress}</p>}</div>
+                <div className="rounded-2xl border border-[#c7ff43]/25 bg-[#c7ff43]/[.05] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#d5ff79]">Free local AI status</p><p className="mt-3 text-lg font-bold">{modelStatus === "ready" ? "AI model ready on this device" : modelStatus === "loading" ? "Preparing the AI model…" : modelStatus === "unsupported" ? "WebGPU not available" : "Free Qwen 3B AI · not loaded yet"}</p><p className="mt-2 text-xs leading-5 text-white/50">No student login, ChatGPT account, Copilot login, API key or server AI subscription is used. First use downloads the Qwen2.5 3B model and the public DevMavox Q&A reference library; browser caching can speed up later visits. The model needs about 2.4 GB of GPU memory and a WebGPU-capable browser/device. Answers are generated locally and are not ChatGPT-level guaranteed.</p>{modelProgress && <p className="mt-3 text-[11px] leading-5 text-[#d5ff79]">{modelProgress}</p>}</div>
                 <div className="rounded-2xl border border-white/10 bg-[#1a201b] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#c7ff43]">Safe-use checklist</p><ul className="mt-3 space-y-2 text-xs leading-5 text-white/55"><li>• Remove passwords and tokens</li><li>• Redact customer data</li><li>• Verify commands before execution</li><li>• Require human approval for production changes</li></ul></div>
               </aside>
             </section>
