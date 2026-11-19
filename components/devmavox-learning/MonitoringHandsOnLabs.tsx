@@ -25,17 +25,6 @@ const logRows = [
   { time: "12:04:04.300", level: "INFO", service: "catalog", request: "req-1043", message: "GET /products completed 200", trace: "tr-8f22" },
 ];
 
-function evaluatePromql(code: string, incident: boolean) {
-  const q = code.trim();
-  if (!q) return { ok: false, value: "No expression", detail: "Enter a PromQL expression." };
-  if (/up\b/.test(q)) return { ok: true, value: "1", detail: "1 active scrape target (job=checkout-api)." };
-  if (/http_requests_total/.test(q) && /rate|increase|sum/.test(q)) return { ok: true, value: incident ? "42.6 req/s" : "18.4 req/s", detail: "Calculated from the sample counter series over the selected 5-minute window." };
-  if (/http_request_duration_seconds_p95/.test(q)) return { ok: true, value: incident ? "1.84 s" : "0.24 s", detail: "p95 latency from the checkout API sample histogram." };
-  if (/http_requests_5xx_total/.test(q) && q.includes("/")) return { ok: true, value: incident ? "4.8 %" : "0.32 %", detail: "5xx counter rate divided by total request counter rate." };
-  if (/process_cpu_usage_percent|node_cpu/.test(q)) return { ok: true, value: incident ? "94 %" : "38 %", detail: "Current CPU utilization for worker-02." };
-  return { ok: false, value: "Query error", detail: "Unknown metric or unsupported expression. Try up, rate(http_requests_total[5m]), http_request_duration_seconds_p95, or an error-ratio expression." };
-}
-
 export default function MonitoringHandsOnLabs() {
   const [active, setActive] = useState<LabId>("promql");
   const [code, setCode] = useState(labs[0].starter);
