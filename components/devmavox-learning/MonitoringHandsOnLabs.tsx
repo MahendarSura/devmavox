@@ -44,7 +44,9 @@ export default function MonitoringHandsOnLabs() {
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [lastEvidence, setLastEvidence] = useState<Record<string, string | number | boolean>>({});
   const [kubeState, setKubeState] = useState<KubernetesLabState>(() => createKubernetesLabState("oomkilled"));
-  const [attempts, setAttempts] = useState<Record<string, number>>({});\n  const [assessment, setAssessment] = useState<Record<string, { attempts: number; seconds: number; score: number; verified: boolean }>>({});\n  const [labStartedAt, setLabStartedAt] = useState(() => Date.now());
+  const [attempts, setAttempts] = useState<Record<string, number>>({});
+  const [assessment, setAssessment] = useState<Record<string, { attempts: number; seconds: number; score: number; verified: boolean }>>({});
+  const [labStartedAt, setLabStartedAt] = useState(() => Date.now());
   const [notes, setNotes] = useState("Investigate the signal, correlate evidence, apply a safe fix, and verify service recovery.");
 
   useEffect(() => {
