@@ -1,4 +1,6 @@
 import { atoZLessons as baseLessons } from "./lessons";
+import { linuxAtoZLessons } from "./lessons-extra/linux";
+import { gitGithubAtoZLessons } from "./lessons-extra/git-github";
 import { kubernetesAtoZLessons } from "./lessons-extra/kubernetes";
 import { jenkinsAtoZLessons } from "./lessons-extra/jenkins";
 import { terraformAtoZLessons } from "./lessons-extra/terraform";
@@ -20,4 +22,4 @@ import { tomcatAtoZLessons } from "./lessons-extra/tomcat";
 
 import { devsecopsSecurityAtoZLessons } from "./lessons-extra/devsecops-security";
 
-export const atoZLessons = { ...baseLessons, ...kubernetesAtoZLessons, ...jenkinsAtoZLessons, ...terraformAtoZLessons, ...ansibleAtoZLessons, ...cicdAtoZLessons, ...argocdAtoZLessons, ...helmAtoZLessons, ...prometheusAtoZLessons, ...grafanaAtoZLessons, ...eksAtoZLessons, ...mavenAtoZLessons, ...nexusAtoZLessons, ...networkingAtoZLessons , ...jiraAtoZLessons , ...tomcatAtoZLessons , ...devsecopsSecurityAtoZLessons };
+export const atoZLessons = { ...baseLessons, ...linuxAtoZLessons, ...gitGithubAtoZLessons, ...kubernetesAtoZLessons, ...jenkinsAtoZLessons, ...terraformAtoZLessons, ...ansibleAtoZLessons, ...cicdAtoZLessons, ...argocdAtoZLessons, ...helmAtoZLessons, ...prometheusAtoZLessons, ...grafanaAtoZLessons, ...eksAtoZLessons, ...mavenAtoZLessons, ...nexusAtoZLessons, ...networkingAtoZLessons , ...jiraAtoZLessons , ...tomcatAtoZLessons , ...devsecopsSecurityAtoZLessons };
