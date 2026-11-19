@@ -95,13 +95,29 @@ function getK8sTopicGuide(topic: string, lessonTitle: string): K8sTopicGuide {
     troubleshooting: "Classify the symptom as scheduling, image, startup, probe, storage, network, permission or resource failure. Capture evidence before changing production objects and verify recovery after the smallest safe fix.",
     lab: "Create a disposable namespace and reproduce one controlled failure such as a bad image tag. Collect describe output and events, fix it, verify Ready and write an incident note."
   };
+  if (/api server|control plane|etcd|scheduler|controller manager|controller/.test(t)) return {
+    explanation: topic + " belongs to the Kubernetes control plane. The API server validates and persists API requests, etcd stores cluster state, the scheduler assigns unscheduled Pods to suitable nodes, and controllers continuously reconcile observed state toward the declared desired state.",
+    example: "When a Deployment replica count changes from two to three, the API server stores the updated object; the Deployment controller creates a ReplicaSet/Pod and the scheduler selects a node for the new Pod.",
+    commands: ["kubectl get componentstatuses", "kubectl get pods -n kube-system -o wide", "kubectl describe pod <control-plane-pod> -n kube-system", "kubectl get events -A --sort-by=.lastTimestamp"],
+    expected: "Control-plane Pod status and events provide component health evidence. Some managed Kubernetes services do not expose control-plane Pods or component status to tenants.",
+    troubleshooting: "For self-managed clusters, inspect control-plane service logs, API endpoint reachability, certificates, etcd health and resource pressure. For managed clusters, use provider control-plane diagnostics and audit logs.",
+    lab: "On a local disposable cluster, inspect control-plane components and trace a test Deployment update from API object change to scheduled Pod."
+  };
+  if (/rbac|role|service account|authorization|authentication/.test(t)) return {
+    explanation: topic + " controls who can authenticate to the Kubernetes API and which verbs they may perform on specific resources. Roles are namespace-scoped, ClusterRoles are cluster-wide or reusable, and bindings attach those permissions to users, groups or service accounts.",
+    example: "A CI service account receives permission to get and update Deployments only in the staging namespace; it cannot read Secrets or modify production resources.",
+    commands: ["kubectl auth can-i get deployments -n staging --as=system:serviceaccount:staging:ci", "kubectl get role,rolebinding -n staging", "kubectl get clusterrole,clusterrolebinding", "kubectl describe serviceaccount ci -n staging"],
+    expected: "auth can-i returns yes or no for the tested identity and verb. Role and binding output shows the granted rules and subject references.",
+    troubleshooting: "Verify the active kubeconfig identity, namespace, exact API group/resource/subresource, verb and binding subject. Avoid granting cluster-admin to make a pipeline pass.",
+    lab: "Create a namespace-scoped service account and Role for reading Pods, bind it, test allowed and denied actions with kubectl auth can-i, then remove the test RBAC objects."
+  };
   return {
-    explanation: topic + " is a core concept in " + lessonTitle + ". Understand the Kubernetes API object or component involved, its desired state, dependencies, namespace scope and how controllers reconcile it.",
-    example: "A DevOps engineer defines this behavior in a version-controlled manifest, validates the YAML, applies it to a test namespace and verifies the resulting object and events.",
-    commands: ["kubectl get all -n <namespace>", "kubectl describe <resource> <name> -n <namespace>", "kubectl get events -n <namespace> --sort-by=.lastTimestamp"],
-    expected: "The output should show the resource in the expected namespace and state. describe and events explain why the controller has or has not reached that state.",
-    troubleshooting: "Check manifest schema, namespace, labels/selectors, RBAC, events and dependent resources. Use kubectl diff and dry-run validation before changing shared environments.",
-    lab: "Create a minimal test manifest for this concept, validate and apply it in a disposable namespace, inspect status/events, then clean up the test resource."
+    explanation: topic + " is part of " + lessonTitle + ". Identify the Kubernetes resource, API group, namespace scope, controller or dependency involved, then verify both the declared specification and observed cluster status.",
+    example: "An engineer changes this topic's setting in a version-controlled manifest, reviews the diff, applies it to a disposable namespace and checks the resource status, related Pods and recent Events before promoting the change.",
+    commands: ["kubectl diff -f <manifest.yaml>", "kubectl apply --dry-run=server -f <manifest.yaml>", "kubectl get <resource> -n <namespace> -o yaml", "kubectl describe <resource> <name> -n <namespace>", "kubectl get events -n <namespace> --sort-by=.lastTimestamp"],
+    expected: "diff shows the proposed change, server dry-run confirms API validation, get -o yaml shows persisted fields and describe/events show runtime reconciliation.",
+    troubleshooting: "Check API validation errors, namespace, labels/selectors, ownership references, RBAC, quotas and dependent resources. Compare desired and observed state before editing live objects.",
+    lab: "Create a minimal manifest for the topic, validate it with server-side dry-run, apply it in a disposable namespace, capture status and Events, then delete only the test resource."
   };
 }
 
