@@ -3,6 +3,7 @@ export type LabResult = {
   output: string;
   detail: string;
   evidence: Record<string, string | number | boolean>;
+  state?: KubernetesLabState;
 };
 
 type Sample = { metric: string; labels: Record<string, string>; values: number[] };
@@ -258,5 +259,5 @@ export function runKubernetesLab(code: string, state: KubernetesLabState): LabRe
   }
   const allRecognized=recognized===commands.length && commands.length>0;
   const recovered=next.healthy && next.ready===next.replicas && next.nodeReady;
-  return { ok: allRecognized, output: recognized+"/"+commands.length+" commands executed\n"+output.join("\n"), detail: !allRecognized?"One or more commands are unsupported. Correct the command and run again.":recovered?"Deployment is healthy. Confirm rollout status and all replicas are Ready.": "Fault evidence: "+next.fault+". Apply the correct resource/probe/node fix, then restart and verify the rollout.", evidence: { recognized,total:commands.length,podsHealthy:recovered,cpu:next.cpu,memory:next.memory,restarts:next.restarts,replicas:next.replicas,ready:next.ready,changedState,rolloutVerified:recovered&&rolloutChecked,resourcesFixed:next.resourcesFixed,probesFixed:next.probesFixed,nodeReady:next.nodeReady,fault:next.fault } };
+  return { ok: allRecognized, output: recognized+"/"+commands.length+" commands executed\n"+output.join("\n"), detail: !allRecognized?"One or more commands are unsupported. Correct the command and run again.":recovered?"Deployment is healthy. Confirm rollout status and all replicas are Ready.": "Fault evidence: "+next.fault+". Apply the correct resource/probe/node fix, then restart and verify the rollout.", evidence: { recognized,total:commands.length,podsHealthy:recovered,cpu:next.cpu,memory:next.memory,restarts:next.restarts,replicas:next.replicas,ready:next.ready,changedState,rolloutVerified:recovered&&rolloutChecked,resourcesFixed:next.resourcesFixed,probesFixed:next.probesFixed,nodeReady:next.nodeReady,fault:next.fault }, state: next };
 }
