@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { FeatureDefinition } from "./feature-catalog";
 import { assistantTopicGuides } from "./devops-ai-topic-guides";
 
@@ -24,6 +24,20 @@ const accents = [
 
 const glyphs = ["✳", ">_", "{ }", "⌘", "◉", "⌁", "⇄", "◇", "◎", "⚑"];
 
+type LocalChatEngine = {
+  chat: {
+    completions: {
+      create: (input: {
+        messages: Array<{ role: "system" | "user"; content: string }>;
+        temperature: number;
+        max_tokens: number;
+      }) => Promise<{ choices: Array<{ message: { content?: string | null } }> }>;
+    };
+  };
+};
+
+const LOCAL_MODEL_ID = "Llama-3.2-1B-Instruct-q4f16_1-MLC";
+
 export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature: FeatureDefinition; slug?: string[] }) {
   const [mode, setMode] = useState("Explain");
   const [question, setQuestion] = useState("");
@@ -32,30 +46,69 @@ export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature
   const [answer, setAnswer] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [apiStatus, setApiStatus] = useState<"checking" | "ready" | "not-configured">("checking");
-  useEffect(() => {
-    let active = true;
-    fetch("/api/devops-chat/status", { cache: "no-store" })
-      .then((response) => response.json())
-      .then((data) => { if (active) setApiStatus(data.configured ? "ready" : "not-configured"); })
-      .catch(() => { if (active) setApiStatus("not-configured"); });
-    return () => { active = false; };
-  }, []);
+  const [modelStatus, setModelStatus] = useState<"not-loaded" | "loading" | "ready" | "unsupported">("not-loaded");
+  const [modelProgress, setModelProgress] = useState("");
+  const engineRef = useRef<LocalChatEngine | null>(null);
   const category = feature.categories.find((item) => slugify(item.name) === slug[0]);
   const subcategory = category?.subcategories.find((item) => slugify(item.name) === slug[1]);
   const topic = subcategory?.topics.find((item) => slugify(item) === slug[2]);
   const topicCount = useMemo(() => feature.categories.reduce((n, c) => n + c.subcategories.reduce((m, s) => m + s.topics.length, 0), 0), [feature]);
   const topicGuide = topic ? assistantTopicGuides[topic] : undefined;
   const root = "/devops-ai-assistant";
+  async function getLocalEngine() {
+    if (engineRef.current) return engineRef.current;
+    if (!("gpu" in navigator)) {
+      setModelStatus("unsupported");
+      throw new Error("This browser/device does not support WebGPU. Please use an up-to-date Chrome or Edge browser on a WebGPU-capable device.");
+    }
+    setModelStatus("loading");
+    setModelProgress("Loading the free AI engine…");
+    try {
+      // WebLLM's official browser ESM build runs the model locally; no server API key or account is used.
+      // @ts-expect-error WebLLM is loaded from its documented browser ESM CDN.
+      const webllm = await import(/* webpackIgnore: true */ "https://esm.run/@mlc-ai/web-llm");
+      const engine = await webllm.CreateMLCEngine(LOCAL_MODEL_ID, {
+        initProgressCallback: (progress: { text?: string }) => setModelProgress(progress.text || "Downloading model files…"),
+      }) as LocalChatEngine;
+      engineRef.current = engine;
+      setModelStatus("ready");
+      setModelProgress("Model ready on this device. It will usually be cached for later visits.");
+      return engine;
+    } catch (err) {
+      setModelStatus("not-loaded");
+      throw new Error(err instanceof Error ? err.message : "Could not load the free browser AI model. Check your connection and available device memory, then retry.");
+    }
+  }
+
   async function submitRequest() {
     if (!question.trim() || loading) return;
     setLoading(true); setError(""); setAnswer(""); setNotice(false);
     try {
-      const response = await fetch("/api/devops-chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode, question, context, category: category?.name, topic }) });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "AI request failed.");
-      setAnswer(data.answer);
-    } catch (err) { setError(err instanceof Error ? err.message : "Unable to reach the AI service."); }
+      const engine = await getLocalEngine();
+      const result = await engine.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content: "You are DevMavox AI, a careful DevOps tutor. Explain in beginner-friendly English, with simple Telugu-English phrasing when useful. Help with AWS, Linux, Git, Docker, Kubernetes, Terraform, Ansible, CI/CD, GitOps, monitoring and production troubleshooting. Structure answers with summary, assumptions, step-by-step explanation, safe commands/examples, validation and risks. Explain commands. Prefer read-only diagnostics before changes. Never claim to inspect live systems or execute commands. Never request secrets. Flag destructive commands and require human review for production changes. Be honest when uncertain.",
+          },
+          {
+            role: "user",
+            content: `Capability: ${category?.name || "DevOps"}
+Topic: ${topic || "General assistance"}
+Mode: ${mode}
+Environment context: ${context.trim() || "Not supplied"}
+
+Request:
+${question.trim()}`,
+          },
+        ],
+        temperature: 0.2,
+        max_tokens: 1200,
+      });
+      const text = result.choices[0]?.message?.content?.trim();
+      if (!text) throw new Error("The local AI model returned an empty response. Please try a shorter or clearer question.");
+      setAnswer(text);
+    } catch (err) { setError(err instanceof Error ? err.message : "Unable to run the local AI model."); }
     finally { setLoading(false); }
   }
 
@@ -81,11 +134,11 @@ export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature
                   <div className="mt-7 flex flex-wrap gap-2 text-[11px] font-semibold"><span className="rounded-lg bg-[#c7ff43] px-3 py-2 text-[#171b13]">10 capability domains</span><span className="rounded-lg border border-white/15 px-3 py-2 text-white/65">{topicCount} specialist workflows</span><span className="rounded-lg border border-white/15 px-3 py-2 text-white/65">3-level navigation</span></div>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-[#0c100d]/80 p-5 shadow-2xl shadow-black/30">
-                  <div className="mb-4 flex items-center justify-between"><span className="font-mono text-[10px] uppercase tracking-[.2em] text-white/45">AI response preview</span><span className="rounded-full bg-[#ff896d]/10 px-2 py-1 text-[9px] text-[#ff9b83]">OpenAI API setup required</span></div>
+                  <div className="mb-4 flex items-center justify-between"><span className="font-mono text-[10px] uppercase tracking-[.2em] text-white/45">AI response preview</span><span className="rounded-full bg-[#c7ff43]/10 px-2 py-1 text-[9px] text-[#d5ff79]">Free local AI · no account</span></div>
                   <div className="space-y-3 font-mono text-xs">
                     <div className="max-w-[90%] rounded-xl rounded-tl-sm bg-white/[.07] p-3 text-white/75">Why are my Kubernetes pods stuck in Pending?</div>
                     <div className="ml-auto max-w-[90%] rounded-xl rounded-tr-sm border border-[#c7ff43]/20 bg-[#c7ff43]/[.08] p-3 text-[#e6f8c7]">Inspect scheduling events, resource requests, node capacity and PVC binding. Start with <span className="text-[#c7ff43]">kubectl describe pod</span>.</div>
-                    <div className="flex items-center gap-2 border-t border-white/10 pt-3 text-[10px] text-white/35"><span className="h-1.5 w-1.5 rounded-full bg-[#ff896d]" /> Illustrative preview · not a live AI response</div>
+                    <div className="flex items-center gap-2 border-t border-white/10 pt-3 text-[10px] text-white/35"><span className="h-1.5 w-1.5 rounded-full bg-[#ff896d]" /> Illustrative preview · local model runs on the student device</div>
                   </div>
                 </div>
               </div>
@@ -111,7 +164,7 @@ export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature
             </section>
           </>
         ) : !category ? (
-          <div className="rounded-2xl border border-[#ff896d]/30 bg-[#ff896d]/10 p-6">Category not found. <Link className="underline" href={root}>Return to ChatGPT home</Link></div>
+          <div className="rounded-2xl border border-[#ff896d]/30 bg-[#ff896d]/10 p-6">Category not found. <Link className="underline" href={root}>Return to DevMavox AI home</Link></div>
         ) : slug.length === 1 ? (
           <>
             <Link href={root} className="text-xs text-white/45 hover:text-white">← All capability domains</Link>
@@ -154,7 +207,7 @@ export default function DevOpsChatGPTWorkspace({ feature, slug = [] }: { feature
                 {answer && <div className="mt-6 rounded-xl border border-[#c7ff43]/25 bg-[#0d110e] p-5"><p className="mb-3 font-mono text-[10px] uppercase tracking-[.18em] text-[#c7ff43]">DevMavox AI response</p><div className="whitespace-pre-wrap text-sm leading-7 text-white/80">{answer}</div></div>}
               </div>
               <aside className="space-y-3">
-                <div className="rounded-2xl border border-[#ff896d]/25 bg-[#ff896d]/[.06] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#ff9a83]">Connection status</p><p className="mt-3 text-lg font-bold">{apiStatus === "checking" ? "Checking AI connection…" : apiStatus === "ready" ? "AI service connected" : "AI service not configured"}</p><p className="mt-2 text-xs leading-5 text-white/45">{apiStatus === "ready" ? "Students can ask questions without signing in to ChatGPT. DevMavox securely calls the configured AI provider from the server." : "Students will not need a ChatGPT account. The site owner must configure OPENAI_API_KEY in Vercel and redeploy before AI answers are available."}</p></div>
+                <div className="rounded-2xl border border-[#c7ff43]/25 bg-[#c7ff43]/[.05] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#d5ff79]">Free local AI status</p><p className="mt-3 text-lg font-bold">{modelStatus === "ready" ? "AI model ready on this device" : modelStatus === "loading" ? "Preparing the AI model…" : modelStatus === "unsupported" ? "WebGPU not available" : "Free AI · not loaded yet"}</p><p className="mt-2 text-xs leading-5 text-white/50">No student login, ChatGPT account, Copilot login, API key or server AI subscription is used. The first question downloads the open model to this browser (large download); later visits can use the cached model. Requires a WebGPU-capable browser/device.</p>{modelProgress && <p className="mt-3 text-[11px] leading-5 text-[#d5ff79]">{modelProgress}</p>}</div>
                 <div className="rounded-2xl border border-white/10 bg-[#1a201b] p-5"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#c7ff43]">Safe-use checklist</p><ul className="mt-3 space-y-2 text-xs leading-5 text-white/55"><li>• Remove passwords and tokens</li><li>• Redact customer data</li><li>• Verify commands before execution</li><li>• Require human approval for production changes</li></ul></div>
               </aside>
             </section>
