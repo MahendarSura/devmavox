@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
-      { error: "ChatGPT is not configured yet. Add OPENAI_API_KEY to the server-side Vercel environment variables, then redeploy." },
+      { error: "DevMavox AI is temporarily unavailable because its server-side AI provider is not configured. Students do not need to sign in; please try again later." },
       { status: 503 }
     );
   }
@@ -64,7 +64,12 @@ export async function POST(request: NextRequest) {
 
     const payload = await upstream.json();
     if (!upstream.ok) {
-      const message = typeof payload?.error?.message === "string" ? payload.error.message : "The AI provider could not complete the request.";
+      const providerMessage = typeof payload?.error?.message === "string" ? payload.error.message : "";
+      const message = upstream.status === 429
+        ? "The AI service has reached its current usage limit or rate limit. Please wait and try again later."
+        : upstream.status === 401
+          ? "The AI provider rejected the server configuration. The site administrator must check the provider API key."
+          : providerMessage || "The AI provider could not complete the request.";
       return NextResponse.json({ error: message }, { status: upstream.status === 429 ? 429 : 502 });
     }
     const answer = payload?.choices?.[0]?.message?.content;
