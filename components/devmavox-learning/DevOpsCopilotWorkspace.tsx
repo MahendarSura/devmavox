@@ -142,29 +142,25 @@ export default function DevOpsCopilotWorkspace({ feature: _feature, slug: _slug 
           <div className="flex items-center gap-2"><span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-[10px] font-bold text-emerald-200">AI-guided learning</span><Link href="/" className="rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold text-slate-300 hover:bg-white/5">← Home</Link></div>
         </header>
 
-        <section className="grid gap-7 py-9 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:py-12">
-          <div>
-            <p className="inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.2em] text-cyan-200"><span className="h-2 w-2 rounded-full bg-emerald-400" /> Learn · Practise · Build · Operate</p>
-            <h1 className="mt-5 max-w-3xl text-4xl font-black leading-[1.08] tracking-tight sm:text-6xl">AI DevOps Assist<span className="block bg-gradient-to-r from-cyan-300 via-sky-300 to-violet-300 bg-clip-text text-transparent">Learn smarter. Engineer better.</span></h1>
-            <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">Your self-paced DevOps classroom. Learn tools from zero, understand real architectures, practise safely, build delivery pipelines and explore how AI is changing engineering — with an AI question ready at every step.</p>
-            <div className="mt-6 flex flex-wrap gap-2">{["Beginner to advanced","Hands-on learning","Production scenarios","Modern AI skills"].map((item) => <span key={item} className="rounded-full border border-white/10 bg-white/[.05] px-3 py-2 text-[11px] font-semibold text-slate-300">{item}</span>)}</div>
-          </div>
-          <div className="relative rounded-[1.7rem] border border-cyan-200/25 bg-gradient-to-br from-[#142b48] via-[#12203b] to-[#241b45] p-5 shadow-2xl shadow-cyan-950/30 sm:p-6">
-            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-violet-400/15 blur-3xl" />
-            <div className="relative">
-              <div className="flex items-center justify-between gap-3"><p className="text-[10px] font-black uppercase tracking-[.2em] text-cyan-200">Ask your DevOps AI</p><span className="text-[10px] text-slate-400">External AI · ChatGPT</span></div>
-              <h2 className="mt-3 text-xl font-extrabold">What do you want to understand?</h2>
-              <textarea value={question} onChange={(event) => setQuestion(event.target.value)} rows={3} placeholder="e.g. Why are my Kubernetes pods stuck in Pending? Explain how to troubleshoot..." className="mt-4 w-full resize-y rounded-xl border border-white/15 bg-[#071326]/90 p-4 text-sm leading-6 text-white outline-none placeholder:text-slate-500 focus:border-cyan-300/70" />
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-                <label className="flex items-center gap-2 text-xs text-slate-300">Learning level<select value={level} onChange={(event) => setLevel(event.target.value)} className="rounded-lg border border-white/15 bg-[#09172b] px-3 py-2 text-xs text-white"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></label>
-                <button type="button" disabled={!question.trim()} onClick={() => askAI(question.trim())} className="rounded-xl bg-gradient-to-r from-cyan-300 to-violet-300 px-5 py-3 text-sm font-black text-slate-950 shadow-lg shadow-cyan-950/30 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40">Ask AI on ChatGPT ↗</button>
+        <section className="relative py-8 sm:py-10">
+          <div className="mx-auto max-w-4xl text-center">
+            <p className="inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[.2em] text-cyan-200"><span className="h-2 w-2 rounded-full bg-emerald-400" /> DevMavox · AI engineering workspace</p>
+            <h1 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-5xl">AI DevOps Assist</h1>
+            <p className="mx-auto mt-3 max-w-3xl text-sm leading-6 text-slate-300 sm:text-base">Empower your DevOps journey with AI-driven insights, practical engineering workflows and self-paced learning.</p>
+            <div className="mt-7 rounded-2xl border border-cyan-300/50 bg-gradient-to-r from-[#142b48] via-[#172640] to-[#272044] p-2 shadow-[0_0_35px_rgba(34,211,238,.12)] sm:flex sm:items-center sm:gap-2">
+              <div className="flex min-w-0 flex-1 items-center gap-3 px-3">
+                <span className="text-xl text-cyan-200">⌕</span>
+                <input value={question} onChange={(event) => setQuestion(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && question.trim()) askAI(question.trim()); }} placeholder="Ask your DevOps or troubleshooting question..." className="h-12 min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-400" aria-label="Ask your DevOps question" />
               </div>
-              <p className="mt-3 text-[10px] leading-5 text-slate-400">Opens ChatGPT in a new tab with your question. ChatGPT controls its own sign-in and usage limits; DevMavox cannot bypass them.</p>
-              <div className="mt-4 flex flex-wrap gap-2">{["Explain a concept","Generate YAML","Debug an error","Design architecture"].map((item) => <button key={item} type="button" onClick={() => setQuestion(item)} className="rounded-full border border-white/15 bg-white/[.06] px-3 py-1.5 text-[10px] text-slate-200 hover:border-cyan-300/50 hover:bg-cyan-300/10">{item}</button>)}</div>
+              <button type="button" disabled={!question.trim()} onClick={() => askAI(question.trim())} className="mt-2 w-full rounded-xl bg-gradient-to-r from-cyan-300 via-sky-300 to-violet-400 px-5 py-3 text-xs font-black text-slate-950 shadow-lg transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40 sm:mt-0 sm:w-auto">Ask AI on ChatGPT ↗<span className="block text-[9px] font-semibold">Opens in a new tab</span></button>
             </div>
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+              <label className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[.04] px-3 py-2 text-[11px] text-slate-300">Learning level <select value={level} onChange={(event) => setLevel(event.target.value)} className="bg-transparent font-bold text-white outline-none"><option className="bg-slate-900">Beginner</option><option className="bg-slate-900">Intermediate</option><option className="bg-slate-900">Advanced</option></select></label>
+              {["Explain a concept","Debug an error","Generate Kubernetes YAML","Design architecture"].map((item) => <button key={item} type="button" onClick={() => setQuestion(item)} className="rounded-full border border-white/10 bg-white/[.04] px-3 py-2 text-[10px] text-slate-300 transition hover:border-cyan-300/40 hover:text-white">{item}</button>)}
+            </div>
+            <p className="mt-3 text-[10px] leading-5 text-slate-500">ChatGPT opens externally. Sign-in and usage availability are controlled by ChatGPT; DevMavox cannot bypass provider restrictions.</p>
           </div>
         </section>
-
         <section className="py-7">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-3"><div><p className="text-[10px] font-black uppercase tracking-[.22em] text-cyan-300">Prompt mastery cards</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">Start with what you need</h2><p className="mt-2 text-sm text-slate-400">Every card has its own Ask AI action. You do not need to invent the prompt.</p></div>
             <div className="flex flex-wrap gap-1 rounded-xl border border-white/10 bg-slate-900/70 p-1">{["All","Ask","Learn","Assist"].map((tab) => <button key={tab} type="button" onClick={() => setActiveTab(tab)} className={`rounded-lg px-3 py-2 text-xs font-bold transition ${activeTab === tab ? "bg-gradient-to-r from-cyan-300 to-violet-300 text-slate-950" : "text-slate-400 hover:text-white"}`}>{tab}</button>)}</div>
