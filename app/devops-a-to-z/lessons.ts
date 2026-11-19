@@ -143,7 +143,8 @@ export const atoZLessons: Record<string, AtoZLesson> = {
     ],
     handsOn: ["Create a practice tree with mkdir -p and several files using touch.", "Copy one file, rename another and verify results with ls -l.", "Use find to locate .log files and grep to search ERROR lines.", "Create a temporary test directory and practice a reviewed cleanup using find -print before -delete."]
   },
-      "linux/users-and-groups": {
+  ...{
+    "linux/users-and-groups": {
       "summary": "Linux Users and Groups: User identity, UID/GID, groups, sudo and service accounts. Production lo deploy user SSH dwara connect ayi approved release directory update chesthadu. appsvc non-interactive service account tho application run avuthundi. Developers group shared logs read chesthundi; broad root login share cheyyaru.",
       "diagram": {
         "title": "Linux Users and Groups workflow and decision path",
@@ -3138,7 +3139,8 @@ export const atoZLessons: Record<string, AtoZLesson> = {
       ]
     }
   },
-      "git-github/version-control-concepts": {
+  ...{
+    "git-github/version-control-concepts": {
       "summary": "Version Control Concepts: Track file history, compare revisions, collaborate safely and recover earlier states.. A production bug is introduced in a release. Team uses commit history and tags to identify the change, revert it safely and review the fix before redeploying.",
       "diagram": {
         "title": "Version Control Concepts workflow",
@@ -5880,8 +5882,9 @@ export const atoZLessons: Record<string, AtoZLesson> = {
         "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
       ]
     }
-  },
-      "git-github/git-flow": {
+  }
+  ...{
+    "git-github/git-flow": {
       "summary": "Git Flow: A branching model using main, develop, feature, release and hotfix branches to coordinate planned releases. A team releases monthly: feature work integrates in develop, QA validates release/2.0, then main receives the release tag. An urgent production fix is handled in a hotfix branch.",
       "diagram": {
         "title": "Git Flow workflow",
