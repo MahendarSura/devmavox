@@ -69,7 +69,6 @@ export default function MonitoringInteractiveLab({ topic, category }: { topic: s
   const [panelChoice, setPanelChoice] = useState("CPU utilization");
   const [threshold, setThreshold] = useState(80);
   const [alertState, setAlertState] = useState<"inactive" | "firing" | "resolved">("inactive");
-  const [incident, setIncident] = useState("none");
   const [eventLog, setEventLog] = useState<string[]>(["12:00:00  sample-api target discovered", "12:00:08  scrape completed successfully"]);
 
   const metricRows = useMemo(() => baseMetrics.map((item) => ({
@@ -85,7 +84,6 @@ export default function MonitoringInteractiveLab({ topic, category }: { topic: s
     setEventLog((current) => [new Date().toLocaleTimeString(), ...current].slice(0, 7).map((line, index) => index === 0 ? `${new Date().toLocaleTimeString()}  ${message}` : line));
   }
   function inject(kind: string) {
-    setIncident(kind);
     if (kind === "cpu") { setCpu(94); setLatency(0.82); setErrors(240); log("INCIDENT injected: CPU saturation and latency increase"); }
     else if (kind === "latency") { setLatency(1.45); setErrors(95); log("INCIDENT injected: elevated API latency"); }
     else if (kind === "target") { setTargetUp(false); log("INCIDENT injected: scrape target is DOWN"); }
