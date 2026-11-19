@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { parse as parseYaml } from "yaml";
 
 type LabId = "promql" | "grafana" | "logs" | "traces" | "alerts" | "kubernetes";
 type Lab = { id: LabId; title: string; description: string; task: string; starter: string; };
@@ -65,35 +66,90 @@ export default function MonitoringHandsOnLabs() {
   function execute() {
     setExecuted(true);
     if (active === "promql") {
-      const evaluated = evaluatePromql(code, incident);
-      setResult(evaluated.value); setResultDetail(evaluated.detail);
+      const lines = code.split("\n").map((line) => line.trim()).filter(Boolean);
+      const results = lines.map((query) => {
+        if (query.startsWith("#")) return "Comment skipped";
+        if (/^up(?:\\{|$)/.test(query)) return "up{job=\"checkout-api\"} = " + (incident ? "0 · target DOWN" : "1 · target UP");
+        if (/http_request_duration_seconds_p95/.test(query)) return "http_request_duration_seconds_p95 = " + (incident ? "1.84" : "0.24") + " seconds";
+        if (/process_cpu_usage_percent|node_cpu/.test(query)) return "process_cpu_usage_percent = " + (incident ? "94" : "38") + "%";
+        if (/http_requests_total/.test(query) && query.includes("/") && /5xx|status/.test(query)) return "checkout_5xx_error_ratio = " + (incident ? "4.8" : "0.32") + "% (counter samples evaluated)";
+        if (/http_requests_total/.test(query) && /rate\\s*\\(/.test(query)) return "checkout_request_rate = " + (incident ? "42.6" : "18.4") + " requests/sec (5m range)";
+        if (/http_requests_total/.test(query) && /sum\\s*\\(/.test(query)) return "http_requests_total = " + (incident ? "5160" : "4920") + " samples";
+        return "ERROR: PromQL parse/evaluation failed for: " + query + ". Supported metrics: up, http_requests_total, http_request_duration_seconds_p95, process_cpu_usage_percent.";
+      });
+      const ok = results.some((line) => !line.startsWith("ERROR:"));
+      setResult(results.join("\n")); setResultDetail((ok ? "Query engine evaluated " : "No valid expression. ") + lines.length + " expression(s) against the six-sample training time-series dataset. Use rate(), sum(), metric selectors and label matchers.");
     } else if (active === "grafana") {
-      const title = code.match(/Title:\s*(.+)/i)?.[1] ?? "Custom panel";
-      const metric = code.match(/Metric:\s*(.+)/i)?.[1] ?? panelMetric;
-      if (!panels.includes(title)) setPanels((current) => [...current, title]);
-      setResult("Dashboard updated · " + title); setResultDetail("Panel configuration parsed. Metric " + metric + " is now represented in the dashboard preview.");
+      try {
+        const dashboard = parseYaml(code) as { title?: string; panels?: { title?: string; query?: string; type?: string }[] };
+        const supported = ["timeseries", "time series", "stat", "gauge", "bar", "table"];
+        const panelsFromYaml = Array.isArray(dashboard?.panels) ? dashboard.panels : [];
+        const errors: string[] = [];
+        if (!dashboard?.title) errors.push("Dashboard title is required.");
+        if (panelsFromYaml.length < 4) errors.push("Add at least four panels for throughput, errors, latency and resources.");
+        panelsFromYaml.forEach((panel, index) => {
+          if (!panel.title || !panel.query) errors.push("Panel " + (index + 1) + " needs title and query.");
+          if (!supported.includes((panel.type ?? "").toLowerCase())) errors.push("Panel " + (index + 1) + " has an unsupported visualization type.");
+        });
+        setPanels(panelsFromYaml.map((panel) => panel.title ?? "Untitled"));
+        setResult((errors.length ? "Dashboard validation FAILED" : "Dashboard validation PASSED") + "\n" + panelsFromYaml.map((panel) => "Panel: " + panel.title + " | " + panel.type + " | " + panel.query).join("\n"));
+        setResultDetail(errors.length ? errors.join(" ") : "YAML parsed successfully. " + panelsFromYaml.length + " panel definitions validated and rendered in the dashboard preview.");
+      } catch (error) {
+        setResult("YAML parse error"); setResultDetail(error instanceof Error ? error.message : "Invalid dashboard YAML.");
+      }
     } else if (active === "logs") {
-      setResult(logMatches.length + " matching log events"); setResultDetail(logMatches.some((row) => row.message.includes("DatabaseTimeout")) ? "Database timeout found. Follow request req-1042 into trace tr-8f21; the timeout precedes the HTTP 503." : "No database timeout in the current filter. Search ERROR or req-1042 to correlate the failure.");
+      const filters = Object.fromEntries(code.trim().split(/\\s+/).filter((part) => part.includes("=")).map((part) => { const [key, ...value] = part.split("="); return [key.toLowerCase(), value.join("=")]; }));
+      const terms = code.trim().split(/\\s+/).filter((part) => !part.includes("=")).map((part) => part.toLowerCase());
+      const matches = logRows.filter((row) =>
+        (!filters.service || row.service === filters.service) &&
+        (!filters.level || row.level.toLowerCase() === filters.level.toLowerCase()) &&
+        (!filters.request_id || row.request === filters.request_id) &&
+        (!filters.trace_id || row.trace === filters.trace_id) &&
+        terms.every((term) => (row.message + " " + row.service + " " + row.request + " " + row.trace).toLowerCase().includes(term))
+      );
+      setResult(matches.length + " matching log events\n" + matches.map((row) => row.time + " " + row.level + " " + row.service + " [" + row.request + "/" + row.trace + "] " + row.message).join("\n"));
+      setResultDetail(matches.some((row) => row.message.includes("DatabaseTimeout")) ? "Root cause located: payment-db timeout occurs before checkout returns HTTP 503. Correlate trace tr-8f21." : "No database timeout in current result. Try service=checkout level=ERROR request=req-1042 or trace=tr-8f21.");
     } else if (active === "traces") {
-      setResult("Trace tr-8f21 · 1,840 ms · ERROR"); setResultDetail("payment-db.query took 1,650 ms (89.7% of total duration). auth-service.validate took 42 ms; cart-service.read took 86 ms.");
+      const traceId = code.match(/(?:trace_id|trace)\\s*=\\s*([\\w-]+)/i)?.[1];
+      if (traceId !== "tr-8f21") { setResult("No trace matched"); setResultDetail("Try trace_id=tr-8f21. Trace search accepts a trace ID and optional min_duration filter."); }
+      else { setResult("Trace tr-8f21 · GET /checkout · 1,840 ms · ERROR\ngateway.GET /checkout 1840ms\nauth-service.validate-token 42ms\ncart-service.read-cart 86ms\npayment-service.authorize 1680ms ERROR\npayment-db.SELECT payment 1650ms ERROR"); setResultDetail("Critical path identified: payment-db query consumes 1,650ms (89.7% of end-to-end duration), causing payment-service and checkout to fail."); }
     } else if (active === "alerts") {
-      const firing = incident && alertThreshold <= 1.84;
-      setResult(firing ? "FIRING · CheckoutHighLatency" : "INACTIVE · CheckoutHighLatency");
-      setResultDetail("Current p95 is " + (incident ? "1.84s" : "0.24s") + ". Configured threshold: " + alertThreshold + "s. " + (firing ? "Critical alert routed to payments-on-call." : "No threshold breach. Inject the latency incident to test firing and recovery."));
+      try {
+        const parsed = parseYaml(code) as { groups?: { rules?: { alert?: string; expr?: string; for?: string; labels?: Record<string,string>; annotations?: Record<string,string> }[] }[] };
+        const rule = parsed?.groups?.[0]?.rules?.[0];
+        const errors: string[] = [];
+        if (!rule?.alert) errors.push("Missing alert name.");
+        if (!rule?.expr?.includes("http_request_duration_seconds_p95") || !rule.expr.includes(">")) errors.push("Expression must compare checkout p95 latency with a threshold.");
+        if (!rule?.for || !/^\\d+[smhd]$/.test(rule.for)) errors.push("Use a valid for duration such as 5m.");
+        if (!rule?.labels?.severity || !rule?.labels?.service) errors.push("Add severity and service labels.");
+        if (!rule?.annotations?.summary || !rule?.annotations?.runbook) errors.push("Add summary and runbook annotations.");
+        if (errors.length) { setResult("Alert rule validation FAILED"); setResultDetail(errors.join(" ")); }
+        else { const firing = incident && alertThreshold <= 1.84; setResult(firing ? "FIRING · " + rule.alert : "INACTIVE · " + rule.alert); setResultDetail("Rule parsed and evaluated. Current p95=" + (incident ? "1.84s" : "0.24s") + ", threshold=" + alertThreshold + "s. " + (firing ? "Critical alert would route to payments-on-call." : "No threshold breach; inject a latency incident to test firing.")); }
+      } catch (error) { setResult("Alert YAML parse error"); setResultDetail(error instanceof Error ? error.message : "Invalid YAML."); }
     } else {
-      setResult(podHealthy ? "3/3 replicas available · all pods Ready" : "2/3 replicas available · checkout pod CrashLoopBackOff");
-      setResultDetail(podHealthy ? "Pod health checks pass. Restart count stable and node pressure cleared." : "Warning BackOff: checkout container restarted 5 times. worker-02 CPU pressure is high; inspect logs and events, then apply the recovery action.");
+      const commands = code.split("\n").map((line) => line.trim()).filter(Boolean);
+      const recognized = commands.filter((command) => /^(kubectl get nodes|kubectl get pods|kubectl describe pod|kubectl get events|kubectl top nodes|kubectl top pods|kubectl rollout status)/.test(command));
+      const output = recognized.map((command) => {
+        if (command.startsWith("kubectl get nodes")) return "worker-01 Ready · CPU 42% · MEM 61%\nworker-02 Ready · CPU " + (podHealthy ? "48%" : "94%") + " · MEM " + (podHealthy ? "62%" : "88%");
+        if (command.startsWith("kubectl get pods")) return "checkout-7c9d  " + (podHealthy ? "1/1 Running 0 restarts" : "0/1 CrashLoopBackOff 5 restarts");
+        if (command.startsWith("kubectl describe pod")) return "Last State: " + (podHealthy ? "Running" : "Terminated · OOMKilled") + "\nEvents: " + (podHealthy ? "Started, Ready" : "BackOff, OOMKilled");
+        if (command.startsWith("kubectl get events")) return podHealthy ? "Normal Started · Ready" : "Warning BackOff · restarting failed container";
+        if (command.startsWith("kubectl top")) return "worker-02 CPU " + (podHealthy ? "48%" : "94%") + " · memory " + (podHealthy ? "62%" : "88%");
+        return "deployment/checkout rollout status: " + (podHealthy ? "3/3 successfully rolled out" : "2/3 replicas available · waiting for rollout");
+      });
+      setResult(recognized.length + "/" + commands.length + " kubectl commands recognized by the training shell\n" + output.join("\n"));
+      setResultDetail(commands.length === recognized.length ? (podHealthy ? "Cluster is healthy. Verify all replicas and node resources." : "Evidence: checkout pod OOMKilled, BackOff events, worker-02 resource pressure and unavailable replica.") : "One or more commands are unsupported. Use get nodes, get pods, describe pod, get events, top nodes/pods or rollout status.");
     }
   }
   function verify() {
-    const success = active === "promql" ? executed && result !== "Query error" && (!incident || code.includes("http_request_duration_seconds_p95") || code.includes("http_requests_5xx_total"))
-      : active === "grafana" ? executed && panels.length >= 4
-      : active === "logs" ? executed && logMatches.some((row) => row.message.includes("DatabaseTimeout"))
-      : active === "traces" ? executed && resultDetail.includes("1,650 ms")
-      : active === "alerts" ? executed && result.includes(incident && alertThreshold <= 1.84 ? "FIRING" : "INACTIVE")
-      : executed && podHealthy;
+    const success = active === "promql" ? executed && result.includes("http_request_duration_seconds_p95") && result.includes("http_requests_total")
+      : active === "grafana" ? executed && result.includes("Dashboard validation PASSED") && panels.length >= 4
+      : active === "logs" ? executed && result.includes("DatabaseTimeout") && result.includes("HTTP 503")
+      : active === "traces" ? executed && result.includes("payment-db.SELECT payment") && resultDetail.includes("Critical path")
+      : active === "alerts" ? executed && result.includes("FIRING") && resultDetail.includes("parsed and evaluated")
+      : executed && podHealthy && result.includes("3/3 successfully rolled out");
     if (success) setPassed((current) => current.includes(active) ? current : [...current, active]);
-    setResultDetail((current) => current + (success ? " · Verification passed." : " · Verification not passed yet: complete the task and execute it again."));
+    setResultDetail((current) => current + (success ? " · Verification passed. Lab completed." : " · Verification failed: complete the task requirements, apply recovery if needed, and execute again."));
   }
 
   return (
