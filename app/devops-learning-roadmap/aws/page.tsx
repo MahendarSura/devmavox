@@ -122,7 +122,7 @@ function getAwsTopicGuide(topic: string, moduleTitle: string): AwsTopicGuide {
     troubleshoot: "For state-lock errors verify whether another run is active before recovery. For drift inspect the plan and actual resource. Never delete or hand-edit production state as a first response.",
     lab: "Create one low-cost sandbox resource, run init/fmt/validate/plan, review the plan, apply only after approval, then destroy the lab resource and verify cleanup."
   };
-  if (/ci\\/cd|pipeline|jenkins|github actions|deploy|ecr image|approval|rollback/.test(t)) return {
+  if (/ci\/cd|pipeline|jenkins|github actions|deploy|ecr image|approval|rollback/.test(t)) return {
     what: topic + " describes a stage in a controlled AWS delivery pipeline. A pipeline retrieves source, tests and builds an artifact, publishes an immutable image or package, then deploys with an auditable identity and health verification.",
     why: "Automated delivery reduces manual drift and makes releases repeatable. OIDC or role assumption avoids storing long-lived AWS access keys in CI variables.",
     example: "GitHub Actions tests an application, assumes a restricted AWS role with OIDC, pushes a commit-tagged image to ECR and updates a staging ECS service before production approval.",
