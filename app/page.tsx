@@ -85,6 +85,7 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
             {[
               { title: "DevOps Learning Roadmap", desc: "Follow a structured DevOps learning path.", icon: "🗺️", link: "/devops-learning-roadmap" },
+              { title: "DevOps A–Z – Detailed Telugu Explanation", desc: "Explore 20 DevOps categories and their complete subtopic index with Telugu-first lessons.", icon: "📚", link: "/devops-a-to-z" },
               { title: "Hands-on Labs", desc: "Practise Linux, Git, Docker and Kubernetes.", icon: "💻", link: "/hands-on-labs" },
               { title: "Real-Time Projects", desc: "Build practical cloud and CI/CD projects.", icon: "🚀", link: "/real-time-projects" },
               { title: "Troubleshooting Center", desc: "Learn to diagnose and fix common errors.", icon: "🔧", link: "/troubleshooting-center" },
