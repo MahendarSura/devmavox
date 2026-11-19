@@ -976,8 +976,7 @@ export default function AWSRoadmapPage() {
             infrastructure moves from code to production.
           </p>
           <p className="mt-3 text-xs text-slate-500">
-            Progress checkboxes currently use page state and reset on refresh.
-            Persistent progress requires storage or a database.
+            Completed modules are saved in this browser on this device. Clearing browser storage or switching devices may reset this progress.
           </p>
         </footer>
       </div>
