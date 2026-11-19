@@ -12,6 +12,6 @@ import { eksAtoZLessons } from "./lessons-extra/eks";
 import { mavenAtoZLessons } from "./lessons-extra/maven";
 import { nexusAtoZLessons } from "./lessons-extra/nexus";
 
-import { devsecopsSecurityAtoZLessons } from "./lessons-extra/devsecops-security";
+import { networkingAtoZLessons } from "./lessons-extra/networking";
 
-export const atoZLessons = { ...baseLessons, ...kubernetesAtoZLessons, ...jenkinsAtoZLessons, ...terraformAtoZLessons, ...ansibleAtoZLessons, ...cicdAtoZLessons, ...argocdAtoZLessons, ...helmAtoZLessons, ...prometheusAtoZLessons, ...grafanaAtoZLessons, ...eksAtoZLessons, ...mavenAtoZLessons, ...nexusAtoZLessons, ...devsecopsSecurityAtoZLessons };
+export const atoZLessons = { ...baseLessons, ...kubernetesAtoZLessons, ...jenkinsAtoZLessons, ...terraformAtoZLessons, ...ansibleAtoZLessons, ...cicdAtoZLessons, ...argocdAtoZLessons, ...helmAtoZLessons, ...prometheusAtoZLessons, ...grafanaAtoZLessons, ...eksAtoZLessons, ...mavenAtoZLessons, ...nexusAtoZLessons, ...networkingAtoZLessons };
