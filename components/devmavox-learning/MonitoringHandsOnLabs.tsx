@@ -96,6 +96,7 @@ export default function MonitoringHandsOnLabs() {
     document.getElementById("active-lab-workspace")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   function execute() {
+    setAttempts((current) => ({ ...current, [active]: (current[active] ?? 0) + 1 }));
     setExecuted(true);
     let execution;
     if (active === "promql") execution = runPromqlLab(code, incident);
