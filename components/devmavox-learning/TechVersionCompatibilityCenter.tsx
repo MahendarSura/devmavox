@@ -227,7 +227,7 @@ const statusClass: Record<Status, string> = {
   "Review required": "border-sky-400/25 bg-sky-400/10 text-sky-300",
   "Not supported": "border-rose-400/25 bg-rose-400/10 text-rose-300",
 };
-const tabs = ["Start here", "Overview", "Compatibility checker", "Stack builder", "Version matrix", "Upgrade planner", "Release intelligence", "Compatibility knowledge"];
+const tabs = ["Detail explanations of Tech Version Compatibility", "Start here", "Overview", "Compatibility checker", "Stack builder", "Version matrix", "Upgrade planner", "Release intelligence", "Compatibility knowledge"];
 const topicCategoryByDomain: Record<string, string> = {
   "Kubernetes ecosystem": "kubernetes-ecosystem",
   "Container ecosystem": "container-ecosystem",
@@ -241,7 +241,7 @@ const topicCategoryByDomain: Record<string, string> = {
 };
 
 export default function TechVersionCompatibilityCenter() {
-  const [tab, setTab] = useState("Start here");
+  const [tab, setTab] = useState("Detail explanations of Tech Version Compatibility");
   const [query, setQuery] = useState("");
   const [stack, setStack] = useState(["Kubernetes 1.30", "kubectl 1.30", "containerd 1.7", "Helm 3.15"]);
   const [source, setSource] = useState("Kubernetes");
@@ -265,6 +265,91 @@ export default function TechVersionCompatibilityCenter() {
       <nav aria-label="Compatibility workspace sections" className="mt-7 grid grid-cols-2 gap-2 rounded-2xl border border-slate-800 bg-[#0e1624] p-3 sm:grid-cols-3 xl:grid-cols-4">{[...tabs,...(selectedCategory!=="All"?["Domain workspace"]:[])].map(t=><button key={t} onClick={()=>setTab(t)} aria-current={tab===t?"page":undefined} className={`min-h-11 whitespace-normal rounded-xl px-3 py-3 text-center text-xs font-bold leading-5 transition ${tab===t?"bg-cyan-300 text-slate-950":"text-slate-400 hover:bg-white/5 hover:text-white"}`}>{t}</button>)}</nav>
       {tab!=="Overview"&&<div className="mt-5"><button onClick={()=>{setSelectedCategory("All");setTab("Overview");}} className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/40 bg-cyan-400/10 px-4 py-3 text-sm font-bold text-cyan-100 transition hover:border-cyan-300 hover:bg-cyan-400/20">← Back to Tech Version Compatibility</button></div>}
       <div className="mt-7 flex flex-col gap-3 sm:flex-row"><div className="relative flex-1"><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search technologies, versions, dependencies or compatibility rules…" className="w-full rounded-xl border border-slate-700 bg-[#101827] px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-cyan-400"/></div>{tab==="Overview"||tab==="Stack builder"?<select value={selectedCategory} onChange={e=>setSelectedCategory(e.target.value)} className="rounded-xl border border-slate-700 bg-[#101827] px-4 py-3 text-sm text-white"><option>All</option>{groups.map(g=><option key={g.name}>{g.name}</option>)}</select>:null}</div>
+      {tab==="Detail explanations of Tech Version Compatibility"&&<section className="mt-7 space-y-6">
+  <div className="rounded-3xl border border-cyan-400/20 bg-gradient-to-br from-[#102b3b] via-[#132139] to-[#101827] p-6 sm:p-8">
+    <p className="text-xs font-bold uppercase tracking-widest text-cyan-200">First section · Understand the subject</p>
+    <h2 className="mt-3 text-3xl font-black leading-tight text-white sm:text-4xl">Tech Version Compatibility ante enti? Deentlo em nerchukuntam?</h2>
+    <p className="mt-5 max-w-5xl text-base leading-8 text-slate-200">Bayata nunchi chusthe idi tools list la kanipinchachu. Kaani actual purpose adi kaadu. Oka company application run cheyadaniki Kubernetes, Docker/container runtime, Jenkins, Java, Terraform, AWS, monitoring tools ila chala technologies kalisi pani chesthayi. Prathi technology ki versions untayi. Aa versions okadanitho okati support chesthunnaya, oka version marchithe vere component meeda impact untunda, problem vaste ela identify cheyyali anevi nerpinchedhe <b>Tech Version Compatibility</b>.</p>
+    <p className="mt-4 max-w-5xl text-sm leading-7 text-slate-300">Simple ga cheppalante: production environment lo use chesthunna technologies anni correct versions lo, correct dependencies tho, vendor support limits lopala kalisi work chesthunnaya ani check cheyadam. Mismatch unte evidence collect chesi root cause kanukkoni, safe fix or upgrade plan tayaru cheyadam.</p>
+    <div className="mt-6 grid gap-3 sm:grid-cols-3">
+      <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="text-xs font-bold uppercase tracking-wider text-cyan-200">Understand</p><p className="mt-2 text-sm leading-6 text-white">Technology enduku use chestham, version ante enti, components ela depend avuthayi.</p></div>
+      <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="text-xs font-bold uppercase tracking-wider text-emerald-200">Verify</p><p className="mt-2 text-sm leading-6 text-white">Commands run chesi exact versions, support rules, logs and configuration evidence check cheyyadam.</p></div>
+      <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><p className="text-xs font-bold uppercase tracking-wider text-amber-200">Fix safely</p><p className="mt-2 text-sm leading-6 text-white">Mismatch troubleshoot cheyyadam, upgrade test cheyyadam, rollback and recovery verify cheyyadam.</p></div>
+    </div>
+  </div>
+  <div className="rounded-2xl border border-slate-800 bg-[#101827] p-5 sm:p-6">
+    <h3 className="text-xl font-black text-white">1. Oka real-time example tho easy ga chuddam</h3>
+    <p className="mt-3 text-sm leading-7 text-slate-300">Oka company website ni Kubernetes cluster meeda run chesthondi anukondi. Cluster lo Kubernetes API server, worker nodes, kubectl, container runtime, CNI networking plugin, CSI storage driver, CoreDNS and Helm untayi. Ivanni separate components, kaani okate application platform lo kalisi pani chesthayi.</p>
+    <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      {[
+        ["Kubernetes API server","Cluster ki central control plane. Workloads and cluster objects ni manage chesthundi."],
+        ["kubectl","Engineer laptop/terminal nunchi cluster ni inspect and manage cheyadaniki command-line tool."],
+        ["kubelet","Prathi worker node meeda run ayi Pods ni start/monitor chesthundi."],
+        ["containerd","Node lo containers ni run cheyadaniki container runtime."],
+        ["CNI / CSI","CNI pod networking provide chesthundi; CSI persistent storage attach/mount chesthundi."],
+        ["CoreDNS / Helm","CoreDNS service discovery ki; Helm Kubernetes applications package/deploy cheyadaniki."]
+      ].map(([name,desc])=><div key={name} className="rounded-xl border border-slate-700 bg-slate-950/60 p-4"><h4 className="font-bold text-cyan-200">{name}</h4><p className="mt-2 text-xs leading-6 text-slate-300">{desc}</p></div>)}
+    </div>
+    <p className="mt-4 text-sm leading-7 text-slate-300">Ippudu Kubernetes upgrade chesaru anukondi. Kaani CNI plugin old version lo undi, leda kubectl supported version range bayata undi. Appudu networking fail avvachu, commands unexpected behavior chupinchachu, nodes NotReady avvachu. Ee situation lo “Kubernetes upgrade cheyyali” ani matrame telisthe saripodu. Ye component mismatch ayyindi? Official ga ye versions support chesthayi? Ela prove cheyyali? Ela safe ga fix cheyyali? Ee questions ki answer kanukkovadam ee subject lo nerchukuntaru.</p>
+  </div>
+  <div className="rounded-2xl border border-slate-800 bg-[#101827] p-5 sm:p-6">
+    <h3 className="text-xl font-black text-white">2. Deentlo enni technology domains untayi?</h3>
+    <p className="mt-2 text-sm leading-7 text-slate-300">Present learning workspace lo <b>12 technology domains</b> unnayi. Ee domains lo total 97 component placements unnayi; repeated names ni okasari count chesthe 90 unique component names. Konni actual tools, konni cloud services, runtimes, APIs, plugins or integrations. Kabatti 90 ante 90 standalone software tools ani artham kaadu.</p>
+    <div className="mt-4 grid gap-3 sm:grid-cols-3">
+      <div className="rounded-xl border border-cyan-400/20 bg-cyan-400/5 p-4"><p className="text-xs text-cyan-200">Technology domains</p><p className="mt-1 text-3xl font-black text-white">12</p></div>
+      <div className="rounded-xl border border-violet-400/20 bg-violet-400/5 p-4"><p className="text-xs text-violet-200">Component placements</p><p className="mt-1 text-3xl font-black text-white">97</p></div>
+      <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/5 p-4"><p className="text-xs text-emerald-200">Unique component names</p><p className="mt-1 text-3xl font-black text-white">90</p></div>
+    </div>
+    <div className="mt-5 space-y-3">
+      {groups.map((group,index)=>{
+        const details: Record<string,string> = {
+          "Kubernetes ecosystem":"Kubernetes cluster ni run cheyadaniki avasaramaina control plane, worker nodes, kubectl, kubelet, runtime, networking, storage and add-ons ela compatible ga undalo nerchukuntaru. Production lo node NotReady, API mismatch and add-on failures investigate chestharu.",
+          "Container ecosystem":"Docker Engine, CLI, Compose, containerd, runc and image formats madhya relationship nerchukuntaru. Image enduku pull avvatledu, container enduku start avvatledu, host kernel/cgroup mismatch ela diagnose cheyyalo practice chestharu.",
+          "CI/CD ecosystem":"Jenkins, GitHub Actions, GitLab CI, Maven, Gradle, SonarQube and artifact repositories pipeline lo ela connect avuthayo nerchukuntaru. Java/JDK, plugins, agents and runners compatibility valla builds fail ayithe troubleshoot chestharu.",
+          "Infrastructure as Code":"Terraform/OpenTofu CLI, cloud providers, modules, lockfiles and state backend versions ela interact avuthayo nerchukuntaru. Provider upgrade tarvatha unexpected resource replacement or state issue vaste plan and evidence tho assess chestharu.",
+          "Cloud platforms":"AWS services, EKS/ECS, EC2, IAM, VPC, RDS and S3 integrations lo API, region, quota, identity and provider constraints nerchukuntaru. AccessDenied, quota and subnet capacity issues ni diagnose chestharu.",
+          "GitOps & deployment":"Argo CD, Flux, Helm, Kustomize, CRDs and rollout controllers Kubernetes API tho ela compatible ga undalo nerchukuntaru. OutOfSync, Degraded, Helm hook and CRD conversion problems investigate chestharu.",
+          "Monitoring & observability":"Prometheus, Grafana, Alertmanager, Loki, Tempo, OpenTelemetry and exporters versions/configuration ela align avvalo nerchukuntaru. No data, DOWN targets and notification failures ni trace chestharu.",
+          "Security ecosystem":"Trivy, Checkov, tfsec, SonarQube, Falco, Kyverno and OPA tools scanners, databases, kernels and Kubernetes APIs meeda depend avuthayi. Scanner or policy upgrade tarvatha CI/admission failures ni safe ga diagnose chestharu.",
+          "Build & runtime":"Java, Node.js, Python, Go, Maven, Gradle, Tomcat and Spring Boot version requirements nerchukuntaru. Wrong JDK, bytecode mismatch, native module and dependency resolution failures ni identify chestharu.",
+          "Operating systems":"Ubuntu, RHEL, Amazon Linux, Debian, Windows Server, Linux kernel and systemd support lifecycle nerchukuntaru. Kernel, libc, drivers and container runtime mismatch valla service fail ayithe inspect chestharu.",
+          "Networking & storage":"Cilium, Calico, Flannel, CoreDNS, NGINX, Envoy, EBS CSI and EFS CSI integrations nerchukuntaru. DNS, routing, MTU, IPAM, PVC Pending and volume mount problems investigate chestharu.",
+          "Upgrade & migration":"Kubernetes, Terraform, providers, Java, Jenkins, container runtime and GitOps upgrades ni supported path lo plan cheyyadam nerchukuntaru. Backups, intermediate releases, validation gates, rollback feasibility and forward-fix decisions practice chestharu."
+        };
+        return <article key={group.name} className="rounded-xl border border-slate-700 bg-slate-950/60 p-4 sm:p-5">
+          <div className="flex flex-wrap items-start justify-between gap-2"><div className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-xl">{group.icon}</span><div><p className="text-xs font-bold text-cyan-300">DOMAIN {String(index+1).padStart(2,"0")}</p><h4 className="font-bold text-white">{group.name}</h4></div></div><span className="rounded-full border border-slate-700 px-2.5 py-1 text-[10px] text-slate-400">{group.items.length} components</span></div>
+          <p className="mt-3 text-sm leading-7 text-slate-300">{details[group.name]}</p>
+          <p className="mt-3 text-xs font-bold uppercase tracking-wider text-slate-500">Covered components</p>
+          <div className="mt-2 flex flex-wrap gap-1.5">{group.items.map(item=><span key={item} className="rounded-md border border-slate-700 bg-[#101827] px-2.5 py-1.5 text-[11px] text-slate-300">{item}</span>)}</div>
+        </article>;
+      })}
+    </div>
+  </div>
+  <div className="rounded-2xl border border-slate-800 bg-[#101827] p-5 sm:p-6">
+    <h3 className="text-xl font-black text-white">3. Student ikkada exactly em nerchukuntadu?</h3>
+    <div className="mt-4 grid gap-3 md:grid-cols-2">
+      {[
+        ["Version identify cheyyadam","Tool version, client/server version, runtime version, plugin version and exact release ni commands tho collect cheyyadam."],
+        ["Compatibility rule ardham chesukovadam","Version skew, minimum requirements, maximum supported versions, API compatibility, provider constraints and support lifecycle meaning."],
+        ["Dependency map chadavadam","Oka tool vere ye tool, plugin, runtime, API, OS or cloud service meeda depend avuthundo trace cheyyadam."],
+        ["Evidence tho validate cheyyadam","Command output, logs, events, configuration, release notes and official support matrix ni compare cheyyadam."],
+        ["Mismatch troubleshoot cheyyadam","Symptom ni observe chesi, possible causes narrow down chesi, root cause prove chesi, safe remediation select cheyyadam."],
+        ["Upgrade and rollback plan cheyyadam","Prerequisites, backups, staging tests, change approvals, health gates, rollback limits and recovery verification define cheyyadam."]
+      ].map(([title,desc],i)=><div key={title} className="rounded-xl border border-slate-700 bg-slate-950/60 p-4"><p className="text-xs font-black text-violet-300">LEARNING OUTCOME 0{i+1}</p><h4 className="mt-2 font-bold text-white">{title}</h4><p className="mt-2 text-xs leading-6 text-slate-300">{desc}</p></div>)}
+    </div>
+  </div>
+  <div className="rounded-2xl border border-amber-400/20 bg-amber-400/5 p-5 sm:p-6">
+    <h3 className="text-xl font-black text-white">4. Idi students ki enduku important?</h3>
+    <p className="mt-3 text-sm leading-7 text-slate-200">Real DevOps job lo tools install cheyyadam okkate pani kaadu. Existing production stack lo versions maintain cheyyali, security fixes apply cheyyali, upgrades plan cheyyali, failures vaste service impact tagginchali. “Latest version install cheyyi” anedi correct engineering decision kaadu. “Ee exact version mana platform, plugins, runtime and dependencies tho officially support avuthunda? Evidence enti? Rollback ela?” ani answer cheppagalagali.</p>
+    <p className="mt-3 text-sm leading-7 text-slate-200">Ee learning path complete chesina student compatibility decision ni guess cheyyakunda, official documentation and environment evidence base chesukoni explain cheyyadam, change risk assess cheyyadam, production-safe plan prepare cheyyadam practice chesthadu.</p>
+  </div>
+  <div className="flex flex-wrap gap-3">
+    <button onClick={()=>setTab("Start here")} className="rounded-xl bg-cyan-300 px-5 py-3 text-sm font-bold text-slate-950">Start learning basics →</button>
+    <button onClick={()=>setTab("Overview")} className="rounded-xl border border-slate-600 px-5 py-3 text-sm font-bold text-white">Explore 12 domains</button>
+    <button onClick={()=>setTab("Compatibility checker")} className="rounded-xl border border-slate-600 px-5 py-3 text-sm font-bold text-white">Try compatibility checker</button>
+  </div>
+  <p className="text-xs leading-6 text-slate-500">Accuracy note: component list and learning scope are curated in this workspace. This page does not query live vendor APIs. Exact compatibility must be confirmed using official documentation for the precise product version, distribution and configuration. Unknown combinations should remain Review required.</p>
+</section>}
       {tab==="Start here"&&<section className="mt-7 space-y-6">
   <div className="rounded-3xl border border-cyan-400/20 bg-gradient-to-br from-[#102b3b] via-[#132139] to-[#101827] p-6 sm:p-8">
     <span className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-200">Beginner-friendly learning path</span>
