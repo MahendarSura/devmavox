@@ -104,7 +104,8 @@ export default function MonitoringHandsOnLabs() {
       setAlertTicks(nextTicks);
       execution = runAlertLab(code, incident, nextTicks, parseYaml, alertWasFiring);
       if (execution.evidence.firing === true) setAlertWasFiring(true);
-    } else execution = runKubernetesLab(code, kubeState);\n    if (active === "kubernetes" && execution.state) { setKubeState(execution.state); if (execution.evidence.podsHealthy === true) { setIncident(false); setRecoveryApplied(true); } }
+    } else execution = runKubernetesLab(code, kubeState);
+    if (active === "kubernetes" && execution.state) { setKubeState(execution.state); if (execution.evidence.podsHealthy === true) { setIncident(false); setRecoveryApplied(true); } }
     setResult(execution.output);
     setResultDetail(execution.detail);
     setLastEvidence(execution.evidence);
