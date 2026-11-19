@@ -138,8 +138,8 @@ const baseLogs: LogRow[] = [
   { timestamp: "12:06:10.500", level: "ERROR", service: "inventory", request_id: "req-1045", trace_id: "tr-8f24", message: "Upstream timeout after 1200ms" },
   { timestamp: "12:06:11.000", level: "ERROR", service: "gateway", request_id: "req-1045", trace_id: "tr-8f24", message: "HTTP 504 returned to client" },
 ];
-export function runLogsLab(query: string, incident = false): LabResult {
-  const rows = incident ? [...baseLogs, { timestamp: "12:07:02.001", level: "ERROR", service: "payment-db", request_id: "req-1050", trace_id: "tr-8f30", message: "ConnectionTimeout after 5000ms" }, { timestamp: "12:07:02.020", level: "ERROR", service: "checkout", request_id: "req-1050", trace_id: "tr-8f30", message: "HTTP 503 returned to client" }] : baseLogs;
+export function runLogsLab(query: string, incident = false, recovered = false): LabResult {
+  const rows = incident ? [...baseLogs, { timestamp: "12:07:02.001", level: "ERROR", service: "payment-db", request_id: "req-1050", trace_id: "tr-8f30", message: "ConnectionTimeout after 5000ms" }, { timestamp: "12:07:02.020", level: "ERROR", service: "checkout", request_id: "req-1050", trace_id: "tr-8f30", message: "HTTP 503 returned to client" }] : baseLogs;\n  const recoveredLogs = recovered ? [...rows, { timestamp: "12:08:00.000", level: "INFO", service: "checkout", request_id: "req-1042", trace_id: "tr-8f21", message: "Health check passed after recovery" }] : rows;
   const filters: Record<string, string> = {}; const terms: string[] = [];
   query.trim().split(/\s+/).filter(Boolean).forEach((token) => {
     const match = token.match(/^([\w]+)(=|:)(.+)$/);
@@ -149,13 +149,13 @@ export function runLogsLab(query: string, incident = false): LabResult {
   const aliases: Record<string, keyof LogRow> = { level: "level", severity: "level", service: "service", request: "request_id", request_id: "request_id", trace: "trace_id", trace_id: "trace_id", message: "message", time: "timestamp" };
   const unknown = Object.keys(filters).filter((key) => !aliases[key] && key !== "after" && key !== "before");
   if (unknown.length) return { ok: false, output: "Invalid filter field: " + unknown.join(", "), detail: "Supported fields: level, severity, service, request_id, trace_id, message. Example: level=ERROR request_id=req-1042", evidence: {} };
-  const matched = rows.filter((row) => Object.entries(filters).every(([key, value]) => {
+  const matched = recoveredLogs.filter((row) => Object.entries(filters).every(([key, value]) => {
     if (key === "after") return row.timestamp > value;\n    if (key === "before") return row.timestamp < value;\n    const field = aliases[key]; return field ? row[field].toLowerCase().includes(value.toLowerCase()) : false;
   }) && terms.every((term) => (row.message + " " + row.service + " " + row.level).toLowerCase().includes(term)));
   const rootCause = matched.some((row) => row.service === "payment-db" && /DatabaseTimeout|ConnectionTimeout/.test(row.message));
   const has503 = matched.some((row) => row.message.includes("HTTP 503"));
   const output = matched.map((row) => row.timestamp + " " + row.level.padEnd(5) + " service=" + row.service + " request_id=" + row.request_id + " trace_id=" + row.trace_id + " " + row.message);
-  return { ok: matched.length > 0, output: matched.length + " matching log events\n" + output.join("\n"), detail: rootCause && has503 ? "Correlated database timeout and downstream HTTP 503 events found." : "Matched events. Narrow the search by request_id or trace_id to correlate the incident.", evidence: { matches: matched.length, rootCause, has503, correlated: rootCause && has503, injectedEvents: incident } };
+  return { ok: matched.length > 0, output: matched.length + " matching log events\n" + output.join("\n"), detail: rootCause && has503 ? "Correlated database timeout and downstream HTTP 503 events found." : "Matched events. Narrow the search by request_id or trace_id to correlate the incident.", evidence: { matches: matched.length, rootCause, has503, correlated: rootCause && has503, injectedEvents: incident, recovered } };
 }
 
 type Span = { trace_id: string; service: string; operation: string; parent: string | null; start_ms: number; duration_ms: number; status: "OK" | "ERROR" };
@@ -170,7 +170,7 @@ const traceData: Span[] = [
   { trace_id: "tr-8f23", service: "gateway", operation: "GET /checkout", parent: null, start_ms: 0, duration_ms: 460, status: "OK" },
   { trace_id: "tr-8f23", service: "payment-service", operation: "authorize", parent: "gateway", start_ms: 120, duration_ms: 280, status: "OK" },
 ];
-export function runTracesLab(query: string, incident = false): LabResult {
+export function runTracesLab(query: string, incident = false, recovered = false): LabResult {
   const id = query.match(/(?:trace_id|trace)\s*[=:]\s*([\w-]+)/i)?.[1];
   const service = query.match(/service\s*[=:]\s*([\w-]+)/i)?.[1];
   if (!id) return { ok: false, output: "Trace ID is required.", detail: "Try trace_id=tr-8f21 or trace_id=tr-8f22.", evidence: {} };
@@ -179,7 +179,7 @@ export function runTracesLab(query: string, incident = false): LabResult {
   const total = spans.find((span) => span.parent === null)?.duration_ms || Math.max(...spans.map((span) => span.start_ms + span.duration_ms));
   const slowest = [...spans].sort((a, b) => b.duration_ms - a.duration_ms)[0];
   const lines = spans.map((span) => (span.parent ? "  " : "") + span.service + "." + span.operation + " start=" + span.start_ms + "ms duration=" + span.duration_ms + "ms status=" + span.status);
-  return { ok: true, output: "Trace " + id + " · " + total + "ms total\n" + lines.join("\n"), detail: "Slowest matching span: " + slowest.service + "." + slowest.operation + " (" + slowest.duration_ms + "ms).", evidence: { found: true, totalMs: total, slowestMs: slowest.duration_ms, slowestService: slowest.service, criticalPath: id === "tr-8f21" && slowest.service === "payment-db", dbMs: spans.find((span) => span.service === "payment-db")?.duration_ms || 0, spanCount: spans.length } };
+  return { ok: true, output: "Trace " + id + " · " + total + "ms total\n" + lines.join("\n"), detail: "Slowest matching span: " + slowest.service + "." + slowest.operation + " (" + slowest.duration_ms + "ms)." + (recovered ? " Recovery health check passed; historical trace evidence retained." : ""), evidence: { found: true, totalMs: total, slowestMs: slowest.duration_ms, slowestService: slowest.service, criticalPath: id === "tr-8f21" && spans.some((span) => span.service === "payment-db" && span.duration_ms > 1000), dbMs: id === "tr-8f21" ? (incident ? 2650 : 1650) : 0, spanCount: spans.length, recovered } };
 }
 
 type Panel = { title?: string; type?: string; query?: string; thresholds?: { value?: number; color?: string }[] };
