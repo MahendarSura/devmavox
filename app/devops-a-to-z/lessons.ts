@@ -14070,4 +14070,5766 @@ export const atoZLessons: Record<string, AtoZLesson> = {
       "Write a short runbook with validation, rollback and cleanup steps."
     ]
   },
+  "kubernetes/container-orchestration": {
+    "summary": "Container Orchestration is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Container Orchestration control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Container Orchestration reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Container Orchestration reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Container Orchestration is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage container orchestration consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Container Orchestration when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Container Orchestration reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get container-orchestration -A\nkubectl describe container-orchestration YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Container Orchestration is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Container Orchestration in Kubernetes with a DevOps example.",
+        "answer": "Container Orchestration is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Container Orchestration issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Container Orchestration in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/kubernetes-introduction": {
+    "summary": "Kubernetes Introduction is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Kubernetes Introduction control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Kubernetes Introduction reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Kubernetes Introduction reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Kubernetes Introduction is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage kubernetes introduction consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Kubernetes Introduction when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Kubernetes Introduction reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get kubernetes-introduction -A\nkubectl describe kubernetes-introduction YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Kubernetes Introduction is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Kubernetes Introduction in Kubernetes with a DevOps example.",
+        "answer": "Kubernetes Introduction is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Kubernetes Introduction issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Kubernetes Introduction in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/kubernetes-architecture": {
+    "summary": "Kubernetes Architecture is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Kubernetes Architecture control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Kubernetes Architecture reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Kubernetes Architecture reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Kubernetes Architecture is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage kubernetes architecture consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Kubernetes Architecture when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Kubernetes Architecture reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get kubernetes-architecture -A\nkubectl describe kubernetes-architecture YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Kubernetes Architecture is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Kubernetes Architecture in Kubernetes with a DevOps example.",
+        "answer": "Kubernetes Architecture is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Kubernetes Architecture issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Kubernetes Architecture in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/control-plane": {
+    "summary": "Control Plane is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Control Plane control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Control Plane reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Control Plane reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Control Plane is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage control plane consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Control Plane when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Control Plane reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get control-plane -A\nkubectl describe control-plane YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Control Plane is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Control Plane in Kubernetes with a DevOps example.",
+        "answer": "Control Plane is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Control Plane issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Control Plane in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/worker-nodes": {
+    "summary": "Worker Nodes is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Worker Nodes control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Worker Nodes reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Worker Nodes reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Worker Nodes is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage worker nodes consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Worker Nodes when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Worker Nodes reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get worker-nodes -A\nkubectl describe worker-nodes YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Worker Nodes is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Worker Nodes in Kubernetes with a DevOps example.",
+        "answer": "Worker Nodes is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Worker Nodes issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Worker Nodes in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/kubernetes-api-server": {
+    "summary": "Kubernetes API Server is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Kubernetes API Server control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Kubernetes API Server reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Kubernetes API Server reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Kubernetes API Server is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage kubernetes api server consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Kubernetes API Server when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Kubernetes API Server reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get kubernetes-api-server -A\nkubectl describe kubernetes-api-server YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Kubernetes API Server is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Kubernetes API Server in Kubernetes with a DevOps example.",
+        "answer": "Kubernetes API Server is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Kubernetes API Server issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Kubernetes API Server in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/etcd": {
+    "summary": "etcd is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "etcd control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "etcd reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → etcd reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "etcd is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage etcd consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses etcd when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → etcd reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get etcd -A\nkubectl describe etcd YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "etcd is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain etcd in Kubernetes with a DevOps example.",
+        "answer": "etcd is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a etcd issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect etcd in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/scheduler": {
+    "summary": "Scheduler is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Scheduler control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Scheduler reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Scheduler reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Scheduler is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage scheduler consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Scheduler when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Scheduler reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get scheduler -A\nkubectl describe scheduler YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Scheduler is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Scheduler in Kubernetes with a DevOps example.",
+        "answer": "Scheduler is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Scheduler issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Scheduler in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/controller-manager": {
+    "summary": "Controller Manager is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Controller Manager control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Controller Manager reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Controller Manager reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Controller Manager is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage controller manager consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Controller Manager when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Controller Manager reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get controller-manager -A\nkubectl describe controller-manager YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Controller Manager is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Controller Manager in Kubernetes with a DevOps example.",
+        "answer": "Controller Manager is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Controller Manager issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Controller Manager in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/cloud-controller-manager": {
+    "summary": "Cloud Controller Manager is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Cloud Controller Manager control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Cloud Controller Manager reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Cloud Controller Manager reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Cloud Controller Manager is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage cloud controller manager consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Cloud Controller Manager when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Cloud Controller Manager reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get cloud-controller-manager -A\nkubectl describe cloud-controller-manager YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Cloud Controller Manager is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Cloud Controller Manager in Kubernetes with a DevOps example.",
+        "answer": "Cloud Controller Manager is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Cloud Controller Manager issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Cloud Controller Manager in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/kubelet": {
+    "summary": "kubelet is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "kubelet control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "kubelet reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → kubelet reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "kubelet is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage kubelet consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses kubelet when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → kubelet reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get kubelet -A\nkubectl describe kubelet YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "kubelet is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain kubelet in Kubernetes with a DevOps example.",
+        "answer": "kubelet is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a kubelet issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect kubelet in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/kube-proxy": {
+    "summary": "kube-proxy is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "kube-proxy control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "kube-proxy reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → kube-proxy reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "kube-proxy is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage kube-proxy consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses kube-proxy when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → kube-proxy reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get kube-proxy -A\nkubectl describe kube-proxy YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "kube-proxy is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain kube-proxy in Kubernetes with a DevOps example.",
+        "answer": "kube-proxy is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a kube-proxy issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect kube-proxy in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/container-runtime": {
+    "summary": "Container Runtime is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Container Runtime control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Container Runtime reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Container Runtime reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Container Runtime is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage container runtime consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Container Runtime when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Container Runtime reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get container-runtime -A\nkubectl describe container-runtime YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Container Runtime is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Container Runtime in Kubernetes with a DevOps example.",
+        "answer": "Container Runtime is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Container Runtime issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Container Runtime in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/pods": {
+    "summary": "A Pod is Kubernetes' smallest deployable unit and groups one or more tightly coupled containers sharing network identity and storage volumes.",
+    "diagram": {
+      "title": "Pods control flow",
+      "nodes": [
+        "Deployment",
+        "ReplicaSet",
+        "Pod",
+        "container runtime",
+        "application process"
+      ],
+      "explanation": "Deployment → ReplicaSet → Pod → container runtime → application process. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "A Pod is Kubernetes' smallest deployable unit and groups one or more tightly coupled containers sharing network identity and storage volumes.",
+          "Use Pods as the runtime unit managed by higher-level controllers; do not normally create production Pods manually."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Pods when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Deployment → ReplicaSet → Pod → container runtime → application process. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get pods -o wide\nkubectl describe pod YOUR_POD\nkubectl logs YOUR_POD --all-containers=true",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A Pod is Kubernetes' smallest deployable unit and groups one or more tightly coupled containers sharing network identity and storage volumes. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Pods in Kubernetes with a DevOps example.",
+        "answer": "A Pod is Kubernetes' smallest deployable unit and groups one or more tightly coupled containers sharing network identity and storage volumes. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Pods issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Pods in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/replicasets": {
+    "summary": "ReplicaSets is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "ReplicaSets control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "ReplicaSets reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → ReplicaSets reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "ReplicaSets is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage replicasets consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses ReplicaSets when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → ReplicaSets reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get replicasets -A\nkubectl describe replicasets YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "ReplicaSets is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain ReplicaSets in Kubernetes with a DevOps example.",
+        "answer": "ReplicaSets is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a ReplicaSets issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect ReplicaSets in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/deployments": {
+    "summary": "A Deployment manages stateless application rollouts by maintaining ReplicaSets and the requested number of Pods.",
+    "diagram": {
+      "title": "Deployments control flow",
+      "nodes": [
+        "Deployment spec",
+        "ReplicaSet",
+        "Pods",
+        "readiness checks",
+        "Service endpoints"
+      ],
+      "explanation": "Deployment spec → ReplicaSet → Pods → readiness checks → Service endpoints. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "A Deployment manages stateless application rollouts by maintaining ReplicaSets and the requested number of Pods.",
+          "Use Deployments for web APIs and stateless services that need declarative updates, scaling and rollback."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Deployments when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Deployment spec → ReplicaSet → Pods → readiness checks → Service endpoints. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get deploy,rs,pods\nkubectl rollout status deployment/YOUR_DEPLOYMENT\nkubectl rollout history deployment/YOUR_DEPLOYMENT",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A Deployment manages stateless application rollouts by maintaining ReplicaSets and the requested number of Pods. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Deployments in Kubernetes with a DevOps example.",
+        "answer": "A Deployment manages stateless application rollouts by maintaining ReplicaSets and the requested number of Pods. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Deployments issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Deployments in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/statefulsets": {
+    "summary": "StatefulSets is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "StatefulSets control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "StatefulSets reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → StatefulSets reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "StatefulSets is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage statefulsets consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses StatefulSets when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → StatefulSets reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get statefulsets -A\nkubectl describe statefulsets YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "StatefulSets is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain StatefulSets in Kubernetes with a DevOps example.",
+        "answer": "StatefulSets is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a StatefulSets issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect StatefulSets in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/daemonsets": {
+    "summary": "DaemonSets is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "DaemonSets control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "DaemonSets reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → DaemonSets reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "DaemonSets is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage daemonsets consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses DaemonSets when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → DaemonSets reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get daemonsets -A\nkubectl describe daemonsets YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "DaemonSets is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain DaemonSets in Kubernetes with a DevOps example.",
+        "answer": "DaemonSets is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a DaemonSets issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect DaemonSets in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/jobs": {
+    "summary": "Jobs is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Jobs control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Jobs reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Jobs reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Jobs is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage jobs consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Jobs when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Jobs reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get jobs -A\nkubectl describe jobs YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Jobs is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Jobs in Kubernetes with a DevOps example.",
+        "answer": "Jobs is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Jobs issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Jobs in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/cronjobs": {
+    "summary": "CronJobs is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "CronJobs control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "CronJobs reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → CronJobs reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "CronJobs is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage cronjobs consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses CronJobs when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → CronJobs reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get cronjobs -A\nkubectl describe cronjobs YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "CronJobs is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain CronJobs in Kubernetes with a DevOps example.",
+        "answer": "CronJobs is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a CronJobs issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect CronJobs in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/namespaces": {
+    "summary": "Namespaces partition namespaced Kubernetes resources inside a cluster and support delegated administration and quotas.",
+    "diagram": {
+      "title": "Namespaces control flow",
+      "nodes": [
+        "API request + namespace",
+        "admission/RBAC",
+        "namespaced object"
+      ],
+      "explanation": "API request + namespace → admission/RBAC → namespaced object. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Namespaces partition namespaced Kubernetes resources inside a cluster and support delegated administration and quotas.",
+          "Use namespaces to separate teams, environments or applications while remembering they are not a complete security boundary."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Namespaces when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "API request + namespace → admission/RBAC → namespaced object. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get namespaces\nkubectl get all -n YOUR_NAMESPACE",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Namespaces partition namespaced Kubernetes resources inside a cluster and support delegated administration and quotas. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Namespaces in Kubernetes with a DevOps example.",
+        "answer": "Namespaces partition namespaced Kubernetes resources inside a cluster and support delegated administration and quotas. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Namespaces issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Namespaces in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/labels-and-selectors": {
+    "summary": "Labels and Selectors is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Labels and Selectors control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Labels and Selectors reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Labels and Selectors reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Labels and Selectors is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage labels and selectors consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Labels and Selectors when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Labels and Selectors reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get labels-and-selectors -A\nkubectl describe labels-and-selectors YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Labels and Selectors is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Labels and Selectors in Kubernetes with a DevOps example.",
+        "answer": "Labels and Selectors is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Labels and Selectors issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Labels and Selectors in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/services": {
+    "summary": "A Service provides a stable virtual IP and DNS name for a changing set of Pods selected by labels.",
+    "diagram": {
+      "title": "Services control flow",
+      "nodes": [
+        "Client",
+        "Service DNS/VIP",
+        "selector and EndpointSlices",
+        "ready Pod"
+      ],
+      "explanation": "Client → Service DNS/VIP → selector and EndpointSlices → ready Pod. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "A Service provides a stable virtual IP and DNS name for a changing set of Pods selected by labels.",
+          "Use Services so clients do not need to track ephemeral Pod IP addresses."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Services when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Client → Service DNS/VIP → selector and EndpointSlices → ready Pod. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get svc,endpointslices\nkubectl describe svc YOUR_SERVICE",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A Service provides a stable virtual IP and DNS name for a changing set of Pods selected by labels. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Services in Kubernetes with a DevOps example.",
+        "answer": "A Service provides a stable virtual IP and DNS name for a changing set of Pods selected by labels. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Services issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Services in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/clusterip": {
+    "summary": "ClusterIP is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "ClusterIP control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "ClusterIP reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → ClusterIP reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "ClusterIP is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage clusterip consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses ClusterIP when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → ClusterIP reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get clusterip -A\nkubectl describe clusterip YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "ClusterIP is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain ClusterIP in Kubernetes with a DevOps example.",
+        "answer": "ClusterIP is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a ClusterIP issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect ClusterIP in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/nodeport": {
+    "summary": "NodePort is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "NodePort control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "NodePort reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → NodePort reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "NodePort is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage nodeport consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses NodePort when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → NodePort reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get nodeport -A\nkubectl describe nodeport YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "NodePort is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain NodePort in Kubernetes with a DevOps example.",
+        "answer": "NodePort is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a NodePort issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect NodePort in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/loadbalancer-service": {
+    "summary": "LoadBalancer Service is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "LoadBalancer Service control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "LoadBalancer Service reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → LoadBalancer Service reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "LoadBalancer Service is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage loadbalancer service consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses LoadBalancer Service when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → LoadBalancer Service reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get loadbalancer-service -A\nkubectl describe loadbalancer-service YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "LoadBalancer Service is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain LoadBalancer Service in Kubernetes with a DevOps example.",
+        "answer": "LoadBalancer Service is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a LoadBalancer Service issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect LoadBalancer Service in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/ingress": {
+    "summary": "Ingress is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Ingress control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Ingress reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Ingress reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Ingress is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage ingress consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Ingress when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Ingress reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get ingress -A\nkubectl describe ingress YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Ingress is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Ingress in Kubernetes with a DevOps example.",
+        "answer": "Ingress is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Ingress issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Ingress in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/gateway-api": {
+    "summary": "Gateway API is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Gateway API control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Gateway API reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Gateway API reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Gateway API is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage gateway api consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Gateway API when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Gateway API reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get gateway-api -A\nkubectl describe gateway-api YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Gateway API is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Gateway API in Kubernetes with a DevOps example.",
+        "answer": "Gateway API is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Gateway API issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Gateway API in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/configmaps": {
+    "summary": "A ConfigMap stores non-confidential configuration separately from container images.",
+    "diagram": {
+      "title": "ConfigMaps control flow",
+      "nodes": [
+        "ConfigMap",
+        "Pod volume or environment variable",
+        "application configuration"
+      ],
+      "explanation": "ConfigMap → Pod volume or environment variable → application configuration. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "A ConfigMap stores non-confidential configuration separately from container images.",
+          "Use it to configure environment-specific application settings without rebuilding the image."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses ConfigMaps when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "ConfigMap → Pod volume or environment variable → application configuration. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get configmaps\nkubectl describe configmap YOUR_CONFIG",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A ConfigMap stores non-confidential configuration separately from container images. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain ConfigMaps in Kubernetes with a DevOps example.",
+        "answer": "A ConfigMap stores non-confidential configuration separately from container images. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a ConfigMaps issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect ConfigMaps in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/secrets": {
+    "summary": "A Kubernetes Secret stores sensitive configuration data, but base64 encoding is not encryption by itself.",
+    "diagram": {
+      "title": "Secrets control flow",
+      "nodes": [
+        "Secret API object",
+        "authorized kubelet",
+        "mounted file or environment",
+        "application"
+      ],
+      "explanation": "Secret API object → authorized kubelet → mounted file or environment → application. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "A Kubernetes Secret stores sensitive configuration data, but base64 encoding is not encryption by itself.",
+          "Use Secrets for credentials with encryption at rest, RBAC restrictions and external secret management where appropriate."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Secrets when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Secret API object → authorized kubelet → mounted file or environment → application. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get secrets\nkubectl describe secret YOUR_SECRET\nkubectl get secret YOUR_SECRET -o jsonpath='{.type}'",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A Kubernetes Secret stores sensitive configuration data, but base64 encoding is not encryption by itself. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Secrets in Kubernetes with a DevOps example.",
+        "answer": "A Kubernetes Secret stores sensitive configuration data, but base64 encoding is not encryption by itself. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Secrets issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Secrets in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/persistent-volumes": {
+    "summary": "A PersistentVolume represents storage provisioned for use by a cluster, independent of a Pod lifecycle.",
+    "diagram": {
+      "title": "Persistent Volumes control flow",
+      "nodes": [
+        "Storage backend",
+        "PersistentVolume",
+        "PersistentVolumeClaim",
+        "Pod mount"
+      ],
+      "explanation": "Storage backend → PersistentVolume → PersistentVolumeClaim → Pod mount. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "A PersistentVolume represents storage provisioned for use by a cluster, independent of a Pod lifecycle.",
+          "Use persistent storage for databases and stateful workloads that must retain data when Pods are replaced."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Persistent Volumes when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Storage backend → PersistentVolume → PersistentVolumeClaim → Pod mount. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get pv,pvc -A\nkubectl describe pvc YOUR_PVC",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A PersistentVolume represents storage provisioned for use by a cluster, independent of a Pod lifecycle. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Persistent Volumes in Kubernetes with a DevOps example.",
+        "answer": "A PersistentVolume represents storage provisioned for use by a cluster, independent of a Pod lifecycle. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Persistent Volumes issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Persistent Volumes in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/persistent-volume-claims": {
+    "summary": "A PersistentVolumeClaim is a workload's request for storage capacity and access mode.",
+    "diagram": {
+      "title": "Persistent Volume Claims control flow",
+      "nodes": [
+        "Pod volume reference",
+        "PVC binding",
+        "PV or dynamic provisioner",
+        "mounted filesystem"
+      ],
+      "explanation": "Pod volume reference → PVC binding → PV or dynamic provisioner → mounted filesystem. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "A PersistentVolumeClaim is a workload's request for storage capacity and access mode.",
+          "Use PVCs so application manifests request storage without hardcoding a particular backend volume."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Persistent Volume Claims when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Pod volume reference → PVC binding → PV or dynamic provisioner → mounted filesystem. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get pvc -A\nkubectl describe pvc YOUR_PVC",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A PersistentVolumeClaim is a workload's request for storage capacity and access mode. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Persistent Volume Claims in Kubernetes with a DevOps example.",
+        "answer": "A PersistentVolumeClaim is a workload's request for storage capacity and access mode. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Persistent Volume Claims issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Persistent Volume Claims in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/storage-classes": {
+    "summary": "A StorageClass describes a provisioner and parameters for dynamic volume provisioning.",
+    "diagram": {
+      "title": "Storage Classes control flow",
+      "nodes": [
+        "PVC references StorageClass",
+        "CSI provisioner",
+        "PV created",
+        "PVC bound"
+      ],
+      "explanation": "PVC references StorageClass → CSI provisioner → PV created → PVC bound. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "A StorageClass describes a provisioner and parameters for dynamic volume provisioning.",
+          "Use StorageClasses to offer storage tiers and policies without manually creating every volume."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Storage Classes when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "PVC references StorageClass → CSI provisioner → PV created → PVC bound. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get storageclass\nkubectl describe storageclass YOUR_CLASS",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A StorageClass describes a provisioner and parameters for dynamic volume provisioning. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Storage Classes in Kubernetes with a DevOps example.",
+        "answer": "A StorageClass describes a provisioner and parameters for dynamic volume provisioning. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Storage Classes issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Storage Classes in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/requests-and-limits": {
+    "summary": "Resource requests influence scheduling; CPU and memory limits constrain container resource use.",
+    "diagram": {
+      "title": "Requests and Limits control flow",
+      "nodes": [
+        "Pod resource spec",
+        "scheduler uses requests",
+        "kubelet/cgroups enforce limits"
+      ],
+      "explanation": "Pod resource spec → scheduler uses requests → kubelet/cgroups enforce limits. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Resource requests influence scheduling; CPU and memory limits constrain container resource use.",
+          "Set realistic requests and limits to improve scheduling and reduce noisy-neighbor and OOM risks."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Requests and Limits when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Pod resource spec → scheduler uses requests → kubelet/cgroups enforce limits. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl describe pod YOUR_POD\nkubectl top pods -A",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Resource requests influence scheduling; CPU and memory limits constrain container resource use. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Requests and Limits in Kubernetes with a DevOps example.",
+        "answer": "Resource requests influence scheduling; CPU and memory limits constrain container resource use. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Requests and Limits issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Requests and Limits in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/liveness-readiness-and-startup-probes": {
+    "summary": "Probes let kubelet assess whether a container should be restarted, receive traffic or be given extra startup time.",
+    "diagram": {
+      "title": "Liveness Readiness and Startup Probes control flow",
+      "nodes": [
+        "kubelet probe",
+        "container endpoint/command",
+        "Pod condition or restart decision"
+      ],
+      "explanation": "kubelet probe → container endpoint/command → Pod condition or restart decision. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Probes let kubelet assess whether a container should be restarted, receive traffic or be given extra startup time.",
+          "Use readiness for traffic eligibility, liveness for stuck processes and startup probes for slow initialization."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Liveness Readiness and Startup Probes when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubelet probe → container endpoint/command → Pod condition or restart decision. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl describe pod YOUR_POD\nkubectl get pod YOUR_POD -o yaml",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Probes let kubelet assess whether a container should be restarted, receive traffic or be given extra startup time. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Liveness Readiness and Startup Probes in Kubernetes with a DevOps example.",
+        "answer": "Probes let kubelet assess whether a container should be restarted, receive traffic or be given extra startup time. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Liveness Readiness and Startup Probes issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Liveness Readiness and Startup Probes in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/scheduling": {
+    "summary": "Scheduling is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Scheduling control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Scheduling reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Scheduling reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Scheduling is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage scheduling consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Scheduling when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Scheduling reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get scheduling -A\nkubectl describe scheduling YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Scheduling is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Scheduling in Kubernetes with a DevOps example.",
+        "answer": "Scheduling is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Scheduling issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Scheduling in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/taints-and-tolerations": {
+    "summary": "Taints and Tolerations is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Taints and Tolerations control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Taints and Tolerations reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Taints and Tolerations reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Taints and Tolerations is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage taints and tolerations consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Taints and Tolerations when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Taints and Tolerations reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get taints-and-tolerations -A\nkubectl describe taints-and-tolerations YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Taints and Tolerations is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Taints and Tolerations in Kubernetes with a DevOps example.",
+        "answer": "Taints and Tolerations is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Taints and Tolerations issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Taints and Tolerations in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/node-and-pod-affinity": {
+    "summary": "Node and Pod Affinity is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Node and Pod Affinity control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Node and Pod Affinity reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Node and Pod Affinity reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Node and Pod Affinity is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage node and pod affinity consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Node and Pod Affinity when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Node and Pod Affinity reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get node-and-pod-affinity -A\nkubectl describe node-and-pod-affinity YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Node and Pod Affinity is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Node and Pod Affinity in Kubernetes with a DevOps example.",
+        "answer": "Node and Pod Affinity is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Node and Pod Affinity issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Node and Pod Affinity in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/hpa-and-vpa": {
+    "summary": "HPA and VPA is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "HPA and VPA control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "HPA and VPA reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → HPA and VPA reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "HPA and VPA is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage hpa and vpa consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses HPA and VPA when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → HPA and VPA reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get hpa-and-vpa -A\nkubectl describe hpa-and-vpa YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "HPA and VPA is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain HPA and VPA in Kubernetes with a DevOps example.",
+        "answer": "HPA and VPA is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a HPA and VPA issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect HPA and VPA in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/rbac": {
+    "summary": "Role-Based Access Control defines who can perform which API verbs on which resources through Roles, ClusterRoles and bindings.",
+    "diagram": {
+      "title": "RBAC control flow",
+      "nodes": [
+        "User or ServiceAccount",
+        "RoleBinding/ClusterRoleBinding",
+        "Role rules",
+        "API authorization"
+      ],
+      "explanation": "User or ServiceAccount → RoleBinding/ClusterRoleBinding → Role rules → API authorization. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Role-Based Access Control defines who can perform which API verbs on which resources through Roles, ClusterRoles and bindings.",
+          "Use least-privilege access for humans and workloads instead of broad cluster-admin permissions."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses RBAC when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "User or ServiceAccount → RoleBinding/ClusterRoleBinding → Role rules → API authorization. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl auth can-i list pods -n YOUR_NAMESPACE\nkubectl get roles,rolebindings -A",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Role-Based Access Control defines who can perform which API verbs on which resources through Roles, ClusterRoles and bindings. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain RBAC in Kubernetes with a DevOps example.",
+        "answer": "Role-Based Access Control defines who can perform which API verbs on which resources through Roles, ClusterRoles and bindings. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a RBAC issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect RBAC in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/service-accounts": {
+    "summary": "Service Accounts is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Service Accounts control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Service Accounts reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Service Accounts reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Service Accounts is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage service accounts consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Service Accounts when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Service Accounts reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get service-accounts -A\nkubectl describe service-accounts YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Service Accounts is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Service Accounts in Kubernetes with a DevOps example.",
+        "answer": "Service Accounts is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Service Accounts issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Service Accounts in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/network-policies": {
+    "summary": "Network Policies is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Network Policies control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Network Policies reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Network Policies reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Network Policies is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage network policies consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Network Policies when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Network Policies reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get network-policies -A\nkubectl describe network-policies YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Network Policies is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Network Policies in Kubernetes with a DevOps example.",
+        "answer": "Network Policies is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Network Policies issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Network Policies in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/helm": {
+    "summary": "Helm is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Helm control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Helm reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Helm reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Helm is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage helm consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Helm when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Helm reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get helm -A\nkubectl describe helm YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Helm is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Helm in Kubernetes with a DevOps example.",
+        "answer": "Helm is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Helm issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Helm in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/custom-resource-definitions": {
+    "summary": "Custom Resource Definitions is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Custom Resource Definitions control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Custom Resource Definitions reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Custom Resource Definitions reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Custom Resource Definitions is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage custom resource definitions consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Custom Resource Definitions when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Custom Resource Definitions reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get custom-resource-definitions -A\nkubectl describe custom-resource-definitions YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Custom Resource Definitions is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Custom Resource Definitions in Kubernetes with a DevOps example.",
+        "answer": "Custom Resource Definitions is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Custom Resource Definitions issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Custom Resource Definitions in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/operators": {
+    "summary": "Operators is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "Operators control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "Operators reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → Operators reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Operators is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage operators consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Operators when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → Operators reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get operators -A\nkubectl describe operators YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Operators is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Operators in Kubernetes with a DevOps example.",
+        "answer": "Operators is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Operators issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Operators in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/coredns": {
+    "summary": "CoreDNS is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "CoreDNS control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "CoreDNS reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → CoreDNS reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "CoreDNS is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage coredns consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses CoreDNS when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → CoreDNS reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get coredns -A\nkubectl describe coredns YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "CoreDNS is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain CoreDNS in Kubernetes with a DevOps example.",
+        "answer": "CoreDNS is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a CoreDNS issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect CoreDNS in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/cni-plugins": {
+    "summary": "CNI Plugins is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "CNI Plugins control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "CNI Plugins reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → CNI Plugins reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "CNI Plugins is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage cni plugins consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses CNI Plugins when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → CNI Plugins reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get cni-plugins -A\nkubectl describe cni-plugins YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "CNI Plugins is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain CNI Plugins in Kubernetes with a DevOps example.",
+        "answer": "CNI Plugins is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a CNI Plugins issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect CNI Plugins in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/csi-drivers": {
+    "summary": "CSI Drivers is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+    "diagram": {
+      "title": "CSI Drivers control flow",
+      "nodes": [
+        "kubectl or controller",
+        "Kubernetes API server",
+        "CSI Drivers reconciliation / component",
+        "workload or cluster state"
+      ],
+      "explanation": "kubectl or controller → Kubernetes API server → CSI Drivers reconciliation / component → workload or cluster state. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "CSI Drivers is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads.",
+          "It helps teams manage csi drivers consistently through the Kubernetes API, declarative configuration and automation. Understand its dependencies and operational impact before changing production clusters."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses CSI Drivers when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl or controller → Kubernetes API server → CSI Drivers reconciliation / component → workload or cluster state. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get csi-drivers -A\nkubectl describe csi-drivers YOUR_RESOURCE\nkubectl get events -A --sort-by=.lastTimestamp",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "CSI Drivers is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain CSI Drivers in Kubernetes with a DevOps example.",
+        "answer": "CSI Drivers is a Kubernetes capability or resource used to declare, schedule, connect, secure or operate containerized workloads. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a CSI Drivers issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect CSI Drivers in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/kubectl": {
+    "summary": "kubectl is the command-line client for querying and changing Kubernetes API resources.",
+    "diagram": {
+      "title": "kubectl control flow",
+      "nodes": [
+        "kubectl + kubeconfig",
+        "API server authentication",
+        "authorization",
+        "API request"
+      ],
+      "explanation": "kubectl + kubeconfig → API server authentication → authorization → API request. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "kubectl is the command-line client for querying and changing Kubernetes API resources.",
+          "Use it for safe inspection, deployment operations, troubleshooting and controlled automation."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses kubectl when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "kubectl + kubeconfig → API server authentication → authorization → API request. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl config current-context\nkubectl get nodes\nkubectl get pods -A",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "kubectl is the command-line client for querying and changing Kubernetes API resources. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain kubectl in Kubernetes with a DevOps example.",
+        "answer": "kubectl is the command-line client for querying and changing Kubernetes API resources. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a kubectl issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect kubectl in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/troubleshooting-kubernetes": {
+    "summary": "Kubernetes troubleshooting uses resource status, events, logs, probes, scheduling details and network/storage evidence to isolate failures.",
+    "diagram": {
+      "title": "Troubleshooting Kubernetes control flow",
+      "nodes": [
+        "User symptom",
+        "workload status",
+        "events/describe",
+        "logs/probes",
+        "node/network/storage checks"
+      ],
+      "explanation": "User symptom → workload status → events/describe → logs/probes → node/network/storage checks. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Kubernetes troubleshooting uses resource status, events, logs, probes, scheduling details and network/storage evidence to isolate failures.",
+          "Use a consistent evidence-first sequence rather than restarting Pods without identifying the cause."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Troubleshooting Kubernetes when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "User symptom → workload status → events/describe → logs/probes → node/network/storage checks. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get pods -A -o wide\nkubectl get events -A --sort-by=.lastTimestamp\nkubectl describe pod YOUR_POD\nkubectl logs YOUR_POD --previous",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Kubernetes troubleshooting uses resource status, events, logs, probes, scheduling details and network/storage evidence to isolate failures. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Troubleshooting Kubernetes in Kubernetes with a DevOps example.",
+        "answer": "Kubernetes troubleshooting uses resource status, events, logs, probes, scheduling details and network/storage evidence to isolate failures. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Troubleshooting Kubernetes issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Troubleshooting Kubernetes in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
+  "kubernetes/cluster-upgrades-and-high-availability": {
+    "summary": "Cluster upgrades move control-plane and node components through supported versions while high availability reduces single points of failure.",
+    "diagram": {
+      "title": "Cluster Upgrades and High Availability control flow",
+      "nodes": [
+        "Backup and compatibility check",
+        "control-plane upgrade",
+        "node pool rollout",
+        "add-on validation"
+      ],
+      "explanation": "Backup and compatibility check → control-plane upgrade → node pool rollout → add-on validation. Kubernetes controllers reconcile desired state toward actual state; use status and events to see where reconciliation is blocked."
+    },
+    "sections": [
+      {
+        "heading": "1. Concept and purpose",
+        "paragraphs": [
+          "Cluster upgrades move control-plane and node components through supported versions while high availability reduces single points of failure.",
+          "Plan upgrades around version skew policy, add-on compatibility, disruption budgets, backups and staged node replacement."
+        ],
+        "bullets": [
+          "Kubernetes is declarative: manifests describe desired state and controllers work toward it.",
+          "The API server is the control-plane entry point; RBAC and admission controls govern changes."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps engineer uses Cluster Upgrades and High Availability when operating an application on a Kubernetes cluster. In a real environment, first inspect the desired and actual state, then check events, controller status, logs and dependencies before applying a reviewed change.",
+          "Use this feature in development, CI validation and production according to workload needs. Keep cluster version, API compatibility, add-on support and namespace/security boundaries in view."
+        ],
+        "bullets": [
+          "Development: reproduce behavior in a disposable namespace or local cluster.",
+          "CI/CD: validate manifests and policy before applying them.",
+          "Production: use reviewed manifests, rollout checks, monitoring and rollback plans."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Backup and compatibility check → control-plane upgrade → node pool rollout → add-on validation. The API server validates and stores accepted desired state in etcd. Controllers, scheduler and kubelet act on that state as applicable; status and events report progress and failures.",
+          "A manifest being accepted does not guarantee that the application is ready. Check Pod conditions, container state, endpoints, probes and node health."
+        ],
+        "bullets": [
+          "Spec: desired configuration submitted to the API.",
+          "Status: observed state reported by Kubernetes components.",
+          "Events and logs: evidence for scheduling, image, mount and runtime failures."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run read-only inspection commands against a lab or approved cluster. Confirm the current context and namespace before any change. Replace placeholders with actual resource names."
+        ],
+        "code": "kubectl config current-context\nkubectl get nodes -o wide\nkubectl version\nkubectl get pdb -A",
+        "note": "Before applying or deleting resources, inspect the diff and target context. Avoid exposing Secret values in terminal output or shared logs."
+      },
+      {
+        "heading": "5. Production practices",
+        "paragraphs": [
+          "Keep manifests in version control and use declarative deployment workflows. Apply least-privilege RBAC, resource requests and limits, health probes, network controls and appropriate disruption budgets.",
+          "Test backups and restore for stateful data. Upgrade control-plane, nodes and add-ons using supported version-skew rules and staged rollouts."
+        ],
+        "bullets": [
+          "Use namespaces, labels and ownership conventions consistently.",
+          "Set requests/limits and probes based on measured application behavior.",
+          "Restrict service accounts and API permissions.",
+          "Monitor cluster events, workload health, capacity and control-plane metrics.",
+          "Use rollout status and documented rollback procedures."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with kubectl get and describe for the affected object. Sort recent events, inspect container logs including --previous after a restart, and check node conditions, image pulls, probes, mounts, DNS and network policy as relevant.",
+          "Compare the failing resource with a known-good manifest and identify the first failed dependency. Make one controlled change, then verify the resulting status and application behavior."
+        ],
+        "bullets": [
+          "Pending: inspect scheduler events, requests, taints, affinity and available capacity.",
+          "CrashLoopBackOff: inspect logs, exit code, probes, config and mounted secrets.",
+          "ImagePullBackOff: verify image name/tag, registry access and pull secret.",
+          "Service unreachable: inspect selectors, EndpointSlices, ports, DNS and NetworkPolicy.",
+          "Storage issue: inspect PVC binding, StorageClass, CSI driver and mount events."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Cluster upgrades move control-plane and node components through supported versions while high availability reduces single points of failure. In production, I would manage it declaratively, protect access with RBAC, monitor status and events, and use a controlled rollout or rollback process."
+        ],
+        "bullets": [
+          "Explain the resource/component role and API flow.",
+          "Describe how desired state becomes running workload state.",
+          "Give one failure scenario and the commands used to diagnose it."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "Explain Cluster Upgrades and High Availability in Kubernetes with a DevOps example.",
+        "answer": "Cluster upgrades move control-plane and node components through supported versions while high availability reduces single points of failure. I would define it through version-controlled manifests or supported cluster configuration, validate it in a test environment, monitor the resulting status and document rollback."
+      },
+      {
+        "question": "How do you troubleshoot a Cluster Upgrades and High Availability issue?",
+        "answer": "Confirm the kubectl context and namespace, inspect the resource and its events, check related controller and Pod status, then review logs, probes, RBAC, scheduling, networking or storage dependencies as appropriate. Correct the first failing dependency and verify recovery."
+      }
+    ],
+    "handsOn": [
+      "Inspect Cluster Upgrades and High Availability in a lab cluster and record the current desired state and observed status.",
+      "Draw the API/control-plane/workload path and identify which component owns reconciliation.",
+      "Create a safe test failure, capture describe output and events, then restore the working configuration.",
+      "Write a runbook with validation, safe remediation, rollout verification and rollback."
+    ]
+  },
 };
