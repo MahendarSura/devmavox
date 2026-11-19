@@ -14,4 +14,10 @@ import { nexusAtoZLessons } from "./lessons-extra/nexus";
 
 import { networkingAtoZLessons } from "./lessons-extra/networking";
 
-export const atoZLessons = { ...baseLessons, ...kubernetesAtoZLessons, ...jenkinsAtoZLessons, ...terraformAtoZLessons, ...ansibleAtoZLessons, ...cicdAtoZLessons, ...argocdAtoZLessons, ...helmAtoZLessons, ...prometheusAtoZLessons, ...grafanaAtoZLessons, ...eksAtoZLessons, ...mavenAtoZLessons, ...nexusAtoZLessons, ...networkingAtoZLessons };
+import { jiraAtoZLessons } from "./lessons-extra/jira";
+
+import { tomcatAtoZLessons } from "./lessons-extra/tomcat";
+
+import { devsecopsSecurityAtoZLessons } from "./lessons-extra/devsecops-security";
+
+export const atoZLessons = { ...baseLessons, ...kubernetesAtoZLessons, ...jenkinsAtoZLessons, ...terraformAtoZLessons, ...ansibleAtoZLessons, ...cicdAtoZLessons, ...argocdAtoZLessons, ...helmAtoZLessons, ...prometheusAtoZLessons, ...grafanaAtoZLessons, ...eksAtoZLessons, ...mavenAtoZLessons, ...nexusAtoZLessons, ...networkingAtoZLessons , ...jiraAtoZLessons , ...tomcatAtoZLessons , ...devsecopsSecurityAtoZLessons };
