@@ -102,6 +102,7 @@ export default function MonitoringInteractiveLab({ topic, category }: { topic: s
   ];
 
   return (
+    <>
     <section className="mt-6 overflow-hidden rounded-3xl border border-cyan-400/25 bg-[#080f1b] shadow-2xl shadow-cyan-950/20">
       <div className="border-b border-white/10 bg-gradient-to-r from-[#10243a] via-[#11182b] to-[#102c2a] p-5 sm:p-7">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -158,5 +159,6 @@ export default function MonitoringInteractiveLab({ topic, category }: { topic: s
     </section>
       <MonitoringStackCatalog />
       <MonitoringCategoryPractice />
+    </>
   );
 }
