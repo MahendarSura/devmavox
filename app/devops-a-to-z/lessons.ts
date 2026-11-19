@@ -10127,4 +10127,3947 @@ export const atoZLessons: Record<string, AtoZLesson> = {
       "Create a short runbook with one likely failure, evidence to collect, safe remediation and rollback/cleanup steps."
     ]
   },
+  "docker/containerization-fundamentals": {
+    "summary": "Containerization packages an application and its runtime dependencies into isolated processes sharing the host kernel.",
+    "diagram": {
+      "title": "Containerization Fundamentals workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Containerization packages an application and its runtime dependencies into isolated processes sharing the host kernel.",
+          "This matters because Containerization Fundamentals addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Containerization Fundamentals while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker ps -a\ndocker inspect YOUR_CONTAINER\ndocker logs --tail 100 YOUR_CONTAINER",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Containerization packages an application and its runtime dependencies into isolated processes sharing the host kernel. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Containerization Fundamentals, and where would you use it?",
+        "answer": "Containerization packages an application and its runtime dependencies into isolated processes sharing the host kernel. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Containerization Fundamentals in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Containerization Fundamentals and run the commands above; record the expected and actual output.",
+      "Draw the Containerization Fundamentals workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-introduction": {
+    "summary": "Docker is a platform for building, distributing and running container images and containers.",
+    "diagram": {
+      "title": "Docker Introduction workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Docker is a platform for building, distributing and running container images and containers.",
+          "This matters because Docker Introduction addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Introduction while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker version\ndocker info\ndocker run --rm hello-world",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Docker is a platform for building, distributing and running container images and containers. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Introduction, and where would you use it?",
+        "answer": "Docker is a platform for building, distributing and running container images and containers. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Introduction in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Introduction and run the commands above; record the expected and actual output.",
+      "Draw the Docker Introduction workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-architecture": {
+    "summary": "Docker uses a client-server architecture where CLI requests reach the Engine API and daemon-managed runtime.",
+    "diagram": {
+      "title": "Docker Architecture workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Docker uses a client-server architecture where CLI requests reach the Engine API and daemon-managed runtime.",
+          "This matters because Docker Architecture addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Architecture while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker context ls\ndocker info\ndocker ps -a",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Docker uses a client-server architecture where CLI requests reach the Engine API and daemon-managed runtime. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Architecture, and where would you use it?",
+        "answer": "Docker uses a client-server architecture where CLI requests reach the Engine API and daemon-managed runtime. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Architecture in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Architecture and run the commands above; record the expected and actual output.",
+      "Draw the Docker Architecture workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-engine": {
+    "summary": "Docker Engine provides the API and services used to build images and manage containers, networks and volumes.",
+    "diagram": {
+      "title": "Docker Engine workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Docker Engine provides the API and services used to build images and manage containers, networks and volumes.",
+          "This matters because Docker Engine addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Engine while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker version\nsystemctl status docker",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Docker Engine provides the API and services used to build images and manage containers, networks and volumes. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Engine, and where would you use it?",
+        "answer": "Docker Engine provides the API and services used to build images and manage containers, networks and volumes. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Engine in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Engine and run the commands above; record the expected and actual output.",
+      "Draw the Docker Engine workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-client": {
+    "summary": "The Docker CLI is a client that sends commands to a local or remote Docker Engine endpoint.",
+    "diagram": {
+      "title": "Docker Client workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "The Docker CLI is a client that sends commands to a local or remote Docker Engine endpoint.",
+          "This matters because Docker Client addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Client while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker context ls\ndocker ps",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "The Docker CLI is a client that sends commands to a local or remote Docker Engine endpoint. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Client, and where would you use it?",
+        "answer": "The Docker CLI is a client that sends commands to a local or remote Docker Engine endpoint. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Client in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Client and run the commands above; record the expected and actual output.",
+      "Draw the Docker Client workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-daemon": {
+    "summary": "dockerd is the background service that manages Docker objects and coordinates container lifecycle operations.",
+    "diagram": {
+      "title": "Docker Daemon workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "dockerd is the background service that manages Docker objects and coordinates container lifecycle operations.",
+          "This matters because Docker Daemon addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Daemon while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "systemctl status docker\njournalctl -u docker --since '15 minutes ago'",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "dockerd is the background service that manages Docker objects and coordinates container lifecycle operations. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Daemon, and where would you use it?",
+        "answer": "dockerd is the background service that manages Docker objects and coordinates container lifecycle operations. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Daemon in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Daemon and run the commands above; record the expected and actual output.",
+      "Draw the Docker Daemon workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-registry": {
+    "summary": "A container registry stores image manifests and layers so teams can publish and retrieve versioned artifacts.",
+    "diagram": {
+      "title": "Docker Registry workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "A container registry stores image manifests and layers so teams can publish and retrieve versioned artifacts.",
+          "This matters because Docker Registry addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Registry while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker image ls\ndocker manifest inspect nginx:stable",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A container registry stores image manifests and layers so teams can publish and retrieve versioned artifacts. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Registry, and where would you use it?",
+        "answer": "A container registry stores image manifests and layers so teams can publish and retrieve versioned artifacts. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Registry in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Registry and run the commands above; record the expected and actual output.",
+      "Draw the Docker Registry workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-hub": {
+    "summary": "Docker Hub is a hosted registry used to discover, pull and publish public or private container images.",
+    "diagram": {
+      "title": "Docker Hub workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Docker Hub is a hosted registry used to discover, pull and publish public or private container images.",
+          "This matters because Docker Hub addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Hub while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker pull nginx:stable\ndocker image ls nginx",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Docker Hub is a hosted registry used to discover, pull and publish public or private container images. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Hub, and where would you use it?",
+        "answer": "Docker Hub is a hosted registry used to discover, pull and publish public or private container images. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Hub in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Hub and run the commands above; record the expected and actual output.",
+      "Draw the Docker Hub workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-images": {
+    "summary": "An image is an immutable layered template from which containers are created.",
+    "diagram": {
+      "title": "Docker Images workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "An image is an immutable layered template from which containers are created.",
+          "This matters because Docker Images addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Images while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker image ls\ndocker image inspect nginx:stable\ndocker history nginx:stable",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "An image is an immutable layered template from which containers are created. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Images, and where would you use it?",
+        "answer": "An image is an immutable layered template from which containers are created. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Images in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Images and run the commands above; record the expected and actual output.",
+      "Draw the Docker Images workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-containers": {
+    "summary": "A container is an isolated runtime instance of an image with process, filesystem and resource configuration.",
+    "diagram": {
+      "title": "Docker Containers workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "A container is an isolated runtime instance of an image with process, filesystem and resource configuration.",
+          "This matters because Docker Containers addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Containers while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker run -d --name web-lab -p 8080:80 nginx:stable\ndocker ps\ndocker logs web-lab\ndocker rm -f web-lab",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A container is an isolated runtime instance of an image with process, filesystem and resource configuration. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Containers, and where would you use it?",
+        "answer": "A container is an isolated runtime instance of an image with process, filesystem and resource configuration. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Containers in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Containers and run the commands above; record the expected and actual output.",
+      "Draw the Docker Containers workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/dockerfile": {
+    "summary": "A Dockerfile declares the instructions used by a builder to create a reproducible container image.",
+    "diagram": {
+      "title": "Dockerfile workflow",
+      "nodes": [
+        "Dockerfile",
+        "build context",
+        "builder instructions",
+        "image layers",
+        "tagged artifact"
+      ],
+      "explanation": "Dockerfile → build context → builder instructions → image layers → tagged artifact. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "A Dockerfile declares the instructions used by a builder to create a reproducible container image.",
+          "This matters because Dockerfile addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Dockerfile while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Dockerfile → build context → builder instructions → image layers → tagged artifact. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "mkdir -p site\necho 'hello' > site/index.html\ncat > Dockerfile <<'EOF'\nFROM nginx:stable-alpine\nCOPY site/ /usr/share/nginx/html/\nEXPOSE 80\nEOF\ndocker build -t web-lab:1.0 .",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A Dockerfile declares the instructions used by a builder to create a reproducible container image. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Dockerfile, and where would you use it?",
+        "answer": "A Dockerfile declares the instructions used by a builder to create a reproducible container image. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Dockerfile in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Dockerfile and run the commands above; record the expected and actual output.",
+      "Draw the Dockerfile workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/building-images": {
+    "summary": "Image building turns a Dockerfile and build context into a tagged artifact suitable for testing and deployment.",
+    "diagram": {
+      "title": "Building Images workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Image building turns a Dockerfile and build context into a tagged artifact suitable for testing and deployment.",
+          "This matters because Building Images addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Building Images while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker build --pull -t web-lab:1.0 .\ndocker image inspect web-lab:1.0",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Image building turns a Dockerfile and build context into a tagged artifact suitable for testing and deployment. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Building Images, and where would you use it?",
+        "answer": "Image building turns a Dockerfile and build context into a tagged artifact suitable for testing and deployment. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Building Images in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Building Images and run the commands above; record the expected and actual output.",
+      "Draw the Building Images workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/image-layers-and-cache": {
+    "summary": "Image layers are reusable read-only filesystem changes; build cache avoids repeating unchanged build steps.",
+    "diagram": {
+      "title": "Image Layers and Cache workflow",
+      "nodes": [
+        "Dockerfile step",
+        "cache lookup",
+        "reused/new layer",
+        "final image"
+      ],
+      "explanation": "Dockerfile step → cache lookup → reused/new layer → final image. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Image layers are reusable read-only filesystem changes; build cache avoids repeating unchanged build steps.",
+          "This matters because Image Layers and Cache addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Image Layers and Cache while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Dockerfile step → cache lookup → reused/new layer → final image. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker history nginx:stable\ndocker build --progress=plain -t web-lab:cache .",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Image layers are reusable read-only filesystem changes; build cache avoids repeating unchanged build steps. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Image Layers and Cache, and where would you use it?",
+        "answer": "Image layers are reusable read-only filesystem changes; build cache avoids repeating unchanged build steps. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Image Layers and Cache in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Image Layers and Cache and run the commands above; record the expected and actual output.",
+      "Draw the Image Layers and Cache workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-volumes": {
+    "summary": "Named volumes are Docker-managed persistent storage mounted into containers independently of container writable layers.",
+    "diagram": {
+      "title": "Docker Volumes workflow",
+      "nodes": [
+        "container mount point",
+        "Docker volume",
+        "host-managed persistent data"
+      ],
+      "explanation": "container mount point → Docker volume → host-managed persistent data. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Named volumes are Docker-managed persistent storage mounted into containers independently of container writable layers.",
+          "This matters because Docker Volumes addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Volumes while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "container mount point → Docker volume → host-managed persistent data. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker volume create app-data\ndocker run --rm -v app-data:/data alpine sh -c 'echo saved > /data/demo.txt'\ndocker run --rm -v app-data:/data alpine cat /data/demo.txt\ndocker volume rm app-data",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Named volumes are Docker-managed persistent storage mounted into containers independently of container writable layers. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Volumes, and where would you use it?",
+        "answer": "Named volumes are Docker-managed persistent storage mounted into containers independently of container writable layers. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Volumes in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Volumes and run the commands above; record the expected and actual output.",
+      "Draw the Docker Volumes workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/bind-mounts": {
+    "summary": "Bind mounts map an explicit host file or directory into a container path.",
+    "diagram": {
+      "title": "Bind Mounts workflow",
+      "nodes": [
+        "host path",
+        "bind mount mapping",
+        "container path"
+      ],
+      "explanation": "host path → bind mount mapping → container path. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Bind mounts map an explicit host file or directory into a container path.",
+          "This matters because Bind Mounts addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Bind Mounts while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "host path → bind mount mapping → container path. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "mkdir -p site\necho 'hello' > site/index.html\ndocker run --rm -p 8080:80 -v \"$PWD/site:/usr/share/nginx/html:ro\" nginx:stable",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Bind mounts map an explicit host file or directory into a container path. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Bind Mounts, and where would you use it?",
+        "answer": "Bind mounts map an explicit host file or directory into a container path. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Bind Mounts in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Bind Mounts and run the commands above; record the expected and actual output.",
+      "Draw the Bind Mounts workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/tmpfs-mounts": {
+    "summary": "tmpfs mounts provide temporary memory-backed filesystem storage that is not persisted as a normal volume.",
+    "diagram": {
+      "title": "tmpfs Mounts workflow",
+      "nodes": [
+        "container path",
+        "memory-backed filesystem",
+        "data discarded on container stop"
+      ],
+      "explanation": "container path → memory-backed filesystem → data discarded on container stop. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "tmpfs mounts provide temporary memory-backed filesystem storage that is not persisted as a normal volume.",
+          "This matters because tmpfs Mounts addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses tmpfs Mounts while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "container path → memory-backed filesystem → data discarded on container stop. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker run --rm --tmpfs /run:rw,noexec,nosuid,size=64m alpine sh -c 'mount | grep /run'",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "tmpfs mounts provide temporary memory-backed filesystem storage that is not persisted as a normal volume. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is tmpfs Mounts, and where would you use it?",
+        "answer": "tmpfs mounts provide temporary memory-backed filesystem storage that is not persisted as a normal volume. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot tmpfs Mounts in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for tmpfs Mounts and run the commands above; record the expected and actual output.",
+      "Draw the tmpfs Mounts workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-networking": {
+    "summary": "Docker networking connects containers through network drivers and provides controlled connectivity and service discovery.",
+    "diagram": {
+      "title": "Docker Networking workflow",
+      "nodes": [
+        "container network namespace",
+        "selected driver",
+        "peer or external network"
+      ],
+      "explanation": "container network namespace → selected driver → peer or external network. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Docker networking connects containers through network drivers and provides controlled connectivity and service discovery.",
+          "This matters because Docker Networking addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Networking while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "container network namespace → selected driver → peer or external network. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker network ls\ndocker network inspect bridge",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Docker networking connects containers through network drivers and provides controlled connectivity and service discovery. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Networking, and where would you use it?",
+        "answer": "Docker networking connects containers through network drivers and provides controlled connectivity and service discovery. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Networking in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Networking and run the commands above; record the expected and actual output.",
+      "Draw the Docker Networking workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/bridge-network": {
+    "summary": "The bridge driver connects containers on one Docker host through a virtual bridge and isolated network.",
+    "diagram": {
+      "title": "Bridge Network workflow",
+      "nodes": [
+        "container veth",
+        "Linux bridge",
+        "peer container or NAT route"
+      ],
+      "explanation": "container veth → Linux bridge → peer container or NAT route. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "The bridge driver connects containers on one Docker host through a virtual bridge and isolated network.",
+          "This matters because Bridge Network addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Bridge Network while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "container veth → Linux bridge → peer container or NAT route. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker network create app-net\ndocker run -d --name web --network app-net nginx:stable\ndocker run --rm --network app-net alpine wget -qO- http://web\ndocker rm -f web\ndocker network rm app-net",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "The bridge driver connects containers on one Docker host through a virtual bridge and isolated network. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Bridge Network, and where would you use it?",
+        "answer": "The bridge driver connects containers on one Docker host through a virtual bridge and isolated network. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Bridge Network in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Bridge Network and run the commands above; record the expected and actual output.",
+      "Draw the Bridge Network workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/host-network": {
+    "summary": "Host networking places a container in the host network namespace, removing normal network namespace isolation.",
+    "diagram": {
+      "title": "Host Network workflow",
+      "nodes": [
+        "container process",
+        "host network namespace",
+        "host interfaces and ports"
+      ],
+      "explanation": "container process → host network namespace → host interfaces and ports. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Host networking places a container in the host network namespace, removing normal network namespace isolation.",
+          "This matters because Host Network addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Host Network while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "container process → host network namespace → host interfaces and ports. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker run --rm --network host nginx:stable",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Host networking places a container in the host network namespace, removing normal network namespace isolation. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Host Network, and where would you use it?",
+        "answer": "Host networking places a container in the host network namespace, removing normal network namespace isolation. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Host Network in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Host Network and run the commands above; record the expected and actual output.",
+      "Draw the Host Network workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/none-network": {
+    "summary": "The none driver leaves a container without an external network interface, apart from loopback.",
+    "diagram": {
+      "title": "None Network workflow",
+      "nodes": [
+        "container network namespace",
+        "loopback only"
+      ],
+      "explanation": "container network namespace → loopback only. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "The none driver leaves a container without an external network interface, apart from loopback.",
+          "This matters because None Network addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses None Network while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "container network namespace → loopback only. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker run --rm --network none alpine ip addr",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "The none driver leaves a container without an external network interface, apart from loopback. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is None Network, and where would you use it?",
+        "answer": "The none driver leaves a container without an external network interface, apart from loopback. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot None Network in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for None Network and run the commands above; record the expected and actual output.",
+      "Draw the None Network workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/overlay-network": {
+    "summary": "Overlay networking connects container endpoints across Docker hosts through a virtual multi-host network.",
+    "diagram": {
+      "title": "Overlay Network workflow",
+      "nodes": [
+        "node A container",
+        "overlay tunnel",
+        "node B container"
+      ],
+      "explanation": "node A container → overlay tunnel → node B container. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Overlay networking connects container endpoints across Docker hosts through a virtual multi-host network.",
+          "This matters because Overlay Network addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Overlay Network while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "node A container → overlay tunnel → node B container. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker network ls --filter driver=overlay",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Overlay networking connects container endpoints across Docker hosts through a virtual multi-host network. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Overlay Network, and where would you use it?",
+        "answer": "Overlay networking connects container endpoints across Docker hosts through a virtual multi-host network. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Overlay Network in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Overlay Network and run the commands above; record the expected and actual output.",
+      "Draw the Overlay Network workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/macvlan-network": {
+    "summary": "Macvlan gives a container its own MAC address and direct Layer-2 presence on a physical network.",
+    "diagram": {
+      "title": "Macvlan Network workflow",
+      "nodes": [
+        "container virtual interface",
+        "parent NIC",
+        "physical LAN"
+      ],
+      "explanation": "container virtual interface → parent NIC → physical LAN. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Macvlan gives a container its own MAC address and direct Layer-2 presence on a physical network.",
+          "This matters because Macvlan Network addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Macvlan Network while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "container virtual interface → parent NIC → physical LAN. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker network ls --filter driver=macvlan",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Macvlan gives a container its own MAC address and direct Layer-2 presence on a physical network. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Macvlan Network, and where would you use it?",
+        "answer": "Macvlan gives a container its own MAC address and direct Layer-2 presence on a physical network. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Macvlan Network in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Macvlan Network and run the commands above; record the expected and actual output.",
+      "Draw the Macvlan Network workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-compose": {
+    "summary": "Docker Compose defines and runs a multi-container application using a declarative YAML model.",
+    "diagram": {
+      "title": "Docker Compose workflow",
+      "nodes": [
+        "compose.yaml",
+        "Compose model",
+        "service containers",
+        "project network and volumes"
+      ],
+      "explanation": "compose.yaml → Compose model → service containers → project network and volumes. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Docker Compose defines and runs a multi-container application using a declarative YAML model.",
+          "This matters because Docker Compose addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Compose while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "compose.yaml → Compose model → service containers → project network and volumes. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker compose version\ndocker compose config\ndocker compose up -d\ndocker compose ps\ndocker compose logs --tail=50\ndocker compose down",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Docker Compose defines and runs a multi-container application using a declarative YAML model. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Compose, and where would you use it?",
+        "answer": "Docker Compose defines and runs a multi-container application using a declarative YAML model. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Compose in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Compose and run the commands above; record the expected and actual output.",
+      "Draw the Docker Compose workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/compose-yaml": {
+    "summary": "compose.yaml is the version-controlled Compose configuration describing services, networks, volumes and runtime settings.",
+    "diagram": {
+      "title": "compose.yaml workflow",
+      "nodes": [
+        "YAML file",
+        "interpolation and validation",
+        "resolved Compose model",
+        "Engine API"
+      ],
+      "explanation": "YAML file → interpolation and validation → resolved Compose model → Engine API. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "compose.yaml is the version-controlled Compose configuration describing services, networks, volumes and runtime settings.",
+          "This matters because compose.yaml addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses compose.yaml while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "YAML file → interpolation and validation → resolved Compose model → Engine API. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker compose -f compose.yaml config",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "compose.yaml is the version-controlled Compose configuration describing services, networks, volumes and runtime settings. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is compose.yaml, and where would you use it?",
+        "answer": "compose.yaml is the version-controlled Compose configuration describing services, networks, volumes and runtime settings. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot compose.yaml in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for compose.yaml and run the commands above; record the expected and actual output.",
+      "Draw the compose.yaml workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/compose-services": {
+    "summary": "A Compose service describes how one application component is built or run and connected to other services.",
+    "diagram": {
+      "title": "Compose Services workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "A Compose service describes how one application component is built or run and connected to other services.",
+          "This matters because Compose Services addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Compose Services while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker compose ps\ndocker compose logs api\ndocker compose exec api sh",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "A Compose service describes how one application component is built or run and connected to other services. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Compose Services, and where would you use it?",
+        "answer": "A Compose service describes how one application component is built or run and connected to other services. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Compose Services in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Compose Services and run the commands above; record the expected and actual output.",
+      "Draw the Compose Services workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/environment-variables": {
+    "summary": "Environment variables provide runtime configuration separately from the container image.",
+    "diagram": {
+      "title": "Environment Variables workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Environment variables provide runtime configuration separately from the container image.",
+          "This matters because Environment Variables addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Environment Variables while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker compose config\ndocker compose exec app printenv",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Environment variables provide runtime configuration separately from the container image. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Environment Variables, and where would you use it?",
+        "answer": "Environment variables provide runtime configuration separately from the container image. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Environment Variables in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Environment Variables and run the commands above; record the expected and actual output.",
+      "Draw the Environment Variables workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-secrets": {
+    "summary": "Docker secrets provide controlled delivery of sensitive values to supported services without baking them into images.",
+    "diagram": {
+      "title": "Docker Secrets workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Docker secrets provide controlled delivery of sensitive values to supported services without baking them into images.",
+          "This matters because Docker Secrets addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Secrets while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker secret ls\ndocker service inspect --pretty YOUR_SERVICE",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Docker secrets provide controlled delivery of sensitive values to supported services without baking them into images. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Secrets, and where would you use it?",
+        "answer": "Docker secrets provide controlled delivery of sensitive values to supported services without baking them into images. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Secrets in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Secrets and run the commands above; record the expected and actual output.",
+      "Draw the Docker Secrets workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/multi-stage-builds": {
+    "summary": "Multi-stage builds separate compilation and runtime stages so the final image can omit build tools.",
+    "diagram": {
+      "title": "Multi-stage Builds workflow",
+      "nodes": [
+        "builder stage",
+        "compiled artifact",
+        "minimal runtime stage"
+      ],
+      "explanation": "builder stage → compiled artifact → minimal runtime stage. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Multi-stage builds separate compilation and runtime stages so the final image can omit build tools.",
+          "This matters because Multi-stage Builds addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Multi-stage Builds while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "builder stage → compiled artifact → minimal runtime stage. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker build --target builder -t app:builder .\ndocker build -t app:runtime .",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Multi-stage builds separate compilation and runtime stages so the final image can omit build tools. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Multi-stage Builds, and where would you use it?",
+        "answer": "Multi-stage builds separate compilation and runtime stages so the final image can omit build tools. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Multi-stage Builds in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Multi-stage Builds and run the commands above; record the expected and actual output.",
+      "Draw the Multi-stage Builds workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/image-optimization": {
+    "summary": "Image optimization reduces image size, build time, pull time and unnecessary attack surface.",
+    "diagram": {
+      "title": "Image Optimization workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Image optimization reduces image size, build time, pull time and unnecessary attack surface.",
+          "This matters because Image Optimization addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Image Optimization while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker image ls\ndocker history YOUR_IMAGE\ndocker scout quickview YOUR_IMAGE",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Image optimization reduces image size, build time, pull time and unnecessary attack surface. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Image Optimization, and where would you use it?",
+        "answer": "Image optimization reduces image size, build time, pull time and unnecessary attack surface. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Image Optimization in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Image Optimization and run the commands above; record the expected and actual output.",
+      "Draw the Image Optimization workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/container-health-checks": {
+    "summary": "Health checks test application readiness or liveness rather than assuming a running process is healthy.",
+    "diagram": {
+      "title": "Container Health Checks workflow",
+      "nodes": [
+        "container process",
+        "health command",
+        "health status",
+        "operator/orchestrator response"
+      ],
+      "explanation": "container process → health command → health status → operator/orchestrator response. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Health checks test application readiness or liveness rather than assuming a running process is healthy.",
+          "This matters because Container Health Checks addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Container Health Checks while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "container process → health command → health status → operator/orchestrator response. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker inspect --format '{{.State.Health.Status}}' YOUR_CONTAINER",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Health checks test application readiness or liveness rather than assuming a running process is healthy. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Container Health Checks, and where would you use it?",
+        "answer": "Health checks test application readiness or liveness rather than assuming a running process is healthy. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Container Health Checks in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Container Health Checks and run the commands above; record the expected and actual output.",
+      "Draw the Container Health Checks workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/resource-limits": {
+    "summary": "CPU and memory limits constrain container resource consumption using host kernel controls.",
+    "diagram": {
+      "title": "Resource Limits workflow",
+      "nodes": [
+        "container process",
+        "cgroups CPU/memory controls",
+        "host kernel scheduler"
+      ],
+      "explanation": "container process → cgroups CPU/memory controls → host kernel scheduler. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "CPU and memory limits constrain container resource consumption using host kernel controls.",
+          "This matters because Resource Limits addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Resource Limits while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "container process → cgroups CPU/memory controls → host kernel scheduler. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker run --rm --memory=256m --cpus=0.5 alpine sh -c 'cat /sys/fs/cgroup/memory.max'",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "CPU and memory limits constrain container resource consumption using host kernel controls. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Resource Limits, and where would you use it?",
+        "answer": "CPU and memory limits constrain container resource consumption using host kernel controls. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Resource Limits in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Resource Limits and run the commands above; record the expected and actual output.",
+      "Draw the Resource Limits workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/container-logging": {
+    "summary": "Container logging captures stdout and stderr through a configured logging driver or platform collector.",
+    "diagram": {
+      "title": "Container Logging workflow",
+      "nodes": [
+        "application stdout/stderr",
+        "logging driver",
+        "log collector/backend"
+      ],
+      "explanation": "application stdout/stderr → logging driver → log collector/backend. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Container logging captures stdout and stderr through a configured logging driver or platform collector.",
+          "This matters because Container Logging addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Container Logging while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "application stdout/stderr → logging driver → log collector/backend. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker logs --since 10m --tail 100 YOUR_CONTAINER\ndocker inspect --format '{{.HostConfig.LogConfig.Type}}' YOUR_CONTAINER",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Container logging captures stdout and stderr through a configured logging driver or platform collector. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Container Logging, and where would you use it?",
+        "answer": "Container logging captures stdout and stderr through a configured logging driver or platform collector. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Container Logging in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Container Logging and run the commands above; record the expected and actual output.",
+      "Draw the Container Logging workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-security": {
+    "summary": "Docker security combines trusted images, least privilege, isolation, secret handling and runtime hardening.",
+    "diagram": {
+      "title": "Docker Security workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Docker security combines trusted images, least privilege, isolation, secret handling and runtime hardening.",
+          "This matters because Docker Security addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Security while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker inspect --format '{{.HostConfig.Privileged}} {{.Config.User}}' YOUR_CONTAINER\ndocker scout quickview nginx:stable",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Docker security combines trusted images, least privilege, isolation, secret handling and runtime hardening. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Security, and where would you use it?",
+        "answer": "Docker security combines trusted images, least privilege, isolation, secret handling and runtime hardening. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Security in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Security and run the commands above; record the expected and actual output.",
+      "Draw the Docker Security workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/docker-swarm": {
+    "summary": "Docker Swarm is Docker's native cluster orchestration mode for scheduling services and maintaining replicas.",
+    "diagram": {
+      "title": "Docker Swarm workflow",
+      "nodes": [
+        "manager desired state",
+        "scheduler",
+        "worker tasks",
+        "service endpoint"
+      ],
+      "explanation": "manager desired state → scheduler → worker tasks → service endpoint. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Docker Swarm is Docker's native cluster orchestration mode for scheduling services and maintaining replicas.",
+          "This matters because Docker Swarm addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Docker Swarm while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "manager desired state → scheduler → worker tasks → service endpoint. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker info --format '{{.Swarm.LocalNodeState}}'\ndocker node ls\ndocker service ls",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Docker Swarm is Docker's native cluster orchestration mode for scheduling services and maintaining replicas. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Docker Swarm, and where would you use it?",
+        "answer": "Docker Swarm is Docker's native cluster orchestration mode for scheduling services and maintaining replicas. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Docker Swarm in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Docker Swarm and run the commands above; record the expected and actual output.",
+      "Draw the Docker Swarm workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
+  "docker/container-troubleshooting": {
+    "summary": "Container troubleshooting diagnoses startup, process, image, network, storage, health and resource failures using runtime evidence.",
+    "diagram": {
+      "title": "Container Troubleshooting workflow",
+      "nodes": [
+        "Docker CLI",
+        "Docker Engine API",
+        "container runtime",
+        "host kernel"
+      ],
+      "explanation": "Docker CLI → Docker Engine API → container runtime → host kernel. Check each boundary in order when behavior differs from expectation."
+    },
+    "sections": [
+      {
+        "heading": "1. What it is and why it matters",
+        "paragraphs": [
+          "Container troubleshooting diagnoses startup, process, image, network, storage, health and resource failures using runtime evidence.",
+          "This matters because Container Troubleshooting addresses a specific container lifecycle requirement. Knowing its responsibility helps select the correct Docker feature instead of applying unrelated settings."
+        ],
+        "bullets": [
+          "Understand the feature's role in the image-to-runtime lifecycle.",
+          "Keep application configuration and persistent data separate from disposable containers."
+        ]
+      },
+      {
+        "heading": "2. When and where to use it",
+        "paragraphs": [
+          "A DevOps team uses Container Troubleshooting while building, testing or operating a containerized application. For example, validate the behavior in a disposable local environment, record the expected result, then apply the same reviewed configuration in CI or the deployment platform.",
+          "Use it in local development, CI validation and production only after confirming platform support, security requirements, resource needs and operational ownership."
+        ],
+        "bullets": [
+          "Development: reproduce the application environment locally.",
+          "CI: validate image and runtime configuration consistently.",
+          "Production: use reviewed settings, observability and rollback procedures."
+        ]
+      },
+      {
+        "heading": "3. How it works",
+        "paragraphs": [
+          "Docker CLI → Docker Engine API → container runtime → host kernel. The Docker client or Compose project submits the requested configuration to the Engine. The daemon and runtime create or inspect the relevant Docker objects, while the host kernel enforces process and resource isolation.",
+          "For troubleshooting, inspect actual runtime state rather than relying only on the YAML or Dockerfile. Compare the desired configuration with docker inspect output, logs and health status."
+        ],
+        "bullets": [
+          "Image: reusable template made from layers.",
+          "Container: runtime process and filesystem view created from an image.",
+          "Host: supplies the kernel, CPU, memory, storage and network interfaces."
+        ]
+      },
+      {
+        "heading": "4. Practical commands",
+        "paragraphs": [
+          "Run these commands in a disposable lab. Replace YOUR_CONTAINER or YOUR_IMAGE with real values. Commands that create resources should be followed by cleanup; do not run destructive commands against production workloads."
+        ],
+        "code": "docker ps -a\ndocker inspect YOUR_CONTAINER\ndocker logs --tail 100 YOUR_CONTAINER\ndocker events --since 10m",
+        "note": "Never bake credentials into Dockerfiles or image layers. Avoid privileged mode and Docker socket mounts unless explicitly justified and reviewed."
+      },
+      {
+        "heading": "5. Production practices and trade-offs",
+        "paragraphs": [
+          "Use trusted, maintained base images; pin versions or digests; scan images; run as a non-root user where possible; and keep unnecessary packages and capabilities out of runtime images.",
+          "Containers share the host kernel, so container isolation is not identical to a separate virtual machine. Protect the host and daemon as critical infrastructure."
+        ],
+        "bullets": [
+          "Set CPU and memory limits based on observed workload behavior.",
+          "Use named volumes for required persistent data and test backup/restore.",
+          "Centralize logs and define retention.",
+          "Use least privilege, read-only mounts and minimal capabilities.",
+          "Promote the same tested image between environments."
+        ]
+      },
+      {
+        "heading": "6. Troubleshooting",
+        "paragraphs": [
+          "Start with docker ps -a, docker inspect and docker logs. Check image reference, entrypoint, exit code, health status, port mapping, network attachment, mount source and available host resources.",
+          "If the container works locally but fails in CI or production, compare architecture, environment variables, secrets delivery, filesystem permissions, DNS and runtime versions."
+        ],
+        "bullets": [
+          "Image pull error: verify registry, tag/digest, credentials and network.",
+          "Container exits: inspect exit code, command, entrypoint and logs.",
+          "Connection error: inspect listener binding, published ports, DNS and network driver.",
+          "Missing data: verify mount source, destination and ownership.",
+          "Unhealthy status: run the health-check command manually and inspect dependencies."
+        ]
+      },
+      {
+        "heading": "7. Interview explanation",
+        "paragraphs": [
+          "Container troubleshooting diagnoses startup, process, image, network, storage, health and resource failures using runtime evidence. In a DevOps workflow, I would use it to make container builds and operations repeatable, validate the result in CI, secure runtime permissions, monitor health and document recovery."
+        ],
+        "bullets": [
+          "Explain the feature's purpose and architecture path.",
+          "Give one practical application example and one limitation.",
+          "Describe the evidence and commands used to diagnose failure."
+        ]
+      }
+    ],
+    "interview": [
+      {
+        "question": "What is Container Troubleshooting, and where would you use it?",
+        "answer": "Container troubleshooting diagnoses startup, process, image, network, storage, health and resource failures using runtime evidence. I would use it in a container workflow where its capability is needed, validate it in a test environment, and promote the reviewed configuration with monitoring and rollback."
+      },
+      {
+        "question": "How would you troubleshoot Container Troubleshooting in production?",
+        "answer": "Capture the exact error and timestamp. Inspect container state, exit code, logs and effective configuration; validate image, network, storage and resource settings as relevant; compare with the last known-good release; then make a reversible correction and verify application health."
+      }
+    ],
+    "handsOn": [
+      "Create a disposable lab for Container Troubleshooting and run the commands above; record the expected and actual output.",
+      "Draw the Container Troubleshooting workflow and label client, daemon, runtime and host boundaries where relevant.",
+      "Introduce one safe configuration error, gather evidence using inspect/logs/events, and correct it.",
+      "Write a short runbook with validation, rollback and cleanup steps."
+    ]
+  },
 };
