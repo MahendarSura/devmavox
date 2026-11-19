@@ -12,7 +12,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "group membership",
         "file/service permission check"
       ],
-      "explanation": "Users and Groups process ni layer-by-layer ardham chesukovali: User/group database → authentication → group membership → file/service permission check. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Users and Groups process ni layer-by-layer ardham chesukovali: User/group database → authentication → group membership → file/service permission check."
     },
     "sections": [
       {
@@ -121,7 +121,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
     ],
     "handsOn": [
       "A new engineer needs read access to deployment logs but must not restart services. Create a named account, add only to approved read-only group, test effective access.",
-      "Execute safe inspection commands for Users and Groups and explain each output field.",
+      "Use id, getent and groups to verify the effective account identity and group membership.",
       "Document one failure symptom, evidence, safe correction, validation and rollback."
     ]
   },
@@ -134,7 +134,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "inode permission bits",
         "access decision"
       ],
-      "explanation": "File Permissions process ni layer-by-layer ardham chesukovali: Process user/group identity → inode permission bits → access decision. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "File Permissions process ni layer-by-layer ardham chesukovali: Process user/group identity → inode permission bits → access decision."
     },
     "sections": [
       {
@@ -256,7 +256,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "mode bits",
         "ACL evaluation"
       ],
-      "explanation": "Ownership and ACL process ni layer-by-layer ardham chesukovali: Filesystem inode ownership → mode bits → ACL evaluation. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Ownership and ACL process ni layer-by-layer ardham chesukovali: Filesystem inode ownership → mode bits → ACL evaluation."
     },
     "sections": [
       {
@@ -379,7 +379,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "kernel operations",
         "stdout/stderr and exit status"
       ],
-      "explanation": "Linux Commands process ni layer-by-layer ardham chesukovali: Shell parses command → executable receives arguments → kernel operations → stdout/stderr and exit status. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Linux Commands process ni layer-by-layer ardham chesukovali: Shell parses command → executable receives arguments → kernel operations → stdout/stderr and exit status."
     },
     "sections": [
       {
@@ -506,7 +506,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "stdout/file",
         "next analysis step"
       ],
-      "explanation": "Text Processing process ni layer-by-layer ardham chesukovali: Input stream/file → filter or transform utility → stdout/file → next analysis step. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Text Processing process ni layer-by-layer ardham chesukovali: Input stream/file → filter or transform utility → stdout/file → next analysis step."
     },
     "sections": [
       {
@@ -630,7 +630,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "optional stream transformation",
         "field extraction/aggregation"
       ],
-      "explanation": "Grep, Sed and Awk process ni layer-by-layer ardham chesukovali: Pattern selection → optional stream transformation → field extraction/aggregation. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Grep, Sed and Awk process ni layer-by-layer ardham chesukovali: Pattern selection → optional stream transformation → field extraction/aggregation."
     },
     "sections": [
       {
@@ -756,7 +756,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "pipe buffer",
         "consumer stdin; redirection shell file descriptors ni set chesthundi"
       ],
-      "explanation": "Pipes and Redirection process ni layer-by-layer ardham chesukovali: Producer stdout → pipe buffer → consumer stdin; redirection shell file descriptors ni set chesthundi. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Pipes and Redirection process ni layer-by-layer ardham chesukovali: Producer stdout → pipe buffer → consumer stdin; redirection shell file descriptors ni set chesthundi."
     },
     "sections": [
       {
@@ -885,7 +885,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "control flow",
         "exit status"
       ],
-      "explanation": "Shell Scripting process ni layer-by-layer ardham chesukovali: Script interpreter → variable/command evaluation → control flow → exit status. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Shell Scripting process ni layer-by-layer ardham chesukovali: Script interpreter → variable/command evaluation → control flow → exit status."
     },
     "sections": [
       {
@@ -1012,7 +1012,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "optional export to child process",
         "command consumes value"
       ],
-      "explanation": "Bash Variables process ni layer-by-layer ardham chesukovali: Assignment → expansion → optional export to child process → command consumes value. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Bash Variables process ni layer-by-layer ardham chesukovali: Assignment → expansion → optional export to child process → command consumes value."
     },
     "sections": [
       {
@@ -1138,7 +1138,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "branch or loop body executes",
         "next iteration/exit"
       ],
-      "explanation": "Conditions and Loops process ni layer-by-layer ardham chesukovali: Condition evaluates exit status/expression → branch or loop body executes → next iteration/exit. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Conditions and Loops process ni layer-by-layer ardham chesukovali: Condition evaluates exit status/expression → branch or loop body executes → next iteration/exit."
     },
     "sections": [
       {
@@ -1267,7 +1267,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "process handles signals",
         "exits or changes state"
       ],
-      "explanation": "Processes and Signals process ni layer-by-layer ardham chesukovali: Kernel creates process → scheduler allocates CPU → process handles signals → exits or changes state. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Processes and Signals process ni layer-by-layer ardham chesukovali: Kernel creates process → scheduler allocates CPU → process handles signals → exits or changes state."
     },
     "sections": [
       {
@@ -1395,7 +1395,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "process supervision",
         "journal logging"
       ],
-      "explanation": "Systemd and Services process ni layer-by-layer ardham chesukovali: Boot target → dependency ordering → unit activation → process supervision → journal logging. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Systemd and Services process ni layer-by-layer ardham chesukovali: Boot target → dependency ordering → unit activation → process supervision → journal logging."
     },
     "sections": [
       {
@@ -1522,7 +1522,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "package download/signature verification",
         "install scripts/files"
       ],
-      "explanation": "Package Management process ni layer-by-layer ardham chesukovali: Repository metadata → dependency resolution → package download/signature verification → install scripts/files. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Package Management process ni layer-by-layer ardham chesukovali: Repository metadata → dependency resolution → package download/signature verification → install scripts/files."
     },
     "sections": [
       {
@@ -1647,7 +1647,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "download signed packages",
         "install/update"
       ],
-      "explanation": "APT and YUM/DNF process ni layer-by-layer ardham chesukovali: Refresh repository metadata → resolve dependencies → download signed packages → install/update. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "APT and YUM/DNF process ni layer-by-layer ardham chesukovali: Refresh repository metadata → resolve dependencies → download signed packages → install/update."
     },
     "sections": [
       {
@@ -1771,7 +1771,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "mount point",
         "application writes"
       ],
-      "explanation": "Disk and Partition Management process ni layer-by-layer ardham chesukovali: Block device → partition table → filesystem creation → mount point → application writes. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Disk and Partition Management process ni layer-by-layer ardham chesukovali: Block device → partition table → filesystem creation → mount point → application writes."
     },
     "sections": [
       {
@@ -1897,7 +1897,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "LV virtual block device",
         "filesystem"
       ],
-      "explanation": "LVM process ni layer-by-layer ardham chesukovali: Disk/partition → PV → VG storage pool → LV virtual block device → filesystem. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "LVM process ni layer-by-layer ardham chesukovali: Disk/partition → PV → VG storage pool → LV virtual block device → filesystem."
     },
     "sections": [
       {
@@ -2020,7 +2020,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "mount point",
         "process path access"
       ],
-      "explanation": "Mounting and fstab process ni layer-by-layer ardham chesukovali: Device/UUID → filesystem driver → mount point → process path access. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Mounting and fstab process ni layer-by-layer ardham chesukovali: Device/UUID → filesystem driver → mount point → process path access."
     },
     "sections": [
       {
@@ -2148,7 +2148,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "TCP connection",
         "application response"
       ],
-      "explanation": "Networking Commands process ni layer-by-layer ardham chesukovali: Interface/IP → route lookup → DNS resolution → TCP connection → application response. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Networking Commands process ni layer-by-layer ardham chesukovali: Interface/IP → route lookup → DNS resolution → TCP connection → application response."
     },
     "sections": [
       {
@@ -2278,7 +2278,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "user authentication",
         "encrypted session"
       ],
-      "explanation": "SSH and SCP process ni layer-by-layer ardham chesukovali: Client resolves host → TCP port 22 → key exchange/host verification → user authentication → encrypted session. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "SSH and SCP process ni layer-by-layer ardham chesukovali: Client resolves host → TCP port 22 → key exchange/host verification → user authentication → encrypted session."
     },
     "sections": [
       {
@@ -2404,7 +2404,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "launches command with limited environment",
         "records output/logs"
       ],
-      "explanation": "Cron and Scheduling process ni layer-by-layer ardham chesukovali: Cron daemon reads schedule → launches command with limited environment → records output/logs. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Cron and Scheduling process ni layer-by-layer ardham chesukovali: Cron daemon reads schedule → launches command with limited environment → records output/logs."
     },
     "sections": [
       {
@@ -2530,7 +2530,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "journald/log file",
         "query/filter by time, unit and priority"
       ],
-      "explanation": "Logs and journalctl process ni layer-by-layer ardham chesukovali: Application/service writes stdout/stderr or syslog → journald/log file → query/filter by time, unit and priority. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Logs and journalctl process ni layer-by-layer ardham chesukovali: Application/service writes stdout/stderr or syslog → journald/log file → query/filter by time, unit and priority."
     },
     "sections": [
       {
@@ -2657,7 +2657,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "system metrics",
         "process-level evidence"
       ],
-      "explanation": "Memory and CPU Monitoring process ni layer-by-layer ardham chesukovali: Workload → scheduler and memory manager → system metrics → process-level evidence. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Memory and CPU Monitoring process ni layer-by-layer ardham chesukovali: Workload → scheduler and memory manager → system metrics → process-level evidence."
     },
     "sections": [
       {
@@ -2785,7 +2785,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "network filtering",
         "audit and patch cycle"
       ],
-      "explanation": "Linux Security process ni layer-by-layer ardham chesukovali: Identity verification → authorization → process isolation → network filtering → audit and patch cycle. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Linux Security process ni layer-by-layer ardham chesukovali: Identity verification → authorization → process isolation → network filtering → audit and patch cycle."
     },
     "sections": [
       {
@@ -2914,7 +2914,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "ordered firewall rules",
         "accept/drop/reject"
       ],
-      "explanation": "Firewall Basics process ni layer-by-layer ardham chesukovali: Packet arrives → interface/connection tracking → ordered firewall rules → accept/drop/reject. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Firewall Basics process ni layer-by-layer ardham chesukovali: Packet arrives → interface/connection tracking → ordered firewall rules → accept/drop/reject."
     },
     "sections": [
       {
@@ -3047,7 +3047,7 @@ export const linuxAtoZLessons: Record<string, AtoZLesson> = {
         "corrective change",
         "validation"
       ],
-      "explanation": "Troubleshooting Linux process ni layer-by-layer ardham chesukovali: Alert/symptom → host/service/resource/network evidence → hypothesis → safe test → corrective change → validation. Ee flow lo command output and system state verify cheyyadam important."
+      "explanation": "Troubleshooting Linux process ni layer-by-layer ardham chesukovali: Alert/symptom → host/service/resource/network evidence → hypothesis → safe test → corrective change → validation."
     },
     "sections": [
       {
