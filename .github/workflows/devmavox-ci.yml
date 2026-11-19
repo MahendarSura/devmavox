@@ -27,3 +27,5 @@ jobs:
         run: npx tsc --noEmit
       - name: Production build
         run: npm run build
+
+# Trigger CI validation for the latest roadmap fixes.
