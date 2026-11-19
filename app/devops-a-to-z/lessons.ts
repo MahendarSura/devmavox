@@ -3137,7 +3137,7 @@ export const atoZLessons: Record<string, AtoZLesson> = {
         "Failure scenario create chesi safe recovery and verification practice cheyyandi."
       ]
     }
-  }
+  },
       "git-github/version-control-concepts": {
       "summary": "Version Control Concepts: Track file history, compare revisions, collaborate safely and recover earlier states.. A production bug is introduced in a release. Team uses commit history and tags to identify the change, revert it safely and review the fix before redeploying.",
       "diagram": {
@@ -5880,7 +5880,7 @@ export const atoZLessons: Record<string, AtoZLesson> = {
         "Failure scenario reproduce chesi recovery steps and verification document cheyyandi."
       ]
     }
-  }
+  },
       "git-github/git-flow": {
       "summary": "Git Flow: A branching model using main, develop, feature, release and hotfix branches to coordinate planned releases. A team releases monthly: feature work integrates in develop, QA validates release/2.0, then main receives the release tag. An urgent production fix is handled in a hotfix branch.",
       "diagram": {
