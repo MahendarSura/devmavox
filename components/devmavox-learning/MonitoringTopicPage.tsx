@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { MonitoringLesson } from "./monitoring-topic-content";
+import MonitoringInteractiveLab from "./MonitoringInteractiveLab";
 
 type Props = {
   lesson: MonitoringLesson;
@@ -43,6 +44,8 @@ export default function MonitoringTopicPage({ lesson, featureId, categoryName, s
             <span className="rounded-full bg-pink-400/15 px-3 py-2 text-pink-200">Production scenario</span>
           </div>
         </header>
+
+        <MonitoringInteractiveLab topic={lesson.title} category={categoryName} />
 
         <section className="mt-6 grid gap-4 lg:grid-cols-[1.3fr_.7fr]">
           <article className="rounded-2xl border border-fuchsia-400/20 bg-slate-900/70 p-5 sm:p-7">
