@@ -78,7 +78,7 @@ export const atoZLessons: Record<string, AtoZLesson> = {
       { question: "What is a system call?", answer: "A system call is a controlled interface through which a user-space program requests a privileged service from the kernel, such as reading a file or creating a process." }
     ],
     handsOn: ["Run lscpu, free -h, lsblk and ip addr.", "Use ps aux to identify a running service.", "Use strace on a simple command and identify file-related system calls."]
-  }
+  },
 
   "linux/linux-distributions": {
     summary: "Linux distribution (distro) ante Linux kernel ni system utilities, package manager, installer, default configuration and support model tho combine chesina complete operating system. DevOps engineer ki Ubuntu, Debian, RHEL, Rocky Linux and Amazon Linux madhya differences teliyali, endukante package commands, support lifecycle and production hardening distro batti maruthayi.",
@@ -143,8 +143,7 @@ export const atoZLessons: Record<string, AtoZLesson> = {
     ],
     handsOn: ["Create a practice tree with mkdir -p and several files using touch.", "Copy one file, rename another and verify results with ls -l.", "Use find to locate .log files and grep to search ERROR lines.", "Create a temporary test directory and practice a reviewed cleanup using find -print before -delete."]
   },
-  ...{
-    "linux/users-and-groups": {
+      "linux/users-and-groups": {
       "summary": "Linux Users and Groups: User identity, UID/GID, groups, sudo and service accounts. Production lo deploy user SSH dwara connect ayi approved release directory update chesthadu. appsvc non-interactive service account tho application run avuthundi. Developers group shared logs read chesthundi; broad root login share cheyyaru.",
       "diagram": {
         "title": "Linux Users and Groups workflow and decision path",
@@ -3139,8 +3138,7 @@ export const atoZLessons: Record<string, AtoZLesson> = {
       ]
     }
   }
-  ...{
-    "git-github/version-control-concepts": {
+      "git-github/version-control-concepts": {
       "summary": "Version Control Concepts: Track file history, compare revisions, collaborate safely and recover earlier states.. A production bug is introduced in a release. Team uses commit history and tags to identify the change, revert it safely and review the fix before redeploying.",
       "diagram": {
         "title": "Version Control Concepts workflow",
@@ -5883,8 +5881,7 @@ export const atoZLessons: Record<string, AtoZLesson> = {
       ]
     }
   }
-  ...{
-    "git-github/git-flow": {
+      "git-github/git-flow": {
       "summary": "Git Flow: A branching model using main, develop, feature, release and hotfix branches to coordinate planned releases. A team releases monthly: feature work integrates in develop, QA validates release/2.0, then main receives the release tag. An urgent production fix is handled in a hotfix branch.",
       "diagram": {
         "title": "Git Flow workflow",
@@ -6211,7 +6208,7 @@ export const atoZLessons: Record<string, AtoZLesson> = {
         "One failure scenario create chesi recovery steps document cheyyandi."
       ]
     }
-  }
+  },
   "aws/cloud-computing-fundamentals": {
     "summary": "On-demand compute, storage and networking delivered over a network with usage-based pricing",
     "diagram": {
