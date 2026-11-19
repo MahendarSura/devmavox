@@ -28,7 +28,7 @@ const logRows = [
 export default function MonitoringHandsOnLabs() {
   const [active, setActive] = useState<LabId>("promql");
   const [code, setCode] = useState(labs[0].starter);
-  const [incident, setIncident] = useState(false);
+  const [incident, setIncident] = useState(false);\n  const [incidentObserved, setIncidentObserved] = useState(false);
   const [executed, setExecuted] = useState(false);
   const [result, setResult] = useState("");
   const [resultDetail, setResultDetail] = useState("");
@@ -78,7 +78,7 @@ export default function MonitoringHandsOnLabs() {
 
   function choose(id: LabId) {
     setActive(id); setCode(drafts[id] ?? labs.find((item) => item.id === id)!.starter);
-    setIncident(false); setPodHealthy(true); setAlertTicks(0); setAlertWasFiring(false); setLastEvidence({});
+    setIncident(false); setIncidentObserved(false); setPodHealthy(true); setAlertTicks(0); setAlertWasFiring(false); setLastEvidence({});
     setExecuted(false); setResult(""); setResultDetail("");
     document.getElementById("active-lab-workspace")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -111,7 +111,7 @@ export default function MonitoringHandsOnLabs() {
       : active === "logs" ? lastEvidence.rootCause === true && lastEvidence.has503 === true
       : active === "traces" ? lastEvidence.criticalPath === true && Number(lastEvidence.dbMs) > 1000
       : active === "alerts" ? lastEvidence.resolved === true
-      : lastEvidence.podsHealthy === true && Number(lastEvidence.recognized) === Number(lastEvidence.total) && result.includes("successfully rolled out");
+      : incidentObserved && lastEvidence.podsHealthy === true && Number(lastEvidence.recognized) === Number(lastEvidence.total) && result.includes("successfully rolled out");
     if (success) setPassed((current) => current.includes(active) ? current : [...current, active]);
     setResultDetail((current) => current + (success ? " · Verification passed from simulator evidence." : " · Verification failed: simulator evidence does not satisfy the task yet."));
   }
@@ -149,7 +149,7 @@ export default function MonitoringHandsOnLabs() {
             <article className="rounded-2xl border border-orange-400/20 bg-slate-900/70 p-5"><p className="text-xs font-black uppercase tracking-widest text-orange-300">01 · Task</p><h2 className="mt-2 text-xl font-bold text-white">{lab.title}</h2><p className="mt-3 text-sm leading-7 text-slate-300">{lab.task}</p><div className="mt-4 rounded-xl border border-white/10 bg-black/20 p-4"><p className="text-xs font-bold uppercase tracking-wider text-amber-300">Student workflow</p><ol className="mt-2 list-decimal space-y-1 pl-5 text-xs leading-5 text-slate-300"><li>Read the task and inspect the dashboard or evidence panel.</li><li>Edit the starter query, YAML or kubectl commands in the workspace.</li><li>Run it and read every line of the output; use Inject production failure to compare unhealthy signals.</li><li>Write your finding in investigation notes, apply recovery, run again and verify.</li></ol><p className="mt-3 text-xs text-slate-400">Tip: the starter workspace is intentionally configured to meet this lab task. Change one value at a time to learn how validation and output respond.</p></div></article>
             <article className="rounded-2xl border border-cyan-400/20 bg-slate-900/70 p-5"><div className="flex flex-wrap items-center justify-between gap-2"><div><p className="text-xs font-black uppercase tracking-widest text-cyan-300">02 · Practice</p><h2 className="mt-2 text-lg font-bold text-white">Configuration / query editor</h2></div><span className="text-xs text-slate-500">Editable workspace</span></div>
               <textarea value={code} onChange={(event) => { setCode(event.target.value); setExecuted(false); }} rows={active === "kubernetes" ? 6 : 5} spellCheck={false} className="mt-4 w-full rounded-xl border border-white/10 bg-[#050811] p-4 font-mono text-xs leading-6 text-emerald-200 outline-none focus:border-cyan-400" />
-              <div className="mt-3 flex flex-wrap gap-2"><button onClick={execute} className="rounded-xl bg-emerald-400 px-5 py-2.5 text-sm font-black text-slate-950 hover:bg-emerald-300">▶ Run / Execute</button><button onClick={() => { setIncident((value) => !value); setAlertTicks(0); if (active === "kubernetes") setPodHealthy(incident); setExecuted(false); setLastEvidence({}); setResult(""); setResultDetail(""); }} className={`rounded-xl border px-4 py-2.5 text-sm font-bold ${incident ? "border-rose-400/40 bg-rose-400/10 text-rose-200" : "border-rose-400/30 text-rose-200"}`}>{incident ? "Clear injected incident" : "Inject production failure"}</button><button onClick={verify} className="rounded-xl border border-cyan-400/30 px-4 py-2.5 text-sm font-bold text-cyan-200">✓ Verify task</button></div>
+              <div className="mt-3 flex flex-wrap gap-2"><button onClick={execute} className="rounded-xl bg-emerald-400 px-5 py-2.5 text-sm font-black text-slate-950 hover:bg-emerald-300">▶ Run / Execute</button><button onClick={() => { setIncident((value) => !value); if (!incident) setIncidentObserved(true); setAlertTicks(0); if (active === "kubernetes") setPodHealthy(incident); setExecuted(false); setLastEvidence({}); setResult(""); setResultDetail(""); }} className={`rounded-xl border px-4 py-2.5 text-sm font-bold ${incident ? "border-rose-400/40 bg-rose-400/10 text-rose-200" : "border-rose-400/30 text-rose-200"}`}>{incident ? "Clear injected incident" : "Inject production failure"}</button><button onClick={verify} className="rounded-xl border border-cyan-400/30 px-4 py-2.5 text-sm font-bold text-cyan-200">✓ Verify task</button></div>
             </article>
             <article className="rounded-2xl border border-violet-400/20 bg-slate-900/70 p-5"><p className="text-xs font-black uppercase tracking-widest text-violet-300">05 · Troubleshoot</p><h2 className="mt-2 text-lg font-bold text-white">Incident investigation notes</h2><textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={3} className="mt-3 w-full rounded-xl border border-white/10 bg-black/20 p-3 text-sm text-slate-200 outline-none focus:border-violet-400" /><div className="mt-3 flex flex-wrap items-center gap-3"><button onClick={() => { setIncident(false); setPodHealthy(true); setAlertTicks(0); setExecuted(false); setLastEvidence({}); setResult(""); setResultDetail("Recovery action applied in the training simulator. Execute again to verify the healthy state."); }} className="rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-xs font-bold text-emerald-200">Apply recovery action</button><span className="text-xs text-slate-500">Use evidence from outputs before recovery.</span></div></article>
           </div>
