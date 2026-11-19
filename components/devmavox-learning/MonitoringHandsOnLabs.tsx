@@ -127,7 +127,8 @@ export default function MonitoringHandsOnLabs() {
       : active === "traces" ? incidentObserved && recoveryApplied && lastEvidence.criticalPath === true && Number(lastEvidence.dbMs) > 1000 && lastEvidence.recovered === true
       : active === "alerts" ? lastEvidence.resolved === true
       : incidentObserved && recoveryApplied && lastEvidence.podsHealthy === true && lastEvidence.rolloutVerified === true && Number(lastEvidence.recognized) === Number(lastEvidence.total);
-    const elapsedSeconds = Math.max(1, Math.round((Date.now() - labStartedAt) / 1000));\n    setAssessment((current) => ({ ...current, [active]: { attempts: attempts[active] ?? 0, seconds: elapsedSeconds, score: success ? 100 : 0, verified: success } }));
+    const elapsedSeconds = Math.max(1, Math.round((Date.now() - labStartedAt) / 1000));
+    setAssessment((current) => ({ ...current, [active]: { attempts: attempts[active] ?? 0, seconds: elapsedSeconds, score: success ? 100 : 0, verified: success } }));
     if (success) setPassed((current) => current.includes(active) ? current : [...current, active]);
     setResultDetail((current) => current + (success ? " · Verification passed from simulator evidence." : " · Verification failed: simulator evidence does not satisfy the task yet."));
   }
