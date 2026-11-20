@@ -11,7 +11,7 @@ if [[ ! -f .env ]]; then
   echo "Created local .env with a random terminal password. Keep it private."
 fi
 if ! grep -q '^LAB_ALLOWED_ORIGINS=' .env; then
-  printf 'LAB_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,https://devmavox.vercel.app,https://devmavox-mahendras-projects-215526d8.vercel.app,https://devmavox-kphpy9yr0-mahendras-projects-215526d8.vercel.app,https://devmavox-d6h928lvn-mahendras-projects-215526d8.vercel.app,https://devmavox-367yqklvs-mahendras-projects-215526d8.vercel.app\\n' >> .env
+  printf 'LAB_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,https://devmavox.vercel.app,https://devmavox-mahendras-projects-215526d8.vercel.app,https://devmavox-kphpy9yr0-mahendras-projects-215526d8.vercel.app,https://devmavox-d6h928lvn-mahendras-projects-215526d8.vercel.app,https://devmavox-367yqklvs-mahendras-projects-215526d8.vercel.app\n' >> .env
 else
   current="$(grep '^LAB_ALLOWED_ORIGINS=' .env | tail -n 1)"
   for origin in https://devmavox.vercel.app https://devmavox-d6h928lvn-mahendras-projects-215526d8.vercel.app https://devmavox-367yqklvs-mahendras-projects-215526d8.vercel.app; do
