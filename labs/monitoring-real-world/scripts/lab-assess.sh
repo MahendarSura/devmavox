@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-ACTION="${1:-}" LAB="${2:-}" STATE="$HOME/.lab-state"
+ACTION="${1:-}" LAB="${2:-}" STUDENT_INPUT="${3:-}" STATE="$HOME/.lab-state"
 mkdir -p "$STATE"
 if [[ "$ACTION" == report ]]; then
   REC="$STATE/assessment.json"
@@ -11,7 +11,7 @@ if [[ "$ACTION" == report ]]; then
   [[ "$COUNT" -eq 6 ]]
   exit
 fi
-case "$ACTION:$LAB" in start:promql|start:grafana|start:logs|start:traces|start:alerts|start:kubernetes|verify:promql|verify:grafana|verify:logs|verify:traces|verify:alerts|verify:kubernetes) ;; *) echo "Usage: lab-assess.sh start|verify <lab-id> OR lab-assess.sh report"; exit 2;; esac
+case "$ACTION:$LAB" in start:promql|start:grafana|start:logs|start:traces|start:alerts|start:kubernetes|verify:promql|verify:grafana|verify:logs|verify:traces|verify:alerts|verify:kubernetes) ;; *) echo "Usage: lab-assess.sh start <lab-id> | verify promql <query> | verify logs <request-id> | verify traces <trace-id> | verify <grafana|alerts|kubernetes> | report"; exit 2;; esac
 ATT="$STATE/$LAB-attempt.json"; REC="$STATE/assessment.json"; NOW="$(date +%s)"
 if [[ "$ACTION" == start ]]; then
   N=0; [[ ! -f "$ATT" ]] || N="$(jq -r '.attempts // 0' "$ATT")"
@@ -22,7 +22,8 @@ fi
 START="$(jq -r .started_at "$ATT")"; N="$(jq -r .attempts "$ATT")"; ELAPSED=$((NOW-START)); PASS=false; DETAIL=""; EVIDENCE='{}'
 case "$LAB" in
 promql)
-  Q='sum(rate(http_requests_total{service="checkout"}[5m]))'
+  Q="$STUDENT_INPUT"
+  [[ -n "$Q" ]] || { echo "Submit your PromQL query: verify promql '<your PromQL>'"; exit 2; }
   D="$(curl -fsSG --data-urlencode "query=$Q" http://prometheus:9090/api/v1/query)"
   V="$(jq -r '.data.result[0].value[1] // empty' <<<"$D")"
   if [[ "$(jq -r .status <<<"$D")" == success && -n "$V" && "$V" != NaN && "$V" != 0 ]]; then PASS=true; DETAIL="Live checkout request rate query returned $V req/s"; EVIDENCE="$(jq -n --arg q "$Q" --arg value "$V" '{query:$q,request_rate:$value}')"; else DETAIL="No non-zero live request rate. Generate traffic and inspect Prometheus targets."; fi;;
@@ -35,14 +36,14 @@ grafana)
     if ((C>=4)); then PASS=true; DETAIL="Student dashboard $DASH_UID has $C query-backed panels"; EVIDENCE="$(jq -n --arg uid "$DASH_UID" --argjson panels "$C" '{dashboard_uid:$uid,query_backed_panels:$panels}')"; else DETAIL="Student dashboard needs at least four panels with queries (found $C)."; fi
   else DETAIL="Create and save your own dashboard with Student in its title; the provisioned demo dashboard does not count."; fi;;
 logs)
-  D="$(curl -fsSG --data-urlencode 'query={container=~".*devmavox-checkout.*"} |= "503"' --data-urlencode limit=100 http://loki:3100/loki/api/v1/query_range)"
+  D="$(curl -fsSG --data-urlencode "query={container=~\".*devmavox-checkout.*\"} | json | request_id=\"$STUDENT_INPUT\"" --data-urlencode limit=100 http://loki:3100/loki/api/v1/query_range)"
   C="$(jq '[.data.result[].values[]?]|length' <<<"$D")"
-  IDS="$(jq -r '[.data.result[].values[][1] | fromjson? | .request_id // empty] | unique | length' <<<"$D")"
-  if ((C>0 && IDS>0)); then PASS=true; DETAIL="Loki returned $C checkout 503 log entries with $IDS distinct request IDs"; EVIDENCE="$(jq -n --argjson count "$C" --argjson ids "$IDS" '{matching_503_logs:$count,distinct_request_ids:$ids}')"; else DETAIL="No structured checkout 503 logs with request IDs. Trigger /fail and inspect Promtail/Loki."; fi;;
+  if [[ -n "$STUDENT_INPUT" && "$C" -gt 0 ]]; then PASS=true; DETAIL="Loki confirmed student request ID $STUDENT_INPUT in $C matching log lines"; EVIDENCE="$(jq -n --arg id "$STUDENT_INPUT" --argjson count "$C" '{request_id:$id,matching_log_lines:$count}')"; else DETAIL="Supply an exact request ID from a real 503 log: verify logs <request-id>. Trigger /fail with x-request-id header."; fi;;
 traces)
-  D="$(curl -fsS 'http://tempo:3200/api/search?limit=100')"
-  C="$(jq '[.traces[]? | select((.rootServiceName // "") == "checkout")]|length' <<<"$D")"
-  if ((C>0)); then PASS=true; DETAIL="Tempo returned $C traces for checkout service"; EVIDENCE="$(jq -n --argjson count "$C" '{checkout_trace_count:$count}')"; else DETAIL="No checkout traces. Generate traffic and inspect OTEL collector export."; fi;;
+  [[ -n "$STUDENT_INPUT" ]] || { echo "Submit the real trace ID: verify traces <trace-id>"; exit 2; }
+  D="$(curl -fsS "http://tempo:3200/api/traces/$STUDENT_INPUT")"
+  C="$(jq '[.batches[]?.scopeSpans[]?.spans[]?]|length' <<<"$D")"
+  if ((C>0)); then PASS=true; DETAIL="Tempo confirmed student trace $STUDENT_INPUT with $C spans"; EVIDENCE="$(jq -n --arg id "$STUDENT_INPUT" --argjson count "$C" '{trace_id:$id,span_count:$count}')"; else DETAIL="Trace ID not found in Tempo. Copy a real checkout trace ID from Grafana Explore."; fi;;
 alerts)
   R="$(curl -fsS 'http://prometheus:9090/api/v1/rules?type=alert')"; A="$(curl -fsS http://alertmanager:9093/api/v2/alerts)"
   ACTIVE="$(jq '[.[]|select(.status.state=="active")]|length' <<<"$A")"; RULES="$(jq '[.data.groups[].rules[]|select(.type=="alerting")]|length' <<<"$R")"
