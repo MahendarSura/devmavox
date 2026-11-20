@@ -1,6 +1,6 @@
 # DevMavox Real Monitoring & Kubernetes Labs
 
-This folder provides a disposable local environment with actual Docker services and a real local k3d Kubernetes cluster. It is not hosted inside Vercel.
+This folder provides a disposable local environment with actual Docker services and a real local k3d Kubernetes cluster. It is not hosted inside Vercel. The browser page's built-in exercises remain a simulator; the links on the page open this separate local, real infrastructure environment.
 
 ## Prerequisites
 - Docker Desktop / Docker Engine with Compose v2
@@ -51,7 +51,7 @@ Open `guides/README.md` and complete in order:
 5. Prometheus alert Pending → Firing → Resolved lifecycle.
 6. Kubernetes fault reproduction, investigation and recovery.
 
-Use the browser terminal to execute the commands. The terminal has kubectl, curl, jq and common shell tools. It is connected to the disposable local k3d cluster through the generated kubeconfig. Start and verify evidence with `bash /workspace/scripts/lab-assess.sh start promql` and `bash /workspace/scripts/lab-assess.sh verify promql` (replace the ID for each lab). Evidence is persisted in a Docker volume on the student's machine.
+Use the browser terminal to execute the commands. The terminal has kubectl, curl, jq and common shell tools. Start each attempt with `bash /workspace/scripts/lab-assess.sh start <lab-id>` and verify with the same ID after finishing. For Alert lifecycle, run `bash /workspace/scripts/watch-alert-lifecycle.sh` during the incident and recovery. It is connected to the disposable local k3d cluster through the generated kubeconfig. Start and verify evidence with `bash /workspace/scripts/lab-assess.sh start promql` and `bash /workspace/scripts/lab-assess.sh verify promql` (replace the ID for each lab). Evidence is persisted in a Docker volume on the student's machine.
 
 ## Kubernetes fault drills
 Apply one fault at a time:
