@@ -23,6 +23,7 @@ services:
     extra_hosts: ["host.docker.internal:host-gateway"]
     volumes:
       - ./.lab-state/terminal.kubeconfig:/run/secrets/lab-kubeconfig:ro
+      - .:/workspace:ro
       - terminal-assessment-data:/home/student/.lab-state
     depends_on: [prometheus, grafana, loki, tempo, alertmanager]
     networks: [observability]
