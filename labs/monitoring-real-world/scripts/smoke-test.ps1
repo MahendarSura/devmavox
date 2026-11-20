@@ -22,5 +22,9 @@ $secure = ConvertTo-SecureString $env:LAB_TERMINAL_PASSWORD -AsPlainText -Force
 $credential = New-Object System.Management.Automation.PSCredential($env:LAB_TERMINAL_USERNAME, $secure)
 Invoke-WebRequest -Uri "http://localhost:7681/" -Credential $credential -UseBasicParsing | Out-Null
 Write-Host "Checking live Kubernetes CPU and memory metrics..."
+for ($attempt = 0; $attempt -lt 30; $attempt++) {
+  try { kubectl top nodes | Out-Null; break }
+  catch { if ($attempt -eq 29) { throw "Metrics Server did not return node metrics" }; Start-Sleep -Seconds 3 }
+}
 kubectl top nodes
 Write-Host "All HTTP and Kubernetes smoke checks passed."
