@@ -1,6 +1,6 @@
 # DevMavox Real Monitoring & Kubernetes Labs
 
-This folder provides a disposable local environment with actual Docker services and a real local k3d Kubernetes cluster. It is not hosted inside Vercel. The browser page's built-in exercises remain a simulator; the links on the page open this separate local, real infrastructure environment.
+This folder provides a disposable local environment with actual Docker services and a real local k3d Kubernetes cluster. It is not hosted inside Vercel. The Monitoring Hands-on Labs page includes a separate **Live infrastructure workspace** that connects to this local bridge for real metrics, dashboards, logs, traces, Kubernetes inventory and evidence-based assessment; the original simulator remains available as a practice preview.
 
 ## Prerequisites
 - Docker Desktop / Docker Engine with Compose v2
@@ -29,10 +29,11 @@ The startup script generates a random local terminal password in the ignored `.e
 - Tempo: http://localhost:3200
 - Checkout API: http://localhost:8080
 - Authenticated browser terminal: http://localhost:7681 (username/password are in local `.env`)
+- Website live-data bridge: http://localhost:8787/api/health
 
 Terminal is bound to 127.0.0.1 only. It runs as an unprivileged container user and uses a local-only password. The kubeconfig file is mounted read-only, but its credential has cluster-admin access to this disposable k3d cluster; read-only mounting does NOT mean Kubernetes read-only RBAC. Never point it at a shared or production cluster. Do not expose port 7681 publicly or share the generated password.
 
-## Generate live telemetry
+## Connect the website to live infrastructure\n\nThe Compose stack starts `monitoring-bridge` on `127.0.0.1:8787`. The website Live infrastructure workspace polls its health, Prometheus query results, Loki logs, Grafana dashboards and Kubernetes inventory. It submits PromQL, Grafana dashboard UID, Loki request ID and Tempo trace ID to a local evidence verifier; the six-lab report is persisted in the shared local Docker volume. This report is local to that student's machine and is not synchronized to Vercel or a central student account.\n\nFor local Next.js development, the default CORS allowlist permits `http://localhost:3000` and `http://127.0.0.1:3000`. If the website is hosted on a different origin, add that exact origin to `LAB_ALLOWED_ORIGINS` in the ignored `.env` file, comma-separated, then recreate the bridge service. Do not use `*`; the bridge can read a disposable cluster-admin kubeconfig and must only trust the DevMavox site origin. The bridge and all lab ports are bound to localhost and must not be exposed publicly.\n\n## Generate live telemetry
 ```bash
 curl http://localhost:8080/health
 curl http://localhost:8080/checkout
