@@ -213,6 +213,16 @@ export default function MonitoringHandsOnLabs() {
             <article className="rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-4"><p className="text-xs font-black uppercase tracking-widest text-emerald-300">07 · Complete</p><p className="mt-2 text-sm text-slate-300">Verified labs are tracked in this active browser session.</p><div className="mt-3 h-2 rounded-full bg-slate-800"><div className="h-full rounded-full bg-emerald-400" style={{width:(passed.length/6*100)+"%"}}/></div><p className="mt-2 text-xs text-slate-400">{passed.length} of 6 labs verified · progress, notes and lab drafts are saved in this browser.</p></article>
           </div>
         </section>
+        <section className="mt-8 rounded-2xl border border-cyan-400/20 bg-slate-900/80 p-5">
+          <p className="text-xs font-black uppercase tracking-widest text-cyan-300">Real infrastructure practice</p>
+          <h2 className="mt-2 text-xl font-bold text-white">Run the six labs against real tools</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">The browser exercises above are deterministic simulations. For actual Docker, Kubernetes, Prometheus, Grafana, Loki, Tempo and Alertmanager practice, use the separate disposable lab environment and follow its six command-driven student guides.</p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <a href="https://github.com/MahendarSura/devmavox/tree/feat/monitoring-real-infrastructure-labs-20261120/labs/monitoring-real-world" target="_blank" rel="noreferrer" className="rounded-lg bg-cyan-300 px-4 py-2 text-sm font-bold text-slate-950">Open real lab setup</a>
+            <a href="https://github.com/MahendarSura/devmavox/tree/feat/monitoring-real-infrastructure-labs-20261120/labs/monitoring-real-world/guides" target="_blank" rel="noreferrer" className="rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-white">Open six student guides</a>
+          </div>
+          <p className="mt-3 text-xs text-amber-200">Requires a student's own Docker + k3d environment. Website-la per-student remote cluster provisioning and assessment sync are not implemented yet.</p>
+        </section>
         <p className="mt-6 text-center text-[11px] leading-5 text-slate-500">Training simulator: execution logic operates on an included deterministic observability dataset in your browser. It does not connect to a live Prometheus, Grafana, Elasticsearch, tracing backend or Kubernetes cluster. Production dashboards require your own authenticated data sources.</p>
       </div>
     </main>
