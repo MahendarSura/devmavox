@@ -29,7 +29,7 @@ case "$LAB" in
     if [[ "$(echo "$data" | jq -r '.status')" == success && "$(echo "$data" | jq -r '.data.result|length')" -gt 0 ]]; then passed=true; detail="Prometheus returned live checkout request-rate series"; else detail="No checkout request-rate series; generate traffic and check scrape target"; fi
     ;;
   grafana)
-    data="$(curl -fsS http://grafana:3000/api/dashboards/uid/devmavox-checkout)"
+    data="$(curl -fsSu admin:devmavox-lab http://grafana:3000/api/dashboards/uid/devmavox-checkout)"
     if [[ "$(echo "$data" | jq -r '.dashboard.panels|length')" -ge 4 ]]; then passed=true; detail="Provisioned Grafana dashboard and four live panels are available"; else detail="Expected dashboard panels not found"; fi
     ;;
   logs)
