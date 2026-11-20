@@ -215,13 +215,13 @@ export default function MonitoringHandsOnLabs() {
             <article className="rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-4"><p className="text-xs font-black uppercase tracking-widest text-emerald-300">07 · Complete</p><p className="mt-2 text-sm text-slate-300">Simulator-only progress is tracked in this browser. Real infrastructure scores are shown in the Live workspace above.</p><div className="mt-3 h-2 rounded-full bg-slate-800"><div className="h-full rounded-full bg-emerald-400" style={{width:(passed.length/6*100)+"%"}}/></div><p className="mt-2 text-xs text-slate-400">{passed.length} of 6 labs verified · progress, notes and lab drafts are saved in this browser.</p></article>
           </div>
         </section>
-        <section className="mt-8 rounded-2xl border border-cyan-400/20 bg-slate-900/80 p-5">
+        <section id="real-lab-setup" className="mt-8 scroll-mt-24 rounded-2xl border border-cyan-400/20 bg-slate-900/80 p-5">
           <p className="text-xs font-black uppercase tracking-widest text-cyan-300">Real infrastructure practice</p>
           <h2 className="mt-2 text-xl font-bold text-white">Run the six labs against real tools</h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">The simulator below is a preview. Use the Live infrastructure workspace above for real Docker, Kubernetes, Prometheus, Grafana, Loki, Tempo and Alertmanager data and evidence-based website assessment.</p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <a href="https://github.com/MahendarSura/devmavox/tree/feat/monitoring-real-infrastructure-labs-20261120/labs/monitoring-real-world" target="_blank" rel="noreferrer" className="rounded-lg bg-cyan-300 px-4 py-2 text-sm font-bold text-slate-950">Open real lab setup</a>
-            <a href="https://github.com/MahendarSura/devmavox/tree/feat/monitoring-real-infrastructure-labs-20261120/labs/monitoring-real-world/guides" target="_blank" rel="noreferrer" className="rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-white">Open six student guides</a>
+            <a href="#real-lab-setup" className="rounded-lg bg-cyan-300 px-4 py-2 text-sm font-bold text-slate-950">View setup instructions</a>
+            <a href="#real-lab-setup" className="rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-white">View six-lab setup</a>
             <a href="http://localhost:7681" target="_blank" rel="noreferrer" className="rounded-lg border border-emerald-300/40 bg-emerald-300/10 px-4 py-2 text-sm font-semibold text-emerald-100">Open local live terminal</a>
             <a href="http://localhost:3000" target="_blank" rel="noreferrer" className="rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold text-white">Grafana</a>
             <a href="http://localhost:9090" target="_blank" rel="noreferrer" className="rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold text-white">Prometheus</a>
