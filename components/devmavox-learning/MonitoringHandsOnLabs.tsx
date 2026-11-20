@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import LiveMonitoringBridge from "./LiveMonitoringBridge";
 import { useEffect, useMemo, useState } from "react";
 import { parse as parseYaml } from "yaml";
 import { createKubernetesLabState, runAlertLab, runGrafanaLab, runKubernetesLab, runLogsLab, runPromqlLab, runTracesLab, type KubernetesFault, type KubernetesLabState } from "@/lib/monitoring-lab-engine";
@@ -163,6 +164,7 @@ export default function MonitoringHandsOnLabs() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3"><div><Link href="/monitoring-playground" className="text-sm text-cyan-300 hover:text-cyan-200">← Monitoring Playground</Link><p className="mt-3 text-xs font-bold uppercase tracking-[.25em] text-emerald-300">Observability training environment</p><h1 className="mt-2 text-3xl font-black sm:text-4xl">Monitoring Playground – Hands-on Labs</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">Production-style scenarios with editable practice, executable browser simulation, telemetry views, fault injection and verification.</p></div><div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/5 px-4 py-3"><p className="text-2xl font-black text-emerald-300">{passed.length}/6</p><p className="text-xs text-slate-400">Labs verified</p></div></div>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{labs.map((item, index) => <button key={item.id} onClick={() => choose(item.id)} className={`rounded-2xl border p-4 text-left transition ${active === item.id ? "border-cyan-300/70 bg-cyan-300/10" : "border-white/10 bg-slate-900/70 hover:border-white/25"}`}><div className="flex items-center justify-between"><span className="text-xs font-black text-cyan-300">LAB 0{index + 1}</span><span className={`rounded-full px-2 py-1 text-[10px] ${passed.includes(item.id) ? "bg-emerald-400/15 text-emerald-300" : "bg-white/5 text-slate-400"}`}>{passed.includes(item.id) ? "VERIFIED" : "NOT STARTED"}</span></div><h2 className="mt-3 font-bold text-white">{item.title}</h2><p className="mt-2 text-xs leading-5 text-slate-400">{item.description}</p></button>)}</div>
+        <LiveMonitoringBridge />
         <section id="active-lab-workspace" className="mt-5 scroll-mt-6 grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(340px,.85fr)]">
           <div className="space-y-4">
             <article className="rounded-2xl border border-white/10 bg-slate-900/70 p-5">
