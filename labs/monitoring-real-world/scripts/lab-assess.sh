@@ -1,63 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
-ACTION="${1:-}"
-LAB="${2:-}"
-case "$ACTION" in start|verify) ;; *) echo "Usage: bash /workspace/scripts/lab-assess.sh start|verify <promql|grafana|logs|traces|alerts|kubernetes>"; exit 2;; esac
-case "$LAB" in promql|grafana|logs|traces|alerts|kubernetes) ;; *) echo "Unknown lab: $LAB"; exit 2;; esac
-STATE="$HOME/.lab-state"
-mkdir -p "$STATE"
-ATTEMPT="$STATE/$LAB-attempt.json"
-RECORDS="$STATE/assessment.json"
-now="$(date +%s)"
-if [[ "$ACTION" == "start" ]]; then
-  attempts=0
-  if [[ -f "$ATTEMPT" ]]; then attempts="$(jq -r '.attempts // 0' "$ATTEMPT")"; fi
-  jq -n --arg lab "$LAB" --argjson started "$now" --argjson attempts "$((attempts+1))" '{lab:$lab,started_at:$started,attempts:$attempts}' > "$ATTEMPT"
-  echo "Started $LAB attempt $((attempts+1)) at $(date -u -d "@$now" +%FT%TZ)"
-  exit 0
-fi
-[[ -f "$ATTEMPT" ]] || { echo "Run start first: bash /workspace/scripts/lab-assess.sh start $LAB"; exit 2; }
-started="$(jq -r '.started_at' "$ATTEMPT")"
-attempts="$(jq -r '.attempts' "$ATTEMPT")"
-elapsed="$((now-started))"
-passed=false
-detail=""
+ACTION="${1:-}" LAB="${2:-}" STATE="$HOME/.lab-state"; mkdir -p "$STATE"
+case "$ACTION:$LAB" in start:promql|start:grafana|start:logs|start:traces|start:alerts|start:kubernetes|verify:promql|verify:grafana|verify:logs|verify:traces|verify:alerts|verify:kubernetes) ;; *) echo "Usage: lab-assess.sh start|verify <promql|grafana|logs|traces|alerts|kubernetes>"; exit 2;; esac
+ATT="$STATE/$LAB-attempt.json"; REC="$STATE/assessment.json"; NOW="$(date +%s)"
+if [[ "$ACTION" == start ]]; then N=0; [[ ! -f "$ATT" ]] || N="$(jq -r '.attempts // 0' "$ATT")"; jq -n --arg lab "$LAB" --argjson at "$NOW" --argjson attempts "$((N+1))" '{lab:$lab,started_at:$at,attempts:$attempts}' > "$ATT"; echo "Started $LAB attempt $((N+1))"; exit 0; fi
+[[ -f "$ATT" ]] || { echo "Start the lab attempt first."; exit 2; }
+START="$(jq -r .started_at "$ATT")"; N="$(jq -r .attempts "$ATT")"; ELAPSED=$((NOW-START)); PASS=false; DETAIL=""; EVIDENCE='{}'
 case "$LAB" in
-  promql)
-    q='sum(rate(http_requests_total{service="checkout"}[5m]))'
-    data="$(curl -fsSG --data-urlencode "query=$q" http://prometheus:9090/api/v1/query)"
-    if [[ "$(echo "$data" | jq -r '.status')" == success && "$(echo "$data" | jq -r '.data.result|length')" -gt 0 ]]; then passed=true; detail="Prometheus returned live checkout request-rate series"; else detail="No checkout request-rate series; generate traffic and check scrape target"; fi
-    ;;
-  grafana)
-    data="$(curl -fsSu admin:devmavox-lab http://grafana:3000/api/dashboards/uid/devmavox-checkout)"
-    if [[ "$(echo "$data" | jq -r '.dashboard.panels|length')" -ge 4 ]]; then passed=true; detail="Provisioned Grafana dashboard and four live panels are available"; else detail="Expected dashboard panels not found"; fi
-    ;;
-  logs)
-    data="$(curl -fsSG --data-urlencode 'query={service="checkout"}' --data-urlencode 'limit=20' http://loki:3100/loki/api/v1/query_range)"
-    if [[ "$(echo "$data" | jq -r '.data.result|length')" -gt 0 ]]; then passed=true; detail="Loki returned checkout log streams"; else detail="No checkout logs found; generate requests and check Promtail"; fi
-    ;;
-  traces)
-    data="$(curl -fsS 'http://tempo:3200/api/search?limit=20')"
-    if [[ "$(echo "$data" | jq -r '.traces|length')" -gt 0 ]]; then passed=true; detail="Tempo returned real trace records"; else detail="No traces found; generate requests and inspect OpenTelemetry Collector"; fi
-    ;;
-  alerts)
-    data="$(curl -fsS http://prometheus:9090/api/v1/rules)"
-    if [[ "$(echo "$data" | jq -r '[.data.groups[].rules[]|select(.name=="CheckoutHighP95Latency" or .name=="CheckoutHigh5xxRate")]|length')" -ge 2 ]]; then passed=true; detail="Both checkout alert rules are loaded in Prometheus"; else detail="Checkout alert rules are not loaded"; fi
-    ;;
-  kubernetes)
-    nodes="$(kubectl get nodes -o json)"
-    ready="$(echo "$nodes" | jq '[.items[]|select(any(.status.conditions[]; .type=="Ready" and .status=="True"))]|length')"
-    pods="$(kubectl -n production get pods -o json)"
-    healthy="$(echo "$pods" | jq '[.items[]|select(.status.phase=="Running" and ([.status.containerStatuses[]?.ready] | all))]|length')"
-    if [[ "$ready" -ge 3 && "$healthy" -ge 3 ]]; then passed=true; detail="At least three Kubernetes nodes Ready and three production pods healthy"; else detail="Cluster recovery incomplete: ready_nodes=$ready ready_pods=$healthy"; fi
-    ;;
+promql) D="$(curl -fsSG --data-urlencode 'query=sum(rate(http_requests_total{service="checkout"}[5m]))' http://prometheus:9090/api/v1/query)"; V="$(jq -r '.data.result[0].value[1] // empty' <<<"$D")"; if [[ "$(jq -r .status <<<"$D")" == success && -n "$V" && "$V" != NaN ]]; then PASS=true; DETAIL="Live checkout request rate: $V req/s"; EVIDENCE="$(jq -n --arg value "$V" '{request_rate:$value}')"; else DETAIL="No live metric result; generate traffic and check Prometheus targets."; fi;;
+grafana) D="$(curl -fsSu admin:devmavox-lab http://grafana:3000/api/search?type=dash-db)"; UID="$(jq -r '.[]|select((.title|ascii_downcase|contains("student")) or (.title|ascii_downcase|contains("lab submission")))|.uid' <<<"$D"|head -n1)"; if [[ -n "$UID" ]]; then X="$(curl -fsSu admin:devmavox-lab "http://grafana:3000/api/dashboards/uid/$UID")"; C="$(jq '.dashboard.panels|length' <<<"$X")"; if ((C>=4)); then PASS=true; DETAIL="Student-created dashboard $UID has $C panels"; EVIDENCE="$(jq -n --arg uid "$UID" --argjson panels "$C" '{dashboard_uid:$uid,panels:$panels}')"; else DETAIL="Student dashboard needs at least four saved panels (found $C)."; fi; else DETAIL="Create and save your own dashboard with 'Student' in its title. Provisioned demo dashboard does not count."; fi;;
+logs) D="$(curl -fsSG --data-urlencode 'query={service="checkout"} |= "503"' --data-urlencode limit=100 http://loki:3100/loki/api/v1/query_range)"; C="$(jq '[.data.result[].values[]?]|length' <<<"$D")"; if ((C>0)); then PASS=true; DETAIL="Loki returned $C real checkout 503 log lines"; EVIDENCE="$(jq -n --argjson count "$C" '{matching_503_logs:$count}')"; else DETAIL="No 503 log evidence. Trigger /fail and investigate Loki."; fi;;
+traces) D="$(curl -fsS 'http://tempo:3200/api/search?limit=100')"; C="$(jq '(.traces // [])|length' <<<"$D")"; if ((C>0)); then PASS=true; DETAIL="Tempo returned $C real traces"; EVIDENCE="$(jq -n --argjson count "$C" '{trace_count:$count}')"; else DETAIL="No traces. Generate checkout requests and inspect the collector."; fi;;
+alerts) R="$(curl -fsS 'http://prometheus:9090/api/v1/rules?type=alert')"; A="$(curl -fsS http://alertmanager:9093/api/v2/alerts)"; ACTIVE="$(jq '[.[]|select(.status.state=="active")]|length' <<<"$A")"; RULES="$(jq '[.data.groups[].rules[]|select(.type=="alerting")]|length' <<<"$R")"; H="$STATE/alert-lifecycle.json"; STATES=""; [[ ! -f "$H" ]] || STATES="$(jq -r '[.[].state]|unique|join(",")' "$H")"; if ((RULES>0 && ACTIVE==0)) && [[ "$STATES" == *pending* && "$STATES" == *firing* && "$STATES" == *inactive* ]]; then PASS=true; DETAIL="Real alert lifecycle pending/firing/inactive recorded; Alertmanager clear"; EVIDENCE="$(jq -n --arg states "$STATES" '{observed_states:$states}')"; else DETAIL="Lifecycle not proven. Run scripts/watch-alert-lifecycle.sh during incident and recovery; require pending, firing, inactive."; fi;;
+kubernetes) NODES="$(kubectl get nodes -o json)"; READY="$(jq '[.items[]|select(any(.status.conditions[];.type=="Ready" and .status=="True"))]|length' <<<"$NODES")"; EV="$(kubectl -n production get events -o json 2>/dev/null || echo '{"items":[]}')"; FAULT="$(jq '[.items[]|select(.reason=="BackOff" or .reason=="OOMKilling" or .reason=="FailedScheduling" or .reason=="NodeNotReady")]|length' <<<"$EV")"; DEP="$(kubectl -n production get deployment checkout -o json 2>/dev/null || echo '{}')"; WANT="$(jq -r '.spec.replicas // 0' <<<"$DEP")"; HAVE="$(jq -r '.status.availableReplicas // 0' <<<"$DEP")"; if ((READY>=3 && WANT>0 && HAVE==WANT && FAULT>0)); then PASS=true; DETAIL="Ready nodes=$READY; checkout replicas=$HAVE/$WANT; retained fault events=$FAULT"; EVIDENCE="$(jq -n --argjson nodes "$READY" --argjson desired "$WANT" --argjson available "$HAVE" --argjson faults "$FAULT" '{ready_nodes:$nodes,desired_replicas:$desired,available_replicas:$available,fault_events:$faults}')"; else DETAIL="Not passed: nodes=$READY replicas=$HAVE/$WANT fault_events=$FAULT. Reproduce, investigate and recover a fault."; fi;;
 esac
-score=0
-if [[ "$passed" == true ]]; then score=100; fi
-[[ -f "$RECORDS" ]] || echo '{"entries":[]}' > "$RECORDS"
-tmp="$RECORDS.tmp"
-jq --arg lab "$LAB" --arg detail "$detail" --argjson attempts "$attempts" --argjson elapsed "$elapsed" --argjson score "$score" --argjson passed "$passed" --argjson at "$now" '.entries += [{lab:$lab,attempts:$attempts,elapsed_seconds:$elapsed,score:$score,verified:$passed,detail:$detail,verified_at:$at}]' "$RECORDS" > "$tmp"
-mv "$tmp" "$RECORDS"
-echo "Lab: $LAB | Attempt: $attempts | Elapsed: ${elapsed}s | Score: $score/100 | Verified: $passed"
-echo "$detail"
-echo "Evidence saved to $RECORDS"
+SCORE=0; [[ "$PASS" != true ]] || SCORE=100; [[ -f "$REC" ]] || echo '{"entries":[]}' > "$REC"; TMP="$REC.tmp"; jq --arg lab "$LAB" --arg detail "$DETAIL" --argjson attempts "$N" --argjson elapsed "$ELAPSED" --argjson score "$SCORE" --argjson passed "$PASS" --argjson at "$NOW" --argjson evidence "$EVIDENCE" '.entries += [{lab:$lab,attempts:$attempts,elapsed_seconds:$elapsed,score:$score,verified:$passed,detail:$detail,evidence:$evidence,verified_at:$at}]' "$REC" > "$TMP"; mv "$TMP" "$REC"; echo "$LAB | $SCORE/100 | verified=$PASS | ${ELAPSED}s"; echo "$DETAIL"; echo "Evidence: $REC"; [[ "$PASS" == true ]]
