@@ -1,16 +1,21 @@
 #!/usr/bin/env bash
-# Stops only one disposable k3d agent; EXIT trap restores it on interruption.
+# Stop one disposable k3d worker, capture the NotReady transition, restore it.
 set -euo pipefail
 CLUSTER="${1:-devmavox-lab}"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+STATE="$HOME/.lab-state/kubernetes-drills"; mkdir -p "$STATE"
 AGENT="$(docker ps --format '{{.Names}}' | grep "^k3d-${CLUSTER}-agent-" | head -n1 || true)"
 [[ -n "$AGENT" ]] || { echo "No running k3d agent for $CLUSTER"; exit 1; }
-echo "Target disposable worker: $AGENT. Watch kubectl get nodes -w in another terminal."
-read -r -p "Type STOP to stop this worker for 45 seconds: " CONFIRM
-[[ "$CONFIRM" == STOP ]] || { echo Cancelled; exit 1; }
-docker stop "$AGENT" >/dev/null
+read -r -p "Type STOP to stop disposable worker $AGENT for 45 seconds: " CONFIRM
+[[ "$CONFIRM" == STOP ]] || exit 1
 restore(){ docker start "$AGENT" >/dev/null 2>&1 || true; }
+docker stop "$AGENT" >/dev/null
 trap restore EXIT
-echo "Worker stopped; observe NodeNotReady for 45 seconds."; sleep 45
-docker start "$AGENT" >/dev/null; trap - EXIT
+sleep 15
+NOTREADY="$(kubectl get nodes -o json | jq '[.items[]|select(any(.status.conditions[]?;.type=="Ready" and .status=="False"))]|length')"
+((NOTREADY>0)) || { echo "NodeNotReady was not observed"; exit 1; }
+restore
+trap - EXIT
 kubectl wait --for=condition=Ready "node/$AGENT" --timeout=180s
-kubectl get nodes -o wide
+jq -n --arg node "$AGENT" --argjson observed true --argjson recovered true --argjson at "$(date +%s)" '{scenario:"node-not-ready",node:$node,fault_observed:$observed,recovery_verified:$recovered,verified_at:$at}' > "$STATE/node-not-ready.json"
+echo "NodeNotReady observed and worker recovered."
