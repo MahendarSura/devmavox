@@ -4,7 +4,7 @@ ARG TARGETARCH=amd64
 RUN apk add --no-cache bash curl jq ca-certificates coreutils grep sed ttyd
 RUN curl -fsSLo /usr/local/bin/kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl" \
  && chmod +x /usr/local/bin/kubectl
-RUN adduser -D -h /home/student student
+RUN adduser -D -h /home/student student && mkdir -p /home/student/.lab-state && chown -R student:student /home/student/.lab-state
 WORKDIR /home/student
 USER student
 EXPOSE 7681
