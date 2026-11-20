@@ -12,3 +12,5 @@ Student tasks:
 7. Explain empty panels caused by a down target, wrong time range or mismatched label selector.
 
 Pass evidence: live request, error and latency panels plus two saved student-created panels and their PromQL.
+
+Assessment: start with `bash /workspace/scripts/lab-assess.sh start grafana`, then finish with `bash /workspace/scripts/lab-assess.sh verify <lab-id>`. Evidence is stored locally in the terminal volume, not synced to Vercel.
