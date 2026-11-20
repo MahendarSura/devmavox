@@ -1,0 +1,87 @@
+name: Real Monitoring Lab Integration
+on:
+  push:
+    branches:
+      - feat/monitoring-real-infrastructure-labs-20261120
+    paths:
+      - ".github/workflows/real-monitoring-lab-integration.yml"
+      - "labs/monitoring-real-world/**"
+      - "components/devmavox-learning/MonitoringHandsOnLabs.tsx"
+      - "lib/monitoring-lab-engine.ts"
+      - "package.json"
+      - "package-lock.json"
+  pull_request:
+    branches:
+      - feat/monitoring-observability-console-20261119
+    paths:
+      - ".github/workflows/real-monitoring-lab-integration.yml"
+      - "labs/monitoring-real-world/**"
+      - "components/devmavox-learning/MonitoringHandsOnLabs.tsx"
+      - "lib/monitoring-lab-engine.ts"
+      - "package.json"
+      - "package-lock.json"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: real-monitoring-lab-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  static-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate shell scripts
+        run: |
+          find labs/monitoring-real-world/scripts -name '*.sh' -print0 | xargs -0 -n1 bash -n
+          bash -n labs/monitoring-real-world/terminal/entrypoint.sh
+      - name: Validate JSON and Node.js syntax
+        run: |
+          node --check labs/monitoring-real-world/checkout-service/server.js
+          node -e "JSON.parse(require('fs').readFileSync('labs/monitoring-real-world/checkout-service/package.json','utf8'))"
+      - name: Validate Kubernetes and observability YAML
+        run: |
+          python -m pip install --quiet yamllint
+          find labs/monitoring-real-world -type f \( -name '*.yml' -o -name '*.yaml' \) -print0 | xargs -0 yamllint -d '{extends: relaxed, rules: {line-length: disable, document-start: disable}}'
+      - name: Validate Docker Compose configuration
+        run: |
+          cd labs/monitoring-real-world
+          cp .env.example .env
+          docker compose config --quiet
+  docker-observability-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start real observability services
+        working-directory: labs/monitoring-real-world
+        run: |
+          cp .env.example .env
+          docker compose up -d --build checkout prometheus alertmanager grafana loki promtail tempo otel-collector
+          docker compose ps
+      - name: Test live metrics, logs, traces, dashboards and alert API
+        run: bash labs/monitoring-real-world/scripts/integration-test.sh
+      - name: Collect diagnostics on failure
+        if: failure()
+        working-directory: labs/monitoring-real-world
+        run: |
+          docker compose ps
+          docker compose logs --no-color --tail=250
+      - name: Stop integration stack
+        if: always()
+        working-directory: labs/monitoring-real-world
+        run: docker compose down -v
+  nextjs-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npx eslint components/devmavox-learning/MonitoringHandsOnLabs.tsx lib/monitoring-lab-engine.ts
+      - run: npm run build
