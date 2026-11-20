@@ -58,7 +58,8 @@ jobs:
         working-directory: labs/monitoring-real-world
         run: |
           cp .env.example .env
-          docker compose up -d --build checkout prometheus alertmanager grafana loki promtail tempo otel-collector
+          mkdir -p .lab-state && : > .lab-state/terminal.kubeconfig
+          docker compose up -d --build checkout prometheus alertmanager grafana loki promtail tempo otel-collector monitoring-bridge
           docker compose ps
       - name: Test live metrics, logs, traces, dashboards and alert API
         run: bash labs/monitoring-real-world/scripts/integration-test.sh
@@ -85,3 +86,41 @@ jobs:
       - run: npx tsc --noEmit
       - run: npx eslint lib/monitoring-lab-engine.ts
       - run: npm run build
+
+  kubernetes-fault-drills:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install k3d
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.8.3 bash
+          k3d version
+          kubectl version --client
+      - name: Create disposable three-node cluster and healthy workload
+        run: |
+          k3d cluster create devmavox-lab --servers 1 --agents 2 --wait
+          kubectl apply -f labs/monitoring-real-world/kubernetes/base/namespace.yaml
+          kubectl apply -f labs/monitoring-real-world/kubernetes/base/checkout.yaml
+          kubectl -n production rollout status deployment/checkout --timeout=180s
+          kubectl get nodes -o wide
+      - name: Reproduce and recover OOMKilled, CrashLoopBackOff and Pending
+        run: bash labs/monitoring-real-world/scripts/run-kubernetes-drills.sh
+      - name: Reproduce and recover NodeNotReady
+        run: bash labs/monitoring-real-world/scripts/node-not-ready-drill.sh devmavox-lab --yes
+      - name: Verify all four drill evidence records
+        run: |
+          for scenario in oomkilled crashloopbackoff pending node-not-ready; do
+            jq -e '.fault_observed == true and .recovery_verified == true' "$HOME/.lab-state/kubernetes-drills/$scenario.json"
+          done
+          kubectl -n production rollout status deployment/checkout --timeout=180s
+          kubectl get nodes
+      - name: Collect Kubernetes diagnostics
+        if: failure()
+        run: |
+          kubectl get nodes -o wide || true
+          kubectl -n production get pods -o wide || true
+          kubectl -n production get events --sort-by=.lastTimestamp || true
+      - name: Delete disposable cluster
+        if: always()
+        run: k3d cluster delete devmavox-lab || true
