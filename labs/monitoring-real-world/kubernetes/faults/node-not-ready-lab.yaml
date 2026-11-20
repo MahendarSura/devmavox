@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout
+  namespace: production
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: checkout
+  template:
+    metadata:
+      labels:
+        app: checkout
+    spec:
+      nodeSelector:
+        devmavox.io/lab-node: intentionally-missing
+      containers:
+        - name: checkout
+          image: hashicorp/http-echo:1.0.0
+          args: ["-listen=:8080","-text=node-selector-mismatch"]
+          ports:
+            - containerPort: 8080
