@@ -5,8 +5,10 @@ if (-not (Get-Command docker -ErrorAction SilentlyContinue)) { throw "Docker Des
 docker compose version | Out-Null
 if (-not (Test-Path ".env")) {
   $bytes = New-Object byte[] 32
-  [System.Security.Cryptography.RandomNumberGenerator]::Fill($bytes)
-  $password = [Convert]::ToHexString($bytes)
+  $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+  $rng.GetBytes($bytes)
+  $rng.Dispose()
+  $password = ([BitConverter]::ToString($bytes) -replace "-", "").ToLowerInvariant()
   @("LAB_TERMINAL_USERNAME=student", "LAB_TERMINAL_PASSWORD=$password") | Set-Content -Encoding ascii ".env"
   Write-Host "Created local .env with a random terminal password. Keep it private."
 }
