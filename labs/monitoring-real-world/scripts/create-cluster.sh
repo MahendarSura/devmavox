@@ -14,6 +14,9 @@ kubectl config use-context k3d-devmavox-lab
 kubectl apply -f "$LAB_DIR/kubernetes/base/namespace.yaml"
 kubectl apply -f "$LAB_DIR/kubernetes/base/checkout.yaml"
 kubectl -n production rollout status deployment/checkout --timeout=120s
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.7.2/components.yaml
+kubectl patch deployment metrics-server -n kube-system --type=json -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
+kubectl -n kube-system rollout status deployment/metrics-server --timeout=180s
 kubectl config set-cluster k3d-devmavox-lab --server=https://host.docker.internal:6550 --insecure-skip-tls-verify=true
 kubectl config view --raw --minify --flatten > "$STATE_DIR/terminal.kubeconfig"
 chmod 600 "$STATE_DIR/terminal.kubeconfig"
