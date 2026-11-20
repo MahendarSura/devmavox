@@ -7,7 +7,7 @@ services:
     ports: ["127.0.0.1:7681:7681"]
     volumes:
       - ./.lab-state/terminal.kubeconfig:/home/student/.kube/config:ro
-      - ./guides:/workspace/guides:ro
+      - .:/workspace:ro
     networks: [observability]
   checkout:
     build: ./checkout-service
