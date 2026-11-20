@@ -11,6 +11,16 @@ services:
       - .:/workspace:ro
       - terminal-assessment-data:/home/student/.lab-state
     networks: [observability]
+  monitoring-bridge:
+    build: ./bridge
+    container_name: devmavox-monitoring-bridge
+    restart: unless-stopped
+    ports: ["127.0.0.1:8787:8787"]
+    volumes:
+      - ./.lab-state/terminal.kubeconfig:/home/student/.kube/config:ro
+      - terminal-assessment-data:/home/student/.lab-state
+    depends_on: [prometheus, grafana, loki, tempo, alertmanager]
+    networks: [observability]
   checkout:
     build: ./checkout-service
     container_name: devmavox-checkout
