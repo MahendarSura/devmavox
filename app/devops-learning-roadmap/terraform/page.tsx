@@ -1012,7 +1012,7 @@ export default function TerraformRoadmapPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
+    <main className="min-h-screen bg-white text-slate-900">
       <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 px-4 py-14 text-white sm:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-4 inline-flex rounded-full border border-emerald-300/30 bg-emerald-300/10 px-4 py-2 text-sm text-emerald-100">
