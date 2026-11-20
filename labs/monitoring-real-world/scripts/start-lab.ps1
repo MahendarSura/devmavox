@@ -13,5 +13,6 @@ if (-not (Test-Path ".env")) {
 & "$PSScriptRoot/windows-setup.ps1"
 docker compose up -d --build
 docker compose ps
+& "$PSScriptRoot/smoke-test.ps1"
 Write-Host "Grafana: http://localhost:3000"
 Write-Host "Browser terminal: http://localhost:7681 (credentials are in local .env)"
