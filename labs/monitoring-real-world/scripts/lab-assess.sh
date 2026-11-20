@@ -57,10 +57,12 @@ kubernetes)
   NODES="$(kubectl get nodes -o json)"; READY="$(jq '[.items[]|select(any(.status.conditions[];.type=="Ready" and .status=="True"))]|length' <<<"$NODES")"
   DEP="$(kubectl -n production get deployment checkout -o json 2>/dev/null || echo '{}')"; WANT="$(jq -r '.spec.replicas // 0' <<<"$DEP")"; HAVE="$(jq -r '.status.availableReplicas // 0' <<<"$DEP")"
   DRILLS="$STATE/kubernetes-drills"; MISSING=""; COUNT=0
-  for scenario in oomkilled crashloopbackoff pending node-not-ready; do
+  for scenario in oomkilled crashloopbackoff pending; do
     FILE="$DRILLS/$scenario.json"
     if [[ -f "$FILE" ]] && jq -e '.fault_observed==true and .recovery_verified==true' "$FILE" >/dev/null; then COUNT=$((COUNT+1)); else MISSING+="$scenario "; fi
   done
+  NODE_EVIDENCE="$(kubectl get nodes -o json | jq '[.items[].metadata.annotations // {} | select(."devmavox.io/node-not-ready-observed"=="true" and ."devmavox.io/node-not-ready-recovered"=="true")]|length')"
+  if ((NODE_EVIDENCE>0)); then COUNT=$((COUNT+1)); else MISSING+="node-not-ready "; fi
   if ((READY>=3 && WANT>0 && HAVE==WANT && COUNT==4)); then PASS=true; DETAIL="All four real fault drills recorded and recovered; ready nodes=$READY; checkout replicas=$HAVE/$WANT"; EVIDENCE="$(jq -n --argjson nodes "$READY" --argjson desired "$WANT" --argjson available "$HAVE" --argjson drills "$COUNT" '{ready_nodes:$nodes,desired_replicas:$desired,available_replicas:$available,verified_fault_drills:$drills}')"; else DETAIL="Four individually recorded fault-and-recovery drills required. Verified=$COUNT/4; missing=$MISSING; ready nodes=$READY; replicas=$HAVE/$WANT."; fi;;
 esac
 SCORE=0; [[ "$PASS" != true ]] || SCORE=100
