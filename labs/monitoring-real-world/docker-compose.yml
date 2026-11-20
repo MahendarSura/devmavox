@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     env_file: .env
     ports: ["127.0.0.1:7681:7681"]
+    extra_hosts: ["host.docker.internal:host-gateway"]
     volumes:
       - ./.lab-state/terminal.kubeconfig:/home/student/.kube/config:ro
       - .:/workspace:ro
