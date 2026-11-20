@@ -7,7 +7,7 @@ New-Item -ItemType Directory -Force -Path $StateDir | Out-Null
 if ((k3d cluster list) -notmatch "devmavox-lab") {
   k3d cluster create devmavox-lab --servers 1 --agents 2 --api-port 0.0.0.0:6550 --wait
 } else {
-  $apiPort = docker port k3d-devmavox-lab-serverlb 6550/tcp 2>$null
+  $apiPort = docker port k3d-devmavox-lab-serverlb 6443/tcp 2>$null
   if (-not $apiPort) { throw "Existing cluster does not expose API port 6550. Run: k3d cluster delete devmavox-lab, then rerun this script." }
 }
 kubectl config use-context k3d-devmavox-lab
