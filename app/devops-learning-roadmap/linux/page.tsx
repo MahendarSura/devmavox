@@ -480,7 +480,7 @@ export default function LinuxRoadmapPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100 sm:px-8">
+    <main className="min-h-screen bg-white px-4 py-10 text-slate-900 sm:px-8">
       <div className="mx-auto max-w-7xl space-y-10">
         <header className="overflow-hidden rounded-3xl border border-orange-400/20 bg-gradient-to-br from-orange-500/15 via-slate-900 to-slate-950 p-6 sm:p-10">
           <div className="flex flex-wrap items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-orange-300">
@@ -492,32 +492,32 @@ export default function LinuxRoadmapPage() {
           <h1 className="mt-5 text-4xl font-extrabold tracking-tight sm:text-5xl">
             Linux Engineering Roadmap
           </h1>
-          <p className="mt-4 max-w-3xl leading-7 text-slate-300">
+          <p className="mt-4 max-w-3xl leading-7 text-slate-700">
             Learn Linux from command-line fundamentals to production server
             administration, Bash automation, security, cloud infrastructure,
             container troubleshooting, and SRE operations.
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-2xl border border-slate-700 bg-slate-950/60 p-5">
-              <p className="text-sm text-slate-400">Learning modules</p>
+            <div className="rounded-2xl border border-slate-200 bg-white/60 p-5">
+              <p className="text-sm text-slate-600">Learning modules</p>
               <p className="mt-2 text-3xl font-bold">{modules.length}</p>
             </div>
-            <div className="rounded-2xl border border-slate-700 bg-slate-950/60 p-5">
-              <p className="text-sm text-slate-400">Learning topics</p>
+            <div className="rounded-2xl border border-slate-200 bg-white/60 p-5">
+              <p className="text-sm text-slate-600">Learning topics</p>
               <p className="mt-2 text-3xl font-bold">{allTopics.length}</p>
             </div>
-            <div className="rounded-2xl border border-slate-700 bg-slate-950/60 p-5">
-              <p className="text-sm text-slate-400">Topics completed</p>
+            <div className="rounded-2xl border border-slate-200 bg-white/60 p-5">
+              <p className="text-sm text-slate-600">Topics completed</p>
               <p className="mt-2 text-3xl font-bold">
                 {completed.length}/{allTopics.length}
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-700 bg-slate-950/60 p-5">
-              <p className="text-sm text-slate-400">Your progress</p>
+            <div className="rounded-2xl border border-slate-200 bg-white/60 p-5">
+              <p className="text-sm text-slate-600">Your progress</p>
               <p className="mt-2 text-3xl font-bold">{progress}%</p>
               <div
-                className="mt-3 h-2 overflow-hidden rounded-full bg-slate-800"
+                className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100"
                 role="progressbar"
                 aria-valuemin={0}
                 aria-valuemax={100}
@@ -536,14 +536,14 @@ export default function LinuxRoadmapPage() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <h2 className="text-2xl font-bold sm:text-3xl">Learning Path</h2>
-              <p className="mt-2 text-slate-400">
+              <p className="mt-2 text-slate-600">
                 Study each module, practise its lab, and mark topics as complete.
               </p>
             </div>
             <button
               type="button"
               onClick={toggleAllModules}
-              className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-semibold hover:border-orange-400/50 hover:bg-slate-800"
+              className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold hover:border-orange-400/50 hover:bg-slate-100"
             >
               {openModules.length === filteredModules.length
                 ? "Collapse all"
@@ -559,7 +559,7 @@ export default function LinuxRoadmapPage() {
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search Linux topics, commands, labs..."
-                className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500 focus:border-orange-400"
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none placeholder:text-slate-500 focus:border-orange-400"
               />
             </label>
             <label className="block">
@@ -567,7 +567,7 @@ export default function LinuxRoadmapPage() {
               <select
                 value={level}
                 onChange={(event) => setLevel(event.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 outline-none focus:border-orange-400"
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:border-orange-400"
               >
                 <option value="All">All levels</option>
                 <option value="Beginner">Beginner</option>
@@ -597,7 +597,7 @@ export default function LinuxRoadmapPage() {
               return (
                 <article
                   key={module.title}
-                  className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-lg shadow-black/10"
+                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg shadow-black/10"
                 >
                   <button
                     type="button"
@@ -613,7 +613,7 @@ export default function LinuxRoadmapPage() {
                         <h3 className="text-lg font-bold sm:text-xl">
                           {module.title}
                         </h3>
-                        <p className="mt-1 text-sm text-slate-400">
+                        <p className="mt-1 text-sm text-slate-600">
                           {module.topics.length} topics
                         </p>
                       </div>
@@ -624,14 +624,14 @@ export default function LinuxRoadmapPage() {
                       >
                         {module.level}
                       </span>
-                      <span className="text-lg text-slate-400">
+                      <span className="text-lg text-slate-600">
                         {isOpen ? "−" : "+"}
                       </span>
                     </div>
                   </button>
 
                   <div className="px-5 pb-4 sm:px-6">
-                    <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
+                    <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
                       <div
                         className="h-full rounded-full bg-orange-400 transition-all"
                         style={{ width: `${moduleProgress}%` }}
@@ -643,7 +643,7 @@ export default function LinuxRoadmapPage() {
                   </div>
 
                   {isOpen && (
-                    <div className="border-t border-slate-800 p-5 sm:p-6">
+                    <div className="border-t border-slate-200 p-5 sm:p-6">
                       <div className="grid gap-3 sm:grid-cols-2">
                         {module.topics.map((topic) => {
                           const topicId = `${module.title}::${topic}`;
@@ -655,7 +655,7 @@ export default function LinuxRoadmapPage() {
                               className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition ${
                                 isCompleted
                                   ? "border-emerald-500/20 bg-emerald-500/5"
-                                  : "border-slate-800 bg-slate-950/50 hover:border-slate-700"
+                                  : "border-slate-200 bg-slate-50 hover:border-slate-200"
                               }`}
                             >
                               <input
@@ -668,7 +668,7 @@ export default function LinuxRoadmapPage() {
                                 className={
                                   isCompleted
                                     ? "text-sm text-slate-500 line-through"
-                                    : "text-sm leading-6 text-slate-200"
+                                    : "text-sm leading-6 text-slate-800"
                                 }
                               >
                                 {topic}
@@ -682,7 +682,7 @@ export default function LinuxRoadmapPage() {
                         <p className="font-semibold text-orange-300">
                           Hands-on lab
                         </p>
-                        <p className="mt-2 leading-6 text-slate-300">
+                        <p className="mt-2 leading-6 text-slate-700">
                           {module.lab}
                         </p>
                       </div>
@@ -693,9 +693,9 @@ export default function LinuxRoadmapPage() {
             })}
 
             {filteredModules.length === 0 && (
-              <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8 text-center">
+              <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
                 <p className="font-semibold">No matching Linux topics found</p>
-                <p className="mt-2 text-sm text-slate-400">
+                <p className="mt-2 text-sm text-slate-600">
                   Try another keyword or select All levels.
                 </p>
                 <button
@@ -713,10 +713,10 @@ export default function LinuxRoadmapPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-7">
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7">
           <div>
             <h2 className="text-2xl font-bold">Essential Linux Commands</h2>
-            <p className="mt-2 text-slate-400">
+            <p className="mt-2 text-slate-600">
               Learn what each command group is used for and practise in a lab.
             </p>
           </div>
@@ -725,16 +725,16 @@ export default function LinuxRoadmapPage() {
             {commandGroups.map((group) => (
               <div
                 key={group.category}
-                className="grid gap-2 rounded-xl border border-slate-800 bg-slate-950/50 p-4 sm:grid-cols-[150px_1fr]"
+                className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-[150px_1fr]"
               >
                 <p className="font-semibold text-orange-300">
                   {group.category}
                 </p>
                 <div>
-                  <p className="text-sm leading-6 text-slate-300">
+                  <p className="text-sm leading-6 text-slate-700">
                     {group.commands}
                   </p>
-                  <code className="mt-2 block overflow-x-auto rounded-lg bg-slate-900 px-3 py-2 text-xs text-emerald-300">
+                  <code className="mt-2 block overflow-x-auto rounded-lg bg-white px-3 py-2 text-xs text-emerald-300">
                     {group.example}
                   </code>
                 </div>
@@ -752,7 +752,7 @@ export default function LinuxRoadmapPage() {
             <h2 className="text-2xl font-bold sm:text-3xl">
               Real-Time DevOps Projects
             </h2>
-            <p className="mt-2 text-slate-400">
+            <p className="mt-2 text-slate-600">
               Build practical evidence for your portfolio and interviews.
             </p>
           </div>
@@ -761,7 +761,7 @@ export default function LinuxRoadmapPage() {
             {projects.map((project, index) => (
               <article
                 key={project.title}
-                className="rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-6"
+                className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <h3 className="text-lg font-bold">
@@ -773,10 +773,10 @@ export default function LinuxRoadmapPage() {
                     {project.level}
                   </span>
                 </div>
-                <p className="mt-3 leading-6 text-slate-300">
+                <p className="mt-3 leading-6 text-slate-700">
                   {project.description}
                 </p>
-                <p className="mt-4 text-sm leading-6 text-slate-400">
+                <p className="mt-4 text-sm leading-6 text-slate-600">
                   <span className="font-semibold text-orange-300">
                     Deliverables:
                   </span>{" "}
@@ -787,10 +787,10 @@ export default function LinuxRoadmapPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-7">
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7">
           <div>
             <h2 className="text-2xl font-bold">Linux Interview Preparation</h2>
-            <p className="mt-2 text-slate-400">
+            <p className="mt-2 text-slate-600">
               Review these 15 frequently useful Linux and production-support
               questions.
             </p>
@@ -803,7 +803,7 @@ export default function LinuxRoadmapPage() {
               return (
                 <article
                   key={item.q}
-                  className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/50"
+                  className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
                 >
                   <button
                     type="button"
@@ -817,18 +817,18 @@ export default function LinuxRoadmapPage() {
                     aria-expanded={isOpen}
                     className="flex w-full items-center justify-between gap-4 p-4 text-left"
                   >
-                    <span className="font-medium text-slate-200">
+                    <span className="font-medium text-slate-800">
                       <span className="mr-2 text-orange-300">
                         Q{index + 1}.
                       </span>
                       {item.q}
                     </span>
-                    <span className="shrink-0 text-slate-400">
+                    <span className="shrink-0 text-slate-600">
                       {isOpen ? "−" : "+"}
                     </span>
                   </button>
                   {isOpen && (
-                    <div className="border-t border-slate-800 px-4 py-4 leading-7 text-slate-300">
+                    <div className="border-t border-slate-200 px-4 py-4 leading-7 text-slate-700">
                       {item.a}
                     </div>
                   )}
@@ -840,7 +840,7 @@ export default function LinuxRoadmapPage() {
 
         <section className="rounded-2xl border border-orange-400/20 bg-gradient-to-r from-orange-400/10 to-slate-900 p-5 sm:p-7">
           <h2 className="text-xl font-bold">Production Safety Checklist</h2>
-          <ul className="mt-4 grid gap-3 text-sm leading-6 text-slate-300 sm:grid-cols-2">
+          <ul className="mt-4 grid gap-3 text-sm leading-6 text-slate-700 sm:grid-cols-2">
             <li>• Test commands in a lab before production use.</li>
             <li>• Follow least privilege and approved access controls.</li>
             <li>• Back up important configuration before editing it.</li>
@@ -850,7 +850,7 @@ export default function LinuxRoadmapPage() {
           </ul>
         </section>
 
-        <footer className="border-t border-slate-800 pt-5 text-sm text-slate-500">
+        <footer className="border-t border-slate-200 pt-5 text-sm text-slate-500">
           DevMavox Linux Engineering Roadmap · Learn, practise, verify, and
           document every production change.
         </footer>
