@@ -7,6 +7,7 @@ on:
       - ".github/workflows/real-monitoring-lab-integration.yml"
       - "labs/monitoring-real-world/**"
       - "components/devmavox-learning/MonitoringHandsOnLabs.tsx"
+      - "components/devmavox-learning/LiveMonitoringBridge.tsx"
       - "lib/monitoring-lab-engine.ts"
       - "package.json"
       - "package-lock.json"
