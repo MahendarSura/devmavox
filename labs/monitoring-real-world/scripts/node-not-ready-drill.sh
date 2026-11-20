@@ -12,10 +12,11 @@ restore(){ docker start "$AGENT" >/dev/null 2>&1 || true; }
 docker stop "$AGENT" >/dev/null
 trap restore EXIT
 sleep 15
-NOTREADY="$(kubectl get nodes -o json | jq '[.items[]|select(any(.status.conditions[]?;.type=="Ready" and .status=="False"))]|length')"
+NOTREADY="$(kubectl get nodes -o json | jq '[.items[]|select(any(.status.conditions[]?;.type=="Ready" and (.status=="False" or .status=="Unknown")))]|length')"
 ((NOTREADY>0)) || { echo "NodeNotReady was not observed"; exit 1; }
 restore
 trap - EXIT
 kubectl wait --for=condition=Ready "node/$AGENT" --timeout=180s
+kubectl annotate node "$AGENT" devmavox.io/node-not-ready-observed=true devmavox.io/node-not-ready-recovered=true --overwrite
 jq -n --arg node "$AGENT" --argjson observed true --argjson recovered true --argjson at "$(date +%s)" '{scenario:"node-not-ready",node:$node,fault_observed:$observed,recovery_verified:$recovered,verified_at:$at}' > "$STATE/node-not-ready.json"
 echo "NodeNotReady observed and worker recovered."
