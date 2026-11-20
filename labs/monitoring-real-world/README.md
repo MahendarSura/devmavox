@@ -58,7 +58,8 @@ For a genuine NodeNotReady exercise on a disposable k3d cluster only, run `scrip
 ## Reset
 ```bash
 kubectl delete namespace production --ignore-not-found
-kubectl apply -f kubernetes/base/
+kubectl apply -f kubernetes/base/namespace.yaml
+kubectl apply -f kubernetes/base/checkout.yaml
 docker compose down -v
 k3d cluster delete devmavox-lab
 ```
