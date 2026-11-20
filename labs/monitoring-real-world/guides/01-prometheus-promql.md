@@ -15,3 +15,5 @@ Student tasks:
 6. Generate slow traffic using curl 'http://localhost:8080/checkout?delay=1800' repeatedly and observe p95.
 
 Pass evidence: target UP, request rate greater than zero, 5xx ratio rises after /fail, p95 rises under slow traffic. Explain counter, rate and histogram buckets.
+
+Assessment: start with `bash /workspace/scripts/lab-assess.sh start promql`, then finish with `bash /workspace/scripts/lab-assess.sh verify <lab-id>`. Evidence is stored locally in the terminal volume, not synced to Vercel.
