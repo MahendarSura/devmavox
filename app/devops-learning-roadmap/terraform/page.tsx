@@ -1023,7 +1023,7 @@ export default function TerraformRoadmapPage() {
             Terraform — Beginner to Production
           </h1>
 
-          <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">
+          <p className="mt-5 max-w-3xl text-base leading-8 text-slate-700 sm:text-lg">
             Master Infrastructure as Code, HCL, AWS provisioning, reusable
             modules, state management, remote backends, security, CI/CD and
             production troubleshooting through a structured learning path.
@@ -1041,7 +1041,7 @@ export default function TerraformRoadmapPage() {
                 className="rounded-2xl border border-white/10 bg-white/5 p-4"
               >
                 <p className="text-3xl font-bold">{value}</p>
-                <p className="mt-1 text-sm text-slate-300">{label}</p>
+                <p className="mt-1 text-sm text-slate-700">{label}</p>
               </div>
             ))}
           </div>
@@ -1079,7 +1079,7 @@ export default function TerraformRoadmapPage() {
           <p className="mt-2 text-sm text-slate-500">
             {completedCount} of {totalLessons} lesson sections completed
           </p>
-          <p className="mt-2 text-xs text-slate-400">
+          <p className="mt-2 text-xs text-slate-600">
             Progress is held in page state and may reset when you leave or
             refresh this page.
           </p>
@@ -1245,9 +1245,9 @@ export default function TerraformRoadmapPage() {
           )}
         </div>
 
-        <section className="mt-10 rounded-2xl bg-slate-900 p-6 text-white sm:p-8">
+        <section className="mt-10 rounded-2xl bg-white p-6 text-white sm:p-8">
           <h2 className="text-2xl font-bold">Recommended learning sequence</h2>
-          <p className="mt-3 max-w-3xl leading-7 text-slate-300">
+          <p className="mt-3 max-w-3xl leading-7 text-slate-700">
             Learn HCL and resource provisioning first. Then move to variables,
             state, modules and AWS infrastructure. After that, study testing,
             CI/CD, security, migration and production recovery. Finish the
@@ -1267,7 +1267,7 @@ export default function TerraformRoadmapPage() {
               >
                 <p className="text-sm font-bold text-emerald-300">{number}</p>
                 <h3 className="mt-2 font-semibold">{title}</h3>
-                <p className="mt-1 text-sm leading-6 text-slate-300">
+                <p className="mt-1 text-sm leading-6 text-slate-700">
                   {description}
                 </p>
               </div>
