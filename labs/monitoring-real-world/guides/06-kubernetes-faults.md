@@ -1,42 +1,42 @@
 # Lab 06 — Kubernetes faults and recovery
 
-Prerequisites: Docker, k3d and kubectl. Run scripts/create-cluster.sh (Windows: scripts/windows-setup.ps1).
+Start: `bash /workspace/scripts/lab-assess.sh start kubernetes`. Inspect nodes, namespaces, deployments, ReplicaSets, pods, events and live CPU/memory:
+```bash
+kubectl get nodes -o wide
+kubectl get namespaces
+kubectl -n production get deployments,replicasets,pods,services
+kubectl -n production get events --sort-by=.lastTimestamp
+kubectl top nodes
+kubectl top pods -n production
+``
 
-Inspect:
-    kubectl get nodes -o wide
-    kubectl get namespaces
-    kubectl -n production get deployments,replicasets,pods,services
-    kubectl -n production get events --sort-by=.lastTimestamp
-    kubectl top nodes
-    kubectl top pods
-
-Apply one fault at a time. Observe get pods -w, describe pod, logs --previous and Events.
+Apply ONE fault, capture `get pods -w`, `describe pod`, `logs --previous` and Events, then recover and verify rollout.
 
 OOMKilled:
-    kubectl apply -f kubernetes/faults/oomkilled.yaml
-    kubectl -n production describe pod -l app=checkout
-    kubectl apply -f kubernetes/recovery/checkout-resources.yaml
-    kubectl -n production rollout status deployment/checkout
-
+```bash
+kubectl apply -f /workspace/kubernetes/faults/oomkilled.yaml
+kubectl -n production describe pod -l app=checkout
+kubectl apply -f /workspace/kubernetes/recovery/checkout-resources.yaml
+kubectl -n production rollout status deployment/checkout
+``
 CrashLoopBackOff:
-    kubectl apply -f kubernetes/faults/crashloopbackoff.yaml
-    kubectl -n production logs deployment/checkout --previous
-    kubectl apply -f kubernetes/recovery/checkout-resources.yaml
-    kubectl -n production rollout status deployment/checkout
-
+```bash
+kubectl apply -f /workspace/kubernetes/faults/crashloopbackoff.yaml
+kubectl -n production logs deployment/checkout --previous
+kubectl -n production describe pod -l app=checkout
+kubectl apply -f /workspace/kubernetes/recovery/checkout-resources.yaml
+kubectl -n production rollout status deployment/checkout
+``
 Pending:
-    kubectl apply -f kubernetes/faults/pending.yaml
-    kubectl -n production describe pod -l app=checkout
-    kubectl apply -f kubernetes/recovery/checkout-resources.yaml
-    kubectl -n production rollout status deployment/checkout
+```bash
+kubectl apply -f /workspace/kubernetes/faults/pending.yaml
+kubectl -n production describe pod -l app=checkout
+kubectl -n production get events --sort-by=.lastTimestamp
+kubectl apply -f /workspace/kubernetes/recovery/checkout-resources.yaml
+kubectl -n production rollout status deployment/checkout
+``
 
-Real NodeNotReady:
-    kubectl get nodes -w
-    # In a second terminal, from this lab folder:
-    bash scripts/node-not-ready-drill.sh
-    # Windows: ./scripts/node-not-ready-drill.ps1
-The drill stops only one disposable k3d agent container for 90 seconds, then starts it and waits for the node Ready condition. Never stop a workstation kubelet. Never run this on a shared or production cluster.
+NodeNotReady is HOST TERMINAL ONLY (browser terminal has no Docker CLI/socket):
+`bash ./scripts/node-not-ready-drill.sh` (Windows: `./scripts/node-not-ready-drill.ps1`). It stops only one disposable k3d worker for 45 seconds and restores it on interruption. Never use a production/shared cluster.
 
-Pass evidence: capture the actual fault reason, recovery commands, all replicas Ready, rollout complete and service responding. Metrics Server is installed by the cluster setup script so kubectl top can report live CPU and memory.
-
-Assessment: start with `bash /workspace/scripts/lab-assess.sh start kubernetes`, then finish with `bash /workspace/scripts/lab-assess.sh verify <lab-id>`. Evidence is stored locally in the terminal volume, not synced to Vercel.
+Final: recover all drills, confirm desired replicas available and nodes Ready, then run `bash /workspace/scripts/lab-assess.sh verify kubernetes`. Assessment requires retained fault Events plus healthy recovery; a healthy baseline alone does not pass. Evidence stays in the student's local terminal volume and is not synced to Vercel.
