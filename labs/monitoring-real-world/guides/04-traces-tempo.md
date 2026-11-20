@@ -10,6 +10,6 @@ Student tasks:
 5. Correlate trace time with Prometheus p95 changes.
 6. If no trace appears, inspect Collector logs and OTLP receiver health. Do not use simulator fixture trace IDs as evidence.
 
-Pass evidence: a trace emitted by the running service and a clear explanation of the slow span. This lab must be runtime-tested before being marked passed.
+Pass evidence: a trace emitted by the running service and a clear explanation of the slow span. Submit the trace ID you inspected: `bash /workspace/scripts/lab-assess.sh verify traces <trace-id>`. The grader retrieves that exact trace from Tempo and confirms spans exist.
 
 Assessment: start with `bash /workspace/scripts/lab-assess.sh start traces`, then finish with `bash /workspace/scripts/lab-assess.sh verify <lab-id>`. Evidence is stored locally in the terminal volume, not synced to Vercel.
