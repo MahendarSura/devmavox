@@ -1,0 +1,10 @@
+apiVersion: 1
+providers:
+  - name: DevMavox Labs
+    orgId: 1
+    folder: DevMavox Hands-on Labs
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards

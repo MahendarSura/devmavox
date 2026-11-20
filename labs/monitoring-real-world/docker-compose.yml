@@ -1,0 +1,107 @@
+services:
+  lab-terminal:
+    build: ./terminal
+    container_name: devmavox-lab-terminal
+    restart: unless-stopped
+    env_file: .env
+    ports: ["127.0.0.1:7681:7681"]
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    volumes:
+      - ./.lab-state/terminal.kubeconfig:/run/secrets/lab-kubeconfig:ro
+      - .:/workspace:ro
+      - terminal-assessment-data:/home/student/.lab-state
+    networks: [observability]
+  monitoring-bridge:
+    build: ./bridge
+    container_name: devmavox-monitoring-bridge
+    restart: unless-stopped
+    user: "0:0"
+    environment:
+      KUBECONFIG: /run/secrets/lab-kubeconfig
+      LAB_ALLOWED_ORIGINS: ${LAB_ALLOWED_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000,https://devmavox.vercel.app,https://devmavox-mahendras-projects-215526d8.vercel.app,https://devmavox-kphpy9yr0-mahendras-projects-215526d8.vercel.app,https://devmavox-d6h928lvn-mahendras-projects-215526d8.vercel.app,https://devmavox-367yqklvs-mahendras-projects-215526d8.vercel.app}
+    ports: ["127.0.0.1:8787:8787"]
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    volumes:
+      - ./.lab-state/terminal.kubeconfig:/run/secrets/lab-kubeconfig:ro
+      - .:/workspace:ro
+      - terminal-assessment-data:/home/student/.lab-state
+    depends_on: [prometheus, grafana, loki, tempo, alertmanager]
+    networks: [observability]
+  checkout:
+    build: ./checkout-service
+    container_name: devmavox-checkout
+    ports: ["127.0.0.1:8080:8080"]
+    environment:
+      SERVICE_NAME: checkout
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+      OTEL_SERVICE_NAME: checkout
+    depends_on: [otel-collector]
+    networks: [observability]
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: devmavox-prometheus
+    ports: ["127.0.0.1:9090:9090"]
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus-data:/prometheus
+    command: ["--config.file=/etc/prometheus/prometheus.yml","--storage.tsdb.path=/prometheus","--web.enable-lifecycle"]
+    networks: [observability]
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    container_name: devmavox-alertmanager
+    ports: ["127.0.0.1:9093:9093"]
+    volumes: ["./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro"]
+    command: ["--config.file=/etc/alertmanager/alertmanager.yml"]
+    networks: [observability]
+  grafana:
+    image: grafana/grafana:12.1.1
+    container_name: devmavox-grafana
+    ports: ["127.0.0.1:3000:3000"]
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: devmavox-lab
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on: [prometheus, loki, tempo]
+    networks: [observability]
+  loki:
+    image: grafana/loki:3.5.3
+    container_name: devmavox-loki
+    ports: ["127.0.0.1:3100:3100"]
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    networks: [observability]
+  promtail:
+    image: grafana/promtail:3.5.3
+    container_name: devmavox-promtail
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./loki/promtail.yml:/etc/promtail/config.yml:ro
+    command: ["-config.file=/etc/promtail/config.yml"]
+    depends_on: [loki]
+    networks: [observability]
+  tempo:
+    image: grafana/tempo:2.8.2
+    container_name: devmavox-tempo
+    command: ["-config.file=/etc/tempo.yaml"]
+    volumes: ["./tempo/tempo.yml:/etc/tempo.yaml:ro"]
+    ports: ["127.0.0.1:3200:3200","127.0.0.1:4317:4317"]
+    networks: [observability]
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.133.0
+    container_name: devmavox-otel-collector
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes: ["./otel/collector.yml:/etc/otelcol-contrib/config.yaml:ro"]
+    ports: ["127.0.0.1:4318:4318","127.0.0.1:8889:8889"]
+    depends_on: [tempo]
+    networks: [observability]
+networks:
+  observability:
+    name: devmavox-observability
+volumes:
+  prometheus-data:
+  grafana-data:
+  terminal-assessment-data:

@@ -1,0 +1,16 @@
+{
+  "id": null,
+  "uid": "devmavox-checkout",
+  "title": "DevMavox - Checkout Operations",
+  "tags": ["devmavox", "hands-on", "checkout"],
+  "timezone": "browser",
+  "schemaVersion": 41,
+  "version": 1,
+  "refresh": "5s",
+  "panels": [
+    {"id":1,"title":"Request rate","type":"timeseries","datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"expr":"sum(rate(http_requests_total{service=\"checkout\"}[5m]))","legendFormat":"requests/sec"}],"gridPos":{"h":8,"w":12,"x":0,"y":0}},
+    {"id":2,"title":"5xx error ratio","type":"timeseries","datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"expr":"sum(rate(http_requests_total{service=\"checkout\",status=~\"5..\"}[5m])) / clamp_min(sum(rate(http_requests_total{service=\"checkout\"}[5m])), 0.001)","legendFormat":"error ratio"}],"gridPos":{"h":8,"w":12,"x":12,"y":0}},
+    {"id":3,"title":"p95 latency","type":"timeseries","datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"expr":"histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{service=\"checkout\"}[5m])) by (le))","legendFormat":"p95 seconds"}],"gridPos":{"h":8,"w":12,"x":0,"y":8}},
+    {"id":4,"title":"Process memory","type":"timeseries","datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"expr":"process_resident_memory_bytes{service=\"checkout\"}","legendFormat":"resident bytes"}],"gridPos":{"h":8,"w":12,"x":12,"y":8}}
+  ]
+}
