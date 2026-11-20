@@ -1,59 +1,69 @@
 # DevMavox Real Monitoring & Kubernetes Labs
 
-This repository folder provides reproducible, local, real-infrastructure exercises. It is separate from the browser-based simulator.
+This folder provides a disposable local environment with actual Docker services and a real local k3d Kubernetes cluster. It is not hosted inside Vercel.
 
 ## Prerequisites
 - Docker Desktop / Docker Engine with Compose v2
 - kubectl and k3d
-- Bash (or Windows PowerShell scripts supplied below)
+- Bash on Linux/macOS, or Windows PowerShell
 
-## Start the observability stack
-From this folder:
+## One-command startup
+
+Linux/macOS:
 ```bash
-docker compose up -d --build
-docker compose ps
-./scripts/smoke-test.sh
+./scripts/start-lab.sh
 ```
-Grafana: http://localhost:3000 (local training login: admin / devmavox-lab). Prometheus: http://localhost:9090. Alertmanager: http://localhost:9093. Checkout API: http://localhost:8080.
 
-Generate traffic:
+Windows PowerShell:
+```powershell
+.\scripts\start-lab.ps1
+```
+
+The startup script generates a random local terminal password in the ignored `.env`, creates a disposable 3-node k3d cluster, prepares a restricted-to-localhost browser terminal, starts the observability stack and runs HTTP smoke checks.
+
+## Open the tools
+- Grafana: http://localhost:3000 (local training login: admin / devmavox-lab)
+- Prometheus: http://localhost:9090
+- Alertmanager: http://localhost:9093
+- Loki: http://localhost:3100
+- Tempo: http://localhost:3200
+- Checkout API: http://localhost:8080
+- Authenticated browser terminal: http://localhost:7681 (username/password are in local `.env`)
+
+Terminal is bound to 127.0.0.1 only. It runs as an unprivileged container user, uses a local-only password and receives a read-only kubeconfig for the disposable k3d cluster. Do not expose port 7681 publicly or share the generated password.
+
+## Generate live telemetry
 ```bash
 curl http://localhost:8080/health
 curl http://localhost:8080/checkout
 curl 'http://localhost:8080/checkout?delay=1800'
 curl http://localhost:8080/fail
+curl http://localhost:8080/metrics
 ```
-Metrics endpoint: http://localhost:8080/metrics.
-
-## Start Kubernetes
-```bash
-./scripts/create-cluster.sh
-kubectl get nodes -o wide
-kubectl get namespaces
-kubectl -n production get deploy,rs,pods,svc
-```
-Windows: `scripts/windows-setup.ps1`.
+Prometheus scrapes the checkout service. Grafana is provisioned with Prometheus, Loki and Tempo datasources. The checkout process emits Prometheus counters/histograms, JSON request logs and OpenTelemetry traces.
 
 ## Six guided labs
-Complete the student tasks and evidence checks in `guides/README.md`:
+Open `guides/README.md` and complete in order:
 1. Prometheus + PromQL against live checkout metrics.
 2. Grafana dashboard panels backed by Prometheus.
-3. Loki log search and incident correlation.
+3. Loki logs with request ID / trace ID correlation.
 4. OpenTelemetry traces in Tempo.
 5. Prometheus alert Pending → Firing → Resolved lifecycle.
 6. Kubernetes fault reproduction, investigation and recovery.
 
+Use the browser terminal to execute the commands. The terminal has kubectl and common shell tools. It is connected to the disposable local k3d cluster through the generated kubeconfig.
+
 ## Kubernetes fault drills
 Apply one fault at a time:
 ```bash
-kubectl apply -f kubernetes/faults/oomkilled.yaml
+kubectl apply -f /workspace/guides/../kubernetes/faults/oomkilled.yaml
 kubectl -n production get pods -w
 kubectl -n production describe pod -l app=checkout
 kubectl -n production get events --sort-by=.lastTimestamp
 ```
-Repeat for `crashloopbackoff.yaml` and `pending.yaml`. Recover with `kubectl apply -f kubernetes/recovery/checkout-resources.yaml` and verify `kubectl -n production rollout status deployment/checkout`.
+Repository paths are available on the host; when using the terminal, the guides are mounted under `/workspace/guides`. Run the manifests from the host terminal in the repository folder or copy them into the mounted workspace first. Recover with `kubectl apply -f kubernetes/recovery/checkout-resources.yaml` and verify `kubectl -n production rollout status deployment/checkout`.
 
-For a genuine NodeNotReady exercise on a disposable k3d cluster only, run `scripts/node-not-ready-drill.sh` (PowerShell: `scripts/node-not-ready-drill.ps1`). It stops and restarts a k3d agent container, not the host kubelet. Watch `kubectl get nodes -w` in another terminal. Never run against production or a shared cluster.
+For genuine NodeNotReady, use `scripts/node-not-ready-drill.sh` (PowerShell: `scripts/node-not-ready-drill.ps1`) from the host. It stops only a disposable k3d agent container and restarts it after 90 seconds. Never run against production or a shared cluster.
 
 ## Reset
 ```bash
@@ -64,9 +74,8 @@ docker compose down -v
 k3d cluster delete devmavox-lab
 ```
 
-## Honest implementation boundaries
-- Docker Compose services are real local containers. Prometheus scrapes the checkout service; Grafana is provisioned with Prometheus/Loki/Tempo datasources; Alertmanager receives Prometheus alerts.
-- Kubernetes runs in a real local k3d cluster. The node drill targets only a disposable k3d agent.
-- These files do **not** make Vercel host Docker or Kubernetes. A public website needs a separately deployed, authenticated lab controller/agent to provision isolated per-student clusters. Never expose Docker socket, kubeconfig or cluster credentials to browser JavaScript.
-- The browser-based six-lab simulator remains a simulator until the authenticated lab-controller integration is implemented.
-- Default credentials are local-training-only. Do not expose this stack to the public internet with defaults.
+## Security and deployment boundaries
+- Docker Compose and k3d run on the student's own machine. Vercel does not host Docker, privileged containers or Kubernetes clusters.
+- The local terminal is authenticated and bound to localhost. Never publish its port, Docker socket or kubeconfig to the internet.
+- Public multi-student labs require a separately hosted authenticated controller, isolated per-student cluster provisioning, quotas, lifecycle cleanup and server-side assessment. That shared hosted controller is not included in this local lab deliverable.
+- Grafana's sample credentials are local-training-only. Change them before any non-local use.
