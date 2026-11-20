@@ -1,62 +1,71 @@
 # DevMavox Real Monitoring & Kubernetes Labs
 
-This folder provisions a **real, disposable lab stack**. Unlike the browser simulator, these exercises run real containers, Kubernetes workloads, Prometheus scrapes, Grafana dashboards, Loki logs, Tempo traces and Alertmanager rules.
+This repository folder provides reproducible, local, real-infrastructure exercises. It is separate from the browser-based simulator.
 
 ## Prerequisites
-- Docker Desktop (or Docker Engine + Compose v2)
-- kubectl
-- k3d
-- Node is not required on the host; the checkout service runs in Docker
+- Docker Desktop / Docker Engine with Compose v2
+- kubectl and k3d
+- Bash (or Windows PowerShell scripts supplied below)
 
 ## Start the observability stack
+From this folder:
 ```bash
 docker compose up -d --build
 docker compose ps
+./scripts/smoke-test.sh
 ```
-Open Grafana at http://localhost:3000 (admin / devmavox-lab). Prometheus: http://localhost:9090. Alertmanager: http://localhost:9093. Checkout API: http://localhost:8080.
+Grafana: http://localhost:3000 (local training login: admin / devmavox-lab). Prometheus: http://localhost:9090. Alertmanager: http://localhost:9093. Checkout API: http://localhost:8080.
 
 Generate traffic:
 ```bash
 curl http://localhost:8080/health
 curl http://localhost:8080/checkout
+curl 'http://localhost:8080/checkout?delay=1800'
+curl http://localhost:8080/fail
 ```
-Metrics: http://localhost:8080/metrics. Send a slow request: `curl 'http://localhost:8080/checkout?delay=1800'`. Send an error: `curl http://localhost:8080/fail`.
+Metrics endpoint: http://localhost:8080/metrics.
 
-## Start the real Kubernetes practice cluster
+## Start Kubernetes
 ```bash
 ./scripts/create-cluster.sh
-kubectl get nodes
-kubectl apply -f kubernetes/base/
-kubectl -n production get deploy,pods,svc
+kubectl get nodes -o wide
+kubectl get namespaces
+kubectl -n production get deploy,rs,pods,svc
 ```
-Windows PowerShell users can run the equivalent commands in `scripts/windows-setup.ps1`.
+Windows: `scripts/windows-setup.ps1`.
 
-## Six real labs
-1. **Prometheus + PromQL:** query live `http_requests_total`, request rate, error ratio, CPU and latency histogram quantiles.
-2. **Grafana:** import the provisioned Checkout Operations dashboard and build panels from real Prometheus queries.
-3. **Logs:** inspect real container logs in Grafana Explore (Loki); filter by service, level and request ID.
-4. **Traces:** inspect OpenTelemetry traces in Grafana Explore (Tempo); follow gateway → checkout → database spans.
-5. **Alerts:** trigger the provided p95 latency alert with slow requests; observe Pending → Firing → Resolved in Prometheus/Alertmanager.
-6. **Kubernetes:** use kubectl against the k3d cluster. Apply one fault manifest at a time from `kubernetes/faults/`, inspect Pods/Events/metrics, repair the Deployment, and verify rollout.
+## Six guided labs
+Complete the student tasks and evidence checks in `guides/README.md`:
+1. Prometheus + PromQL against live checkout metrics.
+2. Grafana dashboard panels backed by Prometheus.
+3. Loki log search and incident correlation.
+4. OpenTelemetry traces in Tempo.
+5. Prometheus alert Pending → Firing → Resolved lifecycle.
+6. Kubernetes fault reproduction, investigation and recovery.
 
-## Kubernetes fault exercises
+## Kubernetes fault drills
+Apply one fault at a time:
 ```bash
 kubectl apply -f kubernetes/faults/oomkilled.yaml
 kubectl -n production get pods -w
 kubectl -n production describe pod -l app=checkout
 kubectl -n production get events --sort-by=.lastTimestamp
 ```
-Repeat with `crashloopbackoff.yaml`, `pending.yaml`, and `node-not-ready-lab.yaml` (the last uses a deliberately unhealthy workload/node-condition exercise; do not stop a host kubelet on your workstation). Recovery examples are in `kubernetes/recovery/`.
+Repeat for `crashloopbackoff.yaml` and `pending.yaml`. Recover with `kubectl apply -f kubernetes/recovery/checkout-resources.yaml` and verify `kubectl -n production rollout status deployment/checkout`.
+
+For a genuine NodeNotReady exercise on a disposable k3d cluster only, run `scripts/node-not-ready-drill.sh` (PowerShell: `scripts/node-not-ready-drill.ps1`). It stops and restarts a k3d agent container, not the host kubelet. Watch `kubectl get nodes -w` in another terminal. Never run against production or a shared cluster.
 
 ## Reset
 ```bash
 kubectl delete namespace production --ignore-not-found
 kubectl apply -f kubernetes/base/
 docker compose down -v
+k3d cluster delete devmavox-lab
 ```
 
-## Safety and scope
-- Everything is local and disposable; do not point these exercises at a production cluster.
-- The Docker Compose stack is a real observability environment. The Kubernetes cluster is a real k3d cluster on the student's machine.
-- The Vercel-hosted Next.js site cannot itself host a privileged Kubernetes cluster or Docker daemon. A future authenticated lab-agent integration is required to launch isolated per-student clusters from the website. Never expose a host Docker socket or kubeconfig to a public browser client.
-- Default credentials are for local training only. Change them before any shared or internet-accessible deployment.
+## Honest implementation boundaries
+- Docker Compose services are real local containers. Prometheus scrapes the checkout service; Grafana is provisioned with Prometheus/Loki/Tempo datasources; Alertmanager receives Prometheus alerts.
+- Kubernetes runs in a real local k3d cluster. The node drill targets only a disposable k3d agent.
+- These files do **not** make Vercel host Docker or Kubernetes. A public website needs a separately deployed, authenticated lab controller/agent to provision isolated per-student clusters. Never expose Docker socket, kubeconfig or cluster credentials to browser JavaScript.
+- The browser-based six-lab simulator remains a simulator until the authenticated lab-controller integration is implemented.
+- Default credentials are local-training-only. Do not expose this stack to the public internet with defaults.
