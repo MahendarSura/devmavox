@@ -11,7 +11,7 @@ This folder provides a disposable local environment with actual Docker services 
 
 Linux/macOS:
 ```bash
-./scripts/start-lab.sh
+bash ./scripts/start-lab.sh
 ```
 
 Windows PowerShell:
