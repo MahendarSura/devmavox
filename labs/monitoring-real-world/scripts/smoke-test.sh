@@ -12,6 +12,13 @@ echo "Checking Loki readiness..."
 curl --fail --silent "$BASE:3100/ready" >/dev/null
 echo "Checking Tempo readiness..."
 curl --fail --silent "$BASE:3200/ready" >/dev/null
+echo "Checking authenticated browser terminal..."
+set -a
+. ./.env
+set +a
+curl --fail --silent --user "$LAB_TERMINAL_USERNAME:$LAB_TERMINAL_PASSWORD" "$BASE:7681/" >/dev/null
 echo "Checking Alertmanager readiness..."
 curl --fail --silent "$BASE:9093/-/ready" >/dev/null
+echo "Checking Kubernetes Metrics Server..."
+kubectl top nodes >/dev/null
 echo "All HTTP smoke checks passed."
