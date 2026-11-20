@@ -948,7 +948,7 @@ export default function JenkinsRoadmapPage() {
             Jenkins Learning Roadmap
           </h1>
 
-          <p className="mt-6 max-w-3xl text-base leading-8 text-slate-200 sm:text-lg">
+          <p className="mt-6 max-w-3xl text-base leading-8 text-slate-800 sm:text-lg">
             Learn Jenkins from CI/CD fundamentals to pipeline engineering,
             automation, security, distributed builds, cloud integration and
             production delivery architecture.
@@ -966,7 +966,7 @@ export default function JenkinsRoadmapPage() {
                 className="rounded-2xl border border-white/10 bg-white/10 p-4"
               >
                 <p className="text-xl font-bold sm:text-2xl">{value}</p>
-                <p className="mt-1 text-sm text-slate-300">{label}</p>
+                <p className="mt-1 text-sm text-slate-700">{label}</p>
               </div>
             ))}
           </div>
@@ -1119,7 +1119,7 @@ export default function JenkinsRoadmapPage() {
                       </span>
                     </span>
 
-                    <span aria-hidden="true" className="shrink-0 text-xl text-slate-400">
+                    <span aria-hidden="true" className="shrink-0 text-xl text-slate-600">
                       {isExpanded ? "−" : "+"}
                     </span>
                   </button>
@@ -1150,7 +1150,7 @@ export default function JenkinsRoadmapPage() {
                                 <span
                                   className={`block font-bold ${
                                     isComplete
-                                      ? "text-slate-400 line-through"
+                                      ? "text-slate-600 line-through"
                                       : "text-slate-900"
                                   }`}
                                 >
