@@ -10,9 +10,9 @@ if [[ ! -f .env ]]; then
   chmod 600 .env
   echo "Created local .env with a random terminal password. Keep it private."
 fi
-./scripts/create-cluster.sh
+bash ./scripts/create-cluster.sh
 docker compose up -d --build
 docker compose ps
-./scripts/smoke-test.sh
+bash ./scripts/smoke-test.sh
 echo "Grafana: http://localhost:3000"
 echo "Browser terminal: http://localhost:7681 (credentials are in local .env)"
