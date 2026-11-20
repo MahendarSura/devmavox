@@ -1,0 +1,22 @@
+groups:
+  - name: checkout.rules
+    rules:
+      - alert: CheckoutHighP95Latency
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{service="checkout"}[2m])) by (le)) > 1
+        for: 30s
+        labels:
+          severity: critical
+          service: checkout
+        annotations:
+          summary: Checkout p95 latency is above one second
+          description: Investigate checkout dependencies and correlated trace IDs.
+          runbook: http://localhost:3000/monitoring-playbook
+      - alert: CheckoutHigh5xxRate
+        expr: sum(rate(http_requests_total{service="checkout",status=~"5.."}[2m])) / clamp_min(sum(rate(http_requests_total{service="checkout"}[2m])), 0.001) > 0.05
+        for: 30s
+        labels:
+          severity: warning
+          service: checkout
+        annotations:
+          summary: Checkout 5xx ratio is above five percent
+          description: Inspect Loki logs and Tempo traces for the failing requests.
