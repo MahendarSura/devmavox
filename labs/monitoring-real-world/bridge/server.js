@@ -17,15 +17,15 @@ else detail="Required submission is missing or unsupported.";
 const report=read(),entry={lab:b.lab,verified:passed,score:passed?100:0,detail,evidence,verifiedAt:new Date().toISOString()};report.entries=report.entries.filter(x=>x.lab!==b.lab);report.entries.push(entry);fs.mkdirSync(STATE,{recursive:true});fs.writeFileSync(path.join(STATE,"web-assessment.json"),JSON.stringify(report,null,2));return{entry,report:summary(report)}}
 const server=http.createServer(async(req,res)=>{if(req.method==="OPTIONS"){cors(req,res);res.writeHead(204);return res.end()}const u=new URL(req.url,"http://localhost");try{
 if(req.method==="GET"&&u.pathname==="/api/health")return json(req,res,200,{ok:true});
-if(req.method==="GET"&&u.pathname==="/api/status")return json(res,200,await status());
-if(req.method==="GET"&&u.pathname==="/api/metrics")return json(res,200,await get(U.prometheus+"/api/v1/query?query="+encodeURIComponent(u.searchParams.get("query")||"up")));
-if(req.method==="GET"&&u.pathname==="/api/logs")return json(res,200,await get(U.loki+"/loki/api/v1/query_range?query="+encodeURIComponent(u.searchParams.get("query")||'{container=~".*devmavox-checkout.*"}')+"&limit=100"));
-if(req.method==="GET"&&u.pathname.startsWith("/api/traces/"))return json(res,200,await get(U.tempo+"/api/traces/"+encodeURIComponent(u.pathname.split("/").pop())));
-if(req.method==="GET"&&u.pathname==="/api/dashboards"){const d=await get(U.grafana+"/api/search?type=dash-db",{authorization:auth});return json(res,200,d.map(x=>({uid:x.uid,title:x.title,url:x.url})))}
+if(req.method==="GET"&&u.pathname==="/api/status")return json(req,res,200,await status());
+if(req.method==="GET"&&u.pathname==="/api/metrics")return json(req,res,200,await get(U.prometheus+"/api/v1/query?query="+encodeURIComponent(u.searchParams.get("query")||"up")));
+if(req.method==="GET"&&u.pathname==="/api/logs")return json(req,res,200,await get(U.loki+"/loki/api/v1/query_range?query="+encodeURIComponent(u.searchParams.get("query")||'{container=~".*devmavox-checkout.*"}')+"&limit=100"));
+if(req.method==="GET"&&u.pathname.startsWith("/api/traces/"))return json(req,res,200,await get(U.tempo+"/api/traces/"+encodeURIComponent(u.pathname.split("/").pop())));
+if(req.method==="GET"&&u.pathname==="/api/dashboards"){const d=await get(U.grafana+"/api/search?type=dash-db",{authorization:auth});return json(req,res,200,d.map(x=>({uid:x.uid,title:x.title,url:x.url})))}
 if(req.method==="GET"&&u.pathname==="/api/traces"){const end=Math.floor(Date.now()/1000),start=end-3600;return json(req,res,200,await get(U.tempo+"/api/search?limit=30&start="+start+"&end="+end))}
 if(req.method==="GET"&&u.pathname==="/api/alerts")return json(req,res,200,await get(U.alertmanager+"/api/v2/alerts"))
-if(req.method==="GET"&&u.pathname==="/api/kubernetes"){const [n,p,e]=await Promise.all([kube(["get","nodes","-o","json"]),kube(["get","pods","-A","-o","json"]),kube(["get","events","-A","-o","json"])]);return json(res,200,{nodes:JSON.parse(n).items,pods:JSON.parse(p).items,events:JSON.parse(e).items.slice(-50)})}
-if(req.method==="GET"&&u.pathname==="/api/assessment/report")return json(res,200,summary(read()));
-if(req.method==="POST"&&u.pathname==="/api/assessment/verify"){let raw="";for await(const c of req)raw+=c;return json(res,200,await verify(JSON.parse(raw)))}
-return json(res,404,{error:"Not found"})}catch(e){return json(res,502,{error:e.message})}});
+if(req.method==="GET"&&u.pathname==="/api/kubernetes"){const [n,p,e]=await Promise.all([kube(["get","nodes","-o","json"]),kube(["get","pods","-A","-o","json"]),kube(["get","events","-A","-o","json"])]);return json(req,res,200,{nodes:JSON.parse(n).items,pods:JSON.parse(p).items,events:JSON.parse(e).items.slice(-50)})}
+if(req.method==="GET"&&u.pathname==="/api/assessment/report")return json(req,res,200,summary(read()));
+if(req.method==="POST"&&u.pathname==="/api/assessment/verify"){let raw="";for await(const c of req)raw+=c;return json(req,res,200,await verify(JSON.parse(raw)))}
+return json(req,res,404,{error:"Not found"})}catch(e){return json(req,res,502,{error:e.message})}});
 server.listen(PORT,"0.0.0.0",()=>console.log("Monitoring bridge listening on "+PORT));
