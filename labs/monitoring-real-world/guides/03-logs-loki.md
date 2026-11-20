@@ -1,13 +1,19 @@
 # Lab 03 — Logs investigation with Loki
 
-Start the stack. Generate traffic with /health, /fail and /checkout?delay=1500. Open Grafana Explore and select Loki.
+Start the stack and generate traffic:
+    curl -s http://localhost:8080/health
+    curl -s -H 'x-request-id: student-503-01' http://localhost:8080/fail
+    curl -s 'http://localhost:8080/checkout?delay=1500'
+
+Open Grafana → Explore → Loki. The checkout service writes one JSON record per completed HTTP request to stdout; Promtail discovers Docker containers and forwards their logs to Loki.
 
 Student tasks:
 1. Inspect labels using {container=~".*checkout.*"}.
-2. Search checkout container logs.
-3. Compare timestamps around healthy and failing requests.
-4. Correlate the observed 503 response with the Prometheus 5xx spike.
-5. Inspect Promtail and Loki container logs if no entries arrive.
-6. Identify which diagnostic fields are missing from the service logs and propose structured JSON logging with request_id, trace_id, route and status.
+2. Parse the JSON records with {container=~".*checkout.*"} | json.
+3. Filter failures with {container=~".*checkout.*"} | json | level="ERROR".
+4. Find the record with request_id="student-503-01".
+5. Record timestamp, status, duration_ms, trace_id and span_id.
+6. Compare the failure timestamp with the Prometheus 5xx rate and locate the corresponding trace in Tempo using trace_id.
+7. Explain why request ID and trace ID solve different correlation problems.
 
-Pass evidence: exact LogQL query, container and timestamps, plus a correlation explanation. Do not invent request IDs or structured fields that the current service does not emit.
+Pass evidence: exact LogQL query, matching JSON record, request ID, trace ID and a correlation explanation. If no log arrives, inspect Promtail targets and Loki readiness before assuming the application failed.
