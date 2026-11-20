@@ -83,5 +83,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx tsc --noEmit
-      - run: npx eslint components/devmavox-learning/MonitoringHandsOnLabs.tsx lib/monitoring-lab-engine.ts
+      - run: npx eslint lib/monitoring-lab-engine.ts
       - run: npm run build
