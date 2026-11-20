@@ -1,4 +1,14 @@
 services:
+  lab-terminal:
+    build: ./terminal
+    container_name: devmavox-lab-terminal
+    restart: unless-stopped
+    env_file: .env
+    ports: ["127.0.0.1:7681:7681"]
+    volumes:
+      - ./.lab-state/terminal.kubeconfig:/home/student/.kube/config:ro
+      - ./guides:/workspace/guides:ro
+    networks: [observability]
   checkout:
     build: ./checkout-service
     container_name: devmavox-checkout
