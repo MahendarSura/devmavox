@@ -221,6 +221,11 @@ export default function MonitoringHandsOnLabs() {
             <a href="https://github.com/MahendarSura/devmavox/tree/feat/monitoring-real-infrastructure-labs-20261120/labs/monitoring-real-world" target="_blank" rel="noreferrer" className="rounded-lg bg-cyan-300 px-4 py-2 text-sm font-bold text-slate-950">Open real lab setup</a>
             <a href="https://github.com/MahendarSura/devmavox/tree/feat/monitoring-real-infrastructure-labs-20261120/labs/monitoring-real-world/guides" target="_blank" rel="noreferrer" className="rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-white">Open six student guides</a>
             <a href="http://localhost:7681" target="_blank" rel="noreferrer" className="rounded-lg border border-emerald-300/40 bg-emerald-300/10 px-4 py-2 text-sm font-semibold text-emerald-100">Open local live terminal</a>
+            <a href="http://localhost:3000" target="_blank" rel="noreferrer" className="rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold text-white">Grafana</a>
+            <a href="http://localhost:9090" target="_blank" rel="noreferrer" className="rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold text-white">Prometheus</a>
+            <a href="http://localhost:9093" target="_blank" rel="noreferrer" className="rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold text-white">Alertmanager</a>
+            <a href="http://localhost:3200" target="_blank" rel="noreferrer" className="rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold text-white">Tempo</a>
+            <a href="http://localhost:3100/ready" target="_blank" rel="noreferrer" className="rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold text-white">Loki health</a>
           </div>
           <p className="mt-3 text-xs text-amber-200">First run scripts/start-lab.ps1 (Windows) or scripts/start-lab.sh (Linux/macOS) from the GitHub lab folder. Then open the authenticated terminal at localhost:7681. The cluster runs on the student's computer; Vercel does not host Kubernetes. Shared remote per-student provisioning and server-side assessment sync are not included.</p>
         </section>
