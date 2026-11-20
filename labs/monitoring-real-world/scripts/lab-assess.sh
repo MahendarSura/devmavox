@@ -55,9 +55,13 @@ alerts)
   if ((HAS_RULE==1 && ACTIVE==0)) && [[ "$STATES" == *pending* && "$STATES" == *firing* && "$STATES" == *inactive* ]]; then PASS=true; DETAIL="Student observed CheckoutHighP95Latency pending, firing and inactive; Alertmanager has no active alerts"; EVIDENCE="$(jq -n --arg states "$STATES" --argjson rules "$RULES" '{alert:"CheckoutHighP95Latency",observed_states:$states,alert_rules:$rules,alertmanager_active:$ACTIVE}')"; else DETAIL="Lifecycle not proven for CheckoutHighP95Latency. Record its pending, firing and inactive states, then wait for Alertmanager resolution."; fi;;
 kubernetes)
   NODES="$(kubectl get nodes -o json)"; READY="$(jq '[.items[]|select(any(.status.conditions[];.type=="Ready" and .status=="True"))]|length' <<<"$NODES")"
-  EV="$(kubectl get events -A -o json)"; FAULT="$(jq '[.items[]|select(.reason=="BackOff" or .reason=="OOMKilling" or .reason=="FailedScheduling" or .reason=="NodeNotReady" or .reason=="Killing")]|length' <<<"$EV")"
   DEP="$(kubectl -n production get deployment checkout -o json 2>/dev/null || echo '{}')"; WANT="$(jq -r '.spec.replicas // 0' <<<"$DEP")"; HAVE="$(jq -r '.status.availableReplicas // 0' <<<"$DEP")"
-  if ((READY>=3 && WANT>0 && HAVE==WANT && FAULT>0)); then PASS=true; DETAIL="Ready nodes=$READY; checkout replicas=$HAVE/$WANT; retained fault events=$FAULT"; EVIDENCE="$(jq -n --argjson nodes "$READY" --argjson desired "$WANT" --argjson available "$HAVE" --argjson faults "$FAULT" '{ready_nodes:$nodes,desired_replicas:$desired,available_replicas:$available,fault_events:$faults}')"; else DETAIL="Not passed: nodes=$READY replicas=$HAVE/$WANT fault_events=$FAULT. Reproduce, investigate and recover a fault."; fi;;
+  DRILLS="$STATE/kubernetes-drills"; MISSING=""; COUNT=0
+  for scenario in oomkilled crashloopbackoff pending node-not-ready; do
+    FILE="$DRILLS/$scenario.json"
+    if [[ -f "$FILE" ]] && jq -e '.fault_observed==true and .recovery_verified==true' "$FILE" >/dev/null; then COUNT=$((COUNT+1)); else MISSING+="$scenario "; fi
+  done
+  if ((READY>=3 && WANT>0 && HAVE==WANT && COUNT==4)); then PASS=true; DETAIL="All four real fault drills recorded and recovered; ready nodes=$READY; checkout replicas=$HAVE/$WANT"; EVIDENCE="$(jq -n --argjson nodes "$READY" --argjson desired "$WANT" --argjson available "$HAVE" --argjson drills "$COUNT" '{ready_nodes:$nodes,desired_replicas:$desired,available_replicas:$available,verified_fault_drills:$drills}')"; else DETAIL="Four individually recorded fault-and-recovery drills required. Verified=$COUNT/4; missing=$MISSING; ready nodes=$READY; replicas=$HAVE/$WANT."; fi;;
 esac
 SCORE=0; [[ "$PASS" != true ]] || SCORE=100
 [[ -f "$REC" ]] || echo '{"entries":[]}' > "$REC"
