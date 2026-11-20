@@ -40,7 +40,7 @@ curl 'http://localhost:8080/checkout?delay=1800'
 curl http://localhost:8080/fail
 curl http://localhost:8080/metrics
 ```
-Prometheus scrapes the checkout service. Grafana is provisioned with Prometheus, Loki and Tempo datasources. The checkout process emits Prometheus counters/histograms, JSON request logs and OpenTelemetry traces.
+Prometheus scrapes the checkout service. Grafana is provisioned with Prometheus, Loki and Tempo datasources. The built-in dashboard is a reference dashboard; the Grafana assessment requires a separate student-created dashboard titled with `Student` and at least four query-backed panels. The checkout process emits Prometheus counters/histograms, JSON request logs and OpenTelemetry traces.
 
 ## Six guided labs
 Open `guides/README.md` and complete in order:
@@ -51,7 +51,7 @@ Open `guides/README.md` and complete in order:
 5. Prometheus alert Pending → Firing → Resolved lifecycle.
 6. Kubernetes fault reproduction, investigation and recovery.
 
-Use the browser terminal to execute the commands. The terminal has kubectl, curl, jq and common shell tools. Start each attempt with `bash /workspace/scripts/lab-assess.sh start <lab-id>` and verify with the same ID after finishing. For Alert lifecycle, run `bash /workspace/scripts/watch-alert-lifecycle.sh` during the incident and recovery. It is connected to the disposable local k3d cluster through the generated kubeconfig. Start and verify evidence with `bash /workspace/scripts/lab-assess.sh start promql` and `bash /workspace/scripts/lab-assess.sh verify promql` (replace the ID for each lab). Evidence is persisted in a Docker volume on the student's machine.
+Use the authenticated browser terminal to execute the commands. The terminal has kubectl, curl, jq and common shell tools. Each lab has a real-service evidence check; run `bash /workspace/scripts/lab-assess.sh start <lab-id>` before work and `bash /workspace/scripts/lab-assess.sh verify <lab-id>` afterward. After all six, run `bash /workspace/scripts/lab-assess.sh report` for the final six-lab result. A pass is based on the live service API checks and retained cluster evidence, not on the browser simulator. Start each attempt with `bash /workspace/scripts/lab-assess.sh start <lab-id>` and verify with the same ID after finishing. For Alert lifecycle, run `bash /workspace/scripts/watch-alert-lifecycle.sh` during the incident and recovery so the actual pending, firing and inactive transitions are recorded. It is connected to the disposable local k3d cluster through the generated kubeconfig. Start and verify evidence with `bash /workspace/scripts/lab-assess.sh start promql` and `bash /workspace/scripts/lab-assess.sh verify promql` (replace the ID for each lab). Evidence is persisted in a Docker volume on the student's machine.
 
 ## Kubernetes fault drills
 Apply one fault at a time:
@@ -63,7 +63,7 @@ kubectl -n production get events --sort-by=.lastTimestamp
 ```
 The repository folder is mounted read-only at `/workspace` inside the browser terminal, so all Kubernetes manifests and guides are available there. Recover with `kubectl apply -f /workspace/kubernetes/recovery/checkout-resources.yaml` and verify `kubectl -n production rollout status deployment/checkout`.
 
-For genuine NodeNotReady, use `bash scripts/node-not-ready-drill.sh` (PowerShell: `scripts/node-not-ready-drill.ps1`) from the host. It stops only a disposable k3d agent container and restarts it after 90 seconds. Never run against production or a shared cluster.
+For genuine NodeNotReady, use `bash scripts/node-not-ready-drill.sh` (PowerShell: `scripts/node-not-ready-drill.ps1`) from the host. It stops only a disposable k3d agent container for 45 seconds and restores it even if the drill is interrupted. Never run against production or a shared cluster.
 
 ## Reset
 ```bash
