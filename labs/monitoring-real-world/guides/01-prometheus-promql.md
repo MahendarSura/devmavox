@@ -16,4 +16,4 @@ Student tasks:
 
 Pass evidence: target UP, request rate greater than zero, 5xx ratio rises after /fail, p95 rises under slow traffic. Explain counter, rate and histogram buckets.
 
-Assessment: start with `bash /workspace/scripts/lab-assess.sh start promql`, then finish with `bash /workspace/scripts/lab-assess.sh verify <lab-id>`. Evidence is stored locally in the terminal volume, not synced to Vercel.
+Assessment: start with `bash /workspace/scripts/lab-assess.sh start promql`, then submit the exact query you executed: `bash /workspace/scripts/lab-assess.sh verify promql 'sum(rate(http_requests_total{service="checkout"}[5m]))'`. The grader runs that submitted query against the live Prometheus API. Evidence is stored locally in the terminal volume, not synced to Vercel.
