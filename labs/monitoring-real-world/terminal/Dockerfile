@@ -8,4 +8,7 @@ WORKDIR /home/student
 USER student
 EXPOSE 7681
 COPY --chown=student:student entrypoint.sh /usr/local/bin/lab-entrypoint
+USER root
+RUN chmod 0755 /usr/local/bin/lab-entrypoint
+USER student
 ENTRYPOINT ["/usr/local/bin/lab-entrypoint"]
