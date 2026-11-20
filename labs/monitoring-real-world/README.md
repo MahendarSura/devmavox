@@ -63,7 +63,7 @@ kubectl -n production get events --sort-by=.lastTimestamp
 ```
 The repository folder is mounted read-only at `/workspace` inside the browser terminal, so all Kubernetes manifests and guides are available there. Recover with `kubectl apply -f /workspace/kubernetes/recovery/checkout-resources.yaml` and verify `kubectl -n production rollout status deployment/checkout`.
 
-For genuine NodeNotReady, use `scripts/node-not-ready-drill.sh` (PowerShell: `scripts/node-not-ready-drill.ps1`) from the host. It stops only a disposable k3d agent container and restarts it after 90 seconds. Never run against production or a shared cluster.
+For genuine NodeNotReady, use `bash scripts/node-not-ready-drill.sh` (PowerShell: `scripts/node-not-ready-drill.ps1`) from the host. It stops only a disposable k3d agent container and restarts it after 90 seconds. Never run against production or a shared cluster.
 
 ## Reset
 ```bash
