@@ -36,10 +36,12 @@ grafana)
     if ((C>=4)); then PASS=true; DETAIL="Student dashboard $DASH_UID has $C query-backed panels"; EVIDENCE="$(jq -n --arg uid "$DASH_UID" --argjson panels "$C" '{dashboard_uid:$uid,query_backed_panels:$panels}')"; else DETAIL="Student dashboard needs at least four panels with queries (found $C)."; fi
   else DETAIL="Create and save your own dashboard with Student in its title; the provisioned demo dashboard does not count."; fi;;
 logs)
+  [[ "$STUDENT_INPUT" =~ ^[A-Za-z0-9._:-]{1,128}$ ]] || { echo "Request ID must contain only letters, digits, dot, underscore, colon or hyphen."; exit 2; }
   D="$(curl -fsSG --data-urlencode "query={container=~\".*devmavox-checkout.*\"} | json | request_id=\"$STUDENT_INPUT\"" --data-urlencode limit=100 http://loki:3100/loki/api/v1/query_range)"
   C="$(jq '[.data.result[].values[]?]|length' <<<"$D")"
   if [[ -n "$STUDENT_INPUT" && "$C" -gt 0 ]]; then PASS=true; DETAIL="Loki confirmed student request ID $STUDENT_INPUT in $C matching log lines"; EVIDENCE="$(jq -n --arg id "$STUDENT_INPUT" --argjson count "$C" '{request_id:$id,matching_log_lines:$count}')"; else DETAIL="Supply an exact request ID from a real 503 log: verify logs <request-id>. Trigger /fail with x-request-id header."; fi;;
 traces)
+  [[ "$STUDENT_INPUT" =~ ^[A-Fa-f0-9]{32}$ ]] || { echo "Trace ID must be exactly 32 hexadecimal characters."; exit 2; }
   [[ -n "$STUDENT_INPUT" ]] || { echo "Submit the real trace ID: verify traces <trace-id>"; exit 2; }
   D="$(curl -fsS "http://tempo:3200/api/traces/$STUDENT_INPUT")"
   C="$(jq '[.batches[]?.scopeSpans[]?.spans[]?]|length' <<<"$D")"
@@ -47,8 +49,10 @@ traces)
 alerts)
   R="$(curl -fsS 'http://prometheus:9090/api/v1/rules?type=alert')"; A="$(curl -fsS http://alertmanager:9093/api/v2/alerts)"
   ACTIVE="$(jq '[.[]|select(.status.state=="active")]|length' <<<"$A")"; RULES="$(jq '[.data.groups[].rules[]|select(.type=="alerting")]|length' <<<"$R")"
-  H="$STATE/alert-lifecycle.json"; STATES=""; [[ ! -f "$H" ]] || STATES="$(jq -r '[.[].state]|unique|join(",")' "$H")"
-  if ((RULES>0 && ACTIVE==0)) && [[ "$STATES" == *pending* && "$STATES" == *firing* && "$STATES" == *inactive* ]]; then PASS=true; DETAIL="Recorded real pending, firing and inactive alert states; Alertmanager is clear"; EVIDENCE="$(jq -n --arg states "$STATES" --argjson rules "$RULES" '{observed_states:$states,alert_rules:$rules}')"; else DETAIL="Lifecycle not proven. Run watch-alert-lifecycle.sh during incident and recovery; require pending, firing and inactive."; fi;;
+  H="$STATE/alert-lifecycle.json"; STATES=""
+  if [[ -f "$H" ]]; then STATES="$(jq -r '[.[]|select(.alert=="CheckoutHighP95Latency")|.state]|unique|join(",")' "$H")"; fi
+  HAS_RULE="$(jq '[.data.groups[].rules[]|select(.type=="alerting" and .name=="CheckoutHighP95Latency")]|length' <<<"$R")"
+  if ((HAS_RULE==1 && ACTIVE==0)) && [[ "$STATES" == *pending* && "$STATES" == *firing* && "$STATES" == *inactive* ]]; then PASS=true; DETAIL="Student observed CheckoutHighP95Latency pending, firing and inactive; Alertmanager has no active alerts"; EVIDENCE="$(jq -n --arg states "$STATES" --argjson rules "$RULES" '{alert:"CheckoutHighP95Latency",observed_states:$states,alert_rules:$rules,alertmanager_active:$ACTIVE}')"; else DETAIL="Lifecycle not proven for CheckoutHighP95Latency. Record its pending, firing and inactive states, then wait for Alertmanager resolution."; fi;;
 kubernetes)
   NODES="$(kubectl get nodes -o json)"; READY="$(jq '[.items[]|select(any(.status.conditions[];.type=="Ready" and .status=="True"))]|length' <<<"$NODES")"
   EV="$(kubectl get events -A -o json)"; FAULT="$(jq '[.items[]|select(.reason=="BackOff" or .reason=="OOMKilling" or .reason=="FailedScheduling" or .reason=="NodeNotReady" or .reason=="Killing")]|length' <<<"$EV")"
