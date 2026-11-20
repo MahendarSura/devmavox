@@ -17,3 +17,5 @@ Student tasks:
 7. Explain why request ID and trace ID solve different correlation problems.
 
 Pass evidence: exact LogQL query, matching JSON record, request ID, trace ID and a correlation explanation. If no log arrives, inspect Promtail targets and Loki readiness before assuming the application failed.
+
+Assessment: start with `bash /workspace/scripts/lab-assess.sh start logs`, then finish with `bash /workspace/scripts/lab-assess.sh verify <lab-id>`. Evidence is stored locally in the terminal volume, not synced to Vercel.
