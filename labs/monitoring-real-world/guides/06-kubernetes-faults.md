@@ -1,42 +1,43 @@
-# Lab 06 — Kubernetes faults and recovery
+# Lab 06 — Kubernetes fault reproduction and recovery
 
-Start: `bash /workspace/scripts/lab-assess.sh start kubernetes`. Inspect nodes, namespaces, deployments, ReplicaSets, pods, events and live CPU/memory:
+Use only the disposable DevMavox k3d cluster. Start the lab attempt first.
+
+## Inspect the healthy baseline
 ```bash
-kubectl get nodes -o wide
 kubectl get namespaces
-kubectl -n production get deployments,replicasets,pods,services
-kubectl -n production get events --sort-by=.lastTimestamp
+kubectl get nodes -o wide
+kubectl -n production get deployments,replicasets,pods -o wide
 kubectl top nodes
 kubectl top pods -n production
-``
-
-Apply ONE fault, capture `get pods -w`, `describe pod`, `logs --previous` and Events, then recover and verify rollout.
-
-OOMKilled:
-```bash
-kubectl apply -f /workspace/kubernetes/faults/oomkilled.yaml
-kubectl -n production describe pod -l app=checkout
-kubectl apply -f /workspace/kubernetes/recovery/checkout-resources.yaml
-kubectl -n production rollout status deployment/checkout
-``
-CrashLoopBackOff:
-```bash
-kubectl apply -f /workspace/kubernetes/faults/crashloopbackoff.yaml
-kubectl -n production logs deployment/checkout --previous
-kubectl -n production describe pod -l app=checkout
-kubectl apply -f /workspace/kubernetes/recovery/checkout-resources.yaml
-kubectl -n production rollout status deployment/checkout
-``
-Pending:
-```bash
-kubectl apply -f /workspace/kubernetes/faults/pending.yaml
-kubectl -n production describe pod -l app=checkout
 kubectl -n production get events --sort-by=.lastTimestamp
-kubectl apply -f /workspace/kubernetes/recovery/checkout-resources.yaml
-kubectl -n production rollout status deployment/checkout
-``
+```
 
-NodeNotReady is HOST TERMINAL ONLY (browser terminal has no Docker CLI/socket):
-`bash ./scripts/node-not-ready-drill.sh` (Windows: `./scripts/node-not-ready-drill.ps1`). It stops only one disposable k3d worker for 45 seconds and restores it on interruption. Never use a production/shared cluster.
+## Run three pod-level fault drills
+From the host or browser terminal with the repository mounted, run:
+```bash
+bash /workspace/scripts/run-kubernetes-drills.sh
+```
+The runner applies OOMKilled, CrashLoopBackOff and Pending manifests one at a time, captures actual Pod/Warning Event evidence, applies the recovery manifest, and waits for all checkout replicas to become available. Each drill is recorded in `~/.lab-state/kubernetes-drills/`.
 
-Final: recover all drills, confirm desired replicas available and nodes Ready, then run `bash /workspace/scripts/lab-assess.sh verify kubernetes`. Assessment requires retained fault Events plus healthy recovery; a healthy baseline alone does not pass. Evidence stays in the student's local terminal volume and is not synced to Vercel.
+For each failure, inspect:
+```bash
+kubectl -n production get pods -o wide
+kubectl -n production describe pods -l app=checkout
+kubectl -n production get events --sort-by=.lastTimestamp
+kubectl -n production rollout history deployment/checkout
+```
+
+## Genuine NodeNotReady drill
+This drill must be run from the host because it stops a Docker container. It only targets one disposable k3d agent:
+```bash
+bash ./scripts/node-not-ready-drill.sh
+```
+Type STOP when prompted. It waits for the node to report NotReady, restores the worker even on interruption, waits for Ready, and stores evidence. Never run this against production/shared clusters.
+
+## Final verification
+After all four drill evidence files exist and the checkout deployment is healthy:
+```bash
+bash /workspace/scripts/lab-assess.sh verify kubernetes
+bash /workspace/scripts/lab-assess.sh report
+```
+A Kubernetes pass requires four separate fault-and-recovery records, at least three Ready nodes, and all desired checkout replicas available. The grader does not award marks for a healthy baseline alone.
