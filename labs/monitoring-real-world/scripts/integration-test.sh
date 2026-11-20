@@ -41,8 +41,14 @@ for _ in $(seq 1 30); do
   sleep 3
 done
 [[ "$TRACE_FOUND" == true ]] || fail "Tempo trace for request $REQUEST_ID was not found (check OTel exporter and Promtail correlation)"
-echo "[8/8] Verify Alertmanager API and print evidence IDs"
+echo "[8/10] Verify local website bridge API"
+wait_for "$BASE:8787/api/health"
+curl -fsS "$BASE:8787/api/metrics?query=up" | jq -e '.status=="success"' >/dev/null || fail "bridge Prometheus query endpoint failed"
+curl -fsS "$BASE:8787/api/dashboards" | jq -e 'type=="array"' >/dev/null || fail "bridge Grafana dashboard endpoint failed"
+curl -fsS "$BASE:8787/api/assessment/report" | jq -e '.total==6 and .maximum==600' >/dev/null || fail "bridge assessment report endpoint failed"
+echo "[9/10] Verify Alertmanager API and print evidence IDs"
 curl -fsS "$BASE:9093/api/v2/status" | jq -e '.cluster' >/dev/null || fail "Alertmanager API unavailable"
+echo "[10/10] Website bridge endpoints passed"
 echo "PASS: Docker observability integration checks passed"
 echo "REQUEST_ID=$REQUEST_ID"
 echo "TRACE_ID=$TRACE_ID"
