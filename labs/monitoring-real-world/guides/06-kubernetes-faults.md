@@ -38,3 +38,5 @@ Real NodeNotReady:
 The drill stops only one disposable k3d agent container for 90 seconds, then starts it and waits for the node Ready condition. Never stop a workstation kubelet. Never run this on a shared or production cluster.
 
 Pass evidence: capture the actual fault reason, recovery commands, all replicas Ready, rollout complete and service responding. Metrics Server is installed by the cluster setup script so kubectl top can report live CPU and memory.
+
+Assessment: start with `bash /workspace/scripts/lab-assess.sh start kubernetes`, then finish with `bash /workspace/scripts/lab-assess.sh verify <lab-id>`. Evidence is stored locally in the terminal volume, not synced to Vercel.
