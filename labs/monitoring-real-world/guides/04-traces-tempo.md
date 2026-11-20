@@ -11,3 +11,5 @@ Student tasks:
 6. If no trace appears, inspect Collector logs and OTLP receiver health. Do not use simulator fixture trace IDs as evidence.
 
 Pass evidence: a trace emitted by the running service and a clear explanation of the slow span. This lab must be runtime-tested before being marked passed.
+
+Assessment: start with `bash /workspace/scripts/lab-assess.sh start traces`, then finish with `bash /workspace/scripts/lab-assess.sh verify <lab-id>`. Evidence is stored locally in the terminal volume, not synced to Vercel.
