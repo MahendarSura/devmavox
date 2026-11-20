@@ -937,7 +937,7 @@ export default function JenkinsRoadmapPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
+    <main className="min-h-screen bg-white text-slate-900">
       <section className="bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-900 text-white">
         <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:py-20">
           <p className="mb-4 inline-flex rounded-full border border-blue-300/30 bg-white/10 px-4 py-2 text-sm font-semibold text-blue-100">
