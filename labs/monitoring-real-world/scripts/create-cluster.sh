@@ -8,7 +8,7 @@ mkdir -p "$STATE_DIR"
 if ! k3d cluster list | grep -q '^devmavox-lab'; then
   k3d cluster create devmavox-lab --servers 1 --agents 2 --api-port 0.0.0.0:6550 --wait
 else
-  if ! docker port k3d-devmavox-lab-serverlb 6550/tcp 2>/dev/null | grep -q .; then
+  if ! docker port k3d-devmavox-lab-serverlb 6443/tcp 2>/dev/null | grep -q .; then
     echo "Existing cluster does not expose API port 6550. Run: k3d cluster delete devmavox-lab, then rerun this script."
     exit 1
   fi
