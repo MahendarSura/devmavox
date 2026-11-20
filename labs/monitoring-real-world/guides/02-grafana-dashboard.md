@@ -7,8 +7,8 @@ Student tasks:
 2. Inspect Request rate, 5xx error ratio, p95 latency and Process memory.
 3. Generate baseline traffic and then 503 traffic using curl /checkout and /fail.
 4. Observe the corresponding dashboard panels change.
-5. Add a panel for sum(rate(http_requests_total{service="checkout"}[5m])).
-6. Add a p95 panel using histogram_quantile and save the dashboard.
+5. Create and save a NEW dashboard titled `Student - Checkout Operations` (do not edit only the provisioned demo dashboard). Add a panel for sum(rate(http_requests_total{service="checkout"}[5m])).
+6. Add a p95 panel using histogram_quantile, ensure the dashboard has at least four useful panels, then save it. The assessment searches for your saved dashboard title containing `Student`.
 7. Explain empty panels caused by a down target, wrong time range or mismatched label selector.
 
 Pass evidence: live request, error and latency panels plus two saved student-created panels and their PromQL.
