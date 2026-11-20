@@ -369,14 +369,14 @@ export default function AnsibleRoadmapPage() {
   const progress = Math.round((completed.length / modules.length) * 100);
 
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100 sm:px-6 lg:px-10">
+    <main className="min-h-screen bg-white px-4 py-10 text-slate-900 sm:px-6 lg:px-10">
       <div className="mx-auto max-w-6xl">
-        <section className="overflow-hidden rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900 to-orange-950/40 p-6 shadow-2xl sm:p-10">
+        <section className="overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-slate-900 to-orange-950/40 p-6 shadow-2xl sm:p-10">
           <div className="mb-4 flex flex-wrap gap-2">
             <span className="rounded-full border border-orange-400/30 bg-orange-400/10 px-3 py-1 text-xs font-semibold text-orange-300">
               DEVOPS LEARNING ROADMAP
             </span>
-            <span className="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300">
+            <span className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-700">
               Beginner to Production
             </span>
           </div>
@@ -385,25 +385,25 @@ export default function AnsibleRoadmapPage() {
             Ansible Roadmap
           </h1>
 
-          <p className="mt-4 max-w-3xl text-base leading-7 text-slate-300 sm:text-lg">
+          <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
             Learn configuration management, infrastructure automation, reusable
             roles, secure deployments and production automation workflows from
             the fundamentals to enterprise-level practices.
           </p>
 
           <div className="mt-7 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-2xl border border-slate-700 bg-slate-950/50 p-4">
-              <p className="text-sm text-slate-400">Learning modules</p>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-sm text-slate-600">Learning modules</p>
               <p className="mt-1 text-3xl font-bold">{modules.length}</p>
             </div>
-            <div className="rounded-2xl border border-slate-700 bg-slate-950/50 p-4">
-              <p className="text-sm text-slate-400">Portfolio projects</p>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-sm text-slate-600">Portfolio projects</p>
               <p className="mt-1 text-3xl font-bold">{projects.length}</p>
             </div>
-            <div className="rounded-2xl border border-slate-700 bg-slate-950/50 p-4">
-              <p className="text-sm text-slate-400">Your progress</p>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-sm text-slate-600">Your progress</p>
               <p className="mt-1 text-3xl font-bold">{progress}%</p>
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-800">
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
                 <div
                   className="h-full rounded-full bg-orange-400 transition-all"
                   style={{ width: `${progress}%` }}
@@ -413,15 +413,15 @@ export default function AnsibleRoadmapPage() {
           </div>
         </section>
 
-        <section className="mt-8 rounded-2xl border border-slate-800 bg-slate-900/70 p-5 sm:p-6">
+        <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
           <h2 className="text-xl font-bold">How to use this roadmap</h2>
-          <ol className="mt-3 grid gap-3 text-sm leading-6 text-slate-300 sm:grid-cols-2">
+          <ol className="mt-3 grid gap-3 text-sm leading-6 text-slate-700 sm:grid-cols-2">
             <li>1. Follow the modules in order, from fundamentals to production.</li>
             <li>2. Practise each concept in your own lab environment.</li>
             <li>3. Mark modules complete as you finish learning them.</li>
             <li>4. Build the projects and keep your code in Git.</li>
           </ol>
-          <p className="mt-3 text-sm text-slate-400">
+          <p className="mt-3 text-sm text-slate-600">
             Progress is held in the current page session and may reset when you
             refresh or leave the page.
           </p>
@@ -431,7 +431,7 @@ export default function AnsibleRoadmapPage() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-2xl font-bold">Learning path</h2>
-              <p className="mt-1 text-sm text-slate-400">
+              <p className="mt-1 text-sm text-slate-600">
                 Search concepts or filter by skill level.
               </p>
             </div>
@@ -442,7 +442,7 @@ export default function AnsibleRoadmapPage() {
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search topics..."
                 aria-label="Search roadmap topics"
-                className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm outline-none focus:border-orange-400 sm:w-64"
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-orange-400 sm:w-64"
               />
               <select
                 value={level}
@@ -450,7 +450,7 @@ export default function AnsibleRoadmapPage() {
                   setLevel(event.target.value as (typeof levels)[number])
                 }
                 aria-label="Filter modules by level"
-                className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm outline-none focus:border-orange-400"
+                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-orange-400"
               >
                 {levels.map((item) => (
                   <option key={item} value={item}>
@@ -469,10 +469,10 @@ export default function AnsibleRoadmapPage() {
               return (
                 <article
                   key={module.title}
-                  className={`overflow-hidden rounded-2xl border bg-slate-900/80 transition ${
+                  className={`overflow-hidden rounded-2xl border bg-white/80 transition ${
                     isCompleted
                       ? 'border-emerald-700/70'
-                      : 'border-slate-800'
+                      : 'border-slate-200'
                   }`}
                 >
                   <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-start">
@@ -483,21 +483,21 @@ export default function AnsibleRoadmapPage() {
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="text-lg font-bold">{module.title}</h3>
-                          <span className="rounded-full border border-slate-700 px-2.5 py-1 text-xs text-slate-300">
+                          <span className="rounded-full border border-slate-200 px-2.5 py-1 text-xs text-slate-700">
                             {module.level}
                           </span>
                         </div>
-                        <p className="mt-2 text-sm text-slate-400">
+                        <p className="mt-2 text-sm text-slate-600">
                           Suggested time: {module.duration}
                         </p>
-                        <p className="mt-2 text-sm leading-6 text-slate-300">
+                        <p className="mt-2 text-sm leading-6 text-slate-700">
                           {module.outcome}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3 sm:justify-end">
-                      <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-300">
+                      <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
                         <input
                           type="checkbox"
                           checked={isCompleted}
@@ -510,7 +510,7 @@ export default function AnsibleRoadmapPage() {
                         type="button"
                         onClick={() => toggleExpanded(module.index)}
                         aria-expanded={isExpanded}
-                        className="rounded-lg border border-slate-700 px-3 py-2 text-sm transition hover:border-orange-400"
+                        className="rounded-lg border border-slate-200 px-3 py-2 text-sm transition hover:border-orange-400"
                       >
                         {isExpanded ? 'Hide topics' : 'View topics'}
                       </button>
@@ -518,7 +518,7 @@ export default function AnsibleRoadmapPage() {
                   </div>
 
                   {isExpanded && (
-                    <div className="border-t border-slate-800 bg-slate-950/40 px-5 py-5 sm:pl-20">
+                    <div className="border-t border-slate-200 bg-slate-50 px-5 py-5 sm:pl-20">
                       <h4 className="text-sm font-semibold text-orange-300">
                         Concepts to cover
                       </h4>
@@ -526,7 +526,7 @@ export default function AnsibleRoadmapPage() {
                         {module.topics.map((topic: any) => (
                           <li
                             key={topic}
-                            className="flex gap-3 text-sm leading-6 text-slate-300"
+                            className="flex gap-3 text-sm leading-6 text-slate-700"
                           >
                             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-400" />
                             <span>{topic}</span>
@@ -540,9 +540,9 @@ export default function AnsibleRoadmapPage() {
             })}
 
             {filteredModules.length === 0 && (
-              <div className="rounded-2xl border border-dashed border-slate-700 p-10 text-center">
+              <div className="rounded-2xl border border-dashed border-slate-200 p-10 text-center">
                 <p className="font-semibold">No matching modules</p>
-                <p className="mt-2 text-sm text-slate-400">
+                <p className="mt-2 text-sm text-slate-600">
                   Try another search term or select All levels.
                 </p>
                 <button
@@ -563,7 +563,7 @@ export default function AnsibleRoadmapPage() {
         <section className="mt-12">
           <div>
             <h2 className="text-2xl font-bold">Portfolio projects</h2>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-slate-600">
               Build these after learning the related modules.
             </p>
           </div>
@@ -572,7 +572,7 @@ export default function AnsibleRoadmapPage() {
             {projects.map((project) => (
               <article
                 key={project.title}
-                className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5"
+                className="rounded-2xl border border-slate-200 bg-white p-5"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3 className="font-bold">{project.title}</h3>
@@ -580,11 +580,11 @@ export default function AnsibleRoadmapPage() {
                     {project.level}
                   </span>
                 </div>
-                <p className="mt-3 text-sm leading-6 text-slate-300">
+                <p className="mt-3 text-sm leading-6 text-slate-700">
                   {project.details}
                 </p>
-                <p className="mt-4 text-sm leading-6 text-slate-400">
-                  <span className="font-semibold text-slate-200">
+                <p className="mt-4 text-sm leading-6 text-slate-600">
+                  <span className="font-semibold text-slate-800">
                     Deliverable:
                   </span>{' '}
                   {project.deliverable}
@@ -596,7 +596,7 @@ export default function AnsibleRoadmapPage() {
 
         <section className="mt-12 rounded-2xl border border-orange-400/20 bg-orange-400/5 p-6 sm:p-8">
           <h2 className="text-2xl font-bold">Interview preparation checklist</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-300">
+          <p className="mt-2 text-sm leading-6 text-slate-700">
             Be ready to explain each concept with a real example, a failure
             scenario and the steps you would use to verify the result.
           </p>
@@ -617,7 +617,7 @@ export default function AnsibleRoadmapPage() {
             ].map((item) => (
               <li
                 key={item}
-                className="flex gap-3 rounded-xl border border-slate-800 bg-slate-950/40 p-3 text-sm text-slate-300"
+                className="flex gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700"
               >
                 <span className="text-orange-300">✓</span>
                 {item}
@@ -626,7 +626,7 @@ export default function AnsibleRoadmapPage() {
           </ul>
         </section>
 
-        <footer className="mt-10 border-t border-slate-800 pt-5 text-sm text-slate-500">
+        <footer className="mt-10 border-t border-slate-200 pt-5 text-sm text-slate-500">
           DevMavox · Ansible Learning Roadmap · Learn, practise, automate and
           document.
         </footer>
