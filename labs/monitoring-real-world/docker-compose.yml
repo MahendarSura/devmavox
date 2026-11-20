@@ -21,7 +21,7 @@ services:
       LAB_ALLOWED_ORIGINS: ${LAB_ALLOWED_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
     ports: ["127.0.0.1:8787:8787"]
     volumes:
-      - ./.lab-state/terminal.kubeconfig:/home/student/.kube/config:ro
+      - ./.lab-state/terminal.kubeconfig:/run/secrets/lab-kubeconfig:ro
       - terminal-assessment-data:/home/student/.lab-state
     depends_on: [prometheus, grafana, loki, tempo, alertmanager]
     networks: [observability]
