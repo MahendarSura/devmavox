@@ -30,7 +30,7 @@ The startup script generates a random local terminal password in the ignored `.e
 - Checkout API: http://localhost:8080
 - Authenticated browser terminal: http://localhost:7681 (username/password are in local `.env`)
 
-Terminal is bound to 127.0.0.1 only. It runs as an unprivileged container user, uses a local-only password and receives a read-only kubeconfig for the disposable k3d cluster. Do not expose port 7681 publicly or share the generated password.
+Terminal is bound to 127.0.0.1 only. It runs as an unprivileged container user and uses a local-only password. The kubeconfig file is mounted read-only, but its credential has cluster-admin access to this disposable k3d cluster; read-only mounting does NOT mean Kubernetes read-only RBAC. Never point it at a shared or production cluster. Do not expose port 7681 publicly or share the generated password.
 
 ## Generate live telemetry
 ```bash
@@ -77,5 +77,7 @@ k3d cluster delete devmavox-lab
 ## Security and deployment boundaries
 - Docker Compose and k3d run on the student's own machine. Vercel does not host Docker, privileged containers or Kubernetes clusters.
 - The local terminal is authenticated and bound to localhost. Never publish its port, Docker socket or kubeconfig to the internet.
+- Promtail needs access to the Docker Engine socket to discover container logs. Docker socket access is highly privileged even when the socket mount is marked read-only; run this stack only on a trusted local development machine.
+- The k3d API is published on host port 6550 so the browser-terminal container can reach it. Restrict inbound access to this port with the host firewall; do not expose it to public networks.
 - Public multi-student labs require a separately hosted authenticated controller, isolated per-student cluster provisioning, quotas, lifecycle cleanup and server-side assessment. That shared hosted controller is not included in this local lab deliverable.
 - Grafana's sample credentials are local-training-only. Change them before any non-local use.
