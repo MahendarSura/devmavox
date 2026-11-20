@@ -11,3 +11,5 @@ Observe the rule move INACTIVE to PENDING to FIRING. Inspect Alertmanager. Stop 
 Student tasks: explain expression, for duration, labels and annotations; record pending and firing times; explain why a short spike may not fire; propose a less noisy threshold.
 
 Pass evidence: actual Prometheus alert state and Alertmanager resolution, not a static status badge.
+
+Assessment: start with `bash /workspace/scripts/lab-assess.sh start alerts`, then finish with `bash /workspace/scripts/lab-assess.sh verify <lab-id>`. Evidence is stored locally in the terminal volume, not synced to Vercel.
