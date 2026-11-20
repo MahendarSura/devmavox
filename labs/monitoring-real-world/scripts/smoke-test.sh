@@ -30,5 +30,10 @@ for attempt in $(seq 1 30); do
   sleep 3
 done
 echo "Checking live Kubernetes CPU and memory metrics..."
+for attempt in $(seq 1 30); do
+  if kubectl top nodes >/dev/null 2>&1; then break; fi
+  if [[ "$attempt" == "30" ]]; then echo "Metrics Server did not return node metrics" >&2; exit 1; fi
+  sleep 3
+done
 kubectl top nodes
 echo "All HTTP and Kubernetes smoke checks passed."
