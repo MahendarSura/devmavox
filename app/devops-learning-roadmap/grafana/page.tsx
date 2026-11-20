@@ -281,7 +281,7 @@ export default function GrafanaRoadmapPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-8 text-slate-100 sm:px-6 lg:px-10">
+    <main className="min-h-screen bg-white px-4 py-8 text-slate-900 sm:px-6 lg:px-10">
       <div className="mx-auto max-w-6xl">
         <section className="relative overflow-hidden rounded-3xl border border-orange-400/20 bg-gradient-to-br from-slate-900 via-slate-900 to-orange-950/40 p-6 shadow-2xl sm:p-10">
           <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-orange-500/10 blur-3xl" />
@@ -295,7 +295,7 @@ export default function GrafanaRoadmapPage() {
               Master <span className="text-orange-400">Grafana</span>
             </h1>
 
-            <p className="mt-4 max-w-3xl text-base leading-7 text-slate-300 sm:text-lg">
+            <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
               Learn monitoring dashboards, Prometheus integration, alerting,
               Linux and Kubernetes observability, and production troubleshooting
               through a structured, hands-on roadmap.
@@ -315,18 +315,18 @@ export default function GrafanaRoadmapPage() {
                   <p className="text-3xl font-black text-orange-300">
                     {value}
                   </p>
-                  <p className="mt-1 text-sm text-slate-400">{label}</p>
+                  <p className="mt-1 text-sm text-slate-600">{label}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-slate-800 bg-slate-900 p-5">
+        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-xl font-bold">Your Learning Progress</h2>
-              <p className="mt-1 text-sm text-slate-400">
+              <p className="mt-1 text-sm text-slate-600">
                 Mark a module complete after finishing its learning task.
               </p>
             </div>
@@ -336,7 +336,7 @@ export default function GrafanaRoadmapPage() {
           </div>
 
           <div
-            className="mt-4 h-3 overflow-hidden rounded-full bg-slate-800"
+            className="mt-4 h-3 overflow-hidden rounded-full bg-slate-100"
             role="progressbar"
             aria-valuenow={progress}
             aria-valuemin={0}
@@ -361,7 +361,7 @@ export default function GrafanaRoadmapPage() {
               <h2 className="text-2xl font-black sm:text-3xl">
                 Learning Modules
               </h2>
-              <p className="mt-2 text-sm text-slate-400">
+              <p className="mt-2 text-sm text-slate-600">
                 Follow the modules in order, from fundamentals to production.
               </p>
             </div>
@@ -373,7 +373,7 @@ export default function GrafanaRoadmapPage() {
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search modules or topics..."
                 aria-label="Search modules"
-                className="min-w-0 rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm outline-none transition focus:border-orange-400 sm:w-72"
+                className="min-w-0 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-orange-400 sm:w-72"
               />
 
               <select
@@ -382,7 +382,7 @@ export default function GrafanaRoadmapPage() {
                   setLevel(event.target.value as 'All' | Level)
                 }
                 aria-label="Filter by level"
-                className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm outline-none focus:border-orange-400"
+                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-orange-400"
               >
                 {levels.map((item) => (
                   <option key={item} value={item}>
@@ -404,7 +404,7 @@ export default function GrafanaRoadmapPage() {
                   className={`overflow-hidden rounded-2xl border transition ${
                     isCompleted
                       ? 'border-emerald-500/30 bg-emerald-950/10'
-                      : 'border-slate-800 bg-slate-900'
+                      : 'border-slate-200 bg-white'
                   }`}
                 >
                   <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
@@ -425,11 +425,11 @@ export default function GrafanaRoadmapPage() {
                       </span>
 
                       <span className="min-w-0">
-                        <span className="block font-bold text-slate-100">
+                        <span className="block font-bold text-slate-900">
                           {module.title}
                         </span>
                         <span className="mt-2 flex flex-wrap items-center gap-2 text-xs">
-                          <span className="rounded-full bg-slate-800 px-2.5 py-1 text-slate-300">
+                          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-700">
                             {module.level}
                           </span>
                           <span className="text-slate-500">
@@ -446,7 +446,7 @@ export default function GrafanaRoadmapPage() {
                         className={`rounded-xl px-3 py-2 text-xs font-bold transition ${
                           isCompleted
                             ? 'bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25'
-                            : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                            : 'bg-slate-100 text-slate-700 hover:bg-slate-700'
                         }`}
                       >
                         {isCompleted ? 'Completed' : 'Mark Complete'}
@@ -458,7 +458,7 @@ export default function GrafanaRoadmapPage() {
                         aria-label={
                           isExpanded ? 'Collapse module' : 'Expand module'
                         }
-                        className="rounded-lg px-2 py-2 text-lg text-slate-400 hover:bg-slate-800 hover:text-white"
+                        className="rounded-lg px-2 py-2 text-lg text-slate-600 hover:bg-slate-100 hover:text-white"
                       >
                         {isExpanded ? '−' : '+'}
                       </button>
@@ -466,7 +466,7 @@ export default function GrafanaRoadmapPage() {
                   </div>
 
                   {isExpanded && (
-                    <div className="border-t border-slate-800 px-5 py-5 sm:px-6">
+                    <div className="border-t border-slate-200 px-5 py-5 sm:px-6">
                       <h3 className="text-sm font-bold uppercase tracking-wider text-orange-300">
                         Topics to Learn
                       </h3>
@@ -475,7 +475,7 @@ export default function GrafanaRoadmapPage() {
                         {module.topics.map((topic) => (
                           <li
                             key={topic}
-                            className="flex items-start gap-2 text-sm leading-6 text-slate-300"
+                            className="flex items-start gap-2 text-sm leading-6 text-slate-700"
                           >
                             <span className="mt-0.5 text-orange-400">•</span>
                             {topic}
@@ -487,7 +487,7 @@ export default function GrafanaRoadmapPage() {
                         <p className="text-xs font-bold uppercase tracking-wider text-orange-300">
                           Hands-on Task
                         </p>
-                        <p className="mt-2 text-sm leading-6 text-slate-300">
+                        <p className="mt-2 text-sm leading-6 text-slate-700">
                           {module.task}
                         </p>
                       </div>
@@ -498,9 +498,9 @@ export default function GrafanaRoadmapPage() {
             })}
 
             {filteredModules.length === 0 && (
-              <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8 text-center">
+              <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
                 <h3 className="font-bold">No modules found</h3>
-                <p className="mt-2 text-sm text-slate-400">
+                <p className="mt-2 text-sm text-slate-600">
                   Try another search term or choose a different level.
                 </p>
                 <button
@@ -518,7 +518,7 @@ export default function GrafanaRoadmapPage() {
           </div>
         </section>
 
-        <section className="mt-10 overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
+        <section className="mt-10 overflow-hidden rounded-2xl border border-slate-200 bg-white">
           <button
             type="button"
             onClick={() => setShowProjects((value) => !value)}
@@ -529,7 +529,7 @@ export default function GrafanaRoadmapPage() {
               <span className="block text-2xl font-black">
                 Real-World Projects
               </span>
-              <span className="mt-1 block text-sm text-slate-400">
+              <span className="mt-1 block text-sm text-slate-600">
                 Apply Grafana skills to realistic monitoring scenarios.
               </span>
             </span>
@@ -539,11 +539,11 @@ export default function GrafanaRoadmapPage() {
           </button>
 
           {showProjects && (
-            <div className="grid gap-4 border-t border-slate-800 p-5 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 border-t border-slate-200 p-5 md:grid-cols-2 lg:grid-cols-3">
               {projects.map((project) => (
                 <article
                   key={project.title}
-                  className="rounded-2xl border border-slate-800 bg-slate-950 p-5"
+                  className="rounded-2xl border border-slate-200 bg-white p-5"
                 >
                   <span className="text-xs font-bold uppercase tracking-wider text-orange-300">
                     {project.difficulty}
@@ -551,10 +551,10 @@ export default function GrafanaRoadmapPage() {
                   <h3 className="mt-3 font-bold leading-6">
                     {project.title}
                   </h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-400">
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
                     {project.details}
                   </p>
-                  <p className="mt-4 border-t border-slate-800 pt-3 text-xs leading-5 text-slate-500">
+                  <p className="mt-4 border-t border-slate-200 pt-3 text-xs leading-5 text-slate-500">
                     Tools: {project.tools}
                   </p>
                 </article>
@@ -563,7 +563,7 @@ export default function GrafanaRoadmapPage() {
           )}
         </section>
 
-        <section className="mt-5 overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
+        <section className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white">
           <button
             type="button"
             onClick={() => setShowInterview((value) => !value)}
@@ -574,7 +574,7 @@ export default function GrafanaRoadmapPage() {
               <span className="block text-2xl font-black">
                 Interview Preparation
               </span>
-              <span className="mt-1 block text-sm text-slate-400">
+              <span className="mt-1 block text-sm text-slate-600">
                 Practice common Grafana interview questions.
               </span>
             </span>
@@ -584,11 +584,11 @@ export default function GrafanaRoadmapPage() {
           </button>
 
           {showInterview && (
-            <ol className="space-y-3 border-t border-slate-800 p-5 sm:p-6">
+            <ol className="space-y-3 border-t border-slate-200 p-5 sm:p-6">
               {interviewQuestions.map((question, index) => (
                 <li
                   key={question}
-                  className="flex items-start gap-3 text-sm leading-6 text-slate-300"
+                  className="flex items-start gap-3 text-sm leading-6 text-slate-700"
                 >
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-orange-400/10 text-xs font-bold text-orange-300">
                     {index + 1}
@@ -604,7 +604,7 @@ export default function GrafanaRoadmapPage() {
           <h2 className="text-2xl font-black">
             Ready for Production Monitoring?
           </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-700">
             Complete the modules, build the five projects, practise alert
             troubleshooting, and explain your dashboard design decisions.
             Learn how Grafana and Prometheus work together rather than treating
@@ -619,7 +619,7 @@ export default function GrafanaRoadmapPage() {
                 setSearch('');
                 setLevel('All');
               }}
-              className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm font-bold text-slate-200 transition hover:border-orange-400/50"
+              className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-800 transition hover:border-orange-400/50"
             >
               Reset Learning Progress
             </button>
