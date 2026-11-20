@@ -5,15 +5,15 @@ const cors=(req,res)=>{const origin=req.headers.origin;if(origin&&ALLOWED.has(or
 async function get(url,h={}){const r=await fetch(url,{headers:h,signal:AbortSignal.timeout(7000)});if(!r.ok)throw Error("upstream HTTP "+r.status);return r.json()}
 async function kube(a){return (await run("kubectl",a,{timeout:12000,maxBuffer:3e6})).stdout}
 function allowedKube(args){const c=args.join(" ");return [
-/^get (namespaces|nodes|deployments|replicasets|pods|events)( -n production| -A)?( -o (wide|json))?( --sort-by=\\.lastTimestamp)?$/,
+/^get (namespaces|nodes|deployments|replicasets|pods|events)( -n production| -A)?( -o (wide|json))?( --sort-by=\.lastTimestamp)?$/,
 /^describe node [A-Za-z0-9._-]+$/,
 /^describe pod [A-Za-z0-9._-]+ -n production$/,
 /^top nodes$/,
 /^top pods -n production$/,
-/^rollout status deployment\\/checkout -n production$/,
-/^rollout restart deployment\\/checkout -n production$/,
-/^scale deployment\\/checkout --replicas=[1-5] -n production$/,
-/^set resources deployment\\/checkout --requests=cpu=[0-9]+m,memory=[0-9]+Mi --limits=cpu=[0-9]+m,memory=[0-9]+(Mi|Gi) -n production$/
+/^rollout status deployment\/checkout -n production$/,
+/^rollout restart deployment\/checkout -n production$/,
+/^scale deployment\/checkout --replicas=[1-5] -n production$/,
+/^set resources deployment\/checkout --requests=cpu=[0-9]+m,memory=[0-9]+Mi --limits=cpu=[0-9]+m,memory=[0-9]+(Mi|Gi) -n production$/
 ].some(re=>re.test(c))}
 function read(){try{return JSON.parse(fs.readFileSync(path.join(STATE,"assessment.json"),"utf8"))}catch{return {entries:[]}}}
 function summary(r){const ids=["promql","grafana","logs","traces","alerts","kubernetes"],latest=new Map();for(const e of r.entries||[]){const stamp=Number(e.verified_at||0)*1000||Date.parse(e.verifiedAt||"")||0,old=latest.get(e.lab);if(!old||stamp>old.stamp)latest.set(e.lab,{entry:e,stamp})}const entries=ids.map(l=>latest.get(l)?.entry||{lab:l,verified:false,score:0,detail:"Not submitted",evidence:{}});return {entries,passed:entries.filter(e=>e.verified).length,total:6,score:entries.reduce((n,e)=>n+e.score,0),maximum:600,complete:entries.every(e=>e.verified)}}
