@@ -56,12 +56,12 @@ Use the browser terminal to execute the commands. The terminal has kubectl and c
 ## Kubernetes fault drills
 Apply one fault at a time:
 ```bash
-kubectl apply -f /workspace/guides/../kubernetes/faults/oomkilled.yaml
+kubectl apply -f /workspace/kubernetes/faults/oomkilled.yaml
 kubectl -n production get pods -w
 kubectl -n production describe pod -l app=checkout
 kubectl -n production get events --sort-by=.lastTimestamp
 ```
-Repository paths are available on the host; when using the terminal, the guides are mounted under `/workspace/guides`. Run the manifests from the host terminal in the repository folder or copy them into the mounted workspace first. Recover with `kubectl apply -f kubernetes/recovery/checkout-resources.yaml` and verify `kubectl -n production rollout status deployment/checkout`.
+The repository folder is mounted read-only at `/workspace` inside the browser terminal, so all Kubernetes manifests and guides are available there. Recover with `kubectl apply -f /workspace/kubernetes/recovery/checkout-resources.yaml` and verify `kubectl -n production rollout status deployment/checkout`.
 
 For genuine NodeNotReady, use `scripts/node-not-ready-drill.sh` (PowerShell: `scripts/node-not-ready-drill.ps1`) from the host. It stops only a disposable k3d agent container and restarts it after 90 seconds. Never run against production or a shared cluster.
 
