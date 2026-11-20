@@ -39,6 +39,7 @@ jobs:
       - name: Validate JSON and Node.js syntax
         run: |
           node --check labs/monitoring-real-world/checkout-service/server.js
+          node --check labs/monitoring-real-world/bridge/server.js
           node -e "JSON.parse(require('fs').readFileSync('labs/monitoring-real-world/checkout-service/package.json','utf8'))"
       - name: Validate Kubernetes and observability YAML
         run: |
