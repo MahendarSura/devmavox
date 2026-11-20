@@ -18,4 +18,4 @@ Student tasks:
 
 Pass evidence: exact LogQL query, matching JSON record, request ID, trace ID and a correlation explanation. If no log arrives, inspect Promtail targets and Loki readiness before assuming the application failed.
 
-Assessment: start with `bash /workspace/scripts/lab-assess.sh start logs`, then finish with `bash /workspace/scripts/lab-assess.sh verify <lab-id>`. Evidence is stored locally in the terminal volume, not synced to Vercel.
+Assessment: start with `bash /workspace/scripts/lab-assess.sh start logs`, then submit the exact request ID you found in the real 503 log: `bash /workspace/scripts/lab-assess.sh verify logs student-503-01`. The grader queries Loki for that request ID. Evidence is stored locally in the terminal volume, not synced to Vercel.
