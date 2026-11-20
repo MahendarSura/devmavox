@@ -767,7 +767,7 @@ export default function DockerRoadmapPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-8 text-slate-100 sm:px-8">
+    <main className="min-h-screen bg-white px-4 py-8 text-slate-900 sm:px-8">
       <div className="mx-auto max-w-6xl">
         <header className="relative overflow-hidden rounded-3xl border border-sky-500/30 bg-gradient-to-br from-sky-950 via-slate-900 to-slate-950 p-6 sm:p-10">
           <div className="relative z-10 max-w-4xl">
@@ -777,7 +777,7 @@ export default function DockerRoadmapPage() {
             <h1 className="text-4xl font-black tracking-tight sm:text-6xl">
               Docker Learning Roadmap
             </h1>
-            <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">
+            <p className="mt-5 max-w-3xl text-base leading-8 text-slate-700 sm:text-lg">
               A structured path from container fundamentals to image
               optimization, secure production operations, CI/CD, Kubernetes
               integration, real-world projects, and interview preparation.
@@ -806,19 +806,19 @@ export default function DockerRoadmapPage() {
           ].map(([value, label]) => (
             <div
               key={label}
-              className="rounded-2xl border border-slate-800 bg-slate-900 p-5"
+              className="rounded-2xl border border-slate-200 bg-white p-5"
             >
               <p className="text-3xl font-black text-sky-400">{value}</p>
-              <p className="mt-2 text-sm text-slate-400">{label}</p>
+              <p className="mt-2 text-sm text-slate-600">{label}</p>
             </div>
           ))}
         </section>
 
-        <section className="mt-6 rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-6">
+        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-xl font-bold">Learning Progress</h2>
-              <p className="mt-1 text-sm text-slate-400">
+              <p className="mt-1 text-sm text-slate-600">
                 Track each topic as you learn and practise it.
               </p>
             </div>
@@ -827,7 +827,7 @@ export default function DockerRoadmapPage() {
             </span>
           </div>
           <div
-            className="mt-5 h-3 overflow-hidden rounded-full bg-slate-800"
+            className="mt-5 h-3 overflow-hidden rounded-full bg-slate-100"
             role="progressbar"
             aria-label="Docker learning progress"
             aria-valuenow={progress}
@@ -839,7 +839,7 @@ export default function DockerRoadmapPage() {
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="mt-3 text-sm text-slate-400">
+          <p className="mt-3 text-sm text-slate-600">
             {completed.length} of {totalTopics} checkpoints completed.
           </p>
           <button
@@ -870,7 +870,7 @@ export default function DockerRoadmapPage() {
               className={`rounded-xl border px-4 py-3 text-sm font-semibold transition ${
                 activeTab === tab
                   ? "border-sky-400 bg-sky-500/15 text-sky-300"
-                  : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-slate-500"
               }`}
             >
               {label}
@@ -888,7 +888,7 @@ export default function DockerRoadmapPage() {
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search Docker topics, commands, or lessons..."
-              className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-4 text-slate-100 outline-none placeholder:text-slate-500 focus:border-sky-500"
+              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-4 text-slate-900 outline-none placeholder:text-slate-500 focus:border-sky-500"
             />
 
             <div className="mt-5 space-y-4">
@@ -903,13 +903,13 @@ export default function DockerRoadmapPage() {
                 return (
                   <article
                     key={module.title}
-                    className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900"
+                    className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
                   >
                     <button
                       type="button"
                       onClick={() => toggleModule(originalIndex)}
                       aria-expanded={isExpanded}
-                      className="flex w-full items-start justify-between gap-4 p-5 text-left hover:bg-slate-800/70 sm:p-6"
+                      className="flex w-full items-start justify-between gap-4 p-5 text-left hover:bg-slate-100/70 sm:p-6"
                     >
                       <div>
                         <span className="text-xs font-bold uppercase tracking-wider text-sky-400">
@@ -918,7 +918,7 @@ export default function DockerRoadmapPage() {
                         <h2 className="mt-2 text-lg font-bold sm:text-xl">
                           {module.title}
                         </h2>
-                        <p className="mt-2 text-sm leading-6 text-slate-400">
+                        <p className="mt-2 text-sm leading-6 text-slate-600">
                           {module.objective}
                         </p>
                       </div>
@@ -928,7 +928,7 @@ export default function DockerRoadmapPage() {
                     </button>
 
                     {isExpanded && (
-                      <div className="space-y-4 border-t border-slate-800 p-4 sm:p-6">
+                      <div className="space-y-4 border-t border-slate-200 p-4 sm:p-6">
                         {module.lessons.map((lesson) => {
                           const lessonKey = `${module.title}-${lesson.title}`;
                           const lessonTopics = lesson.topics.map(
@@ -941,18 +941,18 @@ export default function DockerRoadmapPage() {
                           return (
                             <section
                               key={lesson.title}
-                              className="rounded-xl border border-slate-800 bg-slate-950/70 p-4 sm:p-5"
+                              className="rounded-xl border border-slate-200 bg-white/70 p-4 sm:p-5"
                             >
                               <div className="flex flex-wrap items-start justify-between gap-3">
-                                <h3 className="text-base font-bold text-slate-100 sm:text-lg">
+                                <h3 className="text-base font-bold text-slate-900 sm:text-lg">
                                   {lesson.title}
                                 </h3>
-                                <span className="text-xs text-slate-400">
+                                <span className="text-xs text-slate-600">
                                   {finished}/{lesson.topics.length} complete
                                 </span>
                               </div>
 
-                              <p className="mt-3 text-sm leading-7 text-slate-400">
+                              <p className="mt-3 text-sm leading-7 text-slate-600">
                                 {lesson.description}
                               </p>
 
@@ -967,7 +967,7 @@ export default function DockerRoadmapPage() {
                                   return (
                                     <label
                                       key={id}
-                                      className="flex cursor-pointer items-start gap-3 text-sm leading-6 text-slate-300"
+                                      className="flex cursor-pointer items-start gap-3 text-sm leading-6 text-slate-700"
                                     >
                                       <input
                                         type="checkbox"
@@ -999,7 +999,7 @@ export default function DockerRoadmapPage() {
                                       {lesson.commands.map((command) => (
                                         <pre
                                           key={command}
-                                          className="overflow-x-auto rounded-lg border border-slate-800 bg-black/40 p-3 text-sm text-emerald-300"
+                                          className="overflow-x-auto rounded-lg border border-slate-200 bg-black/40 p-3 text-sm text-emerald-300"
                                         >
                                           <code>{command}</code>
                                         </pre>
@@ -1013,7 +1013,7 @@ export default function DockerRoadmapPage() {
                                   <h4 className="font-semibold text-amber-300">
                                     Hands-on lab
                                   </h4>
-                                  <p className="mt-2 text-sm leading-7 text-slate-300">
+                                  <p className="mt-2 text-sm leading-7 text-slate-700">
                                     {lesson.lab}
                                   </p>
                                 </div>
@@ -1028,7 +1028,7 @@ export default function DockerRoadmapPage() {
               })}
 
               {filteredModules.length === 0 && (
-                <p className="rounded-xl border border-slate-800 bg-slate-900 p-6 text-slate-400">
+                <p className="rounded-xl border border-slate-200 bg-white p-6 text-slate-600">
                   No matching topics found. Try another search term.
                 </p>
               )}
@@ -1037,9 +1037,9 @@ export default function DockerRoadmapPage() {
         )}
 
         {activeTab === "commands" && (
-          <section className="mt-6 rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-6">
+          <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
             <h2 className="text-2xl font-bold">Docker Command Reference</h2>
-            <p className="mt-2 text-sm leading-7 text-slate-400">
+            <p className="mt-2 text-sm leading-7 text-slate-600">
               Use these commands in a Docker environment you control. Replace
               placeholder names with the actual container or image names.
             </p>
@@ -1048,19 +1048,19 @@ export default function DockerRoadmapPage() {
               {referenceCommands.map(([command, explanation]) => (
                 <div
                   key={command}
-                  className="rounded-xl border border-slate-800 bg-slate-950 p-4"
+                  className="rounded-xl border border-slate-200 bg-white p-4"
                 >
                   <pre className="overflow-x-auto text-sm text-emerald-300">
                     <code>{command}</code>
                   </pre>
-                  <p className="mt-2 text-sm leading-6 text-slate-400">
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
                     {explanation}
                   </p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-5 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-sm leading-7 text-slate-300">
+            <div className="mt-5 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-sm leading-7 text-slate-700">
               <strong className="text-amber-300">Safety note:</strong> Commands
               such as docker rm, docker system prune, and volume removal can
               destroy data. Inspect the target resources and confirm backups
@@ -1071,9 +1071,9 @@ export default function DockerRoadmapPage() {
 
         {activeTab === "troubleshooting" && (
           <section className="mt-6 space-y-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+            <div className="rounded-2xl border border-slate-200 bg-white p-5">
               <h2 className="text-2xl font-bold">Docker Troubleshooting Center</h2>
-              <p className="mt-2 text-sm leading-7 text-slate-400">
+              <p className="mt-2 text-sm leading-7 text-slate-600">
                 Follow the sequence: reproduce the issue, collect evidence,
                 identify the root cause, apply the smallest safe fix, and
                 verify the result.
@@ -1083,16 +1083,16 @@ export default function DockerRoadmapPage() {
             {troubleshooting.map((item) => (
               <article
                 key={item.issue}
-                className="rounded-2xl border border-slate-800 bg-slate-900 p-5"
+                className="rounded-2xl border border-slate-200 bg-white p-5"
               >
                 <h3 className="text-lg font-bold text-rose-300">
                   {item.issue}
                 </h3>
-                <p className="mt-3 text-sm leading-7 text-slate-300">
+                <p className="mt-3 text-sm leading-7 text-slate-700">
                   <strong>Possible cause: </strong>
                   {item.cause}
                 </p>
-                <p className="mt-2 text-sm leading-7 text-slate-300">
+                <p className="mt-2 text-sm leading-7 text-slate-700">
                   <strong>Diagnostic approach: </strong>
                   {item.fix}
                 </p>
@@ -1102,9 +1102,9 @@ export default function DockerRoadmapPage() {
         )}
 
         {activeTab === "projects" && (
-          <section className="mt-6 rounded-2xl border border-slate-800 bg-slate-900 p-5 sm:p-6">
+          <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
             <h2 className="text-2xl font-bold">Portfolio and Practical Projects</h2>
-            <p className="mt-2 text-sm leading-7 text-slate-400">
+            <p className="mt-2 text-sm leading-7 text-slate-600">
               Complete the projects in order. Keep the Dockerfile, Compose
               configuration, pipeline files, screenshots, test evidence, and
               project documentation in your repository.
@@ -1114,14 +1114,14 @@ export default function DockerRoadmapPage() {
               {projects.map((project, index) => (
                 <div
                   key={project}
-                  className="flex items-start gap-4 rounded-xl border border-slate-800 bg-slate-950 p-4"
+                  className="flex items-start gap-4 rounded-xl border border-slate-200 bg-white p-4"
                 >
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-500/15 font-bold text-sky-300">
                     {index + 1}
                   </span>
                   <div>
                     <h3 className="font-semibold">{project}</h3>
-                    <p className="mt-2 text-sm leading-6 text-slate-400">
+                    <p className="mt-2 text-sm leading-6 text-slate-600">
                       Deliverable: working implementation, setup instructions,
                       validation evidence, troubleshooting notes, and lessons
                       learned.
@@ -1135,7 +1135,7 @@ export default function DockerRoadmapPage() {
               <h3 className="font-bold text-emerald-300">
                 Completion criteria
               </h3>
-              <p className="mt-2 text-sm leading-7 text-slate-300">
+              <p className="mt-2 text-sm leading-7 text-slate-700">
                 You should be able to explain the architecture, build and run
                 images, persist data, connect services, secure containers,
                 diagnose common failures, and automate image delivery through
@@ -1146,9 +1146,9 @@ export default function DockerRoadmapPage() {
           </section>
         )}
 
-        <footer className="mt-8 rounded-2xl border border-slate-800 bg-slate-900 p-6">
+        <footer className="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
           <h2 className="text-xl font-bold">Your Docker Learning Goal</h2>
-          <p className="mt-3 text-sm leading-7 text-slate-400">
+          <p className="mt-3 text-sm leading-7 text-slate-600">
             Work through the modules in sequence, run the commands in a test
             environment, complete the labs, and document what you learn. This
             roadmap is a structured learning guide; individual lessons can be

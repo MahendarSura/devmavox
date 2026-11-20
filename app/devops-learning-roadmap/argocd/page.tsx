@@ -878,7 +878,7 @@ export default function ArgoCDRoadmapPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
+    <main className="min-h-screen bg-white text-slate-900">
       <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 px-4 py-14 text-white sm:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-4 inline-flex rounded-full border border-indigo-300/30 bg-indigo-300/10 px-4 py-2 text-sm text-indigo-100">
@@ -889,7 +889,7 @@ export default function ArgoCDRoadmapPage() {
             Argo CD — Beginner to Production
           </h1>
 
-          <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">
+          <p className="mt-5 max-w-3xl text-base leading-8 text-slate-700 sm:text-lg">
             Master GitOps, Kubernetes application delivery, automated
             reconciliation, Helm, Kustomize, multi-cluster management,
             security, CI/CD integration and production troubleshooting.
@@ -907,7 +907,7 @@ export default function ArgoCDRoadmapPage() {
                 className="rounded-2xl border border-white/10 bg-white/5 p-4"
               >
                 <p className="text-3xl font-bold">{value}</p>
-                <p className="mt-1 text-sm text-slate-300">{label}</p>
+                <p className="mt-1 text-sm text-slate-700">{label}</p>
               </div>
             ))}
           </div>
@@ -943,7 +943,7 @@ export default function ArgoCDRoadmapPage() {
           <p className="mt-2 text-sm text-slate-500">
             {completedCount} of {totalLessons} lesson sections completed
           </p>
-          <p className="mt-2 text-xs text-slate-400">
+          <p className="mt-2 text-xs text-slate-600">
             Progress is held in page state and may reset when you leave or
             refresh this page.
           </p>
@@ -1109,9 +1109,9 @@ export default function ArgoCDRoadmapPage() {
           )}
         </div>
 
-        <section className="mt-10 rounded-2xl bg-slate-900 p-6 text-white sm:p-8">
+        <section className="mt-10 rounded-2xl bg-white p-6 text-white sm:p-8">
           <h2 className="text-2xl font-bold">Recommended learning sequence</h2>
-          <p className="mt-3 max-w-3xl leading-7 text-slate-300">
+          <p className="mt-3 max-w-3xl leading-7 text-slate-700">
             Start with GitOps, Kubernetes and installation fundamentals. Then
             learn Applications, synchronization, Helm and Kustomize. Move on
             to multi-tenancy, ApplicationSet, CI/CD, security and observability.
@@ -1131,7 +1131,7 @@ export default function ArgoCDRoadmapPage() {
               >
                 <p className="text-sm font-bold text-indigo-300">{number}</p>
                 <h3 className="mt-2 font-semibold">{title}</h3>
-                <p className="mt-1 text-sm leading-6 text-slate-300">
+                <p className="mt-1 text-sm leading-6 text-slate-700">
                   {description}
                 </p>
               </div>

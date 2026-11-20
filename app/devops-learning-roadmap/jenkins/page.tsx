@@ -937,7 +937,7 @@ export default function JenkinsRoadmapPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
+    <main className="min-h-screen bg-white text-slate-900">
       <section className="bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-900 text-white">
         <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:py-20">
           <p className="mb-4 inline-flex rounded-full border border-blue-300/30 bg-white/10 px-4 py-2 text-sm font-semibold text-blue-100">
@@ -948,7 +948,7 @@ export default function JenkinsRoadmapPage() {
             Jenkins Learning Roadmap
           </h1>
 
-          <p className="mt-6 max-w-3xl text-base leading-8 text-slate-200 sm:text-lg">
+          <p className="mt-6 max-w-3xl text-base leading-8 text-slate-800 sm:text-lg">
             Learn Jenkins from CI/CD fundamentals to pipeline engineering,
             automation, security, distributed builds, cloud integration and
             production delivery architecture.
@@ -966,7 +966,7 @@ export default function JenkinsRoadmapPage() {
                 className="rounded-2xl border border-white/10 bg-white/10 p-4"
               >
                 <p className="text-xl font-bold sm:text-2xl">{value}</p>
-                <p className="mt-1 text-sm text-slate-300">{label}</p>
+                <p className="mt-1 text-sm text-slate-700">{label}</p>
               </div>
             ))}
           </div>
@@ -1119,7 +1119,7 @@ export default function JenkinsRoadmapPage() {
                       </span>
                     </span>
 
-                    <span aria-hidden="true" className="shrink-0 text-xl text-slate-400">
+                    <span aria-hidden="true" className="shrink-0 text-xl text-slate-600">
                       {isExpanded ? "−" : "+"}
                     </span>
                   </button>
@@ -1150,7 +1150,7 @@ export default function JenkinsRoadmapPage() {
                                 <span
                                   className={`block font-bold ${
                                     isComplete
-                                      ? "text-slate-400 line-through"
+                                      ? "text-slate-600 line-through"
                                       : "text-slate-900"
                                   }`}
                                 >
