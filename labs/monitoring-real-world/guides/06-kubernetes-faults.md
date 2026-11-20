@@ -1,6 +1,6 @@
 # Lab 06 — Kubernetes faults and recovery
 
-Prerequisites: k3d, kubectl and a disposable local cluster. Run scripts/create-cluster.sh (Windows: scripts/windows-setup.ps1).
+Prerequisites: Docker, k3d and kubectl. Run scripts/create-cluster.sh (Windows: scripts/windows-setup.ps1).
 
 Inspect:
     kubectl get nodes -o wide
@@ -10,7 +10,7 @@ Inspect:
     kubectl top nodes
     kubectl top pods
 
-Apply one fault at a time. Observe with get pods -w, describe pod, logs --previous and Events.
+Apply one fault at a time. Observe get pods -w, describe pod, logs --previous and Events.
 
 OOMKilled:
     kubectl apply -f kubernetes/faults/oomkilled.yaml
@@ -30,6 +30,11 @@ Pending:
     kubectl apply -f kubernetes/recovery/checkout-resources.yaml
     kubectl -n production rollout status deployment/checkout
 
-NodeNotReady status: the current node-not-ready-lab.yaml uses a nonexistent node label and produces unschedulable pods. This is NOT a genuine NodeNotReady node condition. A real node failure lab requires a dedicated disposable multi-node VM cluster where a worker can safely be isolated and recovered. Never stop a workstation kubelet or run these faults against production.
+Real NodeNotReady:
+    kubectl get nodes -w
+    # In a second terminal, from this lab folder:
+    ./scripts/node-not-ready-drill.sh
+    # Windows: ./scripts/node-not-ready-drill.ps1
+The drill stops only one disposable k3d agent container for 45 seconds, then starts it and waits for the node Ready condition. Never stop a workstation kubelet. Never run this on a shared or production cluster.
 
-Pass evidence: capture fault reason, recovery command, all replicas Ready, rollout complete and service responding. Metrics Server may need installation before kubectl top works.
+Pass evidence: capture the actual fault reason, recovery commands, all replicas Ready, rollout complete and service responding. Metrics Server may need installation before kubectl top works.
