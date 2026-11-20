@@ -9,6 +9,7 @@ services:
     volumes:
       - ./.lab-state/terminal.kubeconfig:/home/student/.kube/config:ro
       - .:/workspace:ro
+      - terminal-assessment-data:/home/student/.lab-state
     networks: [observability]
   checkout:
     build: ./checkout-service
@@ -87,3 +88,4 @@ networks:
 volumes:
   prometheus-data:
   grafana-data:
+  terminal-assessment-data:
